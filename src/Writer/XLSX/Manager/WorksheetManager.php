@@ -42,6 +42,9 @@ class WorksheetManager implements WorksheetManagerInterface
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
         EOD;
 
+    /** @var OptionsManagerInterface */
+    private $optionsManager;
+
     /** @var bool Whether inline or shared strings should be used */
     protected $shouldUseInlineStrings;
 
@@ -75,6 +78,7 @@ class WorksheetManager implements WorksheetManagerInterface
         XLSXEscaper $stringsEscaper,
         StringHelper $stringHelper
     ) {
+        $this->optionsManager = $optionsManager;
         $this->shouldUseInlineStrings = $optionsManager->getOption(Options::SHOULD_USE_INLINE_STRINGS);
         $this->setDefaultColumnWidth($optionsManager->getOption(Options::DEFAULT_COLUMN_WIDTH));
         $this->setDefaultRowHeight($optionsManager->getOption(Options::DEFAULT_ROW_HEIGHT));
@@ -169,6 +173,20 @@ class WorksheetManager implements WorksheetManagerInterface
         }
         $this->ensureSheetDataStated($worksheet);
         fwrite($worksheetFilePointer, '</sheetData>');
+
+        // create nodes for merge cells
+        if ($this->optionsManager->getOption(Options::MERGE_CELLS)) {
+            $mergeCellString = '<mergeCells count="'.count($this->optionsManager->getOption(Options::MERGE_CELLS)).'">';
+            foreach ($this->optionsManager->getOption(Options::MERGE_CELLS) as $values) {
+                $output = array_map(function($value){
+                    return CellHelper::getColumnLettersFromColumnIndex($value[0]) . $value[1];
+                }, $values);
+                $mergeCellString.= '<mergeCell ref="'.implode(':', $output).'"/>';
+            }
+            $mergeCellString.= '</mergeCells>';
+            \fwrite($worksheet->getFilePointer(), $mergeCellString);
+        }
+
         fwrite($worksheetFilePointer, '</worksheet>');
         fclose($worksheetFilePointer);
     }

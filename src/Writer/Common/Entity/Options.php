@@ -24,4 +24,7 @@ abstract class Options
     public const DEFAULT_COLUMN_WIDTH = 'defaultColumnWidth';
     public const DEFAULT_ROW_HEIGHT = 'defaultRowHeight';
     public const COLUMN_WIDTHS = 'columnWidthDefinition';
+
+    // XLSX merge cells
+    const MERGE_CELLS = 'mergeCells';
 }
