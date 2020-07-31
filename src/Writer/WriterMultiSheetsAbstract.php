@@ -63,6 +63,7 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
     public function setColumnWidths(array $columnWidths)
     {
         $this->optionsManager->setOption(Options::COLUMN_WIDTHS, $columnWidths);
+
         return $this;
     }
 
@@ -75,6 +76,7 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
     public function mergeCells(array $range1, array $range2)
     {
         $this->optionsManager->addOption(Options::MERGE_CELLS, [$range1, $range2]);
+
         return $this;
     }
 
