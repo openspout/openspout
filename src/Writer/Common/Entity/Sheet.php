@@ -115,25 +115,6 @@ class Sheet
         return $this;
     }
 
-    /**
-     * @return bool isSheetStarted Sheet was started
-     */
-    public function isSheetStarted()
-    {
-        return $this->isSheetStarted;
-    }
-
-    /**
-     * @param bool $isSheetStarted Set if sheet was started
-     * @return Sheet
-     */
-    public function setIsSheetStarted($isSheetStarted)
-    {
-        $this->isSheetStarted = $isSheetStarted;
-
-        return $this;
-    }
-
     public function getSheetView(): ?SheetView
     {
         return $this->sheetView;
