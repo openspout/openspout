@@ -248,6 +248,23 @@ final class WriterWithStyleTest extends TestCase
         $this->assertFirstChildHasAttributeEquals('1', $xfElement, 'alignment', 'wrapText');
     }
 
+    public function testAddRowShouldAddNegatedWrapTextAlignmentInfoInStylesXmlFileIfSpecified(): void
+    {
+        $fileName = 'test_add_row_should_add_negated_wrap_text_alignment.xlsx';
+
+        $style = (new Style())->setShouldWrapText(false)->;
+        $dataRows = $this->createStyledRowsFromValues([
+            ['xlsx--11', 'xlsx--12'],
+        ], $style);
+
+        $this->writeToXLSXFile($dataRows, $fileName);
+
+        $cellXfsDomElement = $this->getXmlSectionFromStylesXmlFile($fileName, 'cellXfs');
+        $xfElement = $cellXfsDomElement->getElementsByTagName('xf')->item(1);
+        $this->assertEquals(1, $xfElement->getAttribute('applyAlignment'));
+        $this->assertFirstChildHasAttributeEquals('0', $xfElement, 'alignment', 'wrapText');
+    }
+
     public function testAddRowShouldApplyWrapTextIfCellContainsNewLine(): void
     {
         $fileName = 'test_add_row_should_apply_wrap_text_if_new_lines.xlsx';

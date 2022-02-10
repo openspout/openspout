@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OpenSpout\Common\Entity\Style;
 
+use Box\Spout\Common\Entity\Style\CellVerticalAlignment;
 use OpenSpout\Common\Exception\InvalidArgumentException;
 
 /**
@@ -74,6 +75,15 @@ final class Style
 
     /** @var bool Whether the cell alignment property was set */
     private bool $hasSetCellAlignment = false;
+
+    /** @var bool Whether specific cell vertical alignment should be applied */
+    private bool $shouldApplyCellVerticalAlignment = false;
+
+    /** @var string Cell vertical alignment */
+    private string $cellVerticalAlignment;
+
+    /** @var bool Whether the cell vertical alignment property was set */
+    private bool $hasSetCellVerticalAlignment = false;
 
     /** @var bool Whether the text should wrap in the cell (useful for long or multi-lines text) */
     private bool $shouldWrapText = false;
@@ -290,6 +300,11 @@ final class Style
         return $this->cellAlignment;
     }
 
+    public function getCellVerticalAlignment(): string
+    {
+        return $this->cellVerticalAlignment;
+    }
+
     /**
      * @param string $cellAlignment The cell alignment
      */
@@ -307,9 +322,31 @@ final class Style
         return $this;
     }
 
+    /**
+     * @param string $cellVerticalAlignment The cell vertical alignment
+     */
+    public function setCellVerticalAlignment(string $cellVerticalAlignment): self
+    {
+        if (!CellVerticalAlignment::isValid($cellVerticalAlignment)) {
+            throw new InvalidArgumentException('Invalid cell vertical alignment value');
+        }
+
+        $this->cellVerticalAlignment = $cellVerticalAlignment;
+        $this->hasSetCellVerticalAlignment = true;
+        $this->shouldApplyCellVerticalAlignment = true;
+        $this->isEmpty = false;
+
+        return $this;
+    }
+
     public function hasSetCellAlignment(): bool
     {
         return $this->hasSetCellAlignment;
+    }
+
+    public function hasSetCellVerticalAlignment(): bool
+    {
+        return $this->hasSetCellVerticalAlignment;
     }
 
     /**
@@ -318,6 +355,11 @@ final class Style
     public function shouldApplyCellAlignment(): bool
     {
         return $this->shouldApplyCellAlignment;
+    }
+
+    public function shouldApplyCellVerticalAlignment(): bool
+    {
+        return $this->shouldApplyCellVerticalAlignment;
     }
 
     public function shouldWrapText(): bool

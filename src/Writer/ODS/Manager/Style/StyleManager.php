@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer\ODS\Manager\Style;
 
+use Box\Spout\Common\Entity\Style\CellVerticalAlignment;
 use OpenSpout\Common\Entity\Style\Border;
 use OpenSpout\Common\Entity\Style\BorderPart;
 use OpenSpout\Common\Entity\Style\CellAlignment;
@@ -316,12 +317,13 @@ final class StyleManager extends CommonStyleManager
      */
     private function getParagraphPropertiesSectionContent(Style $style): string
     {
-        if (!$style->shouldApplyCellAlignment()) {
+        if (!$style->shouldApplyCellAlignment() && !$style->shouldApplyCellVerticalAlignment()) {
             return '';
         }
 
         return '<style:paragraph-properties '
             .$this->getCellAlignmentSectionContent($style)
+            . $this->getCellVerticalAlignmentSectionContent($style)
             .'/>';
     }
 
@@ -333,6 +335,16 @@ final class StyleManager extends CommonStyleManager
         return sprintf(
             ' fo:text-align="%s" ',
             $this->transformCellAlignment($style->getCellAlignment())
+        );
+    }
+    /**
+     * Returns the contents of the cell vertical alignment definition for the "<style:paragraph-properties>" section
+     */
+    private function getCellVerticalAlignmentSectionContent(Style $style): string
+    {
+        return \sprintf(
+            ' fo:vertical-align="%s" ',
+            $this->transformCellVerticalAlignment($style->getCellVerticalAlignment())
         );
     }
 
@@ -349,6 +361,17 @@ final class StyleManager extends CommonStyleManager
             default => $cellAlignment,
         };
     }
+    
+    /**
+     * Spec uses 'middle' rather than 'center'
+     * http://docs.oasis-open.org/office/v1.2/os/OpenDocument-v1.2-os-part1.html#__RefHeading__1420236_253892949
+     */
+    private function transformCellVerticalAlignment(string $cellVerticalAlignment): string
+    {
+        return ($cellVerticalAlignment === CellVerticalAlignment::CENTER)
+            ? 'middle'
+            :  $cellVerticalAlignment;
+    }
 
     /**
      * Returns the contents of the "<style:table-cell-properties>" section, inside "<style:style>" section.
@@ -357,8 +380,8 @@ final class StyleManager extends CommonStyleManager
     {
         $content = '<style:table-cell-properties ';
 
-        if ($style->shouldWrapText()) {
-            $content .= $this->getWrapTextXMLContent();
+        if ($style->hasSetWrapText()) {
+            $content .= $this->getWrapTextXMLContent($style->shouldWrapText());
         }
 
         if (null !== ($border = $style->getBorder())) {
@@ -377,9 +400,9 @@ final class StyleManager extends CommonStyleManager
     /**
      * Returns the contents of the wrap text definition for the "<style:table-cell-properties>" section.
      */
-    private function getWrapTextXMLContent(): string
+    private function getWrapTextXMLContent(bool $shouldWrapText): string
     {
-        return ' fo:wrap-option="wrap" style:vertical-align="automatic" ';
+        return ' fo:wrap-option="' . ($shouldWrapText ? '' : 'no-') . 'wrap" style:vertical-align="automatic" ';
     }
 
     /**
