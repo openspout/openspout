@@ -1,19 +1,19 @@
 <?php
 
-namespace Box\Spout\Writer\ODS;
+namespace OpenSpout\Writer\ODS;
 
-use Box\Spout\Common\Entity\Row;
-use Box\Spout\Common\Entity\Style\Border;
-use Box\Spout\Common\Entity\Style\CellAlignment;
-use Box\Spout\Common\Entity\Style\Color;
-use Box\Spout\Common\Entity\Style\Style;
-use Box\Spout\Reader\Wrapper\XMLReader;
-use Box\Spout\TestUsingResource;
-use Box\Spout\Writer\Common\Creator\Style\BorderBuilder;
-use Box\Spout\Writer\Common\Creator\Style\StyleBuilder;
-use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
-use Box\Spout\Writer\Exception\WriterNotOpenedException;
-use Box\Spout\Writer\RowCreationHelper;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Entity\Style\Border;
+use OpenSpout\Common\Entity\Style\CellAlignment;
+use OpenSpout\Common\Entity\Style\Color;
+use OpenSpout\Common\Entity\Style\Style;
+use OpenSpout\Reader\Wrapper\XMLReader;
+use OpenSpout\TestUsingResource;
+use OpenSpout\Writer\Common\Creator\Style\BorderBuilder;
+use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
+use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
+use OpenSpout\Writer\Exception\WriterNotOpenedException;
+use OpenSpout\Writer\RowCreationHelper;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -305,8 +305,8 @@ class WriterWithStyleTest extends TestCase
         $this->assertCount(3, $styleElements, 'There should be 3 styles)');
 
         // Use reflection for protected members here
-        $widthMap = \ReflectionHelper::getStaticValue('Box\Spout\Writer\ODS\Helper\BorderHelper', 'widthMap');
-        $styleMap = \ReflectionHelper::getStaticValue('Box\Spout\Writer\ODS\Helper\BorderHelper', 'styleMap');
+        $widthMap = \ReflectionHelper::getStaticValue('OpenSpout\Writer\ODS\Helper\BorderHelper', 'widthMap');
+        $styleMap = \ReflectionHelper::getStaticValue('OpenSpout\Writer\ODS\Helper\BorderHelper', 'styleMap');
 
         $expectedFirst = sprintf(
             '%s %s #%s',

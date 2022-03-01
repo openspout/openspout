@@ -1,8 +1,8 @@
 <?php
 
-namespace Box\Spout\Reader\ODS;
+namespace OpenSpout\Reader\ODS;
 
-use Box\Spout\Reader\SheetInterface;
+use OpenSpout\Reader\SheetInterface;
 
 /**
  * Class Sheet
@@ -10,7 +10,7 @@ use Box\Spout\Reader\SheetInterface;
  */
 class Sheet implements SheetInterface
 {
-    /** @var \Box\Spout\Reader\ODS\RowIterator To iterate over sheet's rows */
+    /** @var \OpenSpout\Reader\ODS\RowIterator To iterate over sheet's rows */
     protected $rowIterator;
 
     /** @var int ID of the sheet */
@@ -45,7 +45,7 @@ class Sheet implements SheetInterface
     }
 
     /**
-     * @return \Box\Spout\Reader\ODS\RowIterator
+     * @return \OpenSpout\Reader\ODS\RowIterator
      */
     public function getRowIterator()
     {

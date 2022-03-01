@@ -1,10 +1,10 @@
 {
-    "name": "box/spout",
+    "name": "openspout/openspout",
     "description": "PHP Library to read and write spreadsheet files (CSV, XLSX and ODS), in a fast and scalable way",
     "type": "library",
     "keywords": ["php","read","write","csv","xlsx","ods","odf","open","office","excel","spreadsheet","scale","memory","stream","ooxml"],
-    "license": "Apache-2.0",
-    "homepage": "https://www.github.com/box/spout",
+    "license": "MIT",
+    "homepage": "https://github.com/openspout/openspout",
     "authors": [
         {
             "name": "Adrien Loison",
@@ -28,12 +28,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Box\\Spout\\": "src/Spout"
+            "OpenSpout\\": "src/Spout"
         }
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "3.1.x-dev"
+            "dev-master": "3.3.x-dev"
         }
     },
     "config": {

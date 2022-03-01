@@ -1,6 +1,6 @@
 <?php
 
-namespace Box\Spout\Common\Helper;
+namespace OpenSpout\Common\Helper;
 
 use PHPUnit\Framework\TestCase;
 

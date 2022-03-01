@@ -1,8 +1,8 @@
 <?php
 
-namespace Box\Spout\Reader\CSV;
+namespace OpenSpout\Reader\CSV;
 
-use Box\Spout\Reader\IteratorInterface;
+use OpenSpout\Reader\IteratorInterface;
 
 /**
  * Class SheetIterator

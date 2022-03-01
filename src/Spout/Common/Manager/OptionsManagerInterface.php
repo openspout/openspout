@@ -1,6 +1,6 @@
 <?php
 
-namespace Box\Spout\Common\Manager;
+namespace OpenSpout\Common\Manager;
 
 /**
  * Interface OptionsManagerInterface

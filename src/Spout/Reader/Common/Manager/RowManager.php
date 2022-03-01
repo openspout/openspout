@@ -1,9 +1,9 @@
 <?php
 
-namespace Box\Spout\Reader\Common\Manager;
+namespace OpenSpout\Reader\Common\Manager;
 
-use Box\Spout\Common\Entity\Row;
-use Box\Spout\Reader\Common\Creator\InternalEntityFactoryInterface;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Reader\Common\Creator\InternalEntityFactoryInterface;
 
 /**
  * Class RowManager

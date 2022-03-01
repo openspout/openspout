@@ -9,7 +9,7 @@ permalink: /docs/
 It is possible to configure both the CSV reader and writer to adapt them to your requirements:
 
 ```php
-use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
+use OpenSpout\Reader\Common\Creator\ReaderEntityFactory;
 
 $reader = ReaderEntityFactory::createReaderFromFile('/path/to/file.csv');
 /** All of these methods have to be called before opening the reader. */
@@ -28,7 +28,7 @@ By default, the writer generates CSV files encoded in UTF-8, with a BOM.
 It is however possible to not include the BOM:
 
 ```php
-use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
+use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 
 $writer = WriterEntityFactory::createWriterFromFile('/path/to/file.csv');
 $writer->setShouldAddBOM(false);
@@ -43,7 +43,7 @@ It is possible to change the behavior of the writers when the maximum number of 
 
 ```php
 
-use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
+use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 
 $writer = WriterEntityFactory::createODSWriter();
 $writer->setShouldCreateNewSheetsAutomatically(true); // default value
@@ -55,7 +55,7 @@ $writer->setShouldCreateNewSheetsAutomatically(false); // will stop writing new 
 Processing XLSX and ODS files requires temporary files to be created. By default, {{ site.spout_html }} will use the system default temporary folder (as returned by `sys_get_temp_dir()`). It is possible to override this by explicitly setting it on the reader or writer:
 
 ```php
-use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
+use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 
 $writer = WriterEntityFactory::createXLSXWriter();
 $writer->setTempFolder($customTempFolderPath);
@@ -70,7 +70,7 @@ XLSX files support different ways to store the string values:
 In order to keep the memory usage really low, {{ site.spout_html }} does not de-duplicate strings when using shared strings. It is nevertheless possible to use this mode.
 
 ```php
-use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
+use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 
 $writer = WriterEntityFactory::createXLSXWriter();
 $writer->setShouldUseInlineStrings(true); // default (and recommended) value
@@ -87,7 +87,7 @@ When reading a spreadsheet containing dates or times, {{ site.spout_html }} retu
 It is possible to change this behavior and have a formatted date returned instead (e.g. "2016-11-29 1:22 AM"). The format of the date corresponds to what is specified in the spreadsheet.
 
 ```php
-use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
+use OpenSpout\Reader\Common\Creator\ReaderEntityFactory;
 
 $reader = ReaderEntityFactory::createXLSXReader();
 $reader->setShouldFormatDates(false); // default value
@@ -101,7 +101,7 @@ By default, when {{ site.spout_html }} reads a spreadsheet it skips empty rows a
 This behavior can be changed so that {{ site.spout_html }} returns all rows:
 
 ```php
-use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
+use OpenSpout\Reader\Common\Creator\ReaderEntityFactory;
 
 $reader = ReaderEntityFactory::createReaderFromFile('/path/to/file.ext');
 $reader->setShouldPreserveEmptyRows(true);
@@ -135,10 +135,10 @@ For fonts and alignments, {{ site.spout_html }} does not support all the possibl
 It is possible to apply some formatting options to a row. In this case, all cells of the row will have the same style:
 
 ```php
-use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
-use Box\Spout\Writer\Common\Creator\Style\StyleBuilder;
-use Box\Spout\Common\Entity\Style\CellAlignment;
-use Box\Spout\Common\Entity\Style\Color;
+use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
+use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
+use OpenSpout\Common\Entity\Style\CellAlignment;
+use OpenSpout\Common\Entity\Style\Color;
 
 $writer = WriterEntityFactory::createXLSXWriter();
 $writer->openToFile($filePath);
@@ -164,11 +164,11 @@ $writer->close();
 Adding borders to a row requires a ```Border``` object.
 
 ```php
-use Box\Spout\Common\Entity\Style\Border;
-use Box\Spout\Writer\Common\Creator\Style\BorderBuilder;
-use Box\Spout\Common\Entity\Style\Color;
-use Box\Spout\Writer\Common\Creator\Style\StyleBuilder;
-use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
+use OpenSpout\Common\Entity\Style\Border;
+use OpenSpout\Writer\Common\Creator\Style\BorderBuilder;
+use OpenSpout\Common\Entity\Style\Color;
+use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
+use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 
 $border = (new BorderBuilder())
     ->setBorderBottom(Color::GREEN, Border::WIDTH_THIN, Border::STYLE_DASHED)
@@ -200,9 +200,9 @@ The styles applied to a specific cell will override any parent styles if present
 Example:
 
 ```php
-use Box\Spout\Common\Entity\Style\Color;
-use Box\Spout\Writer\Common\Creator\Style\StyleBuilder;
-use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
+use OpenSpout\Common\Entity\Style\Color;
+use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
+use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 
 $defaultStyle = (new StyleBuilder())
     ->setFontSize(8)
@@ -311,7 +311,7 @@ $sheet->setName('My custom name');
 Because fluent interfaces are great, you can use them with {{ site.spout_html }}:
 
 ```php
-use Box\Spout\Writer\WriterEntityFactory;
+use OpenSpout\Writer\WriterEntityFactory;
 
 $writer = WriterEntityFactory::createWriterFromFile('path/to/file.ext');
 $writer->setTempFolder($customTempFolderPath)

@@ -1,6 +1,6 @@
 <?php
 
-namespace Box\Spout\Writer\XLSX\Manager\Style;
+namespace OpenSpout\Writer\XLSX\Manager\Style;
 
 use PHPUnit\Framework\TestCase;
 

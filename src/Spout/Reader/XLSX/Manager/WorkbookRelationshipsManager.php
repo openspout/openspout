@@ -1,10 +1,10 @@
 <?php
 
-namespace Box\Spout\Reader\XLSX\Manager;
+namespace OpenSpout\Reader\XLSX\Manager;
 
-use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Reader\Wrapper\XMLReader;
-use Box\Spout\Reader\XLSX\Creator\InternalEntityFactory;
+use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Reader\Wrapper\XMLReader;
+use OpenSpout\Reader\XLSX\Creator\InternalEntityFactory;
 
 /**
  * Class WorkbookRelationshipsManager
@@ -111,7 +111,7 @@ class WorkbookRelationshipsManager
      * Reads the workbook.xml.rels and extracts the filename associated to the different types.
      * It caches the result so that the file is read only once.
      *
-     * @throws \Box\Spout\Common\Exception\IOException If workbook.xml.rels can't be read
+     * @throws \OpenSpout\Common\Exception\IOException If workbook.xml.rels can't be read
      * @return array
      */
     private function getWorkbookRelationships()

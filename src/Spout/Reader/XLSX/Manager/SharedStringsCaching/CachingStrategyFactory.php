@@ -1,8 +1,8 @@
 <?php
 
-namespace Box\Spout\Reader\XLSX\Manager\SharedStringsCaching;
+namespace OpenSpout\Reader\XLSX\Manager\SharedStringsCaching;
 
-use Box\Spout\Reader\XLSX\Creator\HelperFactory;
+use OpenSpout\Reader\XLSX\Creator\HelperFactory;
 
 /**
  * Class CachingStrategyFactory

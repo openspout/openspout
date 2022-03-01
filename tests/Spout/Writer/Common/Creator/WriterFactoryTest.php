@@ -1,9 +1,9 @@
 <?php
 
-namespace Box\Spout\Writer\Common\Creator;
+namespace OpenSpout\Writer\Common\Creator;
 
-use Box\Spout\Common\Exception\UnsupportedTypeException;
-use Box\Spout\TestUsingResource;
+use OpenSpout\Common\Exception\UnsupportedTypeException;
+use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -20,7 +20,7 @@ class WriterFactoryTest extends TestCase
     {
         $validCsv = $this->getResourcePath('csv_test_create_from_file.csv');
         $writer = WriterFactory::createFromFile($validCsv);
-        $this->assertInstanceOf('Box\Spout\Writer\CSV\Writer', $writer);
+        $this->assertInstanceOf('OpenSpout\Writer\CSV\Writer', $writer);
     }
 
     /**
@@ -30,7 +30,7 @@ class WriterFactoryTest extends TestCase
     {
         $validCsv = $this->getResourcePath('csv_test_create_from_file.CSV');
         $writer = WriterFactory::createFromFile($validCsv);
-        $this->assertInstanceOf('Box\Spout\Writer\CSV\Writer', $writer);
+        $this->assertInstanceOf('OpenSpout\Writer\CSV\Writer', $writer);
     }
 
     /**
@@ -40,7 +40,7 @@ class WriterFactoryTest extends TestCase
     {
         $validOds = $this->getResourcePath('csv_test_create_from_file.ods');
         $writer = WriterFactory::createFromFile($validOds);
-        $this->assertInstanceOf('Box\Spout\Writer\ODS\Writer', $writer);
+        $this->assertInstanceOf('OpenSpout\Writer\ODS\Writer', $writer);
     }
 
     /**
@@ -50,7 +50,7 @@ class WriterFactoryTest extends TestCase
     {
         $validXlsx = $this->getResourcePath('csv_test_create_from_file.xlsx');
         $writer = WriterFactory::createFromFile($validXlsx);
-        $this->assertInstanceOf('Box\Spout\Writer\XLSX\Writer', $writer);
+        $this->assertInstanceOf('OpenSpout\Writer\XLSX\Writer', $writer);
     }
 
     /**

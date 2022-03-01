@@ -1,10 +1,10 @@
 <?php
 
-namespace Box\Spout\Writer\Common\Entity;
+namespace OpenSpout\Writer\Common\Entity;
 
-use Box\Spout\Common\Helper\StringHelper;
-use Box\Spout\Writer\Common\Manager\SheetManager;
-use Box\Spout\Writer\Exception\InvalidSheetNameException;
+use OpenSpout\Common\Helper\StringHelper;
+use OpenSpout\Writer\Common\Manager\SheetManager;
+use OpenSpout\Writer\Exception\InvalidSheetNameException;
 use PHPUnit\Framework\TestCase;
 
 /**

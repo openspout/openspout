@@ -1,10 +1,10 @@
 <?php
 
-namespace Box\Spout\Reader\Common\Creator;
+namespace OpenSpout\Reader\Common\Creator;
 
-use Box\Spout\Common\Exception\UnsupportedTypeException;
-use Box\Spout\Common\Type;
-use Box\Spout\Reader\ReaderInterface;
+use OpenSpout\Common\Exception\UnsupportedTypeException;
+use OpenSpout\Common\Type;
+use OpenSpout\Reader\ReaderInterface;
 
 /**
  * Class ReaderEntityFactory
@@ -16,7 +16,7 @@ class ReaderEntityFactory
      * Creates a reader by file extension
      *
      * @param string $path The path to the spreadsheet file. Supported extensions are .csv, .ods and .xlsx
-     * @throws \Box\Spout\Common\Exception\UnsupportedTypeException
+     * @throws \OpenSpout\Common\Exception\UnsupportedTypeException
      * @return ReaderInterface
      */
     public static function createReaderFromFile(string $path)
@@ -27,7 +27,7 @@ class ReaderEntityFactory
     /**
      * This creates an instance of a CSV reader
      *
-     * @return \Box\Spout\Reader\CSV\Reader
+     * @return \OpenSpout\Reader\CSV\Reader
      */
     public static function createCSVReader()
     {
@@ -42,7 +42,7 @@ class ReaderEntityFactory
     /**
      * This creates an instance of a XLSX reader
      *
-     * @return \Box\Spout\Reader\XLSX\Reader
+     * @return \OpenSpout\Reader\XLSX\Reader
      */
     public static function createXLSXReader()
     {
@@ -57,7 +57,7 @@ class ReaderEntityFactory
     /**
      * This creates an instance of a ODS reader
      *
-     * @return \Box\Spout\Reader\ODS\Reader
+     * @return \OpenSpout\Reader\ODS\Reader
      */
     public static function createODSReader()
     {

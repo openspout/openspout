@@ -1,6 +1,6 @@
 <?php
 
-namespace Box\Spout\Writer\Common\Entity;
+namespace OpenSpout\Writer\Common\Entity;
 
 /**
  * Class Worksheet
