@@ -1,9 +1,9 @@
 <?php
 
-namespace Box\Spout\Reader\Wrapper;
+namespace OpenSpout\Reader\Wrapper;
 
-use Box\Spout\Reader\Exception\XMLProcessingException;
-use Box\Spout\TestUsingResource;
+use OpenSpout\Reader\Exception\XMLProcessingException;
+use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
 /**

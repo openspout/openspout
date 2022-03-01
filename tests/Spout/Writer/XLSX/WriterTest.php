@@ -1,18 +1,18 @@
 <?php
 
-namespace Box\Spout\Writer\XLSX;
+namespace OpenSpout\Writer\XLSX;
 
-use Box\Spout\Common\Entity\Cell;
-use Box\Spout\Common\Entity\Row;
-use Box\Spout\Common\Exception\InvalidArgumentException;
-use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Common\Exception\SpoutException;
-use Box\Spout\TestUsingResource;
-use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
-use Box\Spout\Writer\Exception\WriterAlreadyOpenedException;
-use Box\Spout\Writer\Exception\WriterNotOpenedException;
-use Box\Spout\Writer\RowCreationHelper;
-use Box\Spout\Writer\XLSX\Manager\WorksheetManager;
+use OpenSpout\Common\Entity\Cell;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Exception\InvalidArgumentException;
+use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Common\Exception\SpoutException;
+use OpenSpout\TestUsingResource;
+use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
+use OpenSpout\Writer\Exception\WriterAlreadyOpenedException;
+use OpenSpout\Writer\Exception\WriterNotOpenedException;
+use OpenSpout\Writer\RowCreationHelper;
+use OpenSpout\Writer\XLSX\Manager\WorksheetManager;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -505,7 +505,7 @@ class WriterTest extends TestCase
         ]);
 
         // set the maxRowsPerSheet limit to 2
-        \ReflectionHelper::setStaticValue('\Box\Spout\Writer\XLSX\Manager\WorkbookManager', 'maxRowsPerWorksheet', 2);
+        \ReflectionHelper::setStaticValue('\OpenSpout\Writer\XLSX\Manager\WorkbookManager', 'maxRowsPerWorksheet', 2);
 
         $writer = $this->writeToXLSXFile($dataRows, $fileName, true, $shouldCreateSheetsAutomatically = true);
         $this->assertCount(2, $writer->getSheets(), '2 sheets should have been created.');
@@ -529,7 +529,7 @@ class WriterTest extends TestCase
         ]);
 
         // set the maxRowsPerSheet limit to 2
-        \ReflectionHelper::setStaticValue('\Box\Spout\Writer\XLSX\Manager\WorkbookManager', 'maxRowsPerWorksheet', 2);
+        \ReflectionHelper::setStaticValue('\OpenSpout\Writer\XLSX\Manager\WorkbookManager', 'maxRowsPerWorksheet', 2);
 
         $writer = $this->writeToXLSXFile($dataRows, $fileName, true, $shouldCreateSheetsAutomatically = false);
         $this->assertCount(1, $writer->getSheets(), 'Only 1 sheet should have been created.');

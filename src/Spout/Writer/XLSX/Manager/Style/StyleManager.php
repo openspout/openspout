@@ -1,17 +1,17 @@
 <?php
 
-namespace Box\Spout\Writer\XLSX\Manager\Style;
+namespace OpenSpout\Writer\XLSX\Manager\Style;
 
-use Box\Spout\Common\Entity\Style\BorderPart;
-use Box\Spout\Common\Entity\Style\Color;
-use Box\Spout\Common\Entity\Style\Style;
-use Box\Spout\Writer\XLSX\Helper\BorderHelper;
+use OpenSpout\Common\Entity\Style\BorderPart;
+use OpenSpout\Common\Entity\Style\Color;
+use OpenSpout\Common\Entity\Style\Style;
+use OpenSpout\Writer\XLSX\Helper\BorderHelper;
 
 /**
  * Class StyleManager
  * Manages styles to be applied to a cell
  */
-class StyleManager extends \Box\Spout\Writer\Common\Manager\Style\StyleManager
+class StyleManager extends \OpenSpout\Writer\Common\Manager\Style\StyleManager
 {
     /** @var StyleRegistry */
     protected $styleRegistry;

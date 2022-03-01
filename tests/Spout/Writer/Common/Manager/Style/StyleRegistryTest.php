@@ -1,9 +1,9 @@
 <?php
 
-namespace Box\Spout\Writer\Common\Manager\Style;
+namespace OpenSpout\Writer\Common\Manager\Style;
 
-use Box\Spout\Common\Entity\Style\Style;
-use Box\Spout\Writer\Common\Creator\Style\StyleBuilder;
+use OpenSpout\Common\Entity\Style\Style;
+use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
 use PHPUnit\Framework\TestCase;
 
 /**

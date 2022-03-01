@@ -1,20 +1,20 @@
 <?php
 
-namespace Box\Spout\Writer\ODS\Creator;
+namespace OpenSpout\Writer\ODS\Creator;
 
-use Box\Spout\Common\Helper\Escaper;
-use Box\Spout\Common\Helper\StringHelper;
-use Box\Spout\Common\Manager\OptionsManagerInterface;
-use Box\Spout\Writer\Common\Creator\InternalEntityFactory;
-use Box\Spout\Writer\Common\Entity\Options;
-use Box\Spout\Writer\Common\Helper\ZipHelper;
-use Box\Spout\Writer\ODS\Helper\FileSystemHelper;
+use OpenSpout\Common\Helper\Escaper;
+use OpenSpout\Common\Helper\StringHelper;
+use OpenSpout\Common\Manager\OptionsManagerInterface;
+use OpenSpout\Writer\Common\Creator\InternalEntityFactory;
+use OpenSpout\Writer\Common\Entity\Options;
+use OpenSpout\Writer\Common\Helper\ZipHelper;
+use OpenSpout\Writer\ODS\Helper\FileSystemHelper;
 
 /**
  * Class HelperFactory
  * Factory for helpers needed by the ODS Writer
  */
-class HelperFactory extends \Box\Spout\Common\Creator\HelperFactory
+class HelperFactory extends \OpenSpout\Common\Creator\HelperFactory
 {
     /**
      * @param OptionsManagerInterface $optionsManager

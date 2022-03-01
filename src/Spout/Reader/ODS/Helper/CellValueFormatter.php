@@ -1,8 +1,8 @@
 <?php
 
-namespace Box\Spout\Reader\ODS\Helper;
+namespace OpenSpout\Reader\ODS\Helper;
 
-use Box\Spout\Reader\Exception\InvalidValueException;
+use OpenSpout\Reader\Exception\InvalidValueException;
 
 /**
  * Class CellValueFormatter
@@ -40,7 +40,7 @@ class CellValueFormatter
     /** @var bool Whether date/time values should be returned as PHP objects or be formatted as strings */
     protected $shouldFormatDates;
 
-    /** @var \Box\Spout\Common\Helper\Escaper\ODS Used to unescape XML data */
+    /** @var \OpenSpout\Common\Helper\Escaper\ODS Used to unescape XML data */
     protected $escaper;
 
     /** @var array List of XML nodes representing whitespaces and their corresponding value */
@@ -52,7 +52,7 @@ class CellValueFormatter
 
     /**
      * @param bool $shouldFormatDates Whether date/time values should be returned as PHP objects or be formatted as strings
-     * @param \Box\Spout\Common\Helper\Escaper\ODS $escaper Used to unescape XML data
+     * @param \OpenSpout\Common\Helper\Escaper\ODS $escaper Used to unescape XML data
      */
     public function __construct($shouldFormatDates, $escaper)
     {

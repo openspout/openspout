@@ -1,9 +1,9 @@
 <?php
 
-namespace Box\Spout\Writer\XLSX;
+namespace OpenSpout\Writer\XLSX;
 
-use Box\Spout\TestUsingResource;
-use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
+use OpenSpout\TestUsingResource;
+use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 use PHPUnit\Framework\TestCase;
 
 /**

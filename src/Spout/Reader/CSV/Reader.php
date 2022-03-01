@@ -1,14 +1,14 @@
 <?php
 
-namespace Box\Spout\Reader\CSV;
+namespace OpenSpout\Reader\CSV;
 
-use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Common\Helper\GlobalFunctionsHelper;
-use Box\Spout\Common\Manager\OptionsManagerInterface;
-use Box\Spout\Reader\Common\Creator\InternalEntityFactoryInterface;
-use Box\Spout\Reader\Common\Entity\Options;
-use Box\Spout\Reader\CSV\Creator\InternalEntityFactory;
-use Box\Spout\Reader\ReaderAbstract;
+use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Common\Helper\GlobalFunctionsHelper;
+use OpenSpout\Common\Manager\OptionsManagerInterface;
+use OpenSpout\Reader\Common\Creator\InternalEntityFactoryInterface;
+use OpenSpout\Reader\Common\Entity\Options;
+use OpenSpout\Reader\CSV\Creator\InternalEntityFactory;
+use OpenSpout\Reader\ReaderAbstract;
 
 /**
  * Class Reader
@@ -99,7 +99,7 @@ class Reader extends ReaderAbstract
      * If setEncoding() was not called, it assumes that the file is encoded in UTF-8.
      *
      * @param  string $filePath Path of the CSV file to be read
-     * @throws \Box\Spout\Common\Exception\IOException
+     * @throws \OpenSpout\Common\Exception\IOException
      * @return void
      */
     protected function openReader($filePath)

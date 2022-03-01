@@ -1,6 +1,6 @@
 <?php
 
-namespace Box\Spout\Reader\Wrapper;
+namespace OpenSpout\Reader\Wrapper;
 
 /**
  * Class XMLReader
@@ -80,7 +80,7 @@ class XMLReader extends \XMLReader
      * Move to next node in document
      * @see \XMLReader::read
      *
-     * @throws \Box\Spout\Reader\Exception\XMLProcessingException If an error/warning occurred
+     * @throws \OpenSpout\Reader\Exception\XMLProcessingException If an error/warning occurred
      * @return bool TRUE on success or FALSE on failure
      */
     public function read()
@@ -98,7 +98,7 @@ class XMLReader extends \XMLReader
      * Read until the element with the given name is found, or the end of the file.
      *
      * @param string $nodeName Name of the node to find
-     * @throws \Box\Spout\Reader\Exception\XMLProcessingException If an error/warning occurred
+     * @throws \OpenSpout\Reader\Exception\XMLProcessingException If an error/warning occurred
      * @return bool TRUE on success or FALSE on failure
      */
     public function readUntilNodeFound($nodeName)
@@ -116,7 +116,7 @@ class XMLReader extends \XMLReader
      * @see \XMLReader::next
      *
      * @param string|null $localName The name of the next node to move to
-     * @throws \Box\Spout\Reader\Exception\XMLProcessingException If an error/warning occurred
+     * @throws \OpenSpout\Reader\Exception\XMLProcessingException If an error/warning occurred
      * @return bool TRUE on success or FALSE on failure
      */
     public function next($localName = null)

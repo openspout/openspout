@@ -2,9 +2,9 @@
 
 namespace Spout\Writer\Common\Manager;
 
-use Box\Spout\Common\Entity\Cell;
-use Box\Spout\Common\Entity\Row;
-use Box\Spout\Writer\Common\Manager\RowManager;
+use OpenSpout\Common\Entity\Cell;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\Common\Manager\RowManager;
 use PHPUnit\Framework\TestCase;
 
 class RowManagerTest extends TestCase

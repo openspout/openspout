@@ -1,8 +1,8 @@
 <?php
 
-namespace Box\Spout\Reader\Exception;
+namespace OpenSpout\Reader\Exception;
 
-use Box\Spout\Common\Exception\SpoutException;
+use OpenSpout\Common\Exception\SpoutException;
 
 /**
  * Class ReaderException

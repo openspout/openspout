@@ -1,20 +1,20 @@
 <?php
 
-namespace Box\Spout\Writer\XLSX\Creator;
+namespace OpenSpout\Writer\XLSX\Creator;
 
-use Box\Spout\Common\Helper\Escaper;
-use Box\Spout\Common\Helper\StringHelper;
-use Box\Spout\Common\Manager\OptionsManagerInterface;
-use Box\Spout\Writer\Common\Creator\InternalEntityFactory;
-use Box\Spout\Writer\Common\Entity\Options;
-use Box\Spout\Writer\Common\Helper\ZipHelper;
-use Box\Spout\Writer\XLSX\Helper\FileSystemHelper;
+use OpenSpout\Common\Helper\Escaper;
+use OpenSpout\Common\Helper\StringHelper;
+use OpenSpout\Common\Manager\OptionsManagerInterface;
+use OpenSpout\Writer\Common\Creator\InternalEntityFactory;
+use OpenSpout\Writer\Common\Entity\Options;
+use OpenSpout\Writer\Common\Helper\ZipHelper;
+use OpenSpout\Writer\XLSX\Helper\FileSystemHelper;
 
 /**
  * Class HelperFactory
  * Factory for helpers needed by the XLSX Writer
  */
-class HelperFactory extends \Box\Spout\Common\Creator\HelperFactory
+class HelperFactory extends \OpenSpout\Common\Creator\HelperFactory
 {
     /**
      * @param OptionsManagerInterface $optionsManager

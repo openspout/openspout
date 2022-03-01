@@ -1,9 +1,9 @@
 <?php
 
-namespace Box\Spout\Reader\ODS\Manager;
+namespace OpenSpout\Reader\ODS\Manager;
 
-use Box\Spout\Common\Manager\OptionsManagerAbstract;
-use Box\Spout\Reader\Common\Entity\Options;
+use OpenSpout\Common\Manager\OptionsManagerAbstract;
+use OpenSpout\Reader\Common\Entity\Options;
 
 /**
  * Class OptionsManager

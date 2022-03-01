@@ -1,6 +1,6 @@
 <?php
 
-namespace Box\Spout\Reader\CSV;
+namespace OpenSpout\Reader\CSV;
 
 /**
  * Class SpoutTestStream

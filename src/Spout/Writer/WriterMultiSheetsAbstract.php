@@ -1,18 +1,18 @@
 <?php
 
-namespace Box\Spout\Writer;
+namespace OpenSpout\Writer;
 
-use Box\Spout\Common\Creator\HelperFactory;
-use Box\Spout\Common\Entity\Row;
-use Box\Spout\Common\Helper\GlobalFunctionsHelper;
-use Box\Spout\Common\Manager\OptionsManagerInterface;
-use Box\Spout\Writer\Common\Creator\ManagerFactoryInterface;
-use Box\Spout\Writer\Common\Entity\Options;
-use Box\Spout\Writer\Common\Entity\Sheet;
-use Box\Spout\Writer\Common\Manager\WorkbookManagerInterface;
-use Box\Spout\Writer\Exception\SheetNotFoundException;
-use Box\Spout\Writer\Exception\WriterAlreadyOpenedException;
-use Box\Spout\Writer\Exception\WriterNotOpenedException;
+use OpenSpout\Common\Creator\HelperFactory;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Helper\GlobalFunctionsHelper;
+use OpenSpout\Common\Manager\OptionsManagerInterface;
+use OpenSpout\Writer\Common\Creator\ManagerFactoryInterface;
+use OpenSpout\Writer\Common\Entity\Options;
+use OpenSpout\Writer\Common\Entity\Sheet;
+use OpenSpout\Writer\Common\Manager\WorkbookManagerInterface;
+use OpenSpout\Writer\Exception\SheetNotFoundException;
+use OpenSpout\Writer\Exception\WriterAlreadyOpenedException;
+use OpenSpout\Writer\Exception\WriterNotOpenedException;
 
 /**
  * Class WriterMultiSheetsAbstract

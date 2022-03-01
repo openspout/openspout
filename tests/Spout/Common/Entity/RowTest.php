@@ -1,8 +1,8 @@
 <?php
 
-namespace Box\Spout\Common\Entity;
+namespace OpenSpout\Common\Entity;
 
-use Box\Spout\Common\Entity\Style\Style;
+use OpenSpout\Common\Entity\Style\Style;
 
 class RowTest extends \PHPUnit\Framework\TestCase
 {

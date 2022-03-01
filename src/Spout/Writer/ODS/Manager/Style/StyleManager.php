@@ -1,17 +1,17 @@
 <?php
 
-namespace Box\Spout\Writer\ODS\Manager\Style;
+namespace OpenSpout\Writer\ODS\Manager\Style;
 
-use Box\Spout\Common\Entity\Style\BorderPart;
-use Box\Spout\Common\Entity\Style\CellAlignment;
-use Box\Spout\Writer\Common\Entity\Worksheet;
-use Box\Spout\Writer\ODS\Helper\BorderHelper;
+use OpenSpout\Common\Entity\Style\BorderPart;
+use OpenSpout\Common\Entity\Style\CellAlignment;
+use OpenSpout\Writer\Common\Entity\Worksheet;
+use OpenSpout\Writer\ODS\Helper\BorderHelper;
 
 /**
  * Class StyleManager
  * Manages styles to be applied to a cell
  */
-class StyleManager extends \Box\Spout\Writer\Common\Manager\Style\StyleManager
+class StyleManager extends \OpenSpout\Writer\Common\Manager\Style\StyleManager
 {
     /** @var StyleRegistry */
     protected $styleRegistry;
@@ -190,7 +190,7 @@ EOD;
     /**
      * Returns the contents of the "<style:style>" section, inside "<office:automatic-styles>" section
      *
-     * @param \Box\Spout\Common\Entity\Style\Style $style
+     * @param \OpenSpout\Common\Entity\Style\Style $style
      * @return string
      */
     protected function getStyleSectionContent($style)
@@ -211,7 +211,7 @@ EOD;
     /**
      * Returns the contents of the "<style:text-properties>" section, inside "<style:style>" section
      *
-     * @param \Box\Spout\Common\Entity\Style\Style $style
+     * @param \OpenSpout\Common\Entity\Style\Style $style
      * @return string
      */
     private function getTextPropertiesSectionContent($style)
@@ -228,7 +228,7 @@ EOD;
     /**
      * Returns the contents of the fonts definition section, inside "<style:text-properties>" section
      *
-     * @param \Box\Spout\Common\Entity\Style\Style $style
+     * @param \OpenSpout\Common\Entity\Style\Style $style
      *
      * @return string
      */
@@ -271,7 +271,7 @@ EOD;
     /**
      * Returns the contents of the "<style:paragraph-properties>" section, inside "<style:style>" section
      *
-     * @param \Box\Spout\Common\Entity\Style\Style $style
+     * @param \OpenSpout\Common\Entity\Style\Style $style
      *
      * @return string
      */
@@ -289,7 +289,7 @@ EOD;
     /**
      * Returns the contents of the cell alignment definition for the "<style:paragraph-properties>" section
      *
-     * @param \Box\Spout\Common\Entity\Style\Style $style
+     * @param \OpenSpout\Common\Entity\Style\Style $style
      *
      * @return string
      */
@@ -322,7 +322,7 @@ EOD;
     /**
      * Returns the contents of the "<style:table-cell-properties>" section, inside "<style:style>" section
      *
-     * @param \Box\Spout\Common\Entity\Style\Style $style
+     * @param \OpenSpout\Common\Entity\Style\Style $style
      * @return string
      */
     private function getTableCellPropertiesSectionContent($style)
@@ -359,7 +359,7 @@ EOD;
     /**
      * Returns the contents of the borders definition for the "<style:table-cell-properties>" section
      *
-     * @param \Box\Spout\Common\Entity\Style\Style $style
+     * @param \OpenSpout\Common\Entity\Style\Style $style
      * @return string
      */
     private function getBorderXMLContent($style)
@@ -374,7 +374,7 @@ EOD;
     /**
      * Returns the contents of the background color definition for the "<style:table-cell-properties>" section
      *
-     * @param \Box\Spout\Common\Entity\Style\Style $style
+     * @param \OpenSpout\Common\Entity\Style\Style $style
      * @return string
      */
     private function getBackgroundColorXMLContent($style)

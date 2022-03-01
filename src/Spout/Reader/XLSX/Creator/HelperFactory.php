@@ -1,17 +1,17 @@
 <?php
 
-namespace Box\Spout\Reader\XLSX\Creator;
+namespace OpenSpout\Reader\XLSX\Creator;
 
-use Box\Spout\Common\Helper\Escaper;
-use Box\Spout\Reader\XLSX\Helper\CellValueFormatter;
-use Box\Spout\Reader\XLSX\Manager\SharedStringsManager;
-use Box\Spout\Reader\XLSX\Manager\StyleManager;
+use OpenSpout\Common\Helper\Escaper;
+use OpenSpout\Reader\XLSX\Helper\CellValueFormatter;
+use OpenSpout\Reader\XLSX\Manager\SharedStringsManager;
+use OpenSpout\Reader\XLSX\Manager\StyleManager;
 
 /**
  * Class HelperFactory
  * Factory to create helpers
  */
-class HelperFactory extends \Box\Spout\Common\Creator\HelperFactory
+class HelperFactory extends \OpenSpout\Common\Creator\HelperFactory
 {
     /**
      * @param SharedStringsManager $sharedStringsManager Manages shared strings

@@ -1,9 +1,9 @@
 <?php
 
-namespace Box\Spout\Reader\CSV;
+namespace OpenSpout\Reader\CSV;
 
-use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
-use Box\Spout\TestUsingResource;
+use OpenSpout\Reader\Common\Creator\ReaderEntityFactory;
+use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
 /**
