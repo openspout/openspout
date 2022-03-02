@@ -1,8 +1,8 @@
 <?php
 
-namespace Box\Spout\Writer\Common\Manager;
+namespace OpenSpout\Writer\Common\Manager;
 
-use Box\Spout\Common\Entity\Row;
+use OpenSpout\Common\Entity\Row;
 
 class RowManager
 {

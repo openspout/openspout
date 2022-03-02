@@ -1,8 +1,8 @@
 <?php
 
-namespace Box\Spout\Reader\XLSX\Manager;
+namespace OpenSpout\Reader\XLSX\Manager;
 
-use Box\Spout\Reader\XLSX\Creator\InternalEntityFactory;
+use OpenSpout\Reader\XLSX\Creator\InternalEntityFactory;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -21,10 +21,10 @@ class StyleManagerTest extends TestCase
         $workbookRelationshipsManager = $this->createMock(WorkbookRelationshipsManager::class);
         $workbookRelationshipsManager->method('hasStylesXMLFile')->willReturn(true);
 
-        /** @var StyleManager $styleManager */
-        $styleManager = $this->getMockBuilder('\Box\Spout\Reader\XLSX\Manager\StyleManager')
+        /** @var StyleManager|\PHPUnit\Framework\MockObject\MockObject $styleManager */
+        $styleManager = $this->getMockBuilder('\OpenSpout\Reader\XLSX\Manager\StyleManager')
                              ->setConstructorArgs(['/path/to/file.xlsx', $workbookRelationshipsManager, $entityFactory])
-                             ->setMethods(['getCustomNumberFormats', 'getStylesAttributes'])
+                             ->onlyMethods(['getCustomNumberFormats', 'getStylesAttributes'])
                              ->getMock();
 
         $styleManager->method('getStylesAttributes')->willReturn($styleAttributes);

@@ -1,8 +1,8 @@
 <?php
 
-namespace Box\Spout\Writer\Common\Entity;
+namespace OpenSpout\Writer\Common\Entity;
 
-use Box\Spout\Writer\Common\Manager\SheetManager;
+use OpenSpout\Writer\Common\Manager\SheetManager;
 
 /**
  * Class Sheet
@@ -10,7 +10,7 @@ use Box\Spout\Writer\Common\Manager\SheetManager;
  */
 class Sheet
 {
-    const DEFAULT_SHEET_NAME_PREFIX = 'Sheet';
+    public const DEFAULT_SHEET_NAME_PREFIX = 'Sheet';
 
     /** @var int Index of the sheet, based on order in the workbook (zero-based) */
     private $index;
@@ -76,7 +76,7 @@ class Sheet
      *  - it should be unique
      *
      * @param string $name Name of the sheet
-     * @throws \Box\Spout\Writer\Exception\InvalidSheetNameException If the sheet's name is invalid.
+     * @throws \OpenSpout\Writer\Exception\InvalidSheetNameException If the sheet's name is invalid.
      * @return Sheet
      */
     public function setName($name)

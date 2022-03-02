@@ -1,20 +1,19 @@
 <?php
 
-namespace Box\Spout\Writer;
+namespace OpenSpout\Writer;
 
-use Box\Spout\Common\Creator\HelperFactory;
-use Box\Spout\Common\Entity\Row;
-use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Common\Helper\GlobalFunctionsHelper;
-use Box\Spout\Common\Manager\OptionsManagerInterface;
-use Box\Spout\Writer\Common\Creator\ManagerFactoryInterface;
-use Box\Spout\Writer\Common\Entity\Options;
-use Box\Spout\Writer\Common\Entity\Sheet;
-use Box\Spout\Writer\Common\Entity\Worksheet;
-use Box\Spout\Writer\Common\Manager\WorkbookManagerInterface;
-use Box\Spout\Writer\Exception\SheetNotFoundException;
-use Box\Spout\Writer\Exception\WriterAlreadyOpenedException;
-use Box\Spout\Writer\Exception\WriterNotOpenedException;
+use OpenSpout\Common\Creator\HelperFactory;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Common\Helper\GlobalFunctionsHelper;
+use OpenSpout\Common\Manager\OptionsManagerInterface;
+use OpenSpout\Writer\Common\Creator\ManagerFactoryInterface;
+use OpenSpout\Writer\Common\Entity\Options;
+use OpenSpout\Writer\Common\Entity\Sheet;
+use OpenSpout\Writer\Common\Manager\WorkbookManagerInterface;
+use OpenSpout\Writer\Exception\SheetNotFoundException;
+use OpenSpout\Writer\Exception\WriterAlreadyOpenedException;
+use OpenSpout\Writer\Exception\WriterNotOpenedException;
 
 /**
  * Class WriterMultiSheetsAbstract
@@ -26,7 +25,7 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
     /** @var ManagerFactoryInterface */
     private $managerFactory;
 
-    /** @var WorkbookManagerInterface */
+    /** @var WorkbookManagerInterface|null */
     private $workbookManager;
 
     /**
@@ -70,7 +69,7 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
      */
     protected function openWriter()
     {
-        if (!$this->workbookManager) {
+        if ($this->workbookManager === null) {
             $this->workbookManager = $this->managerFactory->createWorkbookManager($this->optionsManager);
             $this->workbookManager->addNewSheetAndMakeItCurrent();
         }
@@ -89,7 +88,6 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
         $externalSheets = [];
         $worksheets = $this->workbookManager->getWorksheets();
 
-        /** @var Worksheet $worksheet */
         foreach ($worksheets as $worksheet) {
             $externalSheets[] = $worksheet->getExternalSheet();
         }
@@ -197,7 +195,7 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
      */
     protected function throwIfWorkbookIsNotAvailable()
     {
-        if (empty($this->workbookManager) || !$this->workbookManager->getWorkbook()) {
+        if (!$this->workbookManager->getWorkbook()) {
             throw new WriterNotOpenedException('The writer must be opened before performing this action.');
         }
     }
@@ -218,7 +216,7 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
      */
     protected function closeWriter()
     {
-        if ($this->workbookManager) {
+        if ($this->workbookManager !== null) {
             $this->workbookManager->close($this->filePointer);
         }
     }

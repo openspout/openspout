@@ -1,20 +1,20 @@
 <?php
 
-namespace Box\Spout\Writer\Common\Manager;
+namespace OpenSpout\Writer\Common\Manager;
 
-use Box\Spout\Common\Entity\Row;
-use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Common\Manager\OptionsManagerInterface;
-use Box\Spout\Writer\Common\Creator\InternalEntityFactory;
-use Box\Spout\Writer\Common\Creator\ManagerFactoryInterface;
-use Box\Spout\Writer\Common\Entity\Options;
-use Box\Spout\Writer\Common\Entity\Sheet;
-use Box\Spout\Writer\Common\Entity\Workbook;
-use Box\Spout\Writer\Common\Entity\Worksheet;
-use Box\Spout\Writer\Common\Helper\FileSystemWithRootFolderHelperInterface;
-use Box\Spout\Writer\Common\Manager\Style\StyleManagerInterface;
-use Box\Spout\Writer\Common\Manager\Style\StyleMerger;
-use Box\Spout\Writer\Exception\SheetNotFoundException;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Common\Manager\OptionsManagerInterface;
+use OpenSpout\Writer\Common\Creator\InternalEntityFactory;
+use OpenSpout\Writer\Common\Creator\ManagerFactoryInterface;
+use OpenSpout\Writer\Common\Entity\Options;
+use OpenSpout\Writer\Common\Entity\Sheet;
+use OpenSpout\Writer\Common\Entity\Workbook;
+use OpenSpout\Writer\Common\Entity\Worksheet;
+use OpenSpout\Writer\Common\Helper\FileSystemWithRootFolderHelperInterface;
+use OpenSpout\Writer\Common\Manager\Style\StyleManagerInterface;
+use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
+use OpenSpout\Writer\Exception\SheetNotFoundException;
 
 /**
  * Class WorkbookManagerAbstract
@@ -22,7 +22,7 @@ use Box\Spout\Writer\Exception\SheetNotFoundException;
  */
 abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
 {
-    /** @var Workbook The workbook to manage */
+    /** @var Workbook|null The workbook to manage */
     protected $workbook;
 
     /** @var OptionsManagerInterface */
@@ -91,7 +91,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
     abstract protected function getWorksheetFilePath(Sheet $sheet);
 
     /**
-     * @return Workbook
+     * @return Workbook|null
      */
     public function getWorkbook()
     {
@@ -115,7 +115,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
     /**
      * Creates a new sheet in the workbook. The current sheet remains unchanged.
      *
-     * @throws IOException
+     * @throws \Box\Spout\Common\Exception\IOException If unable to open the sheet for writing
      * @return Worksheet The created sheet
      */
     private function addNewSheet()

@@ -1,17 +1,17 @@
 <?php
 
-namespace Box\Spout\Writer\ODS\Creator;
+namespace OpenSpout\Writer\ODS\Creator;
 
-use Box\Spout\Common\Manager\OptionsManagerInterface;
-use Box\Spout\Writer\Common\Creator\InternalEntityFactory;
-use Box\Spout\Writer\Common\Creator\ManagerFactoryInterface;
-use Box\Spout\Writer\Common\Entity\Options;
-use Box\Spout\Writer\Common\Manager\SheetManager;
-use Box\Spout\Writer\Common\Manager\Style\StyleMerger;
-use Box\Spout\Writer\ODS\Manager\Style\StyleManager;
-use Box\Spout\Writer\ODS\Manager\Style\StyleRegistry;
-use Box\Spout\Writer\ODS\Manager\WorkbookManager;
-use Box\Spout\Writer\ODS\Manager\WorksheetManager;
+use OpenSpout\Common\Manager\OptionsManagerInterface;
+use OpenSpout\Writer\Common\Creator\InternalEntityFactory;
+use OpenSpout\Writer\Common\Creator\ManagerFactoryInterface;
+use OpenSpout\Writer\Common\Entity\Options;
+use OpenSpout\Writer\Common\Manager\SheetManager;
+use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
+use OpenSpout\Writer\ODS\Manager\Style\StyleManager;
+use OpenSpout\Writer\ODS\Manager\Style\StyleRegistry;
+use OpenSpout\Writer\ODS\Manager\WorkbookManager;
+use OpenSpout\Writer\ODS\Manager\WorksheetManager;
 
 /**
  * Class ManagerFactory

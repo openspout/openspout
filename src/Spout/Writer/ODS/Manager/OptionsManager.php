@@ -1,10 +1,10 @@
 <?php
 
-namespace Box\Spout\Writer\ODS\Manager;
+namespace OpenSpout\Writer\ODS\Manager;
 
-use Box\Spout\Common\Manager\OptionsManagerAbstract;
-use Box\Spout\Writer\Common\Creator\Style\StyleBuilder;
-use Box\Spout\Writer\Common\Entity\Options;
+use OpenSpout\Common\Manager\OptionsManagerAbstract;
+use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
+use OpenSpout\Writer\Common\Entity\Options;
 
 /**
  * Class OptionsManager

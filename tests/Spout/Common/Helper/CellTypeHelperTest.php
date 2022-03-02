@@ -1,6 +1,6 @@
 <?php
 
-namespace Box\Spout\Common\Helper;
+namespace OpenSpout\Common\Helper;
 
 use PHPUnit\Framework\TestCase;
 
@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 class CellTypeHelperTest extends TestCase
 {
     /**
-     * @return array
+     * @return void
      */
     public function testIsEmpty()
     {
@@ -27,7 +27,7 @@ class CellTypeHelperTest extends TestCase
     }
 
     /**
-     * @return array
+     * @return void
      */
     public function testIsNonEmptyString()
     {
@@ -44,7 +44,7 @@ class CellTypeHelperTest extends TestCase
     }
 
     /**
-     * @return array
+     * @return void
      */
     public function testIsNumeric()
     {
@@ -66,7 +66,7 @@ class CellTypeHelperTest extends TestCase
     }
 
     /**
-     * @return array
+     * @return void
      */
     public function testIsBoolean()
     {

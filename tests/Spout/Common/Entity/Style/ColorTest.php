@@ -1,8 +1,8 @@
 <?php
 
-namespace Box\Spout\Common\Entity\Style;
+namespace OpenSpout\Common\Entity\Style;
 
-use Box\Spout\Common\Exception\InvalidColorException;
+use OpenSpout\Common\Exception\InvalidColorException;
 use PHPUnit\Framework\TestCase;
 
 /**

@@ -27,8 +27,8 @@ We'd like to update the missing album for "Yellow Submarine", remove the Bob Mar
 ```php
 <?php
 
-use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
-use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
+use OpenSpout\Reader\Common\Creator\ReaderEntityFactory;
+use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 
 $existingFilePath = '/path/to/my-music.ods';
 $newFilePath = '/path/to/my-new-music.ods';

@@ -1,6 +1,6 @@
 <?php
 
-namespace Box\Spout\Common\Entity\Style;
+namespace OpenSpout\Common\Entity\Style;
 
 /**
  * Class Style
@@ -9,9 +9,9 @@ namespace Box\Spout\Common\Entity\Style;
 class Style
 {
     /** Default values */
-    const DEFAULT_FONT_SIZE = 11;
-    const DEFAULT_FONT_COLOR = Color::BLACK;
-    const DEFAULT_FONT_NAME = 'Arial';
+    public const DEFAULT_FONT_SIZE = 11;
+    public const DEFAULT_FONT_COLOR = Color::BLACK;
+    public const DEFAULT_FONT_NAME = 'Arial';
 
     /** @var int|null Style ID */
     private $id;
@@ -66,7 +66,7 @@ class Style
     /** @var bool Whether the wrap text property was set */
     private $hasSetWrapText = false;
 
-    /** @var Border */
+    /** @var Border|null */
     private $border;
 
     /** @var bool Whether border properties should be applied */
@@ -78,7 +78,7 @@ class Style
     /** @var bool */
     private $hasSetBackgroundColor = false;
 
-    /** @var string Format */
+    /** @var string|null Format */
     private $format;
 
     /** @var bool */
@@ -110,7 +110,7 @@ class Style
     }
 
     /**
-     * @return Border
+     * @return Border|null
      */
     public function getBorder()
     {
@@ -467,7 +467,7 @@ class Style
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getFormat()
     {

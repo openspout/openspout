@@ -1,10 +1,10 @@
 <?php
 
-namespace Box\Spout\Reader\XLSX\Helper;
+namespace OpenSpout\Reader\XLSX\Helper;
 
-use Box\Spout\Reader\Exception\InvalidValueException;
-use Box\Spout\Reader\XLSX\Manager\SharedStringsManager;
-use Box\Spout\Reader\XLSX\Manager\StyleManager;
+use OpenSpout\Reader\Exception\InvalidValueException;
+use OpenSpout\Reader\XLSX\Manager\SharedStringsManager;
+use OpenSpout\Reader\XLSX\Manager\StyleManager;
 
 /**
  * Class CellValueFormatter
@@ -13,24 +13,24 @@ use Box\Spout\Reader\XLSX\Manager\StyleManager;
 class CellValueFormatter
 {
     /** Definition of all possible cell types */
-    const CELL_TYPE_INLINE_STRING = 'inlineStr';
-    const CELL_TYPE_STR = 'str';
-    const CELL_TYPE_SHARED_STRING = 's';
-    const CELL_TYPE_BOOLEAN = 'b';
-    const CELL_TYPE_NUMERIC = 'n';
-    const CELL_TYPE_DATE = 'd';
-    const CELL_TYPE_ERROR = 'e';
+    public const CELL_TYPE_INLINE_STRING = 'inlineStr';
+    public const CELL_TYPE_STR = 'str';
+    public const CELL_TYPE_SHARED_STRING = 's';
+    public const CELL_TYPE_BOOLEAN = 'b';
+    public const CELL_TYPE_NUMERIC = 'n';
+    public const CELL_TYPE_DATE = 'd';
+    public const CELL_TYPE_ERROR = 'e';
 
     /** Definition of XML nodes names used to parse data */
-    const XML_NODE_VALUE = 'v';
-    const XML_NODE_INLINE_STRING_VALUE = 't';
+    public const XML_NODE_VALUE = 'v';
+    public const XML_NODE_INLINE_STRING_VALUE = 't';
 
     /** Definition of XML attributes used to parse data */
-    const XML_ATTRIBUTE_TYPE = 't';
-    const XML_ATTRIBUTE_STYLE_ID = 's';
+    public const XML_ATTRIBUTE_TYPE = 't';
+    public const XML_ATTRIBUTE_STYLE_ID = 's';
 
     /** Constants used for date formatting */
-    const NUM_SECONDS_IN_ONE_DAY = 86400;
+    public const NUM_SECONDS_IN_ONE_DAY = 86400;
 
     /** @var SharedStringsManager Manages shared strings */
     protected $sharedStringsManager;
@@ -44,7 +44,7 @@ class CellValueFormatter
     /** @var bool Whether date/time values should use a calendar starting in 1904 instead of 1900 */
     protected $shouldUse1904Dates;
 
-    /** @var \Box\Spout\Common\Helper\Escaper\XLSX Used to unescape XML data */
+    /** @var \OpenSpout\Common\Helper\Escaper\XLSX Used to unescape XML data */
     protected $escaper;
 
     /**
@@ -52,7 +52,7 @@ class CellValueFormatter
      * @param StyleManager $styleManager Manages styles
      * @param bool $shouldFormatDates Whether date/time values should be returned as PHP objects or be formatted as strings
      * @param bool $shouldUse1904Dates Whether date/time values should use a calendar starting in 1904 instead of 1900
-     * @param \Box\Spout\Common\Helper\Escaper\XLSX $escaper Used to unescape XML data
+     * @param \OpenSpout\Common\Helper\Escaper\XLSX $escaper Used to unescape XML data
      */
     public function __construct($sharedStringsManager, $styleManager, $shouldFormatDates, $shouldUse1904Dates, $escaper)
     {
@@ -66,7 +66,7 @@ class CellValueFormatter
     /**
      * Returns the (unescaped) correctly marshalled, cell value associated to the given XML node.
      *
-     * @param \DOMNode $node
+     * @param \DOMElement $node
      * @throws InvalidValueException If the value is not valid
      * @return string|int|float|bool|\DateTime The value associated with the cell
      */
@@ -102,7 +102,7 @@ class CellValueFormatter
     /**
      * Returns the cell's string value from a node's nested value node
      *
-     * @param \DOMNode $node
+     * @param \DOMElement $node
      * @return string The value associated with the cell
      */
     protected function getVNodeValue($node)
@@ -117,7 +117,7 @@ class CellValueFormatter
     /**
      * Returns the cell String value where string is inline.
      *
-     * @param \DOMNode $node
+     * @param \DOMElement $node
      * @return string The value associated with the cell
      */
     protected function formatInlineStringCellValue($node)

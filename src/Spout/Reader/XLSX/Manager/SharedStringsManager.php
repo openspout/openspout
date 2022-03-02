@@ -1,14 +1,14 @@
 <?php
 
-namespace Box\Spout\Reader\XLSX\Manager;
+namespace OpenSpout\Reader\XLSX\Manager;
 
-use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Reader\Exception\XMLProcessingException;
-use Box\Spout\Reader\Wrapper\XMLReader;
-use Box\Spout\Reader\XLSX\Creator\HelperFactory;
-use Box\Spout\Reader\XLSX\Creator\InternalEntityFactory;
-use Box\Spout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory;
-use Box\Spout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyInterface;
+use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Reader\Exception\XMLProcessingException;
+use OpenSpout\Reader\Wrapper\XMLReader;
+use OpenSpout\Reader\XLSX\Creator\HelperFactory;
+use OpenSpout\Reader\XLSX\Creator\InternalEntityFactory;
+use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory;
+use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyInterface;
 
 /**
  * Class SharedStringsManager
@@ -17,16 +17,16 @@ use Box\Spout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyInterface;
 class SharedStringsManager
 {
     /** Definition of XML nodes names used to parse data */
-    const XML_NODE_SST = 'sst';
-    const XML_NODE_SI = 'si';
-    const XML_NODE_R = 'r';
-    const XML_NODE_T = 't';
+    public const XML_NODE_SST = 'sst';
+    public const XML_NODE_SI = 'si';
+    public const XML_NODE_R = 'r';
+    public const XML_NODE_T = 't';
 
     /** Definition of XML attributes used to parse data */
-    const XML_ATTRIBUTE_COUNT = 'count';
-    const XML_ATTRIBUTE_UNIQUE_COUNT = 'uniqueCount';
-    const XML_ATTRIBUTE_XML_SPACE = 'xml:space';
-    const XML_ATTRIBUTE_VALUE_PRESERVE = 'preserve';
+    public const XML_ATTRIBUTE_COUNT = 'count';
+    public const XML_ATTRIBUTE_UNIQUE_COUNT = 'uniqueCount';
+    public const XML_ATTRIBUTE_XML_SPACE = 'xml:space';
+    public const XML_ATTRIBUTE_VALUE_PRESERVE = 'preserve';
 
     /** @var string Path of the XLSX file being read */
     protected $filePath;
@@ -93,7 +93,7 @@ class SharedStringsManager
      * The XML file can be really big with sheets containing a lot of data. That is why
      * we need to use a XML reader that provides streaming like the XMLReader library.
      *
-     * @throws \Box\Spout\Common\Exception\IOException If shared strings XML file can't be read
+     * @throws \OpenSpout\Common\Exception\IOException If shared strings XML file can't be read
      * @return void
      */
     public function extractSharedStrings()
@@ -131,8 +131,8 @@ class SharedStringsManager
     /**
      * Returns the shared strings unique count, as specified in <sst> tag.
      *
-     * @param \Box\Spout\Reader\Wrapper\XMLReader $xmlReader XMLReader instance
-     * @throws \Box\Spout\Common\Exception\IOException If sharedStrings.xml is invalid and can't be read
+     * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader XMLReader instance
+     * @throws \OpenSpout\Common\Exception\IOException If sharedStrings.xml is invalid and can't be read
      * @return int|null Number of unique shared strings in the sharedStrings.xml file
      */
     protected function getSharedStringsUniqueCount($xmlReader)
@@ -170,7 +170,7 @@ class SharedStringsManager
     /**
      * Processes the shared strings item XML node which the given XML reader is positioned on.
      *
-     * @param \Box\Spout\Reader\Wrapper\XMLReader $xmlReader XML Reader positioned on a "<si>" node
+     * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader XML Reader positioned on a "<si>" node
      * @param int $sharedStringIndex Index of the processed shared strings item
      * @return void
      */
@@ -179,6 +179,7 @@ class SharedStringsManager
         $sharedStringValue = '';
 
         // NOTE: expand() will automatically decode all XML entities of the child nodes
+        /** @var \DOMElement $siNode */
         $siNode = $xmlReader->expand();
         $textNodes = $siNode->getElementsByTagName(self::XML_NODE_T);
 
@@ -226,7 +227,7 @@ class SharedStringsManager
      * Returns the shared string at the given index, using the previously chosen caching strategy.
      *
      * @param int $sharedStringIndex Index of the shared string in the sharedStrings.xml file
-     * @throws \Box\Spout\Reader\Exception\SharedStringNotFoundException If no shared string found for the given index
+     * @throws \OpenSpout\Reader\Exception\SharedStringNotFoundException If no shared string found for the given index
      * @return string The shared string at the given index
      */
     public function getStringAtIndex($sharedStringIndex)
@@ -241,7 +242,7 @@ class SharedStringsManager
      */
     public function cleanup()
     {
-        if ($this->cachingStrategy) {
+        if ($this->cachingStrategy !== null) {
             $this->cachingStrategy->clearCache();
         }
     }

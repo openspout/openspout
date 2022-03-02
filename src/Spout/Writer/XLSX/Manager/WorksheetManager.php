@@ -1,25 +1,24 @@
 <?php
 
-namespace Box\Spout\Writer\XLSX\Manager;
+namespace OpenSpout\Writer\XLSX\Manager;
 
-use Box\Spout\Common\Entity\Cell;
-use Box\Spout\Common\Entity\Row;
-use Box\Spout\Common\Entity\Style\Style;
-use Box\Spout\Common\Exception\InvalidArgumentException;
-use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Common\Helper\Escaper\XLSX as XLSXEscaper;
-use Box\Spout\Common\Helper\StringHelper;
-use Box\Spout\Common\Manager\OptionsManagerInterface;
-use Box\Spout\Writer\Common\Creator\InternalEntityFactory;
-use Box\Spout\Writer\Common\Entity\Options;
-use Box\Spout\Writer\Common\Entity\Worksheet;
-use Box\Spout\Writer\Common\Helper\CellHelper;
-use Box\Spout\Writer\Common\Manager\RegisteredStyle;
-use Box\Spout\Writer\Common\Manager\ManagesCellSize;
-use Box\Spout\Writer\Common\Manager\RowManager;
-use Box\Spout\Writer\Common\Manager\Style\StyleMerger;
-use Box\Spout\Writer\Common\Manager\WorksheetManagerInterface;
-use Box\Spout\Writer\XLSX\Manager\Style\StyleManager;
+use OpenSpout\Common\Entity\Cell;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Entity\Style\Style;
+use OpenSpout\Common\Exception\InvalidArgumentException;
+use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Common\Helper\Escaper\XLSX as XLSXEscaper;
+use OpenSpout\Common\Helper\StringHelper;
+use OpenSpout\Common\Manager\OptionsManagerInterface;
+use OpenSpout\Writer\Common\Entity\Options;
+use OpenSpout\Writer\Common\Entity\Worksheet;
+use OpenSpout\Writer\Common\Helper\CellHelper;
+use OpenSpout\Writer\Common\Manager\RegisteredStyle;
+use OpenSpout\Writer\Common\Manager\ManagesCellSize;
+use OpenSpout\Writer\Common\Manager\RowManager;
+use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
+use OpenSpout\Writer\Common\Manager\WorksheetManagerInterface;
+use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
 
 /**
  * Class WorksheetManager
@@ -35,9 +34,9 @@ class WorksheetManager implements WorksheetManagerInterface
      * @see https://support.office.com/en-us/article/Excel-specifications-and-limits-1672b34d-7043-467e-8e27-269d656771c3 [Excel 2010]
      * @see https://support.office.com/en-us/article/Excel-specifications-and-limits-ca36e2dc-1f09-4620-b726-67c00b05040f [Excel 2013/2016]
      */
-    const MAX_CHARACTERS_PER_CELL = 32767;
+    public const MAX_CHARACTERS_PER_CELL = 32767;
 
-    const SHEET_XML_FILE_HEADER = <<<'EOD'
+    public const SHEET_XML_FILE_HEADER = <<<'EOD'
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
 EOD;
@@ -63,9 +62,6 @@ EOD;
     /** @var StringHelper String helper */
     private $stringHelper;
 
-    /** @var InternalEntityFactory Factory to create entities */
-    private $entityFactory;
-
     /**
      * WorksheetManager constructor.
      *
@@ -76,7 +72,6 @@ EOD;
      * @param SharedStringsManager $sharedStringsManager
      * @param XLSXEscaper $stringsEscaper
      * @param StringHelper $stringHelper
-     * @param InternalEntityFactory $entityFactory
      */
     public function __construct(
         OptionsManagerInterface $optionsManager,
@@ -85,8 +80,7 @@ EOD;
         StyleMerger $styleMerger,
         SharedStringsManager $sharedStringsManager,
         XLSXEscaper $stringsEscaper,
-        StringHelper $stringHelper,
-        InternalEntityFactory $entityFactory
+        StringHelper $stringHelper
     ) {
         $this->shouldUseInlineStrings = $optionsManager->getOption(Options::SHOULD_USE_INLINE_STRINGS);
         $this->setDefaultColumnWidth($optionsManager->getOption(Options::DEFAULT_COLUMN_WIDTH));
@@ -98,7 +92,6 @@ EOD;
         $this->sharedStringsManager = $sharedStringsManager;
         $this->stringsEscaper = $stringsEscaper;
         $this->stringHelper = $stringHelper;
-        $this->entityFactory = $entityFactory;
     }
 
     /**

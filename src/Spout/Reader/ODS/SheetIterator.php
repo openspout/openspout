@@ -1,13 +1,13 @@
 <?php
 
-namespace Box\Spout\Reader\ODS;
+namespace OpenSpout\Reader\ODS;
 
-use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Reader\Exception\XMLProcessingException;
-use Box\Spout\Reader\IteratorInterface;
-use Box\Spout\Reader\ODS\Creator\InternalEntityFactory;
-use Box\Spout\Reader\ODS\Helper\SettingsHelper;
-use Box\Spout\Reader\Wrapper\XMLReader;
+use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Reader\Exception\XMLProcessingException;
+use OpenSpout\Reader\IteratorInterface;
+use OpenSpout\Reader\ODS\Creator\InternalEntityFactory;
+use OpenSpout\Reader\ODS\Helper\SettingsHelper;
+use OpenSpout\Reader\Wrapper\XMLReader;
 
 /**
  * Class SheetIterator
@@ -15,23 +15,23 @@ use Box\Spout\Reader\Wrapper\XMLReader;
  */
 class SheetIterator implements IteratorInterface
 {
-    const CONTENT_XML_FILE_PATH = 'content.xml';
+    public const CONTENT_XML_FILE_PATH = 'content.xml';
 
-    const XML_STYLE_NAMESPACE = 'urn:oasis:names:tc:opendocument:xmlns:style:1.0';
+    public const XML_STYLE_NAMESPACE = 'urn:oasis:names:tc:opendocument:xmlns:style:1.0';
 
     /** Definition of XML nodes name and attribute used to parse sheet data */
-    const XML_NODE_AUTOMATIC_STYLES = 'office:automatic-styles';
-    const XML_NODE_STYLE_TABLE_PROPERTIES = 'table-properties';
-    const XML_NODE_TABLE = 'table:table';
-    const XML_ATTRIBUTE_STYLE_NAME = 'style:name';
-    const XML_ATTRIBUTE_TABLE_NAME = 'table:name';
-    const XML_ATTRIBUTE_TABLE_STYLE_NAME = 'table:style-name';
-    const XML_ATTRIBUTE_TABLE_DISPLAY = 'table:display';
+    public const XML_NODE_AUTOMATIC_STYLES = 'office:automatic-styles';
+    public const XML_NODE_STYLE_TABLE_PROPERTIES = 'table-properties';
+    public const XML_NODE_TABLE = 'table:table';
+    public const XML_ATTRIBUTE_STYLE_NAME = 'style:name';
+    public const XML_ATTRIBUTE_TABLE_NAME = 'table:name';
+    public const XML_ATTRIBUTE_TABLE_STYLE_NAME = 'table:style-name';
+    public const XML_ATTRIBUTE_TABLE_DISPLAY = 'table:display';
 
     /** @var string Path of the file to be read */
     protected $filePath;
 
-    /** @var \Box\Spout\Common\Manager\OptionsManagerInterface Reader's options manager */
+    /** @var \OpenSpout\Common\Manager\OptionsManagerInterface Reader's options manager */
     protected $optionsManager;
 
     /** @var InternalEntityFactory Factory to create entities */
@@ -40,7 +40,7 @@ class SheetIterator implements IteratorInterface
     /** @var XMLReader The XMLReader object that will help read sheet's XML data */
     protected $xmlReader;
 
-    /** @var \Box\Spout\Common\Helper\Escaper\ODS Used to unescape XML data */
+    /** @var \OpenSpout\Common\Helper\Escaper\ODS Used to unescape XML data */
     protected $escaper;
 
     /** @var bool Whether there are still at least a sheet to be read */
@@ -57,8 +57,8 @@ class SheetIterator implements IteratorInterface
 
     /**
      * @param string $filePath Path of the file to be read
-     * @param \Box\Spout\Common\Manager\OptionsManagerInterface $optionsManager
-     * @param \Box\Spout\Common\Helper\Escaper\ODS $escaper Used to unescape XML data
+     * @param \OpenSpout\Common\Manager\OptionsManagerInterface $optionsManager
+     * @param \OpenSpout\Common\Helper\Escaper\ODS $escaper Used to unescape XML data
      * @param SettingsHelper $settingsHelper Helper to get data from "settings.xml"
      * @param InternalEntityFactory $entityFactory Factory to create entities
      */
@@ -76,7 +76,7 @@ class SheetIterator implements IteratorInterface
      * Rewind the Iterator to the first element
      * @see http://php.net/manual/en/iterator.rewind.php
      *
-     * @throws \Box\Spout\Common\Exception\IOException If unable to open the XML file containing sheets' data
+     * @throws \OpenSpout\Common\Exception\IOException If unable to open the XML file containing sheets' data
      * @return void
      */
     public function rewind()
@@ -108,6 +108,7 @@ class SheetIterator implements IteratorInterface
         $sheetsVisibility = [];
 
         $this->xmlReader->readUntilNodeFound(self::XML_NODE_AUTOMATIC_STYLES);
+        /** @var \DOMElement $automaticStylesNode */
         $automaticStylesNode = $this->xmlReader->expand();
 
         $tableStyleNodes = $automaticStylesNode->getElementsByTagNameNS(self::XML_STYLE_NAMESPACE, self::XML_NODE_STYLE_TABLE_PROPERTIES);
@@ -155,7 +156,7 @@ class SheetIterator implements IteratorInterface
      * Return the current element
      * @see http://php.net/manual/en/iterator.current.php
      *
-     * @return \Box\Spout\Reader\ODS\Sheet
+     * @return \OpenSpout\Reader\ODS\Sheet
      */
     public function current()
     {

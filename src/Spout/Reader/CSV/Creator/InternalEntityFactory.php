@@ -1,16 +1,16 @@
 <?php
 
-namespace Box\Spout\Reader\CSV\Creator;
+namespace OpenSpout\Reader\CSV\Creator;
 
-use Box\Spout\Common\Creator\HelperFactory;
-use Box\Spout\Common\Entity\Cell;
-use Box\Spout\Common\Entity\Row;
-use Box\Spout\Common\Helper\GlobalFunctionsHelper;
-use Box\Spout\Common\Manager\OptionsManagerInterface;
-use Box\Spout\Reader\Common\Creator\InternalEntityFactoryInterface;
-use Box\Spout\Reader\CSV\RowIterator;
-use Box\Spout\Reader\CSV\Sheet;
-use Box\Spout\Reader\CSV\SheetIterator;
+use OpenSpout\Common\Creator\HelperFactory;
+use OpenSpout\Common\Entity\Cell;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Helper\GlobalFunctionsHelper;
+use OpenSpout\Common\Manager\OptionsManagerInterface;
+use OpenSpout\Reader\Common\Creator\InternalEntityFactoryInterface;
+use OpenSpout\Reader\CSV\RowIterator;
+use OpenSpout\Reader\CSV\Sheet;
+use OpenSpout\Reader\CSV\SheetIterator;
 
 /**
  * Class EntityFactory
