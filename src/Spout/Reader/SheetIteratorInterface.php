@@ -1,8 +1,8 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
-namespace Box\Spout\Reader;
+namespace OpenSpout\Reader;
 
 /**
  * Interface IteratorInterface
@@ -19,5 +19,6 @@ interface SheetIteratorInterface extends IteratorInterface
     /**
      * @return SheetInterface|null
      */
+    #[\ReturnTypeWillChange]
     public function current();
 }

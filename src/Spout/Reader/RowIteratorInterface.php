@@ -1,10 +1,10 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
-namespace Box\Spout\Reader;
+namespace OpenSpout\Reader;
 
-use Box\Spout\Common\Entity\Row;
+use OpenSpout\Common\Entity\Row;
 
 interface RowIteratorInterface extends IteratorInterface
 {
@@ -18,5 +18,6 @@ interface RowIteratorInterface extends IteratorInterface
     /**
      * @return Row|null
      */
+    #[\ReturnTypeWillChange]
     public function current();
 }
