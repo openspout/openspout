@@ -116,7 +116,7 @@ class Sheet
     /**
      * @return SheetView|null
      */
-    public function getSheetView(): ?SheetView
+    public function getSheetView() : ?SheetView
     {
         return $this->sheetView;
     }
@@ -135,7 +135,7 @@ class Sheet
     /**
      * @return bool
      */
-    public function hasSheetView(): bool
+    public function hasSheetView() : bool
     {
         return $this->sheetView instanceof SheetView;
     }

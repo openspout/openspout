@@ -55,8 +55,8 @@ $writer->setShouldCreateNewSheetsAutomatically(false); // will stop writing new 
 Sheet view settings must be configured before any rows are added to the sheet.
 
 ```php
-use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
-use Box\Spout\Writer\XLSX\Entity\SheetView;
+use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
+use OpenSpout\Writer\XLSX\Entity\SheetView;
 
 $sheetView = (new SheetView())
     ->setFreezeRow(2) // First row will be fixed
