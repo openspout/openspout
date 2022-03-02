@@ -1,12 +1,6 @@
----
-layout: doc
-title: Getting Started
-permalink: /getting-started/
----
+# Getting started
 
-{% include set-global-site-url.html %}
-
-This guide will help you install {{ site.spout_html }} and teach you how to use it.
+This guide will help you install OpenSpout and teach you how to use it.
 
 ## Requirements
 
@@ -17,30 +11,12 @@ This guide will help you install {{ site.spout_html }} and teach you how to use 
 
 ## Installation
 
-### Composer (recommended)
-
-{{ site.spout_html }} can be installed directly from [Composer](https://getcomposer.org/).
+OpenSpout can be installed directly from [Composer](https://getcomposer.org/).
 
 Run the following command:
-```powershell
-$ composer require box/spout
+```shell
+composer require openspout/openspout
 ```
-
-### Manual installation
-
-If you can't use Composer, no worries! You can still install {{ site.spout_html }} manually.
-
-> Before starting, make sure your system meets the [requirements](#requirements).
-
-1. Download the source code from the [Releases page](https://github.com/box/spout/releases)
-2. Extract the downloaded content into your project.
-3. Add this code to the top controller (e.g. index.php) or wherever it may be more appropriate:
-
-```php
-// don't forget to change the path!
-require_once '[PATH/TO]/src/Spout/Autoloader/autoload.php';
-```
-
 
 ## Basic usage
 
@@ -70,7 +46,7 @@ $reader->close();
 If there are multiple sheets in the file, the reader will read all of them sequentially.
 
 
-Note that {{ site.spout_html }} guesses the reader type based on the file extension. If the extension is not standard (`.csv`, `.ods`, `.xlsx` _- lower/uppercase_), a specific reader can be created directly:
+Note that OpenSpout guesses the reader type based on the file extension. If the extension is not standard (`.csv`, `.ods`, `.xlsx` _- lower/uppercase_), a specific reader can be created directly:
 
 ```php
 use OpenSpout\Reader\Common\Creator\ReaderEntityFactory;
@@ -136,4 +112,4 @@ For XLSX and ODS files, the number of rows per sheet is limited to *1,048,576*. 
 
 ## Advanced usage
 
-You can do a lot more with {{ site.spout_html }}! Check out the [full documentation]({{ site_url }}/docs/) to learn about all the features.
+You can do a lot more with OpenSpout! Check out the [full documentation](./documentation.md) to learn about all the features.

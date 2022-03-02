@@ -1,11 +1,6 @@
----
-layout: page
-title:  "Read data from a specific sheet only"
-category: guide
-permalink: /guides/read-data-from-specific-sheet/
----
+# Read data from a specific sheet only
 
-Even though a spreadsheet contains multiple sheets, you may be interested in reading only one of them and skip the other ones. Here is how you can do it with {{ site.spout_html }}:
+Even though a spreadsheet contains multiple sheets, you may be interested in reading only one of them and skip the other ones. Here is how you can do it with OpenSpout:
 
 * If you know the name of the sheet
 

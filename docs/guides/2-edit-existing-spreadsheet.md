@@ -1,13 +1,8 @@
----
-layout: page
-title:  "Edit an existing spreadsheet"
-category: guide
-permalink: /guides/edit-existing-spreadsheet/
----
+# Edit an existing spreadsheet
 
-Editing an existing spreadsheet is a pretty common task that {{ site.spout_html }} is totally capable of doing.
+Editing an existing spreadsheet is a pretty common task that OpenSpout is totally capable of doing.
 
-With {{ site.spout_html }}, it is not possible to do things like `deleteRow(3)` or `insertRowAfter(5, $newRow)`. This is because {{ site.spout_html }} does not keep an in-memory representation of the entire spreadsheet, to avoid consuming all the memory available with large spreadsheets. This means, {{ site.spout_html }} does not know how to jump to the 3rd row directly and has especially no way of moving backwards (changing row 3 after having changed row 5). So let's see how this can be done, in a scalable way.
+With OpenSpout, it is not possible to do things like `deleteRow(3)` or `insertRowAfter(5, $newRow)`. This is because OpenSpout does not keep an in-memory representation of the entire spreadsheet, to avoid consuming all the memory available with large spreadsheets. This means, OpenSpout does not know how to jump to the 3rd row directly and has especially no way of moving backwards (changing row 3 after having changed row 5). So let's see how this can be done, in a scalable way.
 
 For this example, let's assume we have an existing ODS spreadsheet called "my-music.ods" that looks like this:
 
@@ -81,7 +76,7 @@ $writer->close();
 
 Optionally, if you rely on the file name or want to keep only one file, simple remove the old file and rename the new one:
 
-```php?start_inline=1
+```php
 unlink($existingFilePath);
 rename($newFilePath, $existingFilePath);
 ```

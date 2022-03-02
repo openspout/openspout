@@ -1,11 +1,6 @@
----
-layout: page
-title:  "[Symfony] Stream content of a large spreadsheet"
-category: guide
-permalink: /guides/symfony-stream-content-large-spreadsheet/
----
+# [Symfony] Stream content of a large spreadsheet
 
-> This tutorial is for the PHP framework [Symfony](http://symfony.com/).
+> This tutorial is for the PHP framework [Symfony](https://symfony.com/).
 
 The main benefit of streaming content is that this content can be rendered as soon as it is available. No matter how big the content is, the browser will be able to start rendering it as soon as the first byte is sent.
 
@@ -13,7 +8,7 @@ Reading a static spreadsheet to display its content to a user is a great use cas
 
 A regular controller usually builds the content to be displayed and encapsulate it into a `Response` object. Everything happens synchronously. Such a controller may look like this:
 
-```php?start_inline=1
+```php
 class MyRegularController extends Controller
 {
     /**
@@ -56,7 +51,7 @@ class MyRegularController extends Controller
 
 Converting a regular controller to return a `StreamedResponse` is super easy! This is what it looks like after conversion:
 
-```php?start_inline=1
+```php
 class MyStreamController extends Controller
 {
     // See below how it is used.

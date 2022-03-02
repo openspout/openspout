@@ -1,8 +1,4 @@
----
-layout: doc
-title: Documentation
-permalink: /docs/
----
+# Documentation
 
 ## Configuration for CSV
 
@@ -69,7 +65,7 @@ $writer->getCurrentSheet()->setSheetView($sheetView);
 
 ### Using a custom temporary folder
 
-Processing XLSX and ODS files requires temporary files to be created. By default, {{ site.spout_html }} will use the system default temporary folder (as returned by `sys_get_temp_dir()`). It is possible to override this by explicitly setting it on the reader or writer:
+Processing XLSX and ODS files requires temporary files to be created. By default, OpenSpout will use the system default temporary folder (as returned by `sys_get_temp_dir()`). It is possible to override this by explicitly setting it on the reader or writer:
 
 ```php
 use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
@@ -84,7 +80,7 @@ XLSX files support different ways to store the string values:
 * Shared strings are meant to optimize file size by separating strings from the sheet representation and ignoring strings duplicates (if a string is used three times, only one string will be stored)
 * Inline strings are less optimized (as duplicate strings are all stored) but is faster to process
 
-In order to keep the memory usage really low, {{ site.spout_html }} does not de-duplicate strings when using shared strings. It is nevertheless possible to use this mode.
+In order to keep the memory usage really low, OpenSpout does not de-duplicate strings when using shared strings. It is nevertheless possible to use this mode.
 
 ```php
 use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
@@ -100,7 +96,7 @@ $writer->setShouldUseInlineStrings(false); // will use shared strings
 
 ### Date/Time formatting
 
-When reading a spreadsheet containing dates or times, {{ site.spout_html }} returns the values by default as `DateTime` objects.
+When reading a spreadsheet containing dates or times, OpenSpout returns the values by default as `DateTime` objects.
 It is possible to change this behavior and have a formatted date returned instead (e.g. "2016-11-29 1:22 AM"). The format of the date corresponds to what is specified in the spreadsheet.
 
 ```php
@@ -114,8 +110,8 @@ $reader->setShouldFormatDates(true); // will return formatted dates
 
 ## Empty rows
 
-By default, when {{ site.spout_html }} reads a spreadsheet it skips empty rows and only return rows containing data.
-This behavior can be changed so that {{ site.spout_html }} returns all rows:
+By default, when OpenSpout reads a spreadsheet it skips empty rows and only return rows containing data.
+This behavior can be changed so that OpenSpout returns all rows:
 
 ```php
 use OpenSpout\Reader\Common\Creator\ReaderEntityFactory;
@@ -129,23 +125,23 @@ $reader->setShouldPreserveEmptyRows(true);
 
 ### Available styles
 
-{{ site.spout_html }} supports styling at a row and cell level. It is possible to customize the fonts, backgrounds, alignment as well as borders.
+OpenSpout supports styling at a row and cell level. It is possible to customize the fonts, backgrounds, alignment as well as borders.
 
-For fonts and alignments, {{ site.spout_html }} does not support all the possible formatting options yet. But you can find the most important ones:
+For fonts and alignments, OpenSpout does not support all the possible formatting options yet. But you can find the most important ones:
 
-| Category             | Property       | API
-|:---------------------|:---------------|:--------------------------------------
-| Font                 | Bold           | `StyleBuilder::setFontBold()`
-|                      | Italic         | `StyleBuilder::setFontItalic()`
-|                      | Underline      | `StyleBuilder::setFontUnderline()`
-|                      | Strikethrough  | `StyleBuilder::setFontStrikethrough()`
-|                      | Font name      | `StyleBuilder::setFontName('Arial')`
-|                      | Font size      | `StyleBuilder::setFontSize(14)`
-|                      | Font color     | `StyleBuilder::setFontColor(Color::BLUE)`<br>`StyleBuilder::setFontColor(Color::rgb(0, 128, 255))`
-| Alignment            | Cell alignment | `StyleBuilder::setCellAlignment(CellAlignment::CENTER)`
-|                      | Wrap text      | `StyleBuilder::setShouldWrapText(true)`
-| Format _(XLSX only)_ | Number format  | `StyleBuilder::setFormat('0.000')`
-|                      | Date format    | `StyleBuilder::setFormat('m/d/yy h:mm')`
+| Category             | Property       | API |
+|:---------------------|:---------------|:-------------------------------------- |
+| Font                 | Bold           | `StyleBuilder::setFontBold()` |
+|                      | Italic         | `StyleBuilder::setFontItalic()` |
+|                      | Underline      | `StyleBuilder::setFontUnderline()` |
+|                      | Strikethrough  | `StyleBuilder::setFontStrikethrough()` |
+|                      | Font name      | `StyleBuilder::setFontName('Arial')` |
+|                      | Font size      | `StyleBuilder::setFontSize(14)` |
+|                      | Font color     | `StyleBuilder::setFontColor(Color::BLUE)`<br>`StyleBuilder::setFontColor(Color::rgb(0, 128, 255))` |
+| Alignment            | Cell alignment | `StyleBuilder::setCellAlignment(CellAlignment::CENTER)` |
+|                      | Wrap text      | `StyleBuilder::setShouldWrapText(true)` |
+| Format _(XLSX only)_ | Number format  | `StyleBuilder::setFormat('0.000')` |
+|                      | Date format    | `StyleBuilder::setFormat('m/d/yy h:mm')` |
 
 ### Styling rows
 
@@ -258,7 +254,7 @@ $writer->close();
 
 ### Default style
 
-{{ site.spout_html }} will use a default style for all created rows. This style can be overridden this way:
+OpenSpout will use a default style for all created rows. This style can be overridden this way:
 
 ```php
 $defaultStyle = (new StyleBuilder())
@@ -320,12 +316,12 @@ $sheet->setName('My custom name');
 > * it must not start or end with a single quote
 > * it must be unique
 >
-> Handling these restrictions is the developer's responsibility. {{ site.spout_html }} does not try to automatically change the sheet's name, as one may rely on this name to be exactly what was passed in.
+> Handling these restrictions is the developer's responsibility. OpenSpout does not try to automatically change the sheet's name, as one may rely on this name to be exactly what was passed in.
 
 
 ## Fluent interface
 
-Because fluent interfaces are great, you can use them with {{ site.spout_html }}:
+Because fluent interfaces are great, you can use them with OpenSpout:
 
 ```php
 use OpenSpout\Writer\WriterEntityFactory;
