@@ -20,8 +20,6 @@ For this example, let's assume we have an existing ODS spreadsheet called "my-mu
 We'd like to update the missing album for "Yellow Submarine", remove the Bob Marley's songs and add a new song: "Hotel California" from "The Eagles", released in 1976. Here is how this can be done:
 
 ```php
-<?php
-
 use OpenSpout\Reader\Common\Creator\ReaderEntityFactory;
 use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 
