@@ -2,13 +2,13 @@
 
 namespace OpenSpout\Reader\CSV;
 
-use OpenSpout\Reader\IteratorInterface;
+use OpenSpout\Reader\SheetIteratorInterface;
 
 /**
  * Class SheetIterator
  * Iterate over CSV unique "sheet".
  */
-class SheetIterator implements IteratorInterface
+class SheetIterator implements SheetIteratorInterface
 {
     /** @var Sheet The CSV unique "sheet" */
     protected $sheet;

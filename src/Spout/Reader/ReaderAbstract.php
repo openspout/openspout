@@ -46,7 +46,7 @@ abstract class ReaderAbstract implements ReaderInterface
     /**
      * Returns an iterator to iterate over sheets.
      *
-     * @return IteratorInterface To iterate over sheets
+     * @return SheetIteratorInterface To iterate over sheets
      */
     abstract protected function getConcreteSheetIterator();
 
@@ -211,7 +211,7 @@ abstract class ReaderAbstract implements ReaderInterface
      * Returns an iterator to iterate over sheets.
      *
      * @throws \OpenSpout\Reader\Exception\ReaderNotOpenedException If called before opening the reader
-     * @return \Iterator To iterate over sheets
+     * @return SheetIteratorInterface To iterate over sheets
      */
     public function getSheetIterator()
     {

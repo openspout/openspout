@@ -8,13 +8,13 @@ use OpenSpout\Common\Helper\GlobalFunctionsHelper;
 use OpenSpout\Common\Manager\OptionsManagerInterface;
 use OpenSpout\Reader\Common\Entity\Options;
 use OpenSpout\Reader\CSV\Creator\InternalEntityFactory;
-use OpenSpout\Reader\IteratorInterface;
+use OpenSpout\Reader\RowIteratorInterface;
 
 /**
  * Class RowIterator
  * Iterate over CSV rows.
  */
-class RowIterator implements IteratorInterface
+class RowIterator implements RowIteratorInterface
 {
     /**
      * Value passed to fgetcsv. 0 means "unlimited" (slightly slower but accomodates for very long lines).
