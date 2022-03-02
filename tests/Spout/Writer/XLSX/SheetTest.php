@@ -225,6 +225,25 @@ class SheetTest extends TestCase
         $this->assertStringContainsString('<col min="1" max="3" width="50" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
     }
 
+    public function testCanWriteAFormula()
+    {
+        $fileName = 'test_formula.xlsx';
+        $this->createGeneratedFolderIfNeeded($fileName);
+        $resourcePath = $this->getGeneratedResourcePath($fileName);
+
+        $writer = WriterEntityFactory::createXLSXWriter();
+        $writer->openToFile($resourcePath);
+        $writer->addRow($this->createRowFromValues([1]));
+        $writer->addRow($this->createRowFromValues([2]));
+        $writer->addRow($this->createRowFromValues(['=SUM(A1:A2)']));
+        $writer->close();
+
+        $pathToWorkbookFile = $resourcePath . '#xl/worksheets/sheet1.xml';
+        $xmlContents = file_get_contents('zip://' . $pathToWorkbookFile);
+
+        $this->assertStringContainsString('<f>SUM(A1:A2)</f>', $xmlContents, 'Formula not found');
+    }
+
     /**
      * @param string $fileName
      * @param string $sheetName

@@ -68,6 +68,14 @@ class CellTest extends TestCase
     /**
      * @return void
      */
+    public function testCellTypeFormula()
+    {
+        $this->assertTrue((new Cell('=SUM(A1:A2)'))->isFormula());
+    }
+
+    /**
+     * @return void
+     */
     public function testCellTypeError()
     {
         $this->assertTrue((new Cell([]))->isError());

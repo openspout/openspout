@@ -65,4 +65,13 @@ class CellTypeHelper
             $value instanceof \DateInterval
         );
     }
+
+    /**
+     * @param mixed $value
+     * @return bool
+     */
+    public static function isFormula($value)
+    {
+        return is_string($value) && isset($value[0]) && $value[0] === '=';
+    }
 }
