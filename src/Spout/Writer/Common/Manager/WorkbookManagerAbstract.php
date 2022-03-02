@@ -129,6 +129,8 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
         $worksheetFilePath = $this->getWorksheetFilePath($sheet);
         $worksheet = $this->entityFactory->createWorksheet($worksheetFilePath, $sheet);
 
+        $this->worksheetManager->startSheet($worksheet);
+
         $worksheets[] = $worksheet;
         $this->workbook->setWorksheets($worksheets);
 
@@ -230,14 +232,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
         if ($hasReachedMaxRows) {
             // ... continue writing in a new sheet if option set
             if ($this->optionsManager->getOption(Options::SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY)) {
-                $previousSheet = $currentWorksheet->getExternalSheet();
                 $currentWorksheet = $this->addNewSheetAndMakeItCurrent();
-
-                // Use the same sheet view if set
-                $sheet = $currentWorksheet->getExternalSheet();
-                if ($previousSheet->hasSheetView()) {
-                    $sheet->setSheetView($previousSheet->getSheetView());
-                }
 
                 $this->addRowToWorksheet($currentWorksheet, $row);
             } else {
