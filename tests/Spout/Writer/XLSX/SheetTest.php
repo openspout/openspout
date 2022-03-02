@@ -6,7 +6,7 @@ use OpenSpout\TestUsingResource;
 use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 use OpenSpout\Writer\Common\Entity\Sheet;
 use OpenSpout\Writer\Exception\InvalidSheetNameException;
-use OpenSpout\Spout\Writer\Exception\WriterNotOpenedException;
+use OpenSpout\Writer\Exception\WriterNotOpenedException;
 use OpenSpout\Writer\RowCreationHelper;
 use PHPUnit\Framework\TestCase;
 
@@ -117,10 +117,10 @@ class SheetTest extends TestCase
         $pathToWorkbookFile = $resourcePath . '#xl/worksheets/sheet1.xml';
         $xmlContents = file_get_contents('zip://' . $pathToWorkbookFile);
 
-        $this->assertContains('<sheetFormatPr', $xmlContents, 'No sheetFormatPr tag found in sheet');
-        $this->assertContains(' defaultColWidth="10', $xmlContents, 'No default column width found in sheet');
-        $this->assertContains(' defaultRowHeight="20', $xmlContents, 'No default row height found in sheet');
-        $this->assertContains(' customHeight="1"', $xmlContents, 'No row height override flag found in row');
+        $this->assertStringContainsString('<sheetFormatPr', $xmlContents, 'No sheetFormatPr tag found in sheet');
+        $this->assertStringContainsString(' defaultColWidth="10', $xmlContents, 'No default column width found in sheet');
+        $this->assertStringContainsString(' defaultRowHeight="20', $xmlContents, 'No default row height found in sheet');
+        $this->assertStringContainsString(' customHeight="1"', $xmlContents, 'No row height override flag found in row');
     }
 
     public function testWritesDefaultRequiredRowHeightIfOmitted()
@@ -139,9 +139,9 @@ class SheetTest extends TestCase
         $pathToWorkbookFile = $resourcePath . '#xl/worksheets/sheet1.xml';
         $xmlContents = file_get_contents('zip://' . $pathToWorkbookFile);
 
-        $this->assertContains('<sheetFormatPr', $xmlContents, 'No sheetFormatPr tag found in sheet');
-        $this->assertContains(' defaultColWidth="10', $xmlContents, 'No default column width found in sheet');
-        $this->assertContains(' defaultRowHeight="0', $xmlContents, 'No default row height found in sheet');
+        $this->assertStringContainsString('<sheetFormatPr', $xmlContents, 'No sheetFormatPr tag found in sheet');
+        $this->assertStringContainsString(' defaultColWidth="10', $xmlContents, 'No default column width found in sheet');
+        $this->assertStringContainsString(' defaultRowHeight="0', $xmlContents, 'No default row height found in sheet');
     }
 
     public function testWritesColumnWidths()
@@ -159,8 +159,8 @@ class SheetTest extends TestCase
         $pathToWorkbookFile = $resourcePath . '#xl/worksheets/sheet1.xml';
         $xmlContents = file_get_contents('zip://' . $pathToWorkbookFile);
 
-        $this->assertContains('<cols', $xmlContents, 'No cols tag found in sheet');
-        $this->assertContains('<col min="1" max="1" width="100" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
+        $this->assertStringContainsString('<cols', $xmlContents, 'No cols tag found in sheet');
+        $this->assertStringContainsString('<col min="1" max="1" width="100" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
     }
 
     public function testWritesMultipleColumnWidths()
@@ -178,8 +178,8 @@ class SheetTest extends TestCase
         $pathToWorkbookFile = $resourcePath . '#xl/worksheets/sheet1.xml';
         $xmlContents = file_get_contents('zip://' . $pathToWorkbookFile);
 
-        $this->assertContains('<cols', $xmlContents, 'No cols tag found in sheet');
-        $this->assertContains('<col min="1" max="3" width="100" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
+        $this->assertStringContainsString('<cols', $xmlContents, 'No cols tag found in sheet');
+        $this->assertStringContainsString('<col min="1" max="3" width="100" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
     }
 
     public function testWritesMultipleColumnWidthsInRanges()
@@ -198,12 +198,12 @@ class SheetTest extends TestCase
         $pathToWorkbookFile = $resourcePath . '#xl/worksheets/sheet1.xml';
         $xmlContents = file_get_contents('zip://' . $pathToWorkbookFile);
 
-        $this->assertContains('<cols', $xmlContents, 'No cols tag found in sheet');
-        $this->assertContains('<col min="1" max="1" width="50" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
-        $this->assertContains('<col min="3" max="4" width="50" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
-        $this->assertContains('<col min="6" max="6" width="50" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
-        $this->assertContains('<col min="2" max="2" width="100" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
-        $this->assertContains('<col min="5" max="5" width="100" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
+        $this->assertStringContainsString('<cols', $xmlContents, 'No cols tag found in sheet');
+        $this->assertStringContainsString('<col min="1" max="1" width="50" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
+        $this->assertStringContainsString('<col min="3" max="4" width="50" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
+        $this->assertStringContainsString('<col min="6" max="6" width="50" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
+        $this->assertStringContainsString('<col min="2" max="2" width="100" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
+        $this->assertStringContainsString('<col min="5" max="5" width="100" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
     }
 
     public function testCanTakeColumnWidthsAsRange()
@@ -221,8 +221,8 @@ class SheetTest extends TestCase
         $pathToWorkbookFile = $resourcePath . '#xl/worksheets/sheet1.xml';
         $xmlContents = file_get_contents('zip://' . $pathToWorkbookFile);
 
-        $this->assertContains('<cols', $xmlContents, 'No cols tag found in sheet');
-        $this->assertContains('<col min="1" max="3" width="50" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
+        $this->assertStringContainsString('<cols', $xmlContents, 'No cols tag found in sheet');
+        $this->assertStringContainsString('<col min="1" max="3" width="50" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
     }
 
     /**

@@ -115,7 +115,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
     /**
      * Creates a new sheet in the workbook. The current sheet remains unchanged.
      *
-     * @throws \Box\Spout\Common\Exception\IOException If unable to open the sheet for writing
+     * @throws \OpenSpout\Common\Exception\IOException If unable to open the sheet for writing
      * @return Worksheet The created sheet
      */
     private function addNewSheet()
@@ -220,7 +220,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
      * @param Row $row The row to be added
      *
      * @throws IOException If trying to create a new sheet and unable to open the sheet for writing
-     * @throws \Box\Spout\Common\Exception\InvalidArgumentException
+     * @throws \OpenSpout\Common\Exception\InvalidArgumentException
      * @return void
      */
     public function addRowToCurrentWorksheet(Row $row)
@@ -260,7 +260,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
      * @param Row $row The row to be added
      *
      * @throws IOException
-     * @throws \Box\Spout\Common\Exception\InvalidArgumentException
+     * @throws \OpenSpout\Common\Exception\InvalidArgumentException
      * @return void
      */
     private function addRowToWorksheet(Worksheet $worksheet, Row $row)

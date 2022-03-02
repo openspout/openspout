@@ -6,7 +6,6 @@ use OpenSpout\TestUsingResource;
 use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 use OpenSpout\Writer\Common\Entity\Sheet;
 use OpenSpout\Writer\Exception\InvalidSheetNameException;
-use OpenSpout\Spout\Writer\Exception\WriterNotOpenedException;
 use OpenSpout\Writer\RowCreationHelper;
 use PHPUnit\Framework\TestCase;
 
@@ -93,12 +92,7 @@ class SheetTest extends TestCase
         $this->assertStringContainsString(' table:display="false"', $xmlContents, 'The sheet visibility should have been changed to "hidden"');
     }
 
-    /**
-     * @param string $fileName
-     * @param string $sheetName
-     * @return Sheet
-     */
-    private function writeDataAndReturnSheetWithCustomName($fileName, $sheetName)
+    private function writerForFile($fileName)
     {
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);

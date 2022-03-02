@@ -1,6 +1,6 @@
 <?php
 
-namespace Box\Spout\Writer\Common\Manager;
+namespace OpenSpout\Writer\Common\Manager;
 
 trait ManagesCellSize
 {
