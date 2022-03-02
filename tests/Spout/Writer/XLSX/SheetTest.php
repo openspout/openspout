@@ -8,6 +8,7 @@ use OpenSpout\Writer\Common\Entity\Sheet;
 use OpenSpout\Writer\Exception\InvalidSheetNameException;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
 use OpenSpout\Writer\RowCreationHelper;
+use OpenSpout\Writer\XLSX\Entity\SheetView;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -242,6 +243,40 @@ class SheetTest extends TestCase
         $xmlContents = file_get_contents('zip://' . $pathToWorkbookFile);
 
         $this->assertStringContainsString('<f>SUM(A1:A2)</f>', $xmlContents, 'Formula not found');
+    }
+
+    public function testCanSetSheetViewProperties()
+    {
+        $fileName = 'test_sheetview_properties.xlsx';
+        $this->createGeneratedFolderIfNeeded($fileName);
+        $resourcePath = $this->getGeneratedResourcePath($fileName);
+
+        $writer = WriterEntityFactory::createXLSXWriter();
+        $writer->openToFile($resourcePath);
+
+        $writer->getCurrentSheet()->setSheetView(
+            (new SheetView())
+            ->setShowFormulas(true)
+            ->setShowGridLines(false)
+            ->setShowRowColHeaders(false)
+            ->setShowZeroes(false)
+            ->setRightToLeft(false)
+            ->setTabSelected(false)
+            ->setColorId(1)
+            ->setFreezeColumn('B')
+            ->setFreezeRow(2)
+        );
+
+        $writer->addRow($this->createRowFromValues([1]));
+        $writer->addRow($this->createRowFromValues([2]));
+        $writer->addRow($this->createRowFromValues(['=SUM(A1:A2)']));
+        $writer->close();
+
+        $pathToWorkbookFile = $resourcePath . '#xl/worksheets/sheet1.xml';
+        $xmlContents = file_get_contents('zip://' . $pathToWorkbookFile);
+
+        $this->assertStringContainsString('<sheetView', $xmlContents);
+        $this->assertStringContainsString('<pane', $xmlContents);
     }
 
     /**

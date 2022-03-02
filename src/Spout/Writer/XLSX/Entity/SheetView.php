@@ -14,7 +14,7 @@ class SheetView
     protected $showGridLines = true;
 
     /** @var bool */
-    protected $showRowcolHeaders = true;
+    protected $showRowColHeaders = true;
 
     /** @var bool */
     protected $showZeroes = true;
@@ -81,12 +81,12 @@ class SheetView
     }
 
     /**
-     * @param bool $showRowcolHeaders
+     * @param bool $showRowColHeaders
      * @return $this
      */
-    public function setShowRowcolHeaders(bool $showRowcolHeaders) : self
+    public function setShowRowColHeaders(bool $showRowColHeaders) : self
     {
-        $this->showRowcolHeaders = $showRowcolHeaders;
+        $this->showRowColHeaders = $showRowColHeaders;
 
         return $this;
     }
