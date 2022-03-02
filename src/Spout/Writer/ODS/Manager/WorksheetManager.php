@@ -237,8 +237,8 @@ class WorksheetManager implements WorksheetManagerInterface
             $data .= '</table:table-cell>';
         } elseif ($cell->isDate()) {
             $value = $cell->getValue();
-            if ($value instanceof \DateTime) {
-                $datevalue = substr($value->setTimezone(new \DateTimeZone('UTC'))->format(\DateTimeInterface::W3C), 0, -6);
+            if ($value instanceof \DateTimeInterface) {
+                $datevalue = substr((new \DateTimeImmutable('@' . $value->getTimestamp()))->format(\DateTimeInterface::W3C), 0, -6);
                 $data .= ' office:value-type="date" calcext:value-type="date" office:date-value="' . $datevalue . 'Z">';
                 $data .= '<text:p>' . $datevalue . 'Z</text:p>';
             } elseif ($value instanceof \DateInterval) {

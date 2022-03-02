@@ -268,7 +268,16 @@ class WriterTest extends TestCase
     {
         $fileName = 'test_add_row_should_support_multiple_types_of_data.ods';
         $dataRows = $this->createRowsFromValues([
-            ['ods--11', true, '', 0, 10.2, null],
+            [
+                'ods--11',
+                true,
+                '',
+                0,
+                10.2,
+                null,
+                new \DateTimeImmutable('2020-03-04 05:06:07', new \DateTimeZone('UTC')),
+                new \DateInterval('P1DT23S'),
+            ],
         ]);
 
         $this->writeToODSFile($dataRows, $fileName);
@@ -277,6 +286,8 @@ class WriterTest extends TestCase
         $this->assertValueWasWrittenToSheet($fileName, 1, 1); // true is converted to 1
         $this->assertValueWasWrittenToSheet($fileName, 1, 0);
         $this->assertValueWasWrittenToSheet($fileName, 1, 10.2);
+        $this->assertValueWasWrittenToSheet($fileName, 1, '2020-03-04T05:06:07Z');
+        $this->assertValueWasWrittenToSheet($fileName, 1, 'P1DT23S');
     }
 
     /**
