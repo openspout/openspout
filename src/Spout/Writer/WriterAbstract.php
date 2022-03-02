@@ -1,18 +1,18 @@
 <?php
 
-namespace Box\Spout\Writer;
+namespace OpenSpout\Writer;
 
-use Box\Spout\Common\Creator\HelperFactory;
-use Box\Spout\Common\Entity\Row;
-use Box\Spout\Common\Entity\Style\Style;
-use Box\Spout\Common\Exception\InvalidArgumentException;
-use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Common\Exception\SpoutException;
-use Box\Spout\Common\Helper\GlobalFunctionsHelper;
-use Box\Spout\Common\Manager\OptionsManagerInterface;
-use Box\Spout\Writer\Common\Entity\Options;
-use Box\Spout\Writer\Exception\WriterAlreadyOpenedException;
-use Box\Spout\Writer\Exception\WriterNotOpenedException;
+use OpenSpout\Common\Creator\HelperFactory;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Entity\Style\Style;
+use OpenSpout\Common\Exception\InvalidArgumentException;
+use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Common\Exception\SpoutException;
+use OpenSpout\Common\Helper\GlobalFunctionsHelper;
+use OpenSpout\Common\Manager\OptionsManagerInterface;
+use OpenSpout\Writer\Common\Entity\Options;
+use OpenSpout\Writer\Exception\WriterAlreadyOpenedException;
+use OpenSpout\Writer\Exception\WriterNotOpenedException;
 
 /**
  * Class WriterAbstract
@@ -169,7 +169,7 @@ abstract class WriterAbstract implements WriterInterface
      */
     protected function throwIfFilePointerIsNotAvailable()
     {
-        if (!$this->filePointer) {
+        if (!is_resource($this->filePointer)) {
             throw new IOException('File pointer has not be opened');
         }
     }

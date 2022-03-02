@@ -12,7 +12,7 @@ Even though a spreadsheet contains multiple sheets, you may be interested in rea
 ```php
 <?php
 
-use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
+use OpenSpout\Reader\Common\Creator\ReaderEntityFactory;
 
 $reader = ReaderEntityFactory::createXLSXReader();
 $reader->open($filePath);
@@ -35,7 +35,7 @@ $reader->close();
 ```php
 <?php
 
-use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
+use OpenSpout\Reader\Common\Creator\ReaderEntityFactory;
 
 $reader = ReaderEntityFactory::createXLSXReader();
 $reader->open($filePath);

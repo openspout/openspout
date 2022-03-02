@@ -50,7 +50,7 @@ Regardless of the file type, the interface to read a file is always the same:
 
 ```php
 
-use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
+use OpenSpout\Reader\Common\Creator\ReaderEntityFactory;
 
 $reader = ReaderEntityFactory::createReaderFromFile('/path/to/file.ext');
 
@@ -73,7 +73,7 @@ If there are multiple sheets in the file, the reader will read all of them seque
 Note that {{ site.spout_html }} guesses the reader type based on the file extension. If the extension is not standard (`.csv`, `.ods`, `.xlsx` _- lower/uppercase_), a specific reader can be created directly:
 
 ```php
-use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
+use OpenSpout\Reader\Common\Creator\ReaderEntityFactory;
 
 $reader = ReaderEntityFactory::createXLSXReader();
 // $reader = ReaderEntityFactory::createODSReader();
@@ -85,8 +85,8 @@ $reader = ReaderEntityFactory::createXLSXReader();
 As with the reader, there is one common interface to write data to a file:
 
 ```php
-use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
-use Box\Spout\Common\Entity\Row;
+use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
+use OpenSpout\Common\Entity\Row;
 
 $writer = WriterEntityFactory::createXLSXWriter();
 // $writer = WriterEntityFactory::createODSWriter();
@@ -123,8 +123,8 @@ $writer->close();
 Similar to the reader, if the file extension of the file to be written is not standard, specific writers can be created this way:
 
 ```php
-use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
-use Box\Spout\Common\Entity\Row;
+use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
+use OpenSpout\Common\Entity\Row;
 
 $writer = WriterEntityFactory::createXLSXWriter();
 // $writer = WriterEntityFactory::createODSWriter();

@@ -1,8 +1,8 @@
 <?php
 
-namespace Box\Spout\Common\Helper;
+namespace OpenSpout\Common\Helper;
 
-use Box\Spout\Common\Exception\IOException;
+use OpenSpout\Common\Exception\IOException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
  */
 class FileSystemHelperTest extends TestCase
 {
-    /** @var \Box\Spout\Writer\XLSX\Helper\FileSystemHelper */
+    /** @var FileSystemHelper */
     protected $fileSystemHelper;
 
     /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace Box\Spout\Common\Entity\Style;
+namespace OpenSpout\Common\Entity\Style;
 
 /**
  * Class Border

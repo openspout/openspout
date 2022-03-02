@@ -1,6 +1,6 @@
 <?php
 
-namespace Box\Spout\Reader\Exception;
+namespace OpenSpout\Reader\Exception;
 
 /**
  * Class NoSheetsFoundException

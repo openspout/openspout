@@ -1,16 +1,17 @@
 <?php
 
-namespace Box\Spout\Writer\XLSX\Manager\Style;
+namespace OpenSpout\Writer\XLSX\Manager\Style;
 
-use Box\Spout\Common\Entity\Style\Color;
-use Box\Spout\Common\Entity\Style\Style;
-use Box\Spout\Writer\XLSX\Helper\BorderHelper;
+use OpenSpout\Common\Entity\Style\BorderPart;
+use OpenSpout\Common\Entity\Style\Color;
+use OpenSpout\Common\Entity\Style\Style;
+use OpenSpout\Writer\XLSX\Helper\BorderHelper;
 
 /**
  * Class StyleManager
  * Manages styles to be applied to a cell
  */
-class StyleManager extends \Box\Spout\Writer\Common\Manager\Style\StyleManager
+class StyleManager extends \OpenSpout\Writer\Common\Manager\Style\StyleManager
 {
     /** @var StyleRegistry */
     protected $styleRegistry;
@@ -186,7 +187,7 @@ EOD;
         $content .= '<border><left/><right/><top/><bottom/></border>';
 
         foreach ($registeredBorders as $styleId) {
-            /** @var \Box\Spout\Common\Entity\Style\Style $style */
+            /** @var Style $style */
             $style = $this->styleRegistry->getStyleFromStyleId($styleId);
             $border = $style->getBorder();
             $content .= '<border>';
@@ -196,7 +197,7 @@ EOD;
 
             foreach ($sortOrder as $partName) {
                 if ($border->hasPart($partName)) {
-                    /** @var $part \Box\Spout\Common\Entity\Style\BorderPart */
+                    /** @var BorderPart $part */
                     $part = $border->getPart($partName);
                     $content .= BorderHelper::serializeBorderPart($part);
                 }

@@ -1,10 +1,10 @@
 <?php
 
-namespace Box\Spout\Reader\XLSX\Helper;
+namespace OpenSpout\Reader\XLSX\Helper;
 
-use Box\Spout\Common\Helper\Escaper;
-use Box\Spout\Reader\Exception\InvalidValueException;
-use Box\Spout\Reader\XLSX\Manager\StyleManager;
+use OpenSpout\Common\Helper\Escaper;
+use OpenSpout\Reader\Exception\InvalidValueException;
+use OpenSpout\Reader\XLSX\Manager\StyleManager;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -79,7 +79,7 @@ class CellValueFormatterTest extends TestCase
             ->method('getAttribute')
             ->will($this->returnValueMap([
                 [CellValueFormatter::XML_ATTRIBUTE_TYPE, CellValueFormatter::CELL_TYPE_NUMERIC],
-                [CellValueFormatter::XML_ATTRIBUTE_STYLE_ID, 123],
+                [CellValueFormatter::XML_ATTRIBUTE_STYLE_ID, '123'],
             ]));
 
         $nodeMock
@@ -88,7 +88,7 @@ class CellValueFormatterTest extends TestCase
             ->with(CellValueFormatter::XML_NODE_VALUE)
             ->will($this->returnValue($nodeListMock));
 
-        /** @var StyleManager|\PHPUnit_Framework_MockObject_MockObject $styleManagerMock */
+        /** @var StyleManager|\PHPUnit\Framework\MockObject\MockObject $styleManagerMock */
         $styleManagerMock = $this->createMock(StyleManager::class);
 
         $styleManagerMock
@@ -149,7 +149,7 @@ class CellValueFormatterTest extends TestCase
      */
     public function testFormatNumericCellValueWithNumbers($value, $expectedFormattedValue, $expectedType)
     {
-        /** @var StyleManager|\PHPUnit_Framework_MockObject_MockObject $styleManagerMock */
+        /** @var StyleManager|\PHPUnit\Framework\MockObject\MockObject $styleManagerMock */
         $styleManagerMock = $this->createMock(StyleManager::class);
         $styleManagerMock
             ->expects($this->once())

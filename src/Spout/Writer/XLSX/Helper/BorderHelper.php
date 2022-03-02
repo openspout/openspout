@@ -1,9 +1,9 @@
 <?php
 
-namespace Box\Spout\Writer\XLSX\Helper;
+namespace OpenSpout\Writer\XLSX\Helper;
 
-use Box\Spout\Common\Entity\Style\Border;
-use Box\Spout\Common\Entity\Style\BorderPart;
+use OpenSpout\Common\Entity\Style\Border;
+use OpenSpout\Common\Entity\Style\BorderPart;
 
 class BorderHelper
 {

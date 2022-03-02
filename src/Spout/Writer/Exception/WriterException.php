@@ -1,8 +1,8 @@
 <?php
 
-namespace Box\Spout\Writer\Exception;
+namespace OpenSpout\Writer\Exception;
 
-use Box\Spout\Common\Exception\SpoutException;
+use OpenSpout\Common\Exception\SpoutException;
 
 /**
  * Class WriterException

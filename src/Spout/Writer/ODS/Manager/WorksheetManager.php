@@ -1,19 +1,19 @@
 <?php
 
-namespace Box\Spout\Writer\ODS\Manager;
+namespace OpenSpout\Writer\ODS\Manager;
 
-use Box\Spout\Common\Entity\Cell;
-use Box\Spout\Common\Entity\Row;
-use Box\Spout\Common\Entity\Style\Style;
-use Box\Spout\Common\Exception\InvalidArgumentException;
-use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Common\Helper\Escaper\ODS as ODSEscaper;
-use Box\Spout\Common\Helper\StringHelper;
-use Box\Spout\Writer\Common\Entity\Worksheet;
-use Box\Spout\Writer\Common\Manager\RegisteredStyle;
-use Box\Spout\Writer\Common\Manager\Style\StyleMerger;
-use Box\Spout\Writer\Common\Manager\WorksheetManagerInterface;
-use Box\Spout\Writer\ODS\Manager\Style\StyleManager;
+use OpenSpout\Common\Entity\Cell;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Entity\Style\Style;
+use OpenSpout\Common\Exception\InvalidArgumentException;
+use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Common\Helper\Escaper\ODS as ODSEscaper;
+use OpenSpout\Common\Helper\StringHelper;
+use OpenSpout\Writer\Common\Entity\Worksheet;
+use OpenSpout\Writer\Common\Manager\RegisteredStyle;
+use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
+use OpenSpout\Writer\Common\Manager\WorksheetManagerInterface;
+use OpenSpout\Writer\ODS\Manager\Style\StyleManager;
 
 /**
  * Class WorksheetManager
@@ -21,7 +21,7 @@ use Box\Spout\Writer\ODS\Manager\Style\StyleManager;
  */
 class WorksheetManager implements WorksheetManagerInterface
 {
-    /** @var \Box\Spout\Common\Helper\Escaper\ODS Strings escaper */
+    /** @var \OpenSpout\Common\Helper\Escaper\ODS Strings escaper */
     private $stringsEscaper;
 
     /** @var StringHelper String helper */
@@ -57,7 +57,7 @@ class WorksheetManager implements WorksheetManagerInterface
      * Prepares the worksheet to accept data
      *
      * @param Worksheet $worksheet The worksheet to start
-     * @throws \Box\Spout\Common\Exception\IOException If the sheet data file cannot be opened for writing
+     * @throws \OpenSpout\Common\Exception\IOException If the sheet data file cannot be opened for writing
      * @return void
      */
     public function startSheet(Worksheet $worksheet)
@@ -86,7 +86,7 @@ class WorksheetManager implements WorksheetManagerInterface
      * Returns the table XML root node as string.
      *
      * @param Worksheet $worksheet
-     * @return string <table> node as string
+     * @return string "<table>" node as string
      */
     public function getTableElementStartAsString(Worksheet $worksheet)
     {
@@ -95,7 +95,7 @@ class WorksheetManager implements WorksheetManagerInterface
         $tableStyleName = 'ta' . ($externalSheet->getIndex() + 1);
 
         $tableElement = '<table:table table:style-name="' . $tableStyleName . '" table:name="' . $escapedSheetName . '">';
-        $tableElement .= '<table:table-column table:default-cell-style-name="ce1" table:style-name="co1" table:number-columns-repeated="' . $worksheet->getMaxNumColumns() . '"/>';
+        $tableElement .= $this->styleManager->getStyledTableColumnXMLContent($worksheet->getMaxNumColumns());
 
         return $tableElement;
     }
@@ -264,5 +264,40 @@ class WorksheetManager implements WorksheetManagerInterface
         }
 
         \fclose($worksheetFilePointer);
+    }
+
+    /**
+     * @param float|null $width
+     */
+    public function setDefaultColumnWidth($width)
+    {
+        $this->styleManager->setDefaultColumnWidth($width);
+    }
+
+    /**
+     * @param float|null $height
+     */
+    public function setDefaultRowHeight($height)
+    {
+        $this->styleManager->setDefaultRowHeight($height);
+    }
+
+    /**
+     * @param float $width
+     * @param int $columns One or more columns with this width
+     */
+    public function setColumnWidth(float $width, ...$columns)
+    {
+        $this->styleManager->setColumnWidth($width, ...$columns);
+    }
+
+    /**
+     * @param float $width The width to set
+     * @param int $start First column index of the range
+     * @param int $end Last column index of the range
+     */
+    public function setColumnWidthForRange(float $width, int $start, int $end)
+    {
+        $this->styleManager->setColumnWidthForRange($width, $start, $end);
     }
 }

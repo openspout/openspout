@@ -1,27 +1,27 @@
-# Spout
+# OpenSpout
 
-[![Latest Stable Version](https://poser.pugx.org/box/spout/v/stable)](https://packagist.org/packages/box/spout)
-[![Project Status](https://opensource.box.com/badges/active.svg)](https://opensource.box.com/badges)
-[![Build Status](https://travis-ci.org/box/spout.svg?branch=master)](https://travis-ci.org/box/spout)
-[![Coverage Status](https://coveralls.io/repos/github/box/spout/badge.svg?branch=master)](https://coveralls.io/github/box/spout?branch=master)
-[![Total Downloads](https://poser.pugx.org/box/spout/downloads)](https://packagist.org/packages/box/spout)
+[![Latest Stable Version](https://poser.pugx.org/openspout/openspout/v/stable)](https://packagist.org/packages/openspout/openspout)
+[![Build Status](https://github.com/openspout/openspout/actions/workflows/ci.yml/badge.svg)](https://github.com/openspout/openspout/actions/workflows/ci.yml)
+[![Coverage Status](https://coveralls.io/repos/github/openspout/openspout/badge.svg?branch=main)](https://coveralls.io/github/openspout/openspout?branch=main)
+[![Total Downloads](https://poser.pugx.org/openspout/openspout/downloads)](https://packagist.org/packages/openspout/openspout)
 
-Spout is a PHP library to read and write spreadsheet files (CSV, XLSX and ODS), in a fast and scalable way.
+OpenSpout is a community driven fork of `box/spout`, a PHP library to read and write spreadsheet files (CSV, XLSX and ODS), in a fast and scalable way.
 Unlike other file readers or writers, it is capable of processing very large files, while keeping the memory usage really low (less than 3MB).
-
-Join the community and come discuss Spout: [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/box/spout?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-
 
 ## Documentation
 
-Full documentation can be found at [https://opensource.box.com/spout/](https://opensource.box.com/spout/).
-
+`box/spout` documentation can be found at [https://opensource.box.com/spout/](https://opensource.box.com/spout/).
 
 ## Requirements
 
-* PHP version 7.2 or higher
+* PHP version 7.3 or higher
 * PHP extension `php_zip` enabled
 * PHP extension `php_xmlreader` enabled
+
+## Upgrade from `box/spout`
+
+1. Replace `box/spout` with `openspout/openspout` in your `composer.json`
+2. Replace `Box\Spout` with `OpenSpout` in your code
 
 ## Upgrade guide
 
@@ -29,7 +29,7 @@ Version 3 introduced new functionality but also some breaking changes. If you wa
 
 ## Running tests
 
-The `master` branch includes unit, functional and performance tests.
+The `main` branch includes unit, functional and performance tests.
 If you just want to check that everything is working as expected, executing the unit and functional tests is enough.
 
 * `phpunit` - runs unit and functional tests
@@ -39,24 +39,16 @@ For information, the performance tests take about 10 minutes to run (processing 
 
 > Performance tests status: [![Build Status](https://travis-ci.org/box/spout.svg?branch=perf-tests)](https://travis-ci.org/box/spout)
 
-
-## Support
-
-You can ask questions, submit new features ideas or discuss Spout in the chat room:<br>
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/box/spout?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-
 ## Copyright and License
 
-Copyright 2017 Box, Inc. All rights reserved.
+This is a fork of Box's Spout library: https://github.com/box/spout
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+Code until and directly descending from commit [`cc42c1d`](https://github.com/openspout/openspout/commit/cc42c1d29fc5d29f07caeace99bd29dbb6d7c2f8)
+is copyright of _Box, Inc._ and licensed under the Apache License, Version 2.0:
 
-   http://www.apache.org/licenses/LICENSE-2.0
+https://github.com/openspout/openspout/blob/cc42c1d29fc5d29f07caeace99bd29dbb6d7c2f8/LICENSE
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+Code created, edited and released after the commit mentioned above
+is copyright of _openspout_ Github organization and licensed under MIT License.
+
+https://github.com/openspout/openspout/blob/main/LICENSE

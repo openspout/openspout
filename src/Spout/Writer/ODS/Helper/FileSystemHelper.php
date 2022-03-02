@@ -1,19 +1,19 @@
 <?php
 
-namespace Box\Spout\Writer\ODS\Helper;
+namespace OpenSpout\Writer\ODS\Helper;
 
-use Box\Spout\Writer\Common\Entity\Worksheet;
-use Box\Spout\Writer\Common\Helper\FileSystemWithRootFolderHelperInterface;
-use Box\Spout\Writer\Common\Helper\ZipHelper;
-use Box\Spout\Writer\ODS\Manager\Style\StyleManager;
-use Box\Spout\Writer\ODS\Manager\WorksheetManager;
+use OpenSpout\Writer\Common\Entity\Worksheet;
+use OpenSpout\Writer\Common\Helper\FileSystemWithRootFolderHelperInterface;
+use OpenSpout\Writer\Common\Helper\ZipHelper;
+use OpenSpout\Writer\ODS\Manager\Style\StyleManager;
+use OpenSpout\Writer\ODS\Manager\WorksheetManager;
 
 /**
  * Class FileSystemHelper
  * This class provides helper functions to help with the file system operations
  * like files/folders creation & deletion for ODS files
  */
-class FileSystemHelper extends \Box\Spout\Common\Helper\FileSystemHelper implements FileSystemWithRootFolderHelperInterface
+class FileSystemHelper extends \OpenSpout\Common\Helper\FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 {
     public const APP_NAME = 'Spout';
     public const MIMETYPE = 'application/vnd.oasis.opendocument.spreadsheet';
@@ -68,7 +68,7 @@ class FileSystemHelper extends \Box\Spout\Common\Helper\FileSystemHelper impleme
     /**
      * Creates all the folders needed to create a ODS file, as well as the files that won't change.
      *
-     * @throws \Box\Spout\Common\Exception\IOException If unable to create at least one of the base folders
+     * @throws \OpenSpout\Common\Exception\IOException If unable to create at least one of the base folders
      * @return void
      */
     public function createBaseFilesAndFolders()
@@ -84,7 +84,7 @@ class FileSystemHelper extends \Box\Spout\Common\Helper\FileSystemHelper impleme
     /**
      * Creates the folder that will be used as root
      *
-     * @throws \Box\Spout\Common\Exception\IOException If unable to create the folder
+     * @throws \OpenSpout\Common\Exception\IOException If unable to create the folder
      * @return FileSystemHelper
      */
     protected function createRootFolder()
@@ -97,7 +97,7 @@ class FileSystemHelper extends \Box\Spout\Common\Helper\FileSystemHelper impleme
     /**
      * Creates the "META-INF" folder under the root folder as well as the "manifest.xml" file in it
      *
-     * @throws \Box\Spout\Common\Exception\IOException If unable to create the folder or the "manifest.xml" file
+     * @throws \OpenSpout\Common\Exception\IOException If unable to create the folder or the "manifest.xml" file
      * @return FileSystemHelper
      */
     protected function createMetaInfoFolderAndFile()
@@ -112,7 +112,7 @@ class FileSystemHelper extends \Box\Spout\Common\Helper\FileSystemHelper impleme
     /**
      * Creates the "manifest.xml" file under the "META-INF" folder (under root)
      *
-     * @throws \Box\Spout\Common\Exception\IOException If unable to create the file
+     * @throws \OpenSpout\Common\Exception\IOException If unable to create the file
      * @return FileSystemHelper
      */
     protected function createManifestFile()
@@ -136,7 +136,7 @@ EOD;
      * Creates the temp folder where specific sheets content will be written to.
      * This folder is not part of the final ODS file and is only used to be able to jump between sheets.
      *
-     * @throws \Box\Spout\Common\Exception\IOException If unable to create the folder
+     * @throws \OpenSpout\Common\Exception\IOException If unable to create the folder
      * @return FileSystemHelper
      */
     protected function createSheetsContentTempFolder()
@@ -149,7 +149,7 @@ EOD;
     /**
      * Creates the "meta.xml" file under the root folder
      *
-     * @throws \Box\Spout\Common\Exception\IOException If unable to create the file
+     * @throws \OpenSpout\Common\Exception\IOException If unable to create the file
      * @return FileSystemHelper
      */
     protected function createMetaFile()
@@ -176,7 +176,7 @@ EOD;
     /**
      * Creates the "mimetype" file under the root folder
      *
-     * @throws \Box\Spout\Common\Exception\IOException If unable to create the file
+     * @throws \OpenSpout\Common\Exception\IOException If unable to create the file
      * @return FileSystemHelper
      */
     protected function createMimetypeFile()

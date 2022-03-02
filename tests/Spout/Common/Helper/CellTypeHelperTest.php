@@ -1,6 +1,6 @@
 <?php
 
-namespace Box\Spout\Common\Helper;
+namespace OpenSpout\Common\Helper;
 
 use PHPUnit\Framework\TestCase;
 
@@ -82,5 +82,24 @@ class CellTypeHelperTest extends TestCase
         $this->assertFalse(CellTypeHelper::isBoolean([true]));
         $this->assertFalse(CellTypeHelper::isBoolean(new \stdClass()));
         $this->assertFalse(CellTypeHelper::isBoolean(null));
+    }
+
+    /**
+     * @return void
+     */
+    public function testIsFormula()
+    {
+        $this->assertTrue(CellTypeHelper::isFormula('=SUM(A1:A2)'));
+
+        $this->assertFalse(CellTypeHelper::isFormula(0));
+        $this->assertFalse(CellTypeHelper::isFormula(1));
+        $this->assertFalse(CellTypeHelper::isFormula('0'));
+        $this->assertFalse(CellTypeHelper::isFormula('1'));
+        $this->assertFalse(CellTypeHelper::isFormula('true'));
+        $this->assertFalse(CellTypeHelper::isFormula('false'));
+        $this->assertFalse(CellTypeHelper::isFormula(''));
+        $this->assertFalse(CellTypeHelper::isFormula([true]));
+        $this->assertFalse(CellTypeHelper::isFormula(new \stdClass()));
+        $this->assertFalse(CellTypeHelper::isFormula(null));
     }
 }

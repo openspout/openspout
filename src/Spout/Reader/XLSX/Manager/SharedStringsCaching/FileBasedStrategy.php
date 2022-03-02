@@ -1,9 +1,9 @@
 <?php
 
-namespace Box\Spout\Reader\XLSX\Manager\SharedStringsCaching;
+namespace OpenSpout\Reader\XLSX\Manager\SharedStringsCaching;
 
-use Box\Spout\Reader\Exception\SharedStringNotFoundException;
-use Box\Spout\Reader\XLSX\Creator\HelperFactory;
+use OpenSpout\Reader\Exception\SharedStringNotFoundException;
+use OpenSpout\Reader\XLSX\Creator\HelperFactory;
 
 /**
  * Class FileBasedStrategy
@@ -17,10 +17,10 @@ class FileBasedStrategy implements CachingStrategyInterface
     /** Value to use to escape the line feed character ("\n") */
     public const ESCAPED_LINE_FEED_CHARACTER = '_x000A_';
 
-    /** @var \Box\Spout\Common\Helper\GlobalFunctionsHelper Helper to work with global functions */
+    /** @var \OpenSpout\Common\Helper\GlobalFunctionsHelper Helper to work with global functions */
     protected $globalFunctionsHelper;
 
-    /** @var \Box\Spout\Common\Helper\FileSystemHelper Helper to perform file system operations */
+    /** @var \OpenSpout\Common\Helper\FileSystemHelper Helper to perform file system operations */
     protected $fileSystemHelper;
 
     /** @var string Temporary folder where the temporary files will be created */
@@ -32,7 +32,7 @@ class FileBasedStrategy implements CachingStrategyInterface
      */
     protected $maxNumStringsPerTempFile;
 
-    /** @var resource Pointer to the last temp file a shared string was written to */
+    /** @var resource|null Pointer to the last temp file a shared string was written to */
     protected $tempFilePointer;
 
     /**
@@ -119,7 +119,7 @@ class FileBasedStrategy implements CachingStrategyInterface
      * Returns the string located at the given index from the cache.
      *
      * @param int $sharedStringIndex Index of the shared string in the sharedStrings.xml file
-     * @throws \Box\Spout\Reader\Exception\SharedStringNotFoundException If no shared string found for the given index
+     * @throws \OpenSpout\Reader\Exception\SharedStringNotFoundException If no shared string found for the given index
      * @return string The shared string at the given index
      */
     public function getStringAtIndex($sharedStringIndex)

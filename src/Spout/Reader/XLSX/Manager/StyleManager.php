@@ -1,8 +1,8 @@
 <?php
 
-namespace Box\Spout\Reader\XLSX\Manager;
+namespace OpenSpout\Reader\XLSX\Manager;
 
-use Box\Spout\Reader\XLSX\Creator\InternalEntityFactory;
+use OpenSpout\Reader\XLSX\Creator\InternalEntityFactory;
 
 /**
  * Class StyleManager
@@ -60,10 +60,10 @@ class StyleManager
     /** @var array Array containing the IDs of built-in number formats indicating a date */
     protected $builtinNumFmtIdIndicatingDates;
 
-    /** @var array Array containing a mapping NUM_FMT_ID => FORMAT_CODE */
+    /** @var array|null Array containing a mapping NUM_FMT_ID => FORMAT_CODE */
     protected $customNumberFormats;
 
-    /** @var array Array containing a mapping STYLE_ID => [STYLE_ATTRIBUTES] */
+    /** @var array|null Array containing a mapping STYLE_ID => [STYLE_ATTRIBUTES] */
     protected $stylesAttributes;
 
     /** @var array Cache containing a mapping NUM_FMT_ID => IS_DATE_FORMAT. Used to avoid lots of recalculations */
@@ -142,7 +142,7 @@ class StyleManager
      * For simplicity, the styles attributes are kept in memory. This is possible thanks
      * to the reuse of formats. So 1 million cells should not use 1 million formats.
      *
-     * @param \Box\Spout\Reader\Wrapper\XMLReader $xmlReader XML Reader positioned on the "numFmts" node
+     * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader XML Reader positioned on the "numFmts" node
      * @return void
      */
     protected function extractNumberFormats($xmlReader)
@@ -164,7 +164,7 @@ class StyleManager
      * For simplicity, the styles attributes are kept in memory. This is possible thanks
      * to the reuse of styles. So 1 million cells should not use 1 million styles.
      *
-     * @param \Box\Spout\Reader\Wrapper\XMLReader $xmlReader XML Reader positioned on the "cellXfs" node
+     * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader XML Reader positioned on the "cellXfs" node
      * @return void
      */
     protected function extractStyleAttributes($xmlReader)
