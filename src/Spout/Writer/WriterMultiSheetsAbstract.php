@@ -4,6 +4,7 @@ namespace OpenSpout\Writer;
 
 use OpenSpout\Common\Creator\HelperFactory;
 use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\GlobalFunctionsHelper;
 use OpenSpout\Common\Manager\OptionsManagerInterface;
 use OpenSpout\Writer\Common\Creator\ManagerFactoryInterface;
@@ -55,7 +56,10 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
     {
         $this->throwIfWriterAlreadyOpened('Writer must be configured before opening it.');
 
-        $this->optionsManager->setOption(Options::SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY, $shouldCreateNewSheetsAutomatically);
+        $this->optionsManager->setOption(
+            Options::SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY,
+            $shouldCreateNewSheetsAutomatically
+        );
 
         return $this;
     }
@@ -94,6 +98,7 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
     /**
      * Creates a new sheet and make it the current sheet. The data will now be written to this sheet.
      *
+     * @throws IOException
      * @throws WriterNotOpenedException If the writer has not been opened yet
      * @return Sheet The created sheet
      */
@@ -123,14 +128,63 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
      * The writing will resume where it stopped (i.e. data won't be truncated).
      *
      * @param Sheet $sheet The sheet to set as current
-     * @throws WriterNotOpenedException If the writer has not been opened yet
      * @throws SheetNotFoundException If the given sheet does not exist in the workbook
+     * @throws WriterNotOpenedException If the writer has not been opened yet
      * @return void
      */
     public function setCurrentSheet($sheet)
     {
         $this->throwIfWorkbookIsNotAvailable();
         $this->workbookManager->setCurrentSheet($sheet);
+    }
+
+    /**
+     * @param float $width
+     * @throws WriterAlreadyOpenedException
+     */
+    public function setDefaultColumnWidth(float $width)
+    {
+        $this->throwIfWriterAlreadyOpened('Writer must be configured before opening it.');
+        $this->optionsManager->setOption(
+            Options::DEFAULT_COLUMN_WIDTH,
+            $width
+        );
+    }
+
+    /**
+     * @param float $height
+     * @throws WriterAlreadyOpenedException
+     */
+    public function setDefaultRowHeight(float $height)
+    {
+        $this->throwIfWriterAlreadyOpened('Writer must be configured before opening it.');
+        $this->optionsManager->setOption(
+            Options::DEFAULT_ROW_HEIGHT,
+            $height
+        );
+    }
+
+    /**
+     * @param float|null $width
+     * @param array $columns One or more columns with this width
+     * @throws WriterNotOpenedException
+     */
+    public function setColumnWidth($width, ...$columns)
+    {
+        $this->throwIfWorkbookIsNotAvailable();
+        $this->workbookManager->setColumnWidth($width, ...$columns);
+    }
+
+    /**
+     * @param float $width The width to set
+     * @param int $start First column index of the range
+     * @param int $end Last column index of the range
+     * @throws WriterNotOpenedException
+     */
+    public function setColumnWidthForRange(float $width, int $start, int $end)
+    {
+        $this->throwIfWorkbookIsNotAvailable();
+        $this->workbookManager->setColumnWidthForRange($width, $start, $end);
     }
 
     /**
@@ -141,13 +195,15 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
      */
     protected function throwIfWorkbookIsNotAvailable()
     {
-        if ($this->workbookManager->getWorkbook() === null) {
+        if (!$this->workbookManager->getWorkbook()) {
             throw new WriterNotOpenedException('The writer must be opened before performing this action.');
         }
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @throws Exception\WriterException
      */
     protected function addRowToWriter(Row $row)
     {

@@ -82,7 +82,7 @@ class SheetTest extends TestCase
      */
     public function testSetSheetVisibilityShouldCreateSheetHidden()
     {
-        $fileName = 'test_set_visibility_should_create_sheet_hidden.xlsx';
+        $fileName = 'test_set_visibility_should_create_sheet_hidden.ods';
         $this->writeDataToHiddenSheet($fileName);
 
         $resourcePath = $this->getGeneratedResourcePath($fileName);
@@ -92,6 +92,17 @@ class SheetTest extends TestCase
         $this->assertStringContainsString(' table:display="false"', $xmlContents, 'The sheet visibility should have been changed to "hidden"');
     }
 
+    private function writerForFile($fileName)
+    {
+        $this->createGeneratedFolderIfNeeded($fileName);
+        $resourcePath = $this->getGeneratedResourcePath($fileName);
+
+        $writer = WriterEntityFactory::createODSWriter();
+        $writer->openToFile($resourcePath);
+
+        return $writer;
+    }
+
     /**
      * @param string $fileName
      * @param string $sheetName
@@ -99,11 +110,7 @@ class SheetTest extends TestCase
      */
     private function writeDataAndReturnSheetWithCustomName($fileName, $sheetName)
     {
-        $this->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
-
-        $writer = WriterEntityFactory::createODSWriter();
-        $writer->openToFile($resourcePath);
+        $writer = $this->writerForFile($fileName);
 
         $sheet = $writer->getCurrentSheet();
         $sheet->setName($sheetName);
