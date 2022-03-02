@@ -1,0 +1,5 @@
+site_name: OpenSpout Documentation
+repo_url: https://github.com/openspout/openspout
+edit_uri: edit/main/docs/
+
+theme: readthedocs
