@@ -1,8 +1,8 @@
 <?php
 
-namespace Box\Spout\Reader\XLSX\Manager\SharedStringsCaching;
+namespace OpenSpout\Reader\XLSX\Manager\SharedStringsCaching;
 
-use Box\Spout\Reader\XLSX\Creator\HelperFactory;
+use OpenSpout\Reader\XLSX\Creator\HelperFactory;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -36,20 +36,20 @@ class CachingStrategyFactoryTest extends TestCase
      */
     public function testCreateBestCachingStrategy($sharedStringsUniqueCount, $memoryLimitInKB, $expectedStrategyClassName)
     {
-        /** @var CachingStrategyFactory|\PHPUnit_Framework_MockObject_MockObject $factoryStub */
+        /** @var CachingStrategyFactory|\PHPUnit\Framework\MockObject\MockObject $factoryStub */
         $factoryStub = $this
-            ->getMockBuilder('\Box\Spout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory')
+            ->getMockBuilder('\OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory')
             ->disableOriginalConstructor()
-            ->setMethods(['getMemoryLimitInKB'])
+            ->onlyMethods(['getMemoryLimitInKB'])
             ->getMock();
 
         $factoryStub->method('getMemoryLimitInKB')->willReturn($memoryLimitInKB);
 
         $tempFolder = sys_get_temp_dir();
-        $helperFactory = new HelperFactory($factoryStub);
+        $helperFactory = new HelperFactory();
         $strategy = $factoryStub->createBestCachingStrategy($sharedStringsUniqueCount, $tempFolder, $helperFactory);
 
-        $fullExpectedStrategyClassName = 'Box\Spout\Reader\XLSX\Manager\SharedStringsCaching\\' . $expectedStrategyClassName;
+        $fullExpectedStrategyClassName = 'OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\\' . $expectedStrategyClassName;
         $this->assertEquals($fullExpectedStrategyClassName, get_class($strategy));
 
         $strategy->clearCache();
@@ -84,11 +84,11 @@ class CachingStrategyFactoryTest extends TestCase
      */
     public function testGetMemoryLimitInKB($memoryLimitFormatted, $expectedMemoryLimitInKB)
     {
-        /** @var CachingStrategyFactory|\PHPUnit_Framework_MockObject_MockObject $factoryStub */
+        /** @var CachingStrategyFactory|\PHPUnit\Framework\MockObject\MockObject $factoryStub */
         $factoryStub = $this
-            ->getMockBuilder('\Box\Spout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory')
+            ->getMockBuilder('\OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory')
             ->disableOriginalConstructor()
-            ->setMethods(['getMemoryLimitFromIni'])
+            ->onlyMethods(['getMemoryLimitFromIni'])
             ->getMock();
 
         $factoryStub->method('getMemoryLimitFromIni')->willReturn($memoryLimitFormatted);

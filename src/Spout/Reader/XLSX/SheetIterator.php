@@ -1,10 +1,10 @@
 <?php
 
-namespace Box\Spout\Reader\XLSX;
+namespace OpenSpout\Reader\XLSX;
 
-use Box\Spout\Reader\Exception\NoSheetsFoundException;
-use Box\Spout\Reader\IteratorInterface;
-use Box\Spout\Reader\XLSX\Manager\SheetManager;
+use OpenSpout\Reader\Exception\NoSheetsFoundException;
+use OpenSpout\Reader\IteratorInterface;
+use OpenSpout\Reader\XLSX\Manager\SheetManager;
 
 /**
  * Class SheetIterator
@@ -12,7 +12,7 @@ use Box\Spout\Reader\XLSX\Manager\SheetManager;
  */
 class SheetIterator implements IteratorInterface
 {
-    /** @var \Box\Spout\Reader\XLSX\Sheet[] The list of sheet present in the file */
+    /** @var \OpenSpout\Reader\XLSX\Sheet[] The list of sheet present in the file */
     protected $sheets;
 
     /** @var int The index of the sheet being read (zero-based) */
@@ -20,7 +20,7 @@ class SheetIterator implements IteratorInterface
 
     /**
      * @param SheetManager $sheetManager Manages sheets
-     * @throws \Box\Spout\Reader\Exception\NoSheetsFoundException If there are no sheets in the file
+     * @throws \OpenSpout\Reader\Exception\NoSheetsFoundException If there are no sheets in the file
      */
     public function __construct($sheetManager)
     {
@@ -75,7 +75,7 @@ class SheetIterator implements IteratorInterface
      * Return the current element
      * @see http://php.net/manual/en/iterator.current.php
      *
-     * @return \Box\Spout\Reader\XLSX\Sheet
+     * @return \OpenSpout\Reader\XLSX\Sheet
      */
     public function current()
     {

@@ -1,15 +1,15 @@
 <?php
 
-namespace Box\Spout\Reader\XLSX;
+namespace OpenSpout\Reader\XLSX;
 
-use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Common\Helper\GlobalFunctionsHelper;
-use Box\Spout\Common\Manager\OptionsManagerInterface;
-use Box\Spout\Reader\Common\Creator\InternalEntityFactoryInterface;
-use Box\Spout\Reader\Common\Entity\Options;
-use Box\Spout\Reader\ReaderAbstract;
-use Box\Spout\Reader\XLSX\Creator\InternalEntityFactory;
-use Box\Spout\Reader\XLSX\Creator\ManagerFactory;
+use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Common\Helper\GlobalFunctionsHelper;
+use OpenSpout\Common\Manager\OptionsManagerInterface;
+use OpenSpout\Reader\Common\Creator\InternalEntityFactoryInterface;
+use OpenSpout\Reader\Common\Entity\Options;
+use OpenSpout\Reader\ReaderAbstract;
+use OpenSpout\Reader\XLSX\Creator\InternalEntityFactory;
+use OpenSpout\Reader\XLSX\Creator\ManagerFactory;
 
 /**
  * Class Reader
@@ -23,7 +23,7 @@ class Reader extends ReaderAbstract
     /** @var \ZipArchive */
     protected $zip;
 
-    /** @var \Box\Spout\Reader\XLSX\Manager\SharedStringsManager Manages shared strings */
+    /** @var \OpenSpout\Reader\XLSX\Manager\SharedStringsManager Manages shared strings */
     protected $sharedStringsManager;
 
     /** @var SheetIterator To iterator over the XLSX sheets */
@@ -72,8 +72,8 @@ class Reader extends ReaderAbstract
      * and fetches all the available sheets.
      *
      * @param  string $filePath Path of the file to be read
-     * @throws \Box\Spout\Common\Exception\IOException If the file at the given path or its content cannot be read
-     * @throws \Box\Spout\Reader\Exception\NoSheetsFoundException If there are no sheets in the file
+     * @throws \OpenSpout\Common\Exception\IOException If the file at the given path or its content cannot be read
+     * @throws \OpenSpout\Reader\Exception\NoSheetsFoundException If there are no sheets in the file
      * @return void
      */
     protected function openReader($filePath)
@@ -119,11 +119,11 @@ class Reader extends ReaderAbstract
      */
     protected function closeReader()
     {
-        if ($this->zip) {
+        if ($this->zip !== null) {
             $this->zip->close();
         }
 
-        if ($this->sharedStringsManager) {
+        if ($this->sharedStringsManager !== null) {
             $this->sharedStringsManager->cleanup();
         }
     }

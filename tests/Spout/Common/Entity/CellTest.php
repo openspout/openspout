@@ -1,6 +1,6 @@
 <?php
 
-namespace Box\Spout\Common\Entity;
+namespace OpenSpout\Common\Entity;
 
 use PHPUnit\Framework\TestCase;
 
@@ -63,6 +63,14 @@ class CellTest extends TestCase
     {
         $this->assertTrue((new Cell(new \DateTime()))->isDate());
         $this->assertTrue((new Cell(new \DateInterval('P2Y4DT6H8M')))->isDate());
+    }
+
+    /**
+     * @return void
+     */
+    public function testCellTypeFormula()
+    {
+        $this->assertTrue((new Cell('=SUM(A1:A2)'))->isFormula());
     }
 
     /**

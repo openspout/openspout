@@ -1,8 +1,8 @@
 <?php
 
-namespace Box\Spout\Common\Helper;
+namespace OpenSpout\Common\Helper;
 
-use Box\Spout\Common\Exception\EncodingConversionException;
+use OpenSpout\Common\Exception\EncodingConversionException;
 
 /**
  * Class EncodingHelper
@@ -11,27 +11,27 @@ use Box\Spout\Common\Exception\EncodingConversionException;
 class EncodingHelper
 {
     /** Definition of the encodings that can have a BOM */
-    const ENCODING_UTF8     = 'UTF-8';
-    const ENCODING_UTF16_LE = 'UTF-16LE';
-    const ENCODING_UTF16_BE = 'UTF-16BE';
-    const ENCODING_UTF32_LE = 'UTF-32LE';
-    const ENCODING_UTF32_BE = 'UTF-32BE';
+    public const ENCODING_UTF8     = 'UTF-8';
+    public const ENCODING_UTF16_LE = 'UTF-16LE';
+    public const ENCODING_UTF16_BE = 'UTF-16BE';
+    public const ENCODING_UTF32_LE = 'UTF-32LE';
+    public const ENCODING_UTF32_BE = 'UTF-32BE';
 
     /** Definition of the BOMs for the different encodings */
-    const BOM_UTF8     = "\xEF\xBB\xBF";
-    const BOM_UTF16_LE = "\xFF\xFE";
-    const BOM_UTF16_BE = "\xFE\xFF";
-    const BOM_UTF32_LE = "\xFF\xFE\x00\x00";
-    const BOM_UTF32_BE = "\x00\x00\xFE\xFF";
+    public const BOM_UTF8     = "\xEF\xBB\xBF";
+    public const BOM_UTF16_LE = "\xFF\xFE";
+    public const BOM_UTF16_BE = "\xFE\xFF";
+    public const BOM_UTF32_LE = "\xFF\xFE\x00\x00";
+    public const BOM_UTF32_BE = "\x00\x00\xFE\xFF";
 
-    /** @var \Box\Spout\Common\Helper\GlobalFunctionsHelper Helper to work with global functions */
+    /** @var \OpenSpout\Common\Helper\GlobalFunctionsHelper Helper to work with global functions */
     protected $globalFunctionsHelper;
 
     /** @var array Map representing the encodings supporting BOMs (key) and their associated BOM (value) */
     protected $supportedEncodingsWithBom;
 
     /**
-     * @param \Box\Spout\Common\Helper\GlobalFunctionsHelper $globalFunctionsHelper
+     * @param \OpenSpout\Common\Helper\GlobalFunctionsHelper $globalFunctionsHelper
      */
     public function __construct($globalFunctionsHelper)
     {
@@ -95,7 +95,7 @@ class EncodingHelper
      *
      * @param string $string Non UTF-8 string to be converted
      * @param string $sourceEncoding The encoding used to encode the source string
-     * @throws \Box\Spout\Common\Exception\EncodingConversionException If conversion is not supported or if the conversion failed
+     * @throws \OpenSpout\Common\Exception\EncodingConversionException If conversion is not supported or if the conversion failed
      * @return string The converted, UTF-8 string
      */
     public function attemptConversionToUTF8($string, $sourceEncoding)
@@ -108,7 +108,7 @@ class EncodingHelper
      *
      * @param string $string UTF-8 string to be converted
      * @param string $targetEncoding The encoding the string should be re-encoded into
-     * @throws \Box\Spout\Common\Exception\EncodingConversionException If conversion is not supported or if the conversion failed
+     * @throws \OpenSpout\Common\Exception\EncodingConversionException If conversion is not supported or if the conversion failed
      * @return string The converted string, encoded with the given encoding
      */
     public function attemptConversionFromUTF8($string, $targetEncoding)
@@ -123,7 +123,7 @@ class EncodingHelper
      * @param string $string string to be converted
      * @param string $sourceEncoding The encoding used to encode the source string
      * @param string $targetEncoding The encoding the string should be re-encoded into
-     * @throws \Box\Spout\Common\Exception\EncodingConversionException If conversion is not supported or if the conversion failed
+     * @throws \OpenSpout\Common\Exception\EncodingConversionException If conversion is not supported or if the conversion failed
      * @return string The converted string, encoded with the given encoding
      */
     protected function attemptConversion($string, $sourceEncoding, $targetEncoding)

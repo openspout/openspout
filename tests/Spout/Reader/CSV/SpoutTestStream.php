@@ -1,6 +1,6 @@
 <?php
 
-namespace Box\Spout\Reader\CSV;
+namespace OpenSpout\Reader\CSV;
 
 /**
  * Class SpoutTestStream
@@ -9,15 +9,15 @@ namespace Box\Spout\Reader\CSV;
  */
 class SpoutTestStream
 {
-    const CLASS_NAME = __CLASS__;
+    public const CLASS_NAME = __CLASS__;
 
-    const PATH_TO_CSV_RESOURCES = 'tests/resources/csv/';
-    const CSV_EXTENSION = '.csv';
+    public const PATH_TO_CSV_RESOURCES = 'tests/resources/csv/';
+    public const CSV_EXTENSION = '.csv';
 
-    /** @var int $position */
+    /** @var int */
     private $position;
 
-    /** @var resource $fileHandle */
+    /** @var resource */
     private $fileHandle;
 
     /**

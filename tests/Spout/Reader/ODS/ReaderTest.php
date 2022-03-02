@@ -1,11 +1,11 @@
 <?php
 
-namespace Box\Spout\Reader\ODS;
+namespace OpenSpout\Reader\ODS;
 
-use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
-use Box\Spout\Reader\Exception\IteratorNotRewindableException;
-use Box\Spout\TestUsingResource;
+use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Reader\Common\Creator\ReaderEntityFactory;
+use OpenSpout\Reader\Exception\IteratorNotRewindableException;
+use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -295,6 +295,10 @@ class ReaderTest extends TestCase
      */
     public function testReadShouldBeProtectedAgainstBillionLaughsAttack()
     {
+        if (function_exists('xdebug_code_coverage_started') && xdebug_code_coverage_started()) {
+            $this->markTestSkipped('test not compatible with code coverage');
+        }
+
         $startTime = microtime(true);
         $fileName = 'attack_billion_laughs.ods';
 
@@ -318,6 +322,10 @@ class ReaderTest extends TestCase
      */
     public function testReadShouldBeProtectedAgainstQuadraticBlowupAttack()
     {
+        if (function_exists('xdebug_code_coverage_started') && xdebug_code_coverage_started()) {
+            $this->markTestSkipped('test not compatible with code coverage');
+        }
+
         $startTime = microtime(true);
 
         $fileName = 'attack_quadratic_blowup.ods';

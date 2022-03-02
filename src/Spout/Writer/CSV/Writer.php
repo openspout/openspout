@@ -1,12 +1,12 @@
 <?php
 
-namespace Box\Spout\Writer\CSV;
+namespace OpenSpout\Writer\CSV;
 
-use Box\Spout\Common\Entity\Row;
-use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Common\Helper\EncodingHelper;
-use Box\Spout\Writer\Common\Entity\Options;
-use Box\Spout\Writer\WriterAbstract;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Common\Helper\EncodingHelper;
+use OpenSpout\Writer\Common\Entity\Options;
+use OpenSpout\Writer\WriterAbstract;
 
 /**
  * Class Writer
@@ -15,7 +15,7 @@ use Box\Spout\Writer\WriterAbstract;
 class Writer extends WriterAbstract
 {
     /** Number of rows to write before flushing */
-    const FLUSH_THRESHOLD = 500;
+    public const FLUSH_THRESHOLD = 500;
 
     /** @var string Content-Type value for the header */
     protected static $headerContentType = 'text/csv; charset=UTF-8';

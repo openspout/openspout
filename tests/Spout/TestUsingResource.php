@@ -1,6 +1,6 @@
 <?php
 
-namespace Box\Spout;
+namespace OpenSpout;
 
 /**
  * Trait TestUsingResource

@@ -1,8 +1,9 @@
 /.idea
 *.iml
 
-/tests/resources/generated
+/tests/**/resources/generated
 /tests/coverage
 /vendor
 /composer.lock
-/.php_cs.cache
+/.php-cs-fixer.cache
+/.phpunit.result.cache

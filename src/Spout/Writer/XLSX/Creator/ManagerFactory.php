@@ -1,19 +1,19 @@
 <?php
 
-namespace Box\Spout\Writer\XLSX\Creator;
+namespace OpenSpout\Writer\XLSX\Creator;
 
-use Box\Spout\Common\Manager\OptionsManagerInterface;
-use Box\Spout\Writer\Common\Creator\InternalEntityFactory;
-use Box\Spout\Writer\Common\Creator\ManagerFactoryInterface;
-use Box\Spout\Writer\Common\Entity\Options;
-use Box\Spout\Writer\Common\Manager\RowManager;
-use Box\Spout\Writer\Common\Manager\SheetManager;
-use Box\Spout\Writer\Common\Manager\Style\StyleMerger;
-use Box\Spout\Writer\XLSX\Manager\SharedStringsManager;
-use Box\Spout\Writer\XLSX\Manager\Style\StyleManager;
-use Box\Spout\Writer\XLSX\Manager\Style\StyleRegistry;
-use Box\Spout\Writer\XLSX\Manager\WorkbookManager;
-use Box\Spout\Writer\XLSX\Manager\WorksheetManager;
+use OpenSpout\Common\Manager\OptionsManagerInterface;
+use OpenSpout\Writer\Common\Creator\InternalEntityFactory;
+use OpenSpout\Writer\Common\Creator\ManagerFactoryInterface;
+use OpenSpout\Writer\Common\Entity\Options;
+use OpenSpout\Writer\Common\Manager\RowManager;
+use OpenSpout\Writer\Common\Manager\SheetManager;
+use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
+use OpenSpout\Writer\XLSX\Manager\SharedStringsManager;
+use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
+use OpenSpout\Writer\XLSX\Manager\Style\StyleRegistry;
+use OpenSpout\Writer\XLSX\Manager\WorkbookManager;
+use OpenSpout\Writer\XLSX\Manager\WorksheetManager;
 
 /**
  * Class ManagerFactory
@@ -24,7 +24,7 @@ class ManagerFactory implements ManagerFactoryInterface
     /** @var InternalEntityFactory */
     protected $entityFactory;
 
-    /** @var HelperFactory $helperFactory */
+    /** @var HelperFactory */
     protected $helperFactory;
 
     /**
@@ -91,8 +91,7 @@ class ManagerFactory implements ManagerFactoryInterface
             $styleMerger,
             $sharedStringsManager,
             $stringsEscaper,
-            $stringsHelper,
-            $this->entityFactory
+            $stringsHelper
         );
     }
 

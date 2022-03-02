@@ -1,9 +1,9 @@
 <?php
 
-namespace Box\Spout\Writer;
+namespace OpenSpout\Writer;
 
-use Box\Spout\Common\Entity\Row;
-use Box\Spout\Common\Entity\Style\Style;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Entity\Style\Style;
 
 /**
  * Interface WriterInterface
@@ -15,7 +15,7 @@ interface WriterInterface
      * By using this method, the data will be written to a file.
      *
      * @param  string $outputFilePath Path of the output file that will contain the data
-     * @throws \Box\Spout\Common\Exception\IOException If the writer cannot be opened or if the given path is not writable
+     * @throws \OpenSpout\Common\Exception\IOException If the writer cannot be opened or if the given path is not writable
      * @return WriterInterface
      */
     public function openToFile($outputFilePath);
@@ -25,7 +25,7 @@ interface WriterInterface
      * By using this method, the data will be outputted directly to the browser.
      *
      * @param  string $outputFileName Name of the output file that will contain the data. If a path is passed in, only the file name will be kept
-     * @throws \Box\Spout\Common\Exception\IOException If the writer cannot be opened
+     * @throws \OpenSpout\Common\Exception\IOException If the writer cannot be opened
      * @return WriterInterface
      */
     public function openToBrowser($outputFileName);
@@ -44,8 +44,8 @@ interface WriterInterface
      * Appends a row to the end of the stream.
      *
      * @param Row $row The row to be appended to the stream
-     * @throws \Box\Spout\Writer\Exception\WriterNotOpenedException If the writer has not been opened yet
-     * @throws \Box\Spout\Common\Exception\IOException If unable to write data
+     * @throws \OpenSpout\Writer\Exception\WriterNotOpenedException If the writer has not been opened yet
+     * @throws \OpenSpout\Common\Exception\IOException If unable to write data
      * @return WriterInterface
      */
     public function addRow(Row $row);
@@ -54,9 +54,9 @@ interface WriterInterface
      * Appends the rows to the end of the stream.
      *
      * @param Row[] $rows The rows to be appended to the stream
-     * @throws \Box\Spout\Common\Exception\InvalidArgumentException If the input param is not valid
-     * @throws \Box\Spout\Writer\Exception\WriterNotOpenedException If the writer has not been opened yet
-     * @throws \Box\Spout\Common\Exception\IOException If unable to write data
+     * @throws \OpenSpout\Common\Exception\InvalidArgumentException If the input param is not valid
+     * @throws \OpenSpout\Writer\Exception\WriterNotOpenedException If the writer has not been opened yet
+     * @throws \OpenSpout\Common\Exception\IOException If unable to write data
      * @return WriterInterface
      */
     public function addRows(array $rows);

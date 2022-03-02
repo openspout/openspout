@@ -1,14 +1,14 @@
 <?php
 
-namespace Box\Spout\Reader\CSV;
+namespace OpenSpout\Reader\CSV;
 
-use Box\Spout\Common\Entity\Row;
-use Box\Spout\Common\Helper\EncodingHelper;
-use Box\Spout\Common\Helper\GlobalFunctionsHelper;
-use Box\Spout\Common\Manager\OptionsManagerInterface;
-use Box\Spout\Reader\Common\Entity\Options;
-use Box\Spout\Reader\CSV\Creator\InternalEntityFactory;
-use Box\Spout\Reader\IteratorInterface;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Helper\EncodingHelper;
+use OpenSpout\Common\Helper\GlobalFunctionsHelper;
+use OpenSpout\Common\Manager\OptionsManagerInterface;
+use OpenSpout\Reader\Common\Entity\Options;
+use OpenSpout\Reader\CSV\Creator\InternalEntityFactory;
+use OpenSpout\Reader\IteratorInterface;
 
 /**
  * Class RowIterator
@@ -19,9 +19,9 @@ class RowIterator implements IteratorInterface
     /**
      * Value passed to fgetcsv. 0 means "unlimited" (slightly slower but accomodates for very long lines).
      */
-    const MAX_READ_BYTES_PER_LINE = 0;
+    public const MAX_READ_BYTES_PER_LINE = 0;
 
-    /** @var resource Pointer to the CSV file to read */
+    /** @var resource|null Pointer to the CSV file to read */
     protected $filePointer;
 
     /** @var int Number of read rows */
@@ -45,13 +45,13 @@ class RowIterator implements IteratorInterface
     /** @var bool Whether empty rows should be returned or skipped */
     protected $shouldPreserveEmptyRows;
 
-    /** @var \Box\Spout\Common\Helper\EncodingHelper Helper to work with different encodings */
+    /** @var \OpenSpout\Common\Helper\EncodingHelper Helper to work with different encodings */
     protected $encodingHelper;
 
-    /** @var \Box\Spout\Reader\CSV\Creator\InternalEntityFactory Factory to create entities */
+    /** @var \OpenSpout\Reader\CSV\Creator\InternalEntityFactory Factory to create entities */
     protected $entityFactory;
 
-    /** @var \Box\Spout\Common\Helper\GlobalFunctionsHelper Helper to work with global functions */
+    /** @var \OpenSpout\Common\Helper\GlobalFunctionsHelper Helper to work with global functions */
     protected $globalFunctionsHelper;
 
     /**
@@ -84,7 +84,7 @@ class RowIterator implements IteratorInterface
      *
      * @return void
      */
-    public function rewind()
+    public function rewind() : void
     {
         $this->rewindAndSkipBom();
 
@@ -114,7 +114,7 @@ class RowIterator implements IteratorInterface
      *
      * @return bool
      */
-    public function valid()
+    public function valid() : bool
     {
         return ($this->filePointer && !$this->hasReachedEndOfFile);
     }
@@ -123,10 +123,10 @@ class RowIterator implements IteratorInterface
      * Move forward to next element. Reads data for the next unprocessed row.
      * @see http://php.net/manual/en/iterator.next.php
      *
-     * @throws \Box\Spout\Common\Exception\EncodingConversionException If unable to convert data to UTF-8
+     * @throws \OpenSpout\Common\Exception\EncodingConversionException If unable to convert data to UTF-8
      * @return void
      */
-    public function next()
+    public function next() : void
     {
         $this->hasReachedEndOfFile = $this->globalFunctionsHelper->feof($this->filePointer);
 
@@ -136,7 +136,7 @@ class RowIterator implements IteratorInterface
     }
 
     /**
-     * @throws \Box\Spout\Common\Exception\EncodingConversionException If unable to convert data to UTF-8
+     * @throws \OpenSpout\Common\Exception\EncodingConversionException If unable to convert data to UTF-8
      * @return void
      */
     protected function readDataForNextRow()
@@ -146,8 +146,8 @@ class RowIterator implements IteratorInterface
         } while ($this->shouldReadNextRow($rowData));
 
         if ($rowData !== false) {
-            // str_replace will replace NULL values by empty strings
-            $rowDataBufferAsArray = \str_replace(null, null, $rowData);
+            // array_map will replace NULL values by empty strings
+            $rowDataBufferAsArray = array_map(function ($value) { return (string) $value; }, $rowData);
             $this->rowBuffer = $this->entityFactory->createRowFromArray($rowDataBufferAsArray);
             $this->numReadRows++;
         } else {
@@ -178,7 +178,7 @@ class RowIterator implements IteratorInterface
      * As fgetcsv() does not manage correctly encoding for non UTF-8 data,
      * we remove manually whitespace with ltrim or rtrim (depending on the order of the bytes)
      *
-     * @throws \Box\Spout\Common\Exception\EncodingConversionException If unable to convert data to UTF-8
+     * @throws \OpenSpout\Common\Exception\EncodingConversionException If unable to convert data to UTF-8
      * @return array|false The row for the current file pointer, encoded in UTF-8 or FALSE if nothing to read
      */
     protected function getNextUTF8EncodedRow()
@@ -224,7 +224,7 @@ class RowIterator implements IteratorInterface
      *
      * @return Row|null
      */
-    public function current()
+    public function current() : ?Row
     {
         return $this->rowBuffer;
     }
@@ -235,7 +235,7 @@ class RowIterator implements IteratorInterface
      *
      * @return int
      */
-    public function key()
+    public function key() : int
     {
         return $this->numReadRows;
     }
@@ -245,7 +245,7 @@ class RowIterator implements IteratorInterface
      *
      * @return void
      */
-    public function end()
+    public function end() : void
     {
         // do nothing
     }

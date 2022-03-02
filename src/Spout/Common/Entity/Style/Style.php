@@ -1,6 +1,6 @@
 <?php
 
-namespace Box\Spout\Common\Entity\Style;
+namespace OpenSpout\Common\Entity\Style;
 
 /**
  * Class Style
@@ -9,9 +9,9 @@ namespace Box\Spout\Common\Entity\Style;
 class Style
 {
     /** Default values */
-    const DEFAULT_FONT_SIZE = 11;
-    const DEFAULT_FONT_COLOR = Color::BLACK;
-    const DEFAULT_FONT_NAME = 'Arial';
+    public const DEFAULT_FONT_SIZE = 11;
+    public const DEFAULT_FONT_COLOR = Color::BLACK;
+    public const DEFAULT_FONT_NAME = 'Arial';
 
     /** @var int|null Style ID */
     private $id;
@@ -66,7 +66,7 @@ class Style
     /** @var bool Whether the wrap text property was set */
     private $hasSetWrapText = false;
 
-    /** @var Border */
+    /** @var Border|null */
     private $border;
 
     /** @var bool Whether border properties should be applied */
@@ -78,11 +78,17 @@ class Style
     /** @var bool */
     private $hasSetBackgroundColor = false;
 
-    /** @var string Format */
+    /** @var string|null Format */
     private $format;
 
     /** @var bool */
     private $hasSetFormat = false;
+
+    /** @var bool */
+    private $isRegistered = false;
+
+    /** @var bool */
+    private $isEmpty = true;
 
     /**
      * @return int|null
@@ -104,7 +110,7 @@ class Style
     }
 
     /**
-     * @return Border
+     * @return Border|null
      */
     public function getBorder()
     {
@@ -119,6 +125,7 @@ class Style
     {
         $this->shouldApplyBorder = true;
         $this->border = $border;
+        $this->isEmpty = false;
 
         return $this;
     }
@@ -147,6 +154,7 @@ class Style
         $this->fontBold = true;
         $this->hasSetFontBold = true;
         $this->shouldApplyFont = true;
+        $this->isEmpty = false;
 
         return $this;
     }
@@ -175,6 +183,7 @@ class Style
         $this->fontItalic = true;
         $this->hasSetFontItalic = true;
         $this->shouldApplyFont = true;
+        $this->isEmpty = false;
 
         return $this;
     }
@@ -203,6 +212,7 @@ class Style
         $this->fontUnderline = true;
         $this->hasSetFontUnderline = true;
         $this->shouldApplyFont = true;
+        $this->isEmpty = false;
 
         return $this;
     }
@@ -231,6 +241,7 @@ class Style
         $this->fontStrikethrough = true;
         $this->hasSetFontStrikethrough = true;
         $this->shouldApplyFont = true;
+        $this->isEmpty = false;
 
         return $this;
     }
@@ -260,6 +271,7 @@ class Style
         $this->fontSize = $fontSize;
         $this->hasSetFontSize = true;
         $this->shouldApplyFont = true;
+        $this->isEmpty = false;
 
         return $this;
     }
@@ -291,6 +303,7 @@ class Style
         $this->fontColor = $fontColor;
         $this->hasSetFontColor = true;
         $this->shouldApplyFont = true;
+        $this->isEmpty = false;
 
         return $this;
     }
@@ -320,6 +333,7 @@ class Style
         $this->fontName = $fontName;
         $this->hasSetFontName = true;
         $this->shouldApplyFont = true;
+        $this->isEmpty = false;
 
         return $this;
     }
@@ -350,6 +364,7 @@ class Style
         $this->cellAlignment = $cellAlignment;
         $this->hasSetCellAlignment = true;
         $this->shouldApplyCellAlignment = true;
+        $this->isEmpty = false;
 
         return $this;
     }
@@ -386,6 +401,7 @@ class Style
     {
         $this->shouldWrapText = $shouldWrap;
         $this->hasSetWrapText = true;
+        $this->isEmpty = false;
 
         return $this;
     }
@@ -415,6 +431,7 @@ class Style
     {
         $this->hasSetBackgroundColor = true;
         $this->backgroundColor = $color;
+        $this->isEmpty = false;
 
         return $this;
     }
@@ -444,12 +461,13 @@ class Style
     {
         $this->hasSetFormat = true;
         $this->format = $format;
+        $this->isEmpty = false;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getFormat()
     {
@@ -462,5 +480,30 @@ class Style
     public function shouldApplyFormat()
     {
         return $this->hasSetFormat;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRegistered() : bool
+    {
+        return $this->isRegistered;
+    }
+
+    public function markAsRegistered(?int $id) : void
+    {
+        $this->setId($id);
+        $this->isRegistered = true;
+    }
+
+    public function unmarkAsRegistered() : void
+    {
+        $this->setId(0);
+        $this->isRegistered = false;
+    }
+
+    public function isEmpty() : bool
+    {
+        return $this->isEmpty;
     }
 }

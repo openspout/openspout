@@ -1,13 +1,13 @@
 <?php
 
-namespace Box\Spout\Common\Manager;
+namespace OpenSpout\Common\Manager;
 
 /**
  * Class OptionsManager
  */
 abstract class OptionsManagerAbstract implements OptionsManagerInterface
 {
-    const PREFIX_OPTION = 'OPTION_';
+    public const PREFIX_OPTION = 'OPTION_';
 
     /** @var string[] List of all supported option names */
     private $supportedOptions = [];

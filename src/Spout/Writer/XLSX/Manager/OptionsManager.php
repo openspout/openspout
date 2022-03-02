@@ -1,10 +1,10 @@
 <?php
 
-namespace Box\Spout\Writer\XLSX\Manager;
+namespace OpenSpout\Writer\XLSX\Manager;
 
-use Box\Spout\Common\Manager\OptionsManagerAbstract;
-use Box\Spout\Writer\Common\Creator\Style\StyleBuilder;
-use Box\Spout\Writer\Common\Entity\Options;
+use OpenSpout\Common\Manager\OptionsManagerAbstract;
+use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
+use OpenSpout\Writer\Common\Entity\Options;
 
 /**
  * Class OptionsManager
@@ -13,8 +13,8 @@ use Box\Spout\Writer\Common\Entity\Options;
 class OptionsManager extends OptionsManagerAbstract
 {
     /** Default style font values */
-    const DEFAULT_FONT_SIZE = 12;
-    const DEFAULT_FONT_NAME = 'Calibri';
+    public const DEFAULT_FONT_SIZE = 12;
+    public const DEFAULT_FONT_NAME = 'Calibri';
 
     /** @var StyleBuilder Style builder */
     protected $styleBuilder;
@@ -39,6 +39,9 @@ class OptionsManager extends OptionsManagerAbstract
             Options::DEFAULT_ROW_STYLE,
             Options::SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY,
             Options::SHOULD_USE_INLINE_STRINGS,
+            Options::DEFAULT_COLUMN_WIDTH,
+            Options::DEFAULT_ROW_HEIGHT,
+            Options::COLUMN_WIDTHS,
         ];
     }
 

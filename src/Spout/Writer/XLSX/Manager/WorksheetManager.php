@@ -1,24 +1,25 @@
 <?php
 
-namespace Box\Spout\Writer\XLSX\Manager;
+namespace OpenSpout\Writer\XLSX\Manager;
 
-use Box\Spout\Common\Entity\Cell;
-use Box\Spout\Common\Entity\Row;
-use Box\Spout\Common\Entity\Style\Style;
-use Box\Spout\Common\Exception\InvalidArgumentException;
-use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Common\Helper\Escaper\XLSX as XLSXEscaper;
-use Box\Spout\Common\Helper\StringHelper;
-use Box\Spout\Common\Manager\OptionsManagerInterface;
-use Box\Spout\Writer\Common\Creator\InternalEntityFactory;
-use Box\Spout\Writer\Common\Entity\Options;
-use Box\Spout\Writer\Common\Entity\Worksheet;
-use Box\Spout\Writer\Common\Helper\CellHelper;
-use Box\Spout\Writer\Common\Manager\RowManager;
-use Box\Spout\Writer\Common\Manager\Style\StyleMerger;
-use Box\Spout\Writer\Common\Manager\WorksheetManagerInterface;
-use Box\Spout\Writer\XLSX\Entity\SheetView;
-use Box\Spout\Writer\XLSX\Manager\Style\StyleManager;
+use OpenSpout\Common\Entity\Cell;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Entity\Style\Style;
+use OpenSpout\Common\Exception\InvalidArgumentException;
+use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Common\Helper\Escaper\XLSX as XLSXEscaper;
+use OpenSpout\Common\Helper\StringHelper;
+use OpenSpout\Common\Manager\OptionsManagerInterface;
+use OpenSpout\Writer\Common\Entity\Options;
+use OpenSpout\Writer\Common\Entity\Worksheet;
+use OpenSpout\Writer\Common\Helper\CellHelper;
+use OpenSpout\Writer\Common\Manager\ManagesCellSize;
+use OpenSpout\Writer\Common\Manager\RegisteredStyle;
+use OpenSpout\Writer\Common\Manager\RowManager;
+use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
+use OpenSpout\Writer\Common\Manager\WorksheetManagerInterface;
+use OpenSpout\Writer\XLSX\Entity\SheetView;
+use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
 
 /**
  * Class WorksheetManager
@@ -26,15 +27,17 @@ use Box\Spout\Writer\XLSX\Manager\Style\StyleManager;
  */
 class WorksheetManager implements WorksheetManagerInterface
 {
+    use ManagesCellSize;
+
     /**
      * Maximum number of characters a cell can contain
      * @see https://support.office.com/en-us/article/Excel-specifications-and-limits-16c69c74-3d6a-4aaf-ba35-e6eb276e8eaa [Excel 2007]
      * @see https://support.office.com/en-us/article/Excel-specifications-and-limits-1672b34d-7043-467e-8e27-269d656771c3 [Excel 2010]
      * @see https://support.office.com/en-us/article/Excel-specifications-and-limits-ca36e2dc-1f09-4620-b726-67c00b05040f [Excel 2013/2016]
      */
-    const MAX_CHARACTERS_PER_CELL = 32767;
+    public const MAX_CHARACTERS_PER_CELL = 32767;
 
-    const SHEET_XML_FILE_HEADER = <<<'EOD'
+    public const SHEET_XML_FILE_HEADER = <<<'EOD'
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
 EOD;
@@ -60,9 +63,6 @@ EOD;
     /** @var StringHelper String helper */
     private $stringHelper;
 
-    /** @var InternalEntityFactory Factory to create entities */
-    private $entityFactory;
-
     /**
      * WorksheetManager constructor.
      *
@@ -73,7 +73,6 @@ EOD;
      * @param SharedStringsManager $sharedStringsManager
      * @param XLSXEscaper $stringsEscaper
      * @param StringHelper $stringHelper
-     * @param InternalEntityFactory $entityFactory
      */
     public function __construct(
         OptionsManagerInterface $optionsManager,
@@ -82,17 +81,18 @@ EOD;
         StyleMerger $styleMerger,
         SharedStringsManager $sharedStringsManager,
         XLSXEscaper $stringsEscaper,
-        StringHelper $stringHelper,
-        InternalEntityFactory $entityFactory
+        StringHelper $stringHelper
     ) {
         $this->shouldUseInlineStrings = $optionsManager->getOption(Options::SHOULD_USE_INLINE_STRINGS);
+        $this->setDefaultColumnWidth($optionsManager->getOption(Options::DEFAULT_COLUMN_WIDTH));
+        $this->setDefaultRowHeight($optionsManager->getOption(Options::DEFAULT_ROW_HEIGHT));
+        $this->columnWidths = $optionsManager->getOption(Options::COLUMN_WIDTHS) ?? [];
         $this->rowManager = $rowManager;
         $this->styleManager = $styleManager;
         $this->styleMerger = $styleMerger;
         $this->sharedStringsManager = $sharedStringsManager;
         $this->stringsEscaper = $stringsEscaper;
         $this->stringHelper = $stringHelper;
-        $this->entityFactory = $entityFactory;
     }
 
     /**
@@ -108,33 +108,32 @@ EOD;
      */
     public function startSheet(Worksheet $worksheet)
     {
-        // Only start once
-        if ($worksheet->hasStarted()) {
-            return;
-        }
-
         $sheetFilePointer = \fopen($worksheet->getFilePath(), 'w');
         $this->throwIfSheetFilePointerIsNotAvailable($sheetFilePointer);
 
         $worksheet->setFilePointer($sheetFilePointer);
 
         \fwrite($sheetFilePointer, self::SHEET_XML_FILE_HEADER);
-        $this->addSheetViews($sheetFilePointer, $worksheet);
-        \fwrite($sheetFilePointer, '<sheetData>');
-
-        $worksheet->setHasStarted();
     }
 
     /**
-     * @param resource $sheetFilePointer
-     * @param resourceWorksheet $worksheet
+     * Writes the sheet data header
+     *
+     * @param Worksheet $worksheet The worksheet to add the row to
      * @return void
      */
-    private function addSheetViews($sheetFilePointer, Worksheet $worksheet): void
+    private function ensureSheetDataStated(Worksheet $worksheet)
     {
-        $sheet = $worksheet->getExternalSheet();
-        if ($sheet->hasSheetView()) {
-            \fwrite($sheetFilePointer, '<sheetViews>' . $sheet->getSheetView()->getXml() . '</sheetViews>');
+        if (!$worksheet->getSheetDataStarted()) {
+            $worksheetFilePointer = $worksheet->getFilePointer();
+            $sheet = $worksheet->getExternalSheet();
+            if ($sheet->hasSheetView()) {
+                \fwrite($worksheetFilePointer, '<sheetViews>' . $sheet->getSheetView()->getXml() . '</sheetViews>');
+            }
+            \fwrite($worksheetFilePointer, $this->getXMLFragmentForDefaultCellSizing());
+            \fwrite($worksheetFilePointer, $this->getXMLFragmentForColumnWidths());
+            \fwrite($worksheetFilePointer, '<sheetData>');
+            $worksheet->setSheetDataStarted(true);
         }
     }
 
@@ -157,9 +156,6 @@ EOD;
      */
     public function addRow(Worksheet $worksheet, Row $row)
     {
-        // Start the sheet when the first row is added
-        $this->startSheet($worksheet);
-
         if (!$this->rowManager->isEmpty($row)) {
             $this->addNonEmptyRow($worksheet, $row);
         }
@@ -172,25 +168,33 @@ EOD;
      *
      * @param Worksheet $worksheet The worksheet to add the row to
      * @param Row $row The row to be written
-     * @throws IOException If the data cannot be written
      * @throws InvalidArgumentException If a cell value's type is not supported
+     * @throws IOException If the data cannot be written
      * @return void
      */
     private function addNonEmptyRow(Worksheet $worksheet, Row $row)
     {
+        $this->ensureSheetDataStated($worksheet);
+        $sheetFilePointer = $worksheet->getFilePointer();
         $rowStyle = $row->getStyle();
         $rowIndexOneBased = $worksheet->getLastWrittenRowIndex() + 1;
         $numCells = $row->getNumCells();
 
-        $rowXML = '<row r="' . $rowIndexOneBased . '" spans="1:' . $numCells . '">';
+        $hasCustomHeight = $this->defaultRowHeight > 0 ? '1' : '0';
+        $rowXML = "<row r=\"{$rowIndexOneBased}\" spans=\"1:{$numCells}\" customHeight=\"{$hasCustomHeight}\">";
 
         foreach ($row->getCells() as $columnIndexZeroBased => $cell) {
-            $rowXML .= $this->applyStyleAndGetCellXML($cell, $rowStyle, $rowIndexOneBased, $columnIndexZeroBased);
+            $registeredStyle = $this->applyStyleAndRegister($cell, $rowStyle);
+            $cellStyle = $registeredStyle->getStyle();
+            if ($registeredStyle->isMatchingRowStyle()) {
+                $rowStyle = $cellStyle; // Replace actual rowStyle (possibly with null id) by registered style (with id)
+            }
+            $rowXML .= $this->getCellXML($rowIndexOneBased, $columnIndexZeroBased, $cell, $cellStyle->getId());
         }
 
         $rowXML .= '</row>';
 
-        $wasWriteSuccessful = \fwrite($worksheet->getFilePointer(), $rowXML);
+        $wasWriteSuccessful = \fwrite($sheetFilePointer, $rowXML);
         if ($wasWriteSuccessful === false) {
             throw new IOException("Unable to write data in {$worksheet->getFilePath()}");
         }
@@ -198,35 +202,52 @@ EOD;
 
     /**
      * Applies styles to the given style, merging the cell's style with its row's style
-     * Then builds and returns xml for the cell.
      *
-     * @param Cell  $cell
+     * @param Cell $cell
      * @param Style $rowStyle
-     * @param int   $rowIndexOneBased
-     * @param int   $columnIndexZeroBased
      *
      * @throws InvalidArgumentException If the given value cannot be processed
-     * @return string
+     * @return RegisteredStyle
      */
-    private function applyStyleAndGetCellXML(Cell $cell, Style $rowStyle, $rowIndexOneBased, $columnIndexZeroBased)
+    private function applyStyleAndRegister(Cell $cell, Style $rowStyle) : RegisteredStyle
     {
-        // Apply row and extra styles
-        $mergedCellAndRowStyle = $this->styleMerger->merge($cell->getStyle(), $rowStyle);
-        $cell->setStyle($mergedCellAndRowStyle);
-        $newCellStyle = $this->styleManager->applyExtraStylesIfNeeded($cell);
+        $isMatchingRowStyle = false;
+        if ($cell->getStyle()->isEmpty()) {
+            $cell->setStyle($rowStyle);
 
-        $registeredStyle = $this->styleManager->registerStyle($newCellStyle);
+            $possiblyUpdatedStyle = $this->styleManager->applyExtraStylesIfNeeded($cell);
 
-        return $this->getCellXML($rowIndexOneBased, $columnIndexZeroBased, $cell, $registeredStyle->getId());
+            if ($possiblyUpdatedStyle->isUpdated()) {
+                $registeredStyle = $this->styleManager->registerStyle($possiblyUpdatedStyle->getStyle());
+            } else {
+                $registeredStyle = $this->styleManager->registerStyle($rowStyle);
+                $isMatchingRowStyle = true;
+            }
+        } else {
+            $mergedCellAndRowStyle = $this->styleMerger->merge($cell->getStyle(), $rowStyle);
+            $cell->setStyle($mergedCellAndRowStyle);
+
+            $possiblyUpdatedStyle = $this->styleManager->applyExtraStylesIfNeeded($cell);
+
+            if ($possiblyUpdatedStyle->isUpdated()) {
+                $newCellStyle = $possiblyUpdatedStyle->getStyle();
+            } else {
+                $newCellStyle = $mergedCellAndRowStyle;
+            }
+
+            $registeredStyle = $this->styleManager->registerStyle($newCellStyle);
+        }
+
+        return new RegisteredStyle($registeredStyle, $isMatchingRowStyle);
     }
 
     /**
      * Builds and returns xml for a single cell.
      *
-     * @param int  $rowIndexOneBased
-     * @param int  $columnIndexZeroBased
+     * @param int $rowIndexOneBased
+     * @param int $columnIndexZeroBased
      * @param Cell $cell
-     * @param int  $styleId
+     * @param int $styleId
      *
      * @throws InvalidArgumentException If the given value cannot be processed
      * @return string
@@ -242,7 +263,9 @@ EOD;
         } elseif ($cell->isBoolean()) {
             $cellXML .= ' t="b"><v>' . (int) ($cell->getValue()) . '</v></c>';
         } elseif ($cell->isNumeric()) {
-            $cellXML .= '><v>' . $cell->getValue() . '</v></c>';
+            $cellXML .= '><v>' . $this->stringHelper->formatNumericValue($cell->getValue()) . '</v></c>';
+        } elseif ($cell->isFormula()) {
+            $cellXML .= '><f>' . substr($cell->getValue(), 1) . '</f></c>';
         } elseif ($cell->isError() && is_string($cell->getValueEvenIfError())) {
             // only writes the error value if it's a string
             $cellXML .= ' t="e"><v>' . $cell->getValueEvenIfError() . '</v></c>';
@@ -285,6 +308,43 @@ EOD;
     }
 
     /**
+     * Construct column width references xml to inject into worksheet xml file
+     *
+     * @return string
+     */
+    public function getXMLFragmentForColumnWidths()
+    {
+        if (empty($this->columnWidths)) {
+            return '';
+        }
+        $xml = '<cols>';
+        foreach ($this->columnWidths as $entry) {
+            $xml .= '<col min="' . $entry[0] . '" max="' . $entry[1] . '" width="' . $entry[2] . '" customWidth="true"/>';
+        }
+        $xml .= '</cols>';
+
+        return $xml;
+    }
+
+    /**
+     * Constructs default row height and width xml to inject into worksheet xml file
+     *
+     * @return string
+     */
+    public function getXMLFragmentForDefaultCellSizing()
+    {
+        $rowHeightXml = empty($this->defaultRowHeight) ? '' : " defaultRowHeight=\"{$this->defaultRowHeight}\"";
+        $colWidthXml = empty($this->defaultColumnWidth) ? '' : " defaultColWidth=\"{$this->defaultColumnWidth}\"";
+        if (empty($colWidthXml) && empty($rowHeightXml)) {
+            return '';
+        }
+        // Ensure that the required defaultRowHeight is set
+        $rowHeightXml = empty($rowHeightXml) ? ' defaultRowHeight="0"' : $rowHeightXml;
+
+        return "<sheetFormatPr{$colWidthXml}{$rowHeightXml}/>";
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function close(Worksheet $worksheet)
@@ -294,7 +354,7 @@ EOD;
         if (!\is_resource($worksheetFilePointer)) {
             return;
         }
-
+        $this->ensureSheetDataStated($worksheet);
         \fwrite($worksheetFilePointer, '</sheetData>');
         \fwrite($worksheetFilePointer, '</worksheet>');
         \fclose($worksheetFilePointer);

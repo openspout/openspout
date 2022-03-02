@@ -1,14 +1,14 @@
 <?php
 
-namespace Box\Spout\Writer\ODS\Manager\Style;
+namespace OpenSpout\Writer\ODS\Manager\Style;
 
-use Box\Spout\Common\Entity\Style\Style;
+use OpenSpout\Common\Entity\Style\Style;
 
 /**
  * Class StyleRegistry
  * Registry for all used styles
  */
-class StyleRegistry extends \Box\Spout\Writer\Common\Manager\Style\StyleRegistry
+class StyleRegistry extends \OpenSpout\Writer\Common\Manager\Style\StyleRegistry
 {
     /** @var array [FONT_NAME] => [] Map whose keys contain all the fonts used */
     protected $usedFontsSet = [];
@@ -22,6 +22,10 @@ class StyleRegistry extends \Box\Spout\Writer\Common\Manager\Style\StyleRegistry
      */
     public function registerStyle(Style $style)
     {
+        if ($style->isRegistered()) {
+            return $style;
+        }
+
         $registeredStyle = parent::registerStyle($style);
         $this->usedFontsSet[$style->getFontName()] = true;
 

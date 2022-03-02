@@ -1,6 +1,6 @@
 <?php
 
-namespace Box\Spout\Reader;
+namespace OpenSpout\Reader;
 
 /**
  * Interface ReaderInterface
@@ -12,7 +12,7 @@ interface ReaderInterface
      * that the file exists and is readable.
      *
      * @param  string $filePath Path of the file to be read
-     * @throws \Box\Spout\Common\Exception\IOException
+     * @throws \OpenSpout\Common\Exception\IOException
      * @return void
      */
     public function open($filePath);
@@ -20,7 +20,7 @@ interface ReaderInterface
     /**
      * Returns an iterator to iterate over sheets.
      *
-     * @throws \Box\Spout\Reader\Exception\ReaderNotOpenedException If called before opening the reader
+     * @throws \OpenSpout\Reader\Exception\ReaderNotOpenedException If called before opening the reader
      * @return \Iterator To iterate over sheets
      */
     public function getSheetIterator();

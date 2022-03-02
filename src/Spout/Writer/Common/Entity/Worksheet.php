@@ -1,6 +1,6 @@
 <?php
 
-namespace Box\Spout\Writer\Common\Entity;
+namespace OpenSpout\Writer\Common\Entity;
 
 /**
  * Class Worksheet
@@ -11,7 +11,7 @@ class Worksheet
     /** @var string Path to the XML file that will contain the sheet data */
     private $filePath;
 
-    /** @var resource Pointer to the sheet data file (e.g. xl/worksheets/sheet1.xml) */
+    /** @var resource|null Pointer to the sheet data file (e.g. xl/worksheets/sheet1.xml) */
     private $filePointer;
 
     /** @var Sheet The "external" sheet */
@@ -23,8 +23,8 @@ class Worksheet
     /** @var int Index of the last written row */
     private $lastWrittenRowIndex;
 
-    /** @var bool */
-    private $hasStarted = false;
+    /** @var bool has the sheet data header been written */
+    private $sheetDataStarted = false;
 
     /**
      * Worksheet constructor.
@@ -39,6 +39,7 @@ class Worksheet
         $this->externalSheet = $externalSheet;
         $this->maxNumColumns = 0;
         $this->lastWrittenRowIndex = 0;
+        $this->sheetDataStarted = false;
     }
 
     /**
@@ -117,16 +118,16 @@ class Worksheet
     /**
      * @return bool
      */
-    public function hasStarted(): bool
+    public function getSheetDataStarted()
     {
-        return $this->hasStarted;
+        return $this->sheetDataStarted;
     }
 
     /**
-     * @param bool $hasStarted
+     * @param bool $sheetDataStarted
      */
-    public function setHasStarted(bool $hasStarted = true): void
+    public function setSheetDataStarted($sheetDataStarted)
     {
-        $this->hasStarted = $hasStarted;
+        $this->sheetDataStarted = $sheetDataStarted;
     }
 }
