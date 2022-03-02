@@ -125,6 +125,10 @@ EOD;
     {
         if (!$worksheet->getSheetDataStarted()) {
             $worksheetFilePointer = $worksheet->getFilePointer();
+            $sheet = $worksheet->getExternalSheet();
+            if ($sheet->hasSheetView()) {
+                \fwrite($worksheetFilePointer, '<sheetViews>' . $sheet->getSheetView()->getXml() . '</sheetViews>');
+            }
             \fwrite($worksheetFilePointer, $this->getXMLFragmentForDefaultCellSizing());
             \fwrite($worksheetFilePointer, $this->getXMLFragmentForColumnWidths());
             \fwrite($worksheetFilePointer, '<sheetData>');
