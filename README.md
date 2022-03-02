@@ -10,7 +10,7 @@ Unlike other file readers or writers, it is capable of processing very large fil
 
 ## Documentation
 
-`box/spout` documentation can be found at [https://opensource.box.com/spout/](https://opensource.box.com/spout/).
+Documentation can be found at [https://openspout.readthedocs.io/en/latest/](https://openspout.readthedocs.io/en/latest/).
 
 ## Requirements
 
