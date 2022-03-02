@@ -1,20 +1,36 @@
 <?php
 
-namespace Box\Spout\Writer\ODS\Manager\Style;
+namespace OpenSpout\Writer\ODS\Manager\Style;
 
-use Box\Spout\Common\Entity\Style\BorderPart;
-use Box\Spout\Common\Entity\Style\CellAlignment;
-use Box\Spout\Writer\Common\Entity\Worksheet;
-use Box\Spout\Writer\ODS\Helper\BorderHelper;
+use OpenSpout\Common\Entity\Style\BorderPart;
+use OpenSpout\Common\Entity\Style\CellAlignment;
+use OpenSpout\Common\Manager\OptionsManagerInterface;
+use OpenSpout\Writer\Common\Entity\Options;
+use OpenSpout\Writer\Common\Entity\Worksheet;
+use OpenSpout\Writer\Common\Manager\ManagesCellSize;
+use OpenSpout\Writer\ODS\Helper\BorderHelper;
 
 /**
  * Class StyleManager
  * Manages styles to be applied to a cell
  */
-class StyleManager extends \Box\Spout\Writer\Common\Manager\Style\StyleManager
+class StyleManager extends \OpenSpout\Writer\Common\Manager\Style\StyleManager
 {
+    use ManagesCellSize;
+
     /** @var StyleRegistry */
     protected $styleRegistry;
+
+    /**
+     * @param StyleRegistry $styleRegistry
+     */
+    public function __construct(StyleRegistry $styleRegistry, OptionsManagerInterface $optionsManager)
+    {
+        parent::__construct($styleRegistry);
+        $this->setDefaultColumnWidth($optionsManager->getOption(Options::DEFAULT_COLUMN_WIDTH));
+        $this->setDefaultRowHeight($optionsManager->getOption(Options::DEFAULT_ROW_HEIGHT));
+        $this->columnWidths = $optionsManager->getOption(Options::COLUMN_WIDTHS) ?? [];
+    }
 
     /**
      * Returns the content of the "styles.xml" file, given a list of styles.
@@ -162,12 +178,16 @@ EOD;
             $content .= $this->getStyleSectionContent($style);
         }
 
-        $content .= <<<'EOD'
-<style:style style:family="table-column" style:name="co1">
-    <style:table-column-properties fo:break-before="auto"/>
+        $useOptimalRowHeight = empty($this->defaultRowHeight) ? 'true' : 'false';
+        $defaultRowHeight = empty($this->defaultRowHeight) ? '15pt' : "{$this->defaultRowHeight}pt";
+        $defaultColumnWidth = empty($this->defaultColumnWidth) ? '' : "style:column-width=\"{$this->defaultColumnWidth}pt\"";
+
+        $content .= <<<EOD
+<style:style style:family="table-column" style:name="default-column-style">
+    <style:table-column-properties fo:break-before="auto" {$defaultColumnWidth}/>
 </style:style>
 <style:style style:family="table-row" style:name="ro1">
-    <style:table-row-properties fo:break-before="auto" style:row-height="15pt" style:use-optimal-row-height="true"/>
+    <style:table-row-properties fo:break-before="auto" style:row-height="{$defaultRowHeight}" style:use-optimal-row-height="{$useOptimalRowHeight}"/>
 </style:style>
 EOD;
 
@@ -182,6 +202,16 @@ EOD;
 EOD;
         }
 
+        // Sort column widths since ODS cares about order
+        usort($this->columnWidths, function ($a, $b) {
+            if ($a[0] === $b[0]) {
+                return 0;
+            }
+
+            return ($a[0] < $b[0]) ? -1 : 1;
+        });
+        $content .= $this->getTableColumnStylesXMLContent();
+
         $content .= '</office:automatic-styles>';
 
         return $content;
@@ -190,7 +220,7 @@ EOD;
     /**
      * Returns the contents of the "<style:style>" section, inside "<office:automatic-styles>" section
      *
-     * @param \Box\Spout\Common\Entity\Style\Style $style
+     * @param \OpenSpout\Common\Entity\Style\Style $style
      * @return string
      */
     protected function getStyleSectionContent($style)
@@ -211,7 +241,7 @@ EOD;
     /**
      * Returns the contents of the "<style:text-properties>" section, inside "<style:style>" section
      *
-     * @param \Box\Spout\Common\Entity\Style\Style $style
+     * @param \OpenSpout\Common\Entity\Style\Style $style
      * @return string
      */
     private function getTextPropertiesSectionContent($style)
@@ -228,7 +258,7 @@ EOD;
     /**
      * Returns the contents of the fonts definition section, inside "<style:text-properties>" section
      *
-     * @param \Box\Spout\Common\Entity\Style\Style $style
+     * @param \OpenSpout\Common\Entity\Style\Style $style
      *
      * @return string
      */
@@ -271,7 +301,7 @@ EOD;
     /**
      * Returns the contents of the "<style:paragraph-properties>" section, inside "<style:style>" section
      *
-     * @param \Box\Spout\Common\Entity\Style\Style $style
+     * @param \OpenSpout\Common\Entity\Style\Style $style
      *
      * @return string
      */
@@ -289,7 +319,7 @@ EOD;
     /**
      * Returns the contents of the cell alignment definition for the "<style:paragraph-properties>" section
      *
-     * @param \Box\Spout\Common\Entity\Style\Style $style
+     * @param \OpenSpout\Common\Entity\Style\Style $style
      *
      * @return string
      */
@@ -313,16 +343,19 @@ EOD;
     private function transformCellAlignment($cellAlignment)
     {
         switch ($cellAlignment) {
-            case CellAlignment::LEFT: return 'start';
-            case CellAlignment::RIGHT: return 'end';
-            default: return $cellAlignment;
+            case CellAlignment::LEFT:
+                return 'start';
+            case CellAlignment::RIGHT:
+                return 'end';
+            default:
+                return $cellAlignment;
         }
     }
 
     /**
      * Returns the contents of the "<style:table-cell-properties>" section, inside "<style:style>" section
      *
-     * @param \Box\Spout\Common\Entity\Style\Style $style
+     * @param \OpenSpout\Common\Entity\Style\Style $style
      * @return string
      */
     private function getTableCellPropertiesSectionContent($style)
@@ -359,7 +392,7 @@ EOD;
     /**
      * Returns the contents of the borders definition for the "<style:table-cell-properties>" section
      *
-     * @param \Box\Spout\Common\Entity\Style\Style $style
+     * @param \OpenSpout\Common\Entity\Style\Style $style
      * @return string
      */
     private function getBorderXMLContent($style)
@@ -374,11 +407,49 @@ EOD;
     /**
      * Returns the contents of the background color definition for the "<style:table-cell-properties>" section
      *
-     * @param \Box\Spout\Common\Entity\Style\Style $style
+     * @param \OpenSpout\Common\Entity\Style\Style $style
      * @return string
      */
     private function getBackgroundColorXMLContent($style)
     {
         return \sprintf(' fo:background-color="#%s" ', $style->getBackgroundColor());
+    }
+
+    public function getTableColumnStylesXMLContent() : string
+    {
+        if (empty($this->columnWidths)) {
+            return '';
+        }
+
+        $content = '';
+        foreach ($this->columnWidths as $styleIndex => $entry) {
+            $content .= <<<EOD
+<style:style style:family="table-column" style:name="co{$styleIndex}">
+    <style:table-column-properties fo:break-before="auto" style:use-optimal-column-width="false" style:column-width="{$entry[2]}pt"/>
+</style:style>
+EOD;
+        }
+
+        return $content;
+    }
+
+    public function getStyledTableColumnXMLContent(int $maxNumColumns) : string
+    {
+        if (empty($this->columnWidths)) {
+            return '';
+        }
+
+        $content = '';
+        foreach ($this->columnWidths as $styleIndex => $entry) {
+            $numCols = $entry[1] - $entry[0] + 1;
+            $content .= <<<EOD
+<table:table-column table:default-cell-style-name='Default' table:style-name="co{$styleIndex}" table:number-columns-repeated="{$numCols}"/>
+EOD;
+        }
+        // Note: This assumes the column widths are contiguous and default width is
+        // only applied to columns after the last custom column with a custom width
+        $content .= '<table:table-column table:default-cell-style-name="ce1" table:style-name="default-column-style" table:number-columns-repeated="' . ($maxNumColumns - $entry[1]) . '"/>';
+
+        return $content;
     }
 }

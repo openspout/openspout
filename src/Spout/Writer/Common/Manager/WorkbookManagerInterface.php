@@ -1,14 +1,14 @@
 <?php
 
-namespace Box\Spout\Writer\Common\Manager;
+namespace OpenSpout\Writer\Common\Manager;
 
-use Box\Spout\Common\Entity\Row;
-use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Writer\Common\Entity\Sheet;
-use Box\Spout\Writer\Common\Entity\Workbook;
-use Box\Spout\Writer\Common\Entity\Worksheet;
-use Box\Spout\Writer\Exception\SheetNotFoundException;
-use Box\Spout\Writer\Exception\WriterException;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Writer\Common\Entity\Sheet;
+use OpenSpout\Writer\Common\Entity\Workbook;
+use OpenSpout\Writer\Common\Entity\Worksheet;
+use OpenSpout\Writer\Exception\SheetNotFoundException;
+use OpenSpout\Writer\Exception\WriterException;
 
 /**
  * Interface WorkbookManagerInterface
@@ -17,7 +17,7 @@ use Box\Spout\Writer\Exception\WriterException;
 interface WorkbookManagerInterface
 {
     /**
-     * @return Workbook
+     * @return Workbook|null
      */
     public function getWorkbook();
 
@@ -41,6 +41,34 @@ interface WorkbookManagerInterface
      * @return Worksheet The current sheet
      */
     public function getCurrentWorksheet();
+
+    /**
+     * Starts the current sheet and opens its file pointer
+     */
+    public function startCurrentSheet();
+
+    /**
+     * @param float $width
+     */
+    public function setDefaultColumnWidth(float $width);
+
+    /**
+     * @param float $height
+     */
+    public function setDefaultRowHeight(float $height);
+
+    /**
+     * @param float $width
+     * @param array $columns One or more columns with this width
+     */
+    public function setColumnWidth(float $width, ...$columns);
+
+    /**
+     * @param float $width The width to set
+     * @param int $start First column index of the range
+     * @param int $end Last column index of the range
+     */
+    public function setColumnWidthForRange(float $width, int $start, int $end);
 
     /**
      * Sets the given sheet as the current one. New data will be written to this sheet.

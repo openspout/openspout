@@ -1,6 +1,6 @@
 <?php
 
-namespace Box\Spout\Writer\Exception;
+namespace OpenSpout\Writer\Exception;
 
 /**
  * Class SheetNotFoundException

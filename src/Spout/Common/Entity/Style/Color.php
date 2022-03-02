@@ -1,8 +1,8 @@
 <?php
 
-namespace Box\Spout\Common\Entity\Style;
+namespace OpenSpout\Common\Entity\Style;
 
-use Box\Spout\Common\Exception\InvalidColorException;
+use OpenSpout\Common\Exception\InvalidColorException;
 
 /**
  * Class Color
@@ -11,18 +11,18 @@ use Box\Spout\Common\Exception\InvalidColorException;
 abstract class Color
 {
     /** Standard colors - based on Office Online */
-    const BLACK = '000000';
-    const WHITE = 'FFFFFF';
-    const RED = 'FF0000';
-    const DARK_RED = 'C00000';
-    const ORANGE = 'FFC000';
-    const YELLOW = 'FFFF00';
-    const LIGHT_GREEN = '92D040';
-    const GREEN = '00B050';
-    const LIGHT_BLUE = '00B0E0';
-    const BLUE = '0070C0';
-    const DARK_BLUE = '002060';
-    const PURPLE = '7030A0';
+    public const BLACK = '000000';
+    public const WHITE = 'FFFFFF';
+    public const RED = 'FF0000';
+    public const DARK_RED = 'C00000';
+    public const ORANGE = 'FFC000';
+    public const YELLOW = 'FFFF00';
+    public const LIGHT_GREEN = '92D040';
+    public const GREEN = '00B050';
+    public const LIGHT_BLUE = '00B0E0';
+    public const BLUE = '0070C0';
+    public const DARK_BLUE = '002060';
+    public const PURPLE = '7030A0';
 
     /**
      * Returns an RGB color from R, G and B values
@@ -49,7 +49,7 @@ abstract class Color
      * Throws an exception is the color component value is outside of bounds (0 - 255)
      *
      * @param int $colorComponent
-     * @throws \Box\Spout\Common\Exception\InvalidColorException
+     * @throws \OpenSpout\Common\Exception\InvalidColorException
      * @return void
      */
     protected static function throwIfInvalidColorComponentValue($colorComponent)

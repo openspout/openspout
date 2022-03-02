@@ -1,6 +1,6 @@
 <?php
 
-namespace Box\Spout\Writer\XLSX\Manager\Style;
+namespace OpenSpout\Writer\XLSX\Manager\Style;
 
 use PHPUnit\Framework\TestCase;
 
@@ -40,7 +40,7 @@ class StyleManagerTest extends TestCase
     {
         $styleRegistryMock = $this->getMockBuilder(StyleRegistry::class)
                                 ->disableOriginalConstructor()
-                                ->setMethods(['getFillIdForStyleId', 'getBorderIdForStyleId'])
+                                ->onlyMethods(['getFillIdForStyleId', 'getBorderIdForStyleId'])
                                 ->getMock();
 
         $styleRegistryMock

@@ -18,7 +18,7 @@ Reader changes
 Creating a reader should now be done through the Reader `ReaderEntityFactory`, instead of using the `ReaderFactory`.
 Also, the `ReaderFactory::create($type)` method was removed and replaced by methods for each reader:
 ```php
-use Box\Spout\Reader\Common\Creator\ReaderEntityFactory; // namespace is no longer "Box\Spout\Reader"
+use OpenSpout\Reader\Common\Creator\ReaderEntityFactory; // namespace is no longer "OpenSpout\Reader"
 ...
 $reader = ReaderEntityFactory::createXLSXReader(); // replaces ReaderFactory::create(Type::XLSX)
 $reader = ReaderEntityFactory::createCSVReader();  // replaces ReaderFactory::create(Type::CSV)
@@ -44,7 +44,7 @@ Writer creation follows the same change as the reader. It should now be done thr
 Also, the `WriterFactory::create($type)` method was removed and replaced by methods for each writer:
 
 ```php
-use Box\Spout\Writer\Common\Creator\WriterEntityFactory; // namespace is no longer "Box\Spout\Writer"
+use OpenSpout\Writer\Common\Creator\WriterEntityFactory; // namespace is no longer "OpenSpout\Writer"
 ...
 $writer = WriterEntityFactory::createXLSXWriter(); // replaces WriterFactory::create(Type::XLSX)
 $writer = WriterEntityFactory::createCSVWriter();  // replaces WriterFactory::create(Type::CSV)
@@ -71,17 +71,17 @@ The namespaces for styles have changed. Styles are still created by using a `bui
 
 For the builder, please update your import statements to use the following namespaces:
 
-    Box\Spout\Writer\Common\Creator\Style\StyleBuilder
-    Box\Spout\Writer\Common\Creator\Style\BorderBuilder
+    OpenSpout\Writer\Common\Creator\Style\StyleBuilder
+    OpenSpout\Writer\Common\Creator\Style\BorderBuilder
 
 The `Style` base class and style definitions like `Border`, `BorderPart` and `Color` also have a new namespace.
 
 If your are using these classes directly via an import statement in your code, please use the following namespaces:
 
-    Box\Spout\Common\Entity\Style\Border
-    Box\Spout\Common\Entity\Style\BorderPart
-    Box\Spout\Common\Entity\Style\Color
-    Box\Spout\Common\Entity\Style\Style
+    OpenSpout\Common\Entity\Style\Border
+    OpenSpout\Common\Entity\Style\BorderPart
+    OpenSpout\Common\Entity\Style\Color
+    OpenSpout\Common\Entity\Style\Style
 
 Handling of empty rows
 ----------------------

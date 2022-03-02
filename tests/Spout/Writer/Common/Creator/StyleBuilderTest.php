@@ -1,12 +1,12 @@
 <?php
 
-namespace Box\Spout\Writer\Common\Creator\Style;
+namespace OpenSpout\Writer\Common\Creator\Style;
 
-use Box\Spout\Common\Entity\Style\Border;
-use Box\Spout\Common\Entity\Style\CellAlignment;
-use Box\Spout\Common\Entity\Style\Color;
-use Box\Spout\Common\Exception\InvalidArgumentException;
-use Box\Spout\Writer\Common\Manager\Style\StyleMerger;
+use OpenSpout\Common\Entity\Style\Border;
+use OpenSpout\Common\Entity\Style\CellAlignment;
+use OpenSpout\Common\Entity\Style\Color;
+use OpenSpout\Common\Exception\InvalidArgumentException;
+use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
 use PHPUnit\Framework\TestCase;
 
 /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace Box\Spout\Common\Exception;
+namespace OpenSpout\Common\Exception;
 
 /**
  * Class IOException

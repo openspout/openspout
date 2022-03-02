@@ -1,9 +1,9 @@
 <?php
 
-namespace Box\Spout\Writer\CSV;
+namespace OpenSpout\Writer\CSV;
 
-use Box\Spout\TestUsingResource;
-use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
+use OpenSpout\TestUsingResource;
+use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -61,7 +61,7 @@ class WriterPerfTest extends TestCase
      */
     private function getNumWrittenRows($resourcePath)
     {
-        $lineCountResult = `wc -l $resourcePath`;
+        $lineCountResult = shell_exec("wc -l $resourcePath");
 
         return (int) $lineCountResult;
     }

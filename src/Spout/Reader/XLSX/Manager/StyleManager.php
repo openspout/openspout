@@ -1,8 +1,8 @@
 <?php
 
-namespace Box\Spout\Reader\XLSX\Manager;
+namespace OpenSpout\Reader\XLSX\Manager;
 
-use Box\Spout\Reader\XLSX\Creator\InternalEntityFactory;
+use OpenSpout\Reader\XLSX\Creator\InternalEntityFactory;
 
 /**
  * Class StyleManager
@@ -11,20 +11,20 @@ use Box\Spout\Reader\XLSX\Creator\InternalEntityFactory;
 class StyleManager
 {
     /** Nodes used to find relevant information in the styles XML file */
-    const XML_NODE_NUM_FMTS = 'numFmts';
-    const XML_NODE_NUM_FMT = 'numFmt';
-    const XML_NODE_CELL_XFS = 'cellXfs';
-    const XML_NODE_XF = 'xf';
+    public const XML_NODE_NUM_FMTS = 'numFmts';
+    public const XML_NODE_NUM_FMT = 'numFmt';
+    public const XML_NODE_CELL_XFS = 'cellXfs';
+    public const XML_NODE_XF = 'xf';
 
     /** Attributes used to find relevant information in the styles XML file */
-    const XML_ATTRIBUTE_NUM_FMT_ID = 'numFmtId';
-    const XML_ATTRIBUTE_FORMAT_CODE = 'formatCode';
-    const XML_ATTRIBUTE_APPLY_NUMBER_FORMAT = 'applyNumberFormat';
+    public const XML_ATTRIBUTE_NUM_FMT_ID = 'numFmtId';
+    public const XML_ATTRIBUTE_FORMAT_CODE = 'formatCode';
+    public const XML_ATTRIBUTE_APPLY_NUMBER_FORMAT = 'applyNumberFormat';
 
     /** By convention, default style ID is 0 */
-    const DEFAULT_STYLE_ID = 0;
+    public const DEFAULT_STYLE_ID = 0;
 
-    const NUMBER_FORMAT_GENERAL = 'General';
+    public const NUMBER_FORMAT_GENERAL = 'General';
 
     /**
      * @see https://msdn.microsoft.com/en-us/library/ff529597(v=office.12).aspx
@@ -60,10 +60,10 @@ class StyleManager
     /** @var array Array containing the IDs of built-in number formats indicating a date */
     protected $builtinNumFmtIdIndicatingDates;
 
-    /** @var array Array containing a mapping NUM_FMT_ID => FORMAT_CODE */
+    /** @var array|null Array containing a mapping NUM_FMT_ID => FORMAT_CODE */
     protected $customNumberFormats;
 
-    /** @var array Array containing a mapping STYLE_ID => [STYLE_ATTRIBUTES] */
+    /** @var array|null Array containing a mapping STYLE_ID => [STYLE_ATTRIBUTES] */
     protected $stylesAttributes;
 
     /** @var array Cache containing a mapping NUM_FMT_ID => IS_DATE_FORMAT. Used to avoid lots of recalculations */
@@ -142,7 +142,7 @@ class StyleManager
      * For simplicity, the styles attributes are kept in memory. This is possible thanks
      * to the reuse of formats. So 1 million cells should not use 1 million formats.
      *
-     * @param \Box\Spout\Reader\Wrapper\XMLReader $xmlReader XML Reader positioned on the "numFmts" node
+     * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader XML Reader positioned on the "numFmts" node
      * @return void
      */
     protected function extractNumberFormats($xmlReader)
@@ -164,7 +164,7 @@ class StyleManager
      * For simplicity, the styles attributes are kept in memory. This is possible thanks
      * to the reuse of styles. So 1 million cells should not use 1 million styles.
      *
-     * @param \Box\Spout\Reader\Wrapper\XMLReader $xmlReader XML Reader positioned on the "cellXfs" node
+     * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader XML Reader positioned on the "cellXfs" node
      * @return void
      */
     protected function extractStyleAttributes($xmlReader)

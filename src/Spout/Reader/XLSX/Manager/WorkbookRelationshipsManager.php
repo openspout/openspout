@@ -1,10 +1,10 @@
 <?php
 
-namespace Box\Spout\Reader\XLSX\Manager;
+namespace OpenSpout\Reader\XLSX\Manager;
 
-use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Reader\Wrapper\XMLReader;
-use Box\Spout\Reader\XLSX\Creator\InternalEntityFactory;
+use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Reader\Wrapper\XMLReader;
+use OpenSpout\Reader\XLSX\Creator\InternalEntityFactory;
 
 /**
  * Class WorkbookRelationshipsManager
@@ -12,20 +12,21 @@ use Box\Spout\Reader\XLSX\Creator\InternalEntityFactory;
  */
 class WorkbookRelationshipsManager
 {
-    const BASE_PATH = 'xl/';
+    public const BASE_PATH = 'xl/';
 
     /** Path of workbook relationships XML file inside the XLSX file */
-    const WORKBOOK_RELS_XML_FILE_PATH = 'xl/_rels/workbook.xml.rels';
+    public const WORKBOOK_RELS_XML_FILE_PATH = 'xl/_rels/workbook.xml.rels';
 
-    /** Relationships types */
-    const RELATIONSHIP_TYPE_SHARED_STRINGS = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings';
-    const RELATIONSHIP_TYPE_STYLES = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles';
-    const RELATIONSHIP_TYPE_WORKSHEET = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet';
+    /** Relationships types - For Transitional and Strict OOXML */
+    public const RELATIONSHIP_TYPE_SHARED_STRINGS = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings';
+    public const RELATIONSHIP_TYPE_STYLES = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles';
+    public const RELATIONSHIP_TYPE_SHARED_STRINGS_STRICT = 'http://purl.oclc.org/ooxml/officeDocument/relationships/sharedStrings';
+    public const RELATIONSHIP_TYPE_STYLES_STRICT = 'http://purl.oclc.org/ooxml/officeDocument/relationships/styles';
 
     /** Nodes and attributes used to find relevant information in the workbook relationships XML file */
-    const XML_NODE_RELATIONSHIP = 'Relationship';
-    const XML_ATTRIBUTE_TYPE = 'Type';
-    const XML_ATTRIBUTE_TARGET = 'Target';
+    public const XML_NODE_RELATIONSHIP = 'Relationship';
+    public const XML_ATTRIBUTE_TYPE = 'Type';
+    public const XML_ATTRIBUTE_TARGET = 'Target';
 
     /** @var string Path of the XLSX file being read */
     private $filePath;
@@ -33,7 +34,7 @@ class WorkbookRelationshipsManager
     /** @var InternalEntityFactory Factory to create entities */
     private $entityFactory;
 
-    /** @var array Cache of the already read workbook relationships: [TYPE] => [FILE_NAME] */
+    /** @var array|null Cache of the already read workbook relationships: [TYPE] => [FILE_NAME] */
     private $cachedWorkbookRelationships;
 
     /**
@@ -52,7 +53,8 @@ class WorkbookRelationshipsManager
     public function getSharedStringsXMLFilePath()
     {
         $workbookRelationships = $this->getWorkbookRelationships();
-        $sharedStringsXMLFilePath = $workbookRelationships[self::RELATIONSHIP_TYPE_SHARED_STRINGS];
+        $sharedStringsXMLFilePath = $workbookRelationships[self::RELATIONSHIP_TYPE_SHARED_STRINGS]
+            ?? $workbookRelationships[self::RELATIONSHIP_TYPE_SHARED_STRINGS_STRICT];
 
         // the file path can be relative (e.g. "styles.xml") or absolute (e.g. "/xl/styles.xml")
         $doesContainBasePath = (\strpos($sharedStringsXMLFilePath, self::BASE_PATH) !== false);
@@ -71,7 +73,8 @@ class WorkbookRelationshipsManager
     {
         $workbookRelationships = $this->getWorkbookRelationships();
 
-        return isset($workbookRelationships[self::RELATIONSHIP_TYPE_SHARED_STRINGS]);
+        return isset($workbookRelationships[self::RELATIONSHIP_TYPE_SHARED_STRINGS])
+            || isset($workbookRelationships[self::RELATIONSHIP_TYPE_SHARED_STRINGS_STRICT]);
     }
 
     /**
@@ -81,7 +84,8 @@ class WorkbookRelationshipsManager
     {
         $workbookRelationships = $this->getWorkbookRelationships();
 
-        return isset($workbookRelationships[self::RELATIONSHIP_TYPE_STYLES]);
+        return isset($workbookRelationships[self::RELATIONSHIP_TYPE_STYLES])
+            || isset($workbookRelationships[self::RELATIONSHIP_TYPE_STYLES_STRICT]);
     }
 
     /**
@@ -90,7 +94,8 @@ class WorkbookRelationshipsManager
     public function getStylesXMLFilePath()
     {
         $workbookRelationships = $this->getWorkbookRelationships();
-        $stylesXMLFilePath = $workbookRelationships[self::RELATIONSHIP_TYPE_STYLES];
+        $stylesXMLFilePath = $workbookRelationships[self::RELATIONSHIP_TYPE_STYLES]
+            ?? $workbookRelationships[self::RELATIONSHIP_TYPE_STYLES_STRICT];
 
         // the file path can be relative (e.g. "styles.xml") or absolute (e.g. "/xl/styles.xml")
         $doesContainBasePath = (\strpos($stylesXMLFilePath, self::BASE_PATH) !== false);
@@ -106,7 +111,7 @@ class WorkbookRelationshipsManager
      * Reads the workbook.xml.rels and extracts the filename associated to the different types.
      * It caches the result so that the file is read only once.
      *
-     * @throws \Box\Spout\Common\Exception\IOException If workbook.xml.rels can't be read
+     * @throws \OpenSpout\Common\Exception\IOException If workbook.xml.rels can't be read
      * @return array
      */
     private function getWorkbookRelationships()

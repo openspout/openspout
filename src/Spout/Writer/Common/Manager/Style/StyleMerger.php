@@ -1,8 +1,8 @@
 <?php
 
-namespace Box\Spout\Writer\Common\Manager\Style;
+namespace OpenSpout\Writer\Common\Manager\Style;
 
-use Box\Spout\Common\Entity\Style\Style;
+use OpenSpout\Common\Entity\Style\Style;
 
 /**
  * Class StyleMerger
@@ -88,10 +88,10 @@ class StyleMerger
         if (!$style->hasSetCellAlignment() && $baseStyle->shouldApplyCellAlignment()) {
             $styleToUpdate->setCellAlignment($baseStyle->getCellAlignment());
         }
-        if (!$style->getBorder() && $baseStyle->shouldApplyBorder()) {
+        if ($style->getBorder() === null && $baseStyle->shouldApplyBorder()) {
             $styleToUpdate->setBorder($baseStyle->getBorder());
         }
-        if (!$style->getFormat() && $baseStyle->shouldApplyFormat()) {
+        if ($style->getFormat() === null && $baseStyle->shouldApplyFormat()) {
             $styleToUpdate->setFormat($baseStyle->getFormat());
         }
         if (!$style->shouldApplyBackgroundColor() && $baseStyle->shouldApplyBackgroundColor()) {

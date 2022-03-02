@@ -1,12 +1,12 @@
 <?php
 
-namespace Box\Spout\Writer\ODS;
+namespace OpenSpout\Writer\ODS;
 
-use Box\Spout\TestUsingResource;
-use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
-use Box\Spout\Writer\Common\Entity\Sheet;
-use Box\Spout\Writer\Exception\InvalidSheetNameException;
-use Box\Spout\Writer\RowCreationHelper;
+use OpenSpout\TestUsingResource;
+use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
+use OpenSpout\Writer\Common\Entity\Sheet;
+use OpenSpout\Writer\Exception\InvalidSheetNameException;
+use OpenSpout\Writer\RowCreationHelper;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -82,7 +82,7 @@ class SheetTest extends TestCase
      */
     public function testSetSheetVisibilityShouldCreateSheetHidden()
     {
-        $fileName = 'test_set_visibility_should_create_sheet_hidden.xlsx';
+        $fileName = 'test_set_visibility_should_create_sheet_hidden.ods';
         $this->writeDataToHiddenSheet($fileName);
 
         $resourcePath = $this->getGeneratedResourcePath($fileName);
@@ -92,18 +92,25 @@ class SheetTest extends TestCase
         $this->assertStringContainsString(' table:display="false"', $xmlContents, 'The sheet visibility should have been changed to "hidden"');
     }
 
-    /**
-     * @param string $fileName
-     * @param string $sheetName
-     * @return Sheet
-     */
-    private function writeDataAndReturnSheetWithCustomName($fileName, $sheetName)
+    private function writerForFile($fileName)
     {
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
         $writer = WriterEntityFactory::createODSWriter();
         $writer->openToFile($resourcePath);
+
+        return $writer;
+    }
+
+    /**
+     * @param string $fileName
+     * @param string $sheetName
+     * @return void
+     */
+    private function writeDataAndReturnSheetWithCustomName($fileName, $sheetName)
+    {
+        $writer = $this->writerForFile($fileName);
 
         $sheet = $writer->getCurrentSheet();
         $sheet->setName($sheetName);

@@ -1,15 +1,15 @@
 <?php
 
-namespace Box\Spout\Reader\XLSX\Manager;
+namespace OpenSpout\Reader\XLSX\Manager;
 
-use Box\Spout\Reader\Exception\SharedStringNotFoundException;
-use Box\Spout\Reader\XLSX\Creator\HelperFactory;
-use Box\Spout\Reader\XLSX\Creator\InternalEntityFactory;
-use Box\Spout\Reader\XLSX\Creator\ManagerFactory;
-use Box\Spout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory;
-use Box\Spout\Reader\XLSX\Manager\SharedStringsCaching\FileBasedStrategy;
-use Box\Spout\Reader\XLSX\Manager\SharedStringsCaching\InMemoryStrategy;
-use Box\Spout\TestUsingResource;
+use OpenSpout\Reader\Exception\SharedStringNotFoundException;
+use OpenSpout\Reader\XLSX\Creator\HelperFactory;
+use OpenSpout\Reader\XLSX\Creator\InternalEntityFactory;
+use OpenSpout\Reader\XLSX\Creator\ManagerFactory;
+use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory;
+use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\FileBasedStrategy;
+use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\InMemoryStrategy;
+use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -19,13 +19,13 @@ class SharedStringsManagerTest extends TestCase
 {
     use TestUsingResource;
 
-    /** @var SharedStringsManager */
+    /** @var SharedStringsManager|null */
     private $sharedStringsManager;
 
     /**
      * @return void
      */
-    public function setUp(): void
+    public function setUp() : void
     {
         $this->sharedStringsManager = null;
     }
@@ -33,7 +33,7 @@ class SharedStringsManagerTest extends TestCase
     /**
      * @return void
      */
-    public function tearDown(): void
+    public function tearDown() : void
     {
         if ($this->sharedStringsManager !== null) {
             $this->sharedStringsManager->cleanup();

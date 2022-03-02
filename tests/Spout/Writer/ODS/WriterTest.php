@@ -1,18 +1,18 @@
 <?php
 
-namespace Box\Spout\Writer\ODS;
+namespace OpenSpout\Writer\ODS;
 
-use Box\Spout\Common\Entity\Cell;
-use Box\Spout\Common\Entity\Row;
-use Box\Spout\Common\Exception\InvalidArgumentException;
-use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Common\Exception\SpoutException;
-use Box\Spout\Reader\Wrapper\XMLReader;
-use Box\Spout\TestUsingResource;
-use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
-use Box\Spout\Writer\Exception\WriterAlreadyOpenedException;
-use Box\Spout\Writer\Exception\WriterNotOpenedException;
-use Box\Spout\Writer\RowCreationHelper;
+use OpenSpout\Common\Entity\Cell;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Exception\InvalidArgumentException;
+use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Common\Exception\SpoutException;
+use OpenSpout\Reader\Wrapper\XMLReader;
+use OpenSpout\TestUsingResource;
+use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
+use OpenSpout\Writer\Exception\WriterAlreadyOpenedException;
+use OpenSpout\Writer\Exception\WriterNotOpenedException;
+use OpenSpout\Writer\RowCreationHelper;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -132,7 +132,7 @@ class WriterTest extends TestCase
             $writer->addRows($dataRows);
             $this->fail('Exception should have been thrown');
         } catch (SpoutException $e) {
-            $this->assertFileNotExists($fileName, 'Output file should have been deleted');
+            $this->assertFileDoesNotExist($fileName, 'Output file should have been deleted');
 
             $numFiles = iterator_count(new \FilesystemIterator($tempFolderPath, \FilesystemIterator::SKIP_DOTS));
             $this->assertEquals(0, $numFiles, 'All temp files should have been deleted');
@@ -280,6 +280,48 @@ class WriterTest extends TestCase
     }
 
     /**
+     * @return void
+     */
+    public function testAddRowShouldSupportFloatValuesInDifferentLocale()
+    {
+        $previousLocale = \setlocale(LC_ALL, 0);
+
+        try {
+            // Pick a supported locale whose decimal point is a comma.
+            // Installed locales differ from one system to another, so we can't pick
+            // a given locale.
+            $supportedLocales = explode("\n", shell_exec('locale -a'));
+            $foundCommaLocale = false;
+            foreach ($supportedLocales as $supportedLocale) {
+                \setlocale(LC_ALL, $supportedLocale);
+                if (\localeconv()['decimal_point'] === ',') {
+                    $foundCommaLocale = true;
+                    break;
+                }
+            }
+
+            if (!$foundCommaLocale) {
+                $this->markTestSkipped('No locale with comma decimal separator');
+            }
+
+            $this->assertEquals(',', \localeconv()['decimal_point']);
+
+            $fileName = 'test_add_row_should_support_float_values_in_different_locale.xlsx';
+            $dataRows = $this->createRowsFromValues([
+                [1234.5],
+            ]);
+
+            $this->writeToODSFile($dataRows, $fileName);
+
+            $this->assertValueWasNotWrittenToSheet($fileName, 1, '1234,5');
+            $this->assertValueWasWrittenToSheet($fileName, 1, '1234.5');
+        } finally {
+            // reset locale
+            \setlocale(LC_ALL, $previousLocale);
+        }
+    }
+
+    /**
      * @return array
      */
     public function dataProviderForTestAddRowShouldUseNumberColumnsRepeatedForRepeatedValues()
@@ -306,6 +348,7 @@ class WriterTest extends TestCase
         $fileName = 'test_add_row_should_use_number_columns_repeated.ods';
         $this->writeToODSFile($this->createRowsFromValues([$dataRow]), $fileName);
 
+        /** @var \DOMElement $sheetXmlNode */
         $sheetXmlNode = $this->getSheetXmlNode($fileName, 1);
         $tableCellNodes = $sheetXmlNode->getElementsByTagName('table-cell');
 
@@ -407,7 +450,7 @@ class WriterTest extends TestCase
         ]);
 
         // set the maxRowsPerSheet limit to 2
-        \ReflectionHelper::setStaticValue('\Box\Spout\Writer\ODS\Manager\WorkbookManager', 'maxRowsPerWorksheet', 2);
+        \ReflectionHelper::setStaticValue('\OpenSpout\Writer\ODS\Manager\WorkbookManager', 'maxRowsPerWorksheet', 2);
 
         $writer = $this->writeToODSFile($dataRows, $fileName, $shouldCreateSheetsAutomatically = true);
         $this->assertCount(2, $writer->getSheets(), '2 sheets should have been created.');
@@ -431,7 +474,7 @@ class WriterTest extends TestCase
         ]);
 
         // set the maxRowsPerSheet limit to 2
-        \ReflectionHelper::setStaticValue('\Box\Spout\Writer\ODS\Manager\WorkbookManager', 'maxRowsPerWorksheet', 2);
+        \ReflectionHelper::setStaticValue('\OpenSpout\Writer\ODS\Manager\WorkbookManager', 'maxRowsPerWorksheet', 2);
 
         $writer = $this->writeToODSFile($dataRows, $fileName, $shouldCreateSheetsAutomatically = false);
         $this->assertCount(1, $writer->getSheets(), 'Only 1 sheet should have been created.');
@@ -476,6 +519,10 @@ class WriterTest extends TestCase
      */
     public function testGeneratedFileShouldHaveTheCorrectMimeType()
     {
+        if (!function_exists('finfo')) {
+            $this->markTestSkipped('finfo is not available on this system (possibly running on Windows where the DLL needs to be added explicitly to the php.ini)');
+        }
+
         $fileName = 'test_mime_type.ods';
         $resourcePath = $this->getGeneratedResourcePath($fileName);
         $dataRow = ['foo'];

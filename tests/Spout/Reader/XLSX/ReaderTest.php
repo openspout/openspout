@@ -1,10 +1,10 @@
 <?php
 
-namespace Box\Spout\Reader\XLSX;
+namespace OpenSpout\Reader\XLSX;
 
-use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
-use Box\Spout\TestUsingResource;
+use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Reader\Common\Creator\ReaderEntityFactory;
+use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -70,6 +70,19 @@ class ReaderTest extends TestCase
         foreach ($allRows as $row) {
             $this->assertCount($expectedNumOfCellsPerRow, $row, "There should be $expectedNumOfCellsPerRow cells for every row");
         }
+    }
+
+    /**
+     * @return void
+     */
+    public function testReadShouldSupportInlineStringsWithMultipleValueNodes()
+    {
+        $allRows = $this->getAllRowsForFile('sheet_with_multiple_value_nodes_in_inline_strings.xlsx');
+
+        $expectedRows = [
+            ['VALUE 1 VALUE 2 VALUE 3 VALUE 4', 's1 - B1'],
+        ];
+        $this->assertEquals($expectedRows, $allRows);
     }
 
     /**
@@ -679,11 +692,27 @@ class ReaderTest extends TestCase
         $allRows = $this->getAllRowsForFile('sheet_with_empty_cells.xlsx');
 
         $expectedRows = [
-            ['A', 'B', 'C'],
+            ['A', '', 'C'],
             ['0', '', ''],
             ['1', '1', ''],
         ];
         $this->assertEquals($expectedRows, $allRows, 'There should be 3 rows, with equal length');
+    }
+
+    /**
+     * https://github.com/box/spout/issues/184
+     * @return void
+     */
+    public function testReadShouldCreateOutputEmptyCellPreservedWhenNoDimensionsSpecified()
+    {
+        $allRows = $this->getAllRowsForFile('sheet_with_empty_cells_without_dimensions.xlsx');
+
+        $expectedRows = [
+            ['A', '', 'C'],
+            ['0'],
+            ['1', '1'],
+        ];
+        $this->assertEquals($expectedRows, $allRows);
     }
 
     /**
@@ -701,6 +730,18 @@ class ReaderTest extends TestCase
         ];
 
         $this->assertEquals($expectedRows, $allRows, 'Cell values should not be trimmed');
+    }
+
+    /**
+     * https://github.com/box/spout/issues/726
+     * @return void
+     */
+    public function testReaderShouldSupportStrictOOXML()
+    {
+        $allRows = $this->getAllRowsForFile('sheet_with_strict_ooxml.xlsx');
+
+        $this->assertEquals('UNIQUE_ACCOUNT_IDENTIFIER', $allRows[0][0]);
+        $this->assertEquals('A2Z34NJA7N2ESJ', $allRows[1][0]);
     }
 
     /**

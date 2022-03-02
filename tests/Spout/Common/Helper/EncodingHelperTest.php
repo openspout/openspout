@@ -1,9 +1,9 @@
 <?php
 
-namespace Box\Spout\Common\Helper;
+namespace OpenSpout\Common\Helper;
 
-use Box\Spout\Common\Exception\EncodingConversionException;
-use Box\Spout\TestUsingResource;
+use OpenSpout\Common\Exception\EncodingConversionException;
+use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -67,16 +67,16 @@ class EncodingHelperTest extends TestCase
     {
         $this->expectException(EncodingConversionException::class);
 
-        $helperStub = $this->getMockBuilder('\Box\Spout\Common\Helper\GlobalFunctionsHelper')
-                        ->setMethods(['iconv', 'mb_convert_encoding'])
+        $helperStub = $this->getMockBuilder('\OpenSpout\Common\Helper\GlobalFunctionsHelper')
+                        ->onlyMethods(['iconv', 'mb_convert_encoding'])
                         ->getMock();
         $helperStub->method('iconv')->willReturn(false);
         $helperStub->method('mb_convert_encoding')->willReturn(false);
 
-        /** @var EncodingHelper $encodingHelperStub */
-        $encodingHelperStub = $this->getMockBuilder('\Box\Spout\Common\Helper\EncodingHelper')
+        /** @var EncodingHelper|\PHPUnit\Framework\MockObject\MockObject|\PHPUnit\Framework\MockObject\MockObject $encodingHelperStub */
+        $encodingHelperStub = $this->getMockBuilder('\OpenSpout\Common\Helper\EncodingHelper')
                         ->setConstructorArgs([$helperStub])
-                        ->setMethods(['canUseIconv', 'canUseMbString'])
+                        ->onlyMethods(['canUseIconv', 'canUseMbString'])
                         ->getMock();
         $encodingHelperStub->method('canUseIconv')->willReturn($shouldUseIconv);
         $encodingHelperStub->method('canUseMbString')->willReturn(true);
@@ -91,10 +91,10 @@ class EncodingHelperTest extends TestCase
     {
         $this->expectException(EncodingConversionException::class);
 
-        /** @var EncodingHelper $encodingHelperStub */
-        $encodingHelperStub = $this->getMockBuilder('\Box\Spout\Common\Helper\EncodingHelper')
+        /** @var EncodingHelper|\PHPUnit\Framework\MockObject\MockObject|\PHPUnit\Framework\MockObject\MockObject $encodingHelperStub */
+        $encodingHelperStub = $this->getMockBuilder('\OpenSpout\Common\Helper\EncodingHelper')
                         ->disableOriginalConstructor()
-                        ->setMethods(['canUseIconv', 'canUseMbString'])
+                        ->onlyMethods(['canUseIconv', 'canUseMbString'])
                         ->getMock();
         $encodingHelperStub->method('canUseIconv')->willReturn(false);
         $encodingHelperStub->method('canUseMbString')->willReturn(false);
@@ -110,10 +110,10 @@ class EncodingHelperTest extends TestCase
      */
     public function testAttemptConversionToUTF8ShouldReturnReencodedString($shouldUseIconv)
     {
-        /** @var EncodingHelper $encodingHelperStub */
-        $encodingHelperStub = $this->getMockBuilder('\Box\Spout\Common\Helper\EncodingHelper')
+        /** @var EncodingHelper|\PHPUnit\Framework\MockObject\MockObject $encodingHelperStub */
+        $encodingHelperStub = $this->getMockBuilder('\OpenSpout\Common\Helper\EncodingHelper')
                         ->setConstructorArgs([new GlobalFunctionsHelper()])
-                        ->setMethods(['canUseIconv', 'canUseMbString'])
+                        ->onlyMethods(['canUseIconv', 'canUseMbString'])
                         ->getMock();
         $encodingHelperStub->method('canUseIconv')->willReturn($shouldUseIconv);
         $encodingHelperStub->method('canUseMbString')->willReturn(true);
@@ -129,10 +129,10 @@ class EncodingHelperTest extends TestCase
      */
     public function testAttemptConversionToUTF8ShouldBeNoopWhenTargetIsUTF8()
     {
-        /** @var EncodingHelper $encodingHelperStub */
-        $encodingHelperStub = $this->getMockBuilder('\Box\Spout\Common\Helper\EncodingHelper')
+        /** @var EncodingHelper|\PHPUnit\Framework\MockObject\MockObject|\PHPUnit\Framework\MockObject\MockObject $encodingHelperStub */
+        $encodingHelperStub = $this->getMockBuilder('\OpenSpout\Common\Helper\EncodingHelper')
                         ->disableOriginalConstructor()
-                        ->setMethods(['canUseIconv'])
+                        ->onlyMethods(['canUseIconv'])
                         ->getMock();
         $encodingHelperStub->expects($this->never())->method('canUseIconv');
 
@@ -150,16 +150,16 @@ class EncodingHelperTest extends TestCase
     {
         $this->expectException(EncodingConversionException::class);
 
-        $helperStub = $this->getMockBuilder('\Box\Spout\Common\Helper\GlobalFunctionsHelper')
-                        ->setMethods(['iconv', 'mb_convert_encoding'])
+        $helperStub = $this->getMockBuilder('\OpenSpout\Common\Helper\GlobalFunctionsHelper')
+                        ->onlyMethods(['iconv', 'mb_convert_encoding'])
                         ->getMock();
         $helperStub->method('iconv')->willReturn(false);
         $helperStub->method('mb_convert_encoding')->willReturn(false);
 
-        /** @var EncodingHelper $encodingHelperStub */
-        $encodingHelperStub = $this->getMockBuilder('\Box\Spout\Common\Helper\EncodingHelper')
+        /** @var EncodingHelper|\PHPUnit\Framework\MockObject\MockObject|\PHPUnit\Framework\MockObject\MockObject $encodingHelperStub */
+        $encodingHelperStub = $this->getMockBuilder('\OpenSpout\Common\Helper\EncodingHelper')
                         ->setConstructorArgs([$helperStub])
-                        ->setMethods(['canUseIconv', 'canUseMbString'])
+                        ->onlyMethods(['canUseIconv', 'canUseMbString'])
                         ->getMock();
         $encodingHelperStub->method('canUseIconv')->willReturn($shouldUseIconv);
         $encodingHelperStub->method('canUseMbString')->willReturn(true);
@@ -174,10 +174,10 @@ class EncodingHelperTest extends TestCase
     {
         $this->expectException(EncodingConversionException::class);
 
-        /** @var EncodingHelper $encodingHelperStub */
-        $encodingHelperStub = $this->getMockBuilder('\Box\Spout\Common\Helper\EncodingHelper')
+        /** @var EncodingHelper|\PHPUnit\Framework\MockObject\MockObject|\PHPUnit\Framework\MockObject\MockObject $encodingHelperStub */
+        $encodingHelperStub = $this->getMockBuilder('\OpenSpout\Common\Helper\EncodingHelper')
                         ->disableOriginalConstructor()
-                        ->setMethods(['canUseIconv', 'canUseMbString'])
+                        ->onlyMethods(['canUseIconv', 'canUseMbString'])
                         ->getMock();
         $encodingHelperStub->method('canUseIconv')->willReturn(false);
         $encodingHelperStub->method('canUseMbString')->willReturn(false);
@@ -193,10 +193,10 @@ class EncodingHelperTest extends TestCase
      */
     public function testAttemptConversionFromUTF8ShouldReturnReencodedString($shouldUseIconv)
     {
-        /** @var EncodingHelper $encodingHelperStub */
-        $encodingHelperStub = $this->getMockBuilder('\Box\Spout\Common\Helper\EncodingHelper')
+        /** @var EncodingHelper|\PHPUnit\Framework\MockObject\MockObject $encodingHelperStub */
+        $encodingHelperStub = $this->getMockBuilder('\OpenSpout\Common\Helper\EncodingHelper')
                         ->setConstructorArgs([new GlobalFunctionsHelper()])
-                        ->setMethods(['canUseIconv', 'canUseMbString'])
+                        ->onlyMethods(['canUseIconv', 'canUseMbString'])
                         ->getMock();
         $encodingHelperStub->method('canUseIconv')->willReturn($shouldUseIconv);
         $encodingHelperStub->method('canUseMbString')->willReturn(true);
@@ -212,10 +212,10 @@ class EncodingHelperTest extends TestCase
      */
     public function testAttemptConversionFromUTF8ShouldBeNoopWhenTargetIsUTF8()
     {
-        /** @var EncodingHelper $encodingHelperStub */
-        $encodingHelperStub = $this->getMockBuilder('\Box\Spout\Common\Helper\EncodingHelper')
+        /** @var EncodingHelper|\PHPUnit\Framework\MockObject\MockObject $encodingHelperStub */
+        $encodingHelperStub = $this->getMockBuilder('\OpenSpout\Common\Helper\EncodingHelper')
                         ->disableOriginalConstructor()
-                        ->setMethods(['canUseIconv'])
+                        ->onlyMethods(['canUseIconv'])
                         ->getMock();
         $encodingHelperStub->expects($this->never())->method('canUseIconv');
 

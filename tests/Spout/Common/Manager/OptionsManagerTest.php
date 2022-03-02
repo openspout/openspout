@@ -1,6 +1,6 @@
 <?php
 
-namespace Box\Spout\Common\Manager;
+namespace OpenSpout\Common\Manager;
 
 use PHPUnit\Framework\TestCase;
 
@@ -14,7 +14,7 @@ class OptionsManagerTest extends TestCase
      */
     protected $optionsManager;
 
-    protected function setUp(): void
+    protected function setUp() : void
     {
         $this->optionsManager = new class() extends OptionsManagerAbstract {
             protected function getSupportedOptions()

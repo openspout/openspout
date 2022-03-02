@@ -1,9 +1,9 @@
 <?php
 
-namespace Box\Spout\Writer\ODS;
+namespace OpenSpout\Writer\ODS;
 
-use Box\Spout\TestUsingResource;
-use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
+use OpenSpout\TestUsingResource;
+use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -88,7 +88,7 @@ class WriterPerfTest extends TestCase
         copy($pathToContentXmlFile, $tmpFile);
 
         // Get the last 200 characters
-        $lastCharacters = `tail -c 200 $tmpFile`;
+        $lastCharacters = shell_exec("tail -c 200 $tmpFile");
 
         // remove the temporary file
         unlink($tmpFile);
