@@ -365,15 +365,24 @@ class WriterTest extends TestCase
     {
         $fileName = 'test_add_row_should_support_multiple_types_of_data.xlsx';
         $dataRows = $this->createRowsFromValues([
-            ['xlsx--11', true, '', 0, 10.2, null],
+            [
+                'xlsx--11',
+                true,
+                '',
+                0,
+                10.2,
+                null,
+                new \DateTimeImmutable('2020-03-04 06:00:00', new \DateTimeZone('UTC')),
+            ],
         ]);
 
-        $this->writeToXLSXFile($dataRows, $fileName, $shouldUseInlineStrings = false);
+        $this->writeToXLSXFile($dataRows, $fileName, false);
 
         $this->assertSharedStringWasWritten($fileName, 'xlsx--11');
         $this->assertInlineDataWasWrittenToSheet($fileName, 1, 1); // true is converted to 1
         $this->assertInlineDataWasWrittenToSheet($fileName, 1, 0);
         $this->assertInlineDataWasWrittenToSheet($fileName, 1, 10.2);
+        $this->assertInlineDataWasWrittenToSheet($fileName, 1, 43894.25);
     }
 
     /**

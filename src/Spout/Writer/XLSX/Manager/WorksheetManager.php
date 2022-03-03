@@ -18,6 +18,7 @@ use OpenSpout\Writer\Common\Manager\RegisteredStyle;
 use OpenSpout\Writer\Common\Manager\RowManager;
 use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
 use OpenSpout\Writer\Common\Manager\WorksheetManagerInterface;
+use OpenSpout\Writer\XLSX\Helper\DateHelper;
 use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
 
 /**
@@ -265,6 +266,13 @@ EOD;
             $cellXML .= '><v>' . $this->stringHelper->formatNumericValue($cell->getValue()) . '</v></c>';
         } elseif ($cell->isFormula()) {
             $cellXML .= '><f>' . substr($cell->getValue(), 1) . '</f></c>';
+        } elseif ($cell->isDate()) {
+            $value = $cell->getValue();
+            if ($value instanceof \DateTimeInterface) {
+                $cellXML .= '><v>' . (string) DateHelper::toExcel($value) . '</v></c>';
+            } else {
+                throw new InvalidArgumentException('Trying to add a date value with an unsupported type: ' . \gettype($value));
+            }
         } elseif ($cell->isError() && is_string($cell->getValueEvenIfError())) {
             // only writes the error value if it's a string
             $cellXML .= ' t="e"><v>' . $cell->getValueEvenIfError() . '</v></c>';
