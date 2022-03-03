@@ -6,7 +6,7 @@ jobs:
   tests-on-php-latest:
     strategy:
       matrix:
-        operating-system: [ubuntu-latest, windows-latest, macos-latest]
+        operating-system: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.operating-system }}
     name: Tests - PHP 8.1 on ${{ matrix.operating-system }}
     env:

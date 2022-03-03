@@ -66,9 +66,14 @@ class WriterTest extends TestCase
      */
     public function testAddRowsShouldThrowExceptionIfRowsAreNotArrayOfArrays()
     {
-        $this->expectException(InvalidArgumentException::class);
+        $fileName = 'test_non_array_values.csv';
+        $this->createGeneratedFolderIfNeeded($fileName);
+        $resourcePath = $this->getGeneratedResourcePath($fileName);
 
         $writer = WriterEntityFactory::createCSVWriter();
+        $writer->openToFile($resourcePath);
+
+        $this->expectException(InvalidArgumentException::class);
         $writer->addRows([['csv--11', 'csv--12']]);
         $writer->close();
     }
