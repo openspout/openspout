@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
-         bootstrap="tests/bootstrap.php"
          colors="true"
          convertDeprecationsToExceptions="true"
-         defaultTestSuite="unit-tests">
+         failOnRisky="true"
+         failOnWarning="true"
+         beStrictAboutChangesToGlobalState="true"
+         beStrictAboutOutputDuringTests="true"
+         beStrictAboutTodoAnnotatedTests="true"
+>
 
   <php>
     <ini name="error_reporting" value="-1"/>
+    <ini name="date.timezone" value="UTC"/>
   </php>
 
   <testsuites>
@@ -27,7 +32,7 @@
       <directory suffix=".php">src/</directory>
     </include>
     <exclude>
-      <directory>src/Spout/Autoloader</directory>
+      <directory>src/Autoloader</directory>
     </exclude>
   </coverage>
 

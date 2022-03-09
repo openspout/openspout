@@ -1,0 +1,62 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Method OpenSpout\\\\Reader\\\\Common\\\\Creator\\\\ReaderEntityFactory\\:\\:createCSVReader\\(\\) should return OpenSpout\\\\Reader\\\\CSV\\\\Reader but returns OpenSpout\\\\Reader\\\\ReaderInterface\\.$#"
+			count: 1
+			path: src/Reader/Common/Creator/ReaderEntityFactory.php
+
+		-
+			message: "#^Method OpenSpout\\\\Reader\\\\Common\\\\Creator\\\\ReaderEntityFactory\\:\\:createCSVReader\\(\\) should return OpenSpout\\\\Reader\\\\CSV\\\\Reader but returns null\\.$#"
+			count: 1
+			path: src/Reader/Common/Creator/ReaderEntityFactory.php
+
+		-
+			message: "#^Method OpenSpout\\\\Reader\\\\Common\\\\Creator\\\\ReaderEntityFactory\\:\\:createODSReader\\(\\) should return OpenSpout\\\\Reader\\\\ODS\\\\Reader but returns OpenSpout\\\\Reader\\\\ReaderInterface\\.$#"
+			count: 1
+			path: src/Reader/Common/Creator/ReaderEntityFactory.php
+
+		-
+			message: "#^Method OpenSpout\\\\Reader\\\\Common\\\\Creator\\\\ReaderEntityFactory\\:\\:createODSReader\\(\\) should return OpenSpout\\\\Reader\\\\ODS\\\\Reader but returns null\\.$#"
+			count: 1
+			path: src/Reader/Common/Creator/ReaderEntityFactory.php
+
+		-
+			message: "#^Method OpenSpout\\\\Reader\\\\Common\\\\Creator\\\\ReaderEntityFactory\\:\\:createXLSXReader\\(\\) should return OpenSpout\\\\Reader\\\\XLSX\\\\Reader but returns OpenSpout\\\\Reader\\\\ReaderInterface\\.$#"
+			count: 1
+			path: src/Reader/Common/Creator/ReaderEntityFactory.php
+
+		-
+			message: "#^Method OpenSpout\\\\Reader\\\\Common\\\\Creator\\\\ReaderEntityFactory\\:\\:createXLSXReader\\(\\) should return OpenSpout\\\\Reader\\\\XLSX\\\\Reader but returns null\\.$#"
+			count: 1
+			path: src/Reader/Common/Creator/ReaderEntityFactory.php
+
+		-
+			message: "#^Method OpenSpout\\\\Writer\\\\Common\\\\Creator\\\\WriterEntityFactory\\:\\:createCSVWriter\\(\\) should return OpenSpout\\\\Writer\\\\CSV\\\\Writer but returns OpenSpout\\\\Writer\\\\WriterInterface\\.$#"
+			count: 1
+			path: src/Writer/Common/Creator/WriterEntityFactory.php
+
+		-
+			message: "#^Method OpenSpout\\\\Writer\\\\Common\\\\Creator\\\\WriterEntityFactory\\:\\:createCSVWriter\\(\\) should return OpenSpout\\\\Writer\\\\CSV\\\\Writer but returns null\\.$#"
+			count: 1
+			path: src/Writer/Common/Creator/WriterEntityFactory.php
+
+		-
+			message: "#^Method OpenSpout\\\\Writer\\\\Common\\\\Creator\\\\WriterEntityFactory\\:\\:createODSWriter\\(\\) should return OpenSpout\\\\Writer\\\\ODS\\\\Writer but returns OpenSpout\\\\Writer\\\\WriterInterface\\.$#"
+			count: 1
+			path: src/Writer/Common/Creator/WriterEntityFactory.php
+
+		-
+			message: "#^Method OpenSpout\\\\Writer\\\\Common\\\\Creator\\\\WriterEntityFactory\\:\\:createODSWriter\\(\\) should return OpenSpout\\\\Writer\\\\ODS\\\\Writer but returns null\\.$#"
+			count: 1
+			path: src/Writer/Common/Creator/WriterEntityFactory.php
+
+		-
+			message: "#^Method OpenSpout\\\\Writer\\\\Common\\\\Creator\\\\WriterEntityFactory\\:\\:createXLSXWriter\\(\\) should return OpenSpout\\\\Writer\\\\XLSX\\\\Writer but returns OpenSpout\\\\Writer\\\\WriterInterface\\.$#"
+			count: 1
+			path: src/Writer/Common/Creator/WriterEntityFactory.php
+
+		-
+			message: "#^Method OpenSpout\\\\Writer\\\\Common\\\\Creator\\\\WriterEntityFactory\\:\\:createXLSXWriter\\(\\) should return OpenSpout\\\\Writer\\\\XLSX\\\\Writer but returns null\\.$#"
+			count: 1
+			path: src/Writer/Common/Creator/WriterEntityFactory.php
+
