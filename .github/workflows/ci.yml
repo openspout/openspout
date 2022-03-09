@@ -59,9 +59,6 @@ jobs:
 
     runs-on: ${{ matrix.os }}
 
-    env:
-      code-coverage: "none"
-
     strategy:
       matrix:
         os:
@@ -70,6 +67,8 @@ jobs:
           - "7.3"
           - "7.4"
           - "8.0"
+        code-coverage:
+          - "none"
         include:
             - os: "windows-latest"
               php-version: "8.1"
