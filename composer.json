@@ -46,8 +46,13 @@
     },
     "autoload": {
         "psr-4": {
-            "OpenSpout\\": "src/Spout"
+            "OpenSpout\\": "src/"
         }
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests/"
+        ]
     },
     "config": {
         "platform": {

@@ -6,6 +6,7 @@
 /.php-cs-fixer.dist.php         export-ignore
 /.require-checker-config.json   export-ignore
 /logo.png                       export-ignore
+/Makefile                       export-ignore
 /mkdocs.yml                     export-ignore
 /phpstan.neon                   export-ignore
 /phpunit.xml                    export-ignore
