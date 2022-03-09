@@ -8,7 +8,7 @@ use OpenSpout\Reader\XLSX\Creator\InternalEntityFactory;
 
 /**
  * Class WorkbookRelationshipsManager
- * This class manages the workbook relationships defined in the associated XML file
+ * This class manages the workbook relationships defined in the associated XML file.
  */
 class WorkbookRelationshipsManager
 {
@@ -34,11 +34,11 @@ class WorkbookRelationshipsManager
     /** @var InternalEntityFactory Factory to create entities */
     private $entityFactory;
 
-    /** @var array|null Cache of the already read workbook relationships: [TYPE] => [FILE_NAME] */
+    /** @var null|array Cache of the already read workbook relationships: [TYPE] => [FILE_NAME] */
     private $cachedWorkbookRelationships;
 
     /**
-     * @param string $filePath Path of the XLSX file being read
+     * @param string                $filePath      Path of the XLSX file being read
      * @param InternalEntityFactory $entityFactory Factory to create entities
      */
     public function __construct($filePath, $entityFactory)
@@ -57,10 +57,10 @@ class WorkbookRelationshipsManager
             ?? $workbookRelationships[self::RELATIONSHIP_TYPE_SHARED_STRINGS_STRICT];
 
         // the file path can be relative (e.g. "styles.xml") or absolute (e.g. "/xl/styles.xml")
-        $doesContainBasePath = (\strpos($sharedStringsXMLFilePath, self::BASE_PATH) !== false);
+        $doesContainBasePath = (false !== strpos($sharedStringsXMLFilePath, self::BASE_PATH));
         if (!$doesContainBasePath) {
             // make sure we return an absolute file path
-            $sharedStringsXMLFilePath = self::BASE_PATH . $sharedStringsXMLFilePath;
+            $sharedStringsXMLFilePath = self::BASE_PATH.$sharedStringsXMLFilePath;
         }
 
         return $sharedStringsXMLFilePath;
@@ -98,10 +98,10 @@ class WorkbookRelationshipsManager
             ?? $workbookRelationships[self::RELATIONSHIP_TYPE_STYLES_STRICT];
 
         // the file path can be relative (e.g. "styles.xml") or absolute (e.g. "/xl/styles.xml")
-        $doesContainBasePath = (\strpos($stylesXMLFilePath, self::BASE_PATH) !== false);
+        $doesContainBasePath = (false !== strpos($stylesXMLFilePath, self::BASE_PATH));
         if (!$doesContainBasePath) {
             // make sure we return a full path
-            $stylesXMLFilePath = self::BASE_PATH . $stylesXMLFilePath;
+            $stylesXMLFilePath = self::BASE_PATH.$stylesXMLFilePath;
         }
 
         return $stylesXMLFilePath;
@@ -112,6 +112,7 @@ class WorkbookRelationshipsManager
      * It caches the result so that the file is read only once.
      *
      * @throws \OpenSpout\Common\Exception\IOException If workbook.xml.rels can't be read
+     *
      * @return array
      */
     private function getWorkbookRelationships()
@@ -119,8 +120,8 @@ class WorkbookRelationshipsManager
         if (!isset($this->cachedWorkbookRelationships)) {
             $xmlReader = $this->entityFactory->createXMLReader();
 
-            if ($xmlReader->openFileInZip($this->filePath, self::WORKBOOK_RELS_XML_FILE_PATH) === false) {
-                throw new IOException('Could not open "' . self::WORKBOOK_RELS_XML_FILE_PATH . '".');
+            if (false === $xmlReader->openFileInZip($this->filePath, self::WORKBOOK_RELS_XML_FILE_PATH)) {
+                throw new IOException('Could not open "'.self::WORKBOOK_RELS_XML_FILE_PATH.'".');
             }
 
             $this->cachedWorkbookRelationships = [];
@@ -137,7 +138,6 @@ class WorkbookRelationshipsManager
      * Extracts and store the data of the current workbook relationship.
      *
      * @param XMLReader $xmlReader
-     * @return void
      */
     private function processWorkbookRelationship($xmlReader)
     {

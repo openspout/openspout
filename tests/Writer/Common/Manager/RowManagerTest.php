@@ -7,7 +7,11 @@ use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\Common\Manager\RowManager;
 use PHPUnit\Framework\TestCase;
 
-class RowManagerTest extends TestCase
+/**
+ * @internal
+ * @coversNothing
+ */
+final class RowManagerTest extends TestCase
 {
     /**
      * @return array
@@ -26,15 +30,13 @@ class RowManagerTest extends TestCase
     /**
      * @dataProvider dataProviderForTestIsEmptyRow
      *
-     * @param array $cells
      * @param bool $expectedIsEmpty
-     * @return void
      */
     public function testIsEmptyRow(array $cells, $expectedIsEmpty)
     {
         $rowManager = new RowManager();
 
         $row = new Row($cells, null);
-        $this->assertEquals($expectedIsEmpty, $rowManager->isEmpty($row));
+        static::assertSame($expectedIsEmpty, $rowManager->isEmpty($row));
     }
 }

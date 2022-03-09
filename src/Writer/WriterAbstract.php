@@ -15,9 +15,7 @@ use OpenSpout\Writer\Exception\WriterAlreadyOpenedException;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
 
 /**
- * Class WriterAbstract
- *
- * @abstract
+ * Class WriterAbstract.
  */
 abstract class WriterAbstract implements WriterInterface
 {
@@ -42,11 +40,6 @@ abstract class WriterAbstract implements WriterInterface
     /** @var string Content-Type value for the header - to be defined by child class */
     protected static $headerContentType;
 
-    /**
-     * @param OptionsManagerInterface $optionsManager
-     * @param GlobalFunctionsHelper $globalFunctionsHelper
-     * @param HelperFactory $helperFactory
-     */
     public function __construct(
         OptionsManagerInterface $optionsManager,
         GlobalFunctionsHelper $globalFunctionsHelper,
@@ -56,31 +49,6 @@ abstract class WriterAbstract implements WriterInterface
         $this->globalFunctionsHelper = $globalFunctionsHelper;
         $this->helperFactory = $helperFactory;
     }
-
-    /**
-     * Opens the streamer and makes it ready to accept data.
-     *
-     * @throws IOException If the writer cannot be opened
-     * @return void
-     */
-    abstract protected function openWriter();
-
-    /**
-     * Adds a row to the currently opened writer.
-     *
-     * @param Row $row The row containing cells and styles
-     * @throws WriterNotOpenedException If the workbook is not created yet
-     * @throws IOException If unable to write data
-     * @return void
-     */
-    abstract protected function addRowToWriter(Row $row);
-
-    /**
-     * Closes the streamer, preventing any additional writing.
-     *
-     * @return void
-     */
-    abstract protected function closeWriter();
 
     /**
      * {@inheritdoc}
@@ -137,11 +105,11 @@ abstract class WriterAbstract implements WriterInterface
          * @see https://tools.ietf.org/html/rfc6266
          * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition
          */
-        $this->globalFunctionsHelper->header('Content-Type: ' . static::$headerContentType);
+        $this->globalFunctionsHelper->header('Content-Type: '.static::$headerContentType);
         $this->globalFunctionsHelper->header(
-            'Content-Disposition: attachment; ' .
-            'filename="' . rawurldecode($this->outputFilePath) . '"; ' .
-            'filename*=UTF-8\'\'' . rawurldecode($this->outputFilePath)
+            'Content-Disposition: attachment; '.
+            'filename="'.rawurldecode($this->outputFilePath).'"; '.
+            'filename*=UTF-8\'\''.rawurldecode($this->outputFilePath)
         );
 
         /*
@@ -158,35 +126,6 @@ abstract class WriterAbstract implements WriterInterface
         $this->isWriterOpened = true;
 
         return $this;
-    }
-
-    /**
-     * Checks if the pointer to the file/stream to write to is available.
-     * Will throw an exception if not available.
-     *
-     * @throws IOException If the pointer is not available
-     * @return void
-     */
-    protected function throwIfFilePointerIsNotAvailable()
-    {
-        if (!is_resource($this->filePointer)) {
-            throw new IOException('File pointer has not be opened');
-        }
-    }
-
-    /**
-     * Checks if the writer has already been opened, since some actions must be done before it gets opened.
-     * Throws an exception if already opened.
-     *
-     * @param string $message Error message
-     * @throws WriterAlreadyOpenedException If the writer was already opened and must not be.
-     * @return void
-     */
-    protected function throwIfWriterAlreadyOpened($message)
-    {
-        if ($this->isWriterOpened) {
-            throw new WriterAlreadyOpenedException($message);
-        }
     }
 
     /**
@@ -220,6 +159,7 @@ abstract class WriterAbstract implements WriterInterface
         foreach ($rows as $row) {
             if (!$row instanceof Row) {
                 $this->closeAndAttemptToCleanupAllFiles();
+
                 throw new InvalidArgumentException('The input should be an array of Row');
             }
 
@@ -248,10 +188,58 @@ abstract class WriterAbstract implements WriterInterface
     }
 
     /**
+     * Opens the streamer and makes it ready to accept data.
+     *
+     * @throws IOException If the writer cannot be opened
+     */
+    abstract protected function openWriter();
+
+    /**
+     * Adds a row to the currently opened writer.
+     *
+     * @param Row $row The row containing cells and styles
+     *
+     * @throws WriterNotOpenedException If the workbook is not created yet
+     * @throws IOException              If unable to write data
+     */
+    abstract protected function addRowToWriter(Row $row);
+
+    /**
+     * Closes the streamer, preventing any additional writing.
+     */
+    abstract protected function closeWriter();
+
+    /**
+     * Checks if the pointer to the file/stream to write to is available.
+     * Will throw an exception if not available.
+     *
+     * @throws IOException If the pointer is not available
+     */
+    protected function throwIfFilePointerIsNotAvailable()
+    {
+        if (!\is_resource($this->filePointer)) {
+            throw new IOException('File pointer has not be opened');
+        }
+    }
+
+    /**
+     * Checks if the writer has already been opened, since some actions must be done before it gets opened.
+     * Throws an exception if already opened.
+     *
+     * @param string $message Error message
+     *
+     * @throws WriterAlreadyOpenedException if the writer was already opened and must not be
+     */
+    protected function throwIfWriterAlreadyOpened($message)
+    {
+        if ($this->isWriterOpened) {
+            throw new WriterAlreadyOpenedException($message);
+        }
+    }
+
+    /**
      * Closes the writer and attempts to cleanup all files that were
      * created during the writing process (temp files & final file).
-     *
-     * @return void
      */
     private function closeAndAttemptToCleanupAllFiles()
     {

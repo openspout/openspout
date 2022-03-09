@@ -3,7 +3,7 @@
 namespace OpenSpout\Common\Exception;
 
 /**
- * Class InvalidArgumentException
+ * Class InvalidArgumentException.
  */
 class InvalidArgumentException extends SpoutException
 {

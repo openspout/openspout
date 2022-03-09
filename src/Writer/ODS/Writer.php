@@ -7,7 +7,7 @@ use OpenSpout\Writer\WriterMultiSheetsAbstract;
 
 /**
  * Class Writer
- * This class provides base support to write data to ODS files
+ * This class provides base support to write data to ODS files.
  */
 class Writer extends WriterMultiSheetsAbstract
 {
@@ -19,7 +19,9 @@ class Writer extends WriterMultiSheetsAbstract
      * This must be set before opening the writer.
      *
      * @param string $tempFolder Temporary folder where the files to create the ODS will be stored
+     *
      * @throws \OpenSpout\Writer\Exception\WriterAlreadyOpenedException If the writer was already opened
+     *
      * @return Writer
      */
     public function setTempFolder($tempFolder)

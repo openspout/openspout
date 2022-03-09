@@ -3,7 +3,7 @@
 namespace OpenSpout\Writer\Exception;
 
 /**
- * Class InvalidSheetNameException
+ * Class InvalidSheetNameException.
  */
 class InvalidSheetNameException extends WriterException
 {

@@ -13,35 +13,112 @@ use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class SharedStringsManagerTest
+ * Class SharedStringsManagerTest.
+ *
+ * @internal
+ * @coversNothing
  */
-class SharedStringsManagerTest extends TestCase
+final class SharedStringsManagerTest extends TestCase
 {
     use TestUsingResource;
 
-    /** @var SharedStringsManager|null */
+    /** @var null|SharedStringsManager */
     private $sharedStringsManager;
 
-    /**
-     * @return void
-     */
-    public function setUp() : void
+    protected function setUp(): void
     {
         $this->sharedStringsManager = null;
     }
 
-    /**
-     * @return void
-     */
-    public function tearDown() : void
+    protected function tearDown(): void
     {
-        if ($this->sharedStringsManager !== null) {
+        if (null !== $this->sharedStringsManager) {
             $this->sharedStringsManager->cleanup();
         }
     }
 
+    public function testGetStringAtIndexShouldThrowExceptionIfStringNotFound()
+    {
+        $this->expectException(SharedStringNotFoundException::class);
+
+        $sharedStringsManager = $this->createSharedStringsManager();
+        $sharedStringsManager->extractSharedStrings();
+        $sharedStringsManager->getStringAtIndex(PHP_INT_MAX);
+    }
+
+    public function testGetStringAtIndexShouldReturnTheCorrectStringIfFound()
+    {
+        $sharedStringsManager = $this->createSharedStringsManager();
+        $sharedStringsManager->extractSharedStrings();
+
+        $sharedString = $sharedStringsManager->getStringAtIndex(0);
+        static::assertSame('s1--A1', $sharedString);
+
+        $sharedString = $sharedStringsManager->getStringAtIndex(24);
+        static::assertSame('s1--E5', $sharedString);
+
+        $usedCachingStrategy = \ReflectionHelper::getValueOnObject($sharedStringsManager, 'cachingStrategy');
+        static::assertTrue($usedCachingStrategy instanceof InMemoryStrategy);
+    }
+
+    public function testGetStringAtIndexShouldWorkWithMultilineStrings()
+    {
+        $sharedStringsManager = $this->createSharedStringsManager('one_sheet_with_shared_multiline_strings.xlsx');
+
+        $sharedStringsManager->extractSharedStrings();
+
+        $sharedString = $sharedStringsManager->getStringAtIndex(0);
+        static::assertSame("s1\nA1", $sharedString);
+
+        $sharedString = $sharedStringsManager->getStringAtIndex(24);
+        static::assertSame("s1\nE5", $sharedString);
+    }
+
+    public function testGetStringAtIndexShouldWorkWithStringsContainingTextAndHyperlinkInSameCell()
+    {
+        $sharedStringsManager = $this->createSharedStringsManager('one_sheet_with_shared_strings_containing_text_and_hyperlink_in_same_cell.xlsx');
+
+        $sharedStringsManager->extractSharedStrings();
+
+        $sharedString = $sharedStringsManager->getStringAtIndex(0);
+        static::assertSame('go to https://github.com please', $sharedString);
+    }
+
+    public function testGetStringAtIndexShouldNotDoubleDecodeHTMLEntities()
+    {
+        $sharedStringsManager = $this->createSharedStringsManager('one_sheet_with_pre_encoded_html_entities.xlsx');
+
+        $sharedStringsManager->extractSharedStrings();
+
+        $sharedString = $sharedStringsManager->getStringAtIndex(0);
+        static::assertSame('quote: &#34; - ampersand: &amp;', $sharedString);
+    }
+
+    public function testGetStringAtIndexWithFileBasedStrategy()
+    {
+        // force the file-based strategy by setting no memory limit
+        $originalMemoryLimit = ini_get('memory_limit');
+        ini_set('memory_limit', '-1');
+
+        $sharedStringsManager = $this->createSharedStringsManager('sheet_with_lots_of_shared_strings.xlsx');
+
+        $sharedStringsManager->extractSharedStrings();
+
+        $sharedString = $sharedStringsManager->getStringAtIndex(0);
+        static::assertSame('str', $sharedString);
+
+        $sharedString = $sharedStringsManager->getStringAtIndex(CachingStrategyFactory::MAX_NUM_STRINGS_PER_TEMP_FILE + 1);
+        static::assertSame('str', $sharedString);
+
+        $usedCachingStrategy = \ReflectionHelper::getValueOnObject($sharedStringsManager, 'cachingStrategy');
+        static::assertTrue($usedCachingStrategy instanceof FileBasedStrategy);
+
+        ini_set('memory_limit', $originalMemoryLimit);
+    }
+
     /**
      * @param string $resourceName
+     *
      * @return SharedStringsManager
      */
     private function createSharedStringsManager($resourceName = 'one_sheet_with_shared_strings.xlsx')
@@ -64,102 +141,5 @@ class SharedStringsManagerTest extends TestCase
         );
 
         return $this->sharedStringsManager;
-    }
-
-    /**
-     * @return void
-     */
-    public function testGetStringAtIndexShouldThrowExceptionIfStringNotFound()
-    {
-        $this->expectException(SharedStringNotFoundException::class);
-
-        $sharedStringsManager = $this->createSharedStringsManager();
-        $sharedStringsManager->extractSharedStrings();
-        $sharedStringsManager->getStringAtIndex(PHP_INT_MAX);
-    }
-
-    /**
-     * @return void
-     */
-    public function testGetStringAtIndexShouldReturnTheCorrectStringIfFound()
-    {
-        $sharedStringsManager = $this->createSharedStringsManager();
-        $sharedStringsManager->extractSharedStrings();
-
-        $sharedString = $sharedStringsManager->getStringAtIndex(0);
-        $this->assertEquals('s1--A1', $sharedString);
-
-        $sharedString = $sharedStringsManager->getStringAtIndex(24);
-        $this->assertEquals('s1--E5', $sharedString);
-
-        $usedCachingStrategy = \ReflectionHelper::getValueOnObject($sharedStringsManager, 'cachingStrategy');
-        $this->assertTrue($usedCachingStrategy instanceof InMemoryStrategy);
-    }
-
-    /**
-     * @return void
-     */
-    public function testGetStringAtIndexShouldWorkWithMultilineStrings()
-    {
-        $sharedStringsManager = $this->createSharedStringsManager('one_sheet_with_shared_multiline_strings.xlsx');
-
-        $sharedStringsManager->extractSharedStrings();
-
-        $sharedString = $sharedStringsManager->getStringAtIndex(0);
-        $this->assertEquals("s1\nA1", $sharedString);
-
-        $sharedString = $sharedStringsManager->getStringAtIndex(24);
-        $this->assertEquals("s1\nE5", $sharedString);
-    }
-
-    /**
-     * @return void
-     */
-    public function testGetStringAtIndexShouldWorkWithStringsContainingTextAndHyperlinkInSameCell()
-    {
-        $sharedStringsManager = $this->createSharedStringsManager('one_sheet_with_shared_strings_containing_text_and_hyperlink_in_same_cell.xlsx');
-
-        $sharedStringsManager->extractSharedStrings();
-
-        $sharedString = $sharedStringsManager->getStringAtIndex(0);
-        $this->assertEquals('go to https://github.com please', $sharedString);
-    }
-
-    /**
-     * @return void
-     */
-    public function testGetStringAtIndexShouldNotDoubleDecodeHTMLEntities()
-    {
-        $sharedStringsManager = $this->createSharedStringsManager('one_sheet_with_pre_encoded_html_entities.xlsx');
-
-        $sharedStringsManager->extractSharedStrings();
-
-        $sharedString = $sharedStringsManager->getStringAtIndex(0);
-        $this->assertEquals('quote: &#34; - ampersand: &amp;', $sharedString);
-    }
-
-    /**
-     * @return void
-     */
-    public function testGetStringAtIndexWithFileBasedStrategy()
-    {
-        // force the file-based strategy by setting no memory limit
-        $originalMemoryLimit = ini_get('memory_limit');
-        ini_set('memory_limit', '-1');
-
-        $sharedStringsManager = $this->createSharedStringsManager('sheet_with_lots_of_shared_strings.xlsx');
-
-        $sharedStringsManager->extractSharedStrings();
-
-        $sharedString = $sharedStringsManager->getStringAtIndex(0);
-        $this->assertEquals('str', $sharedString);
-
-        $sharedString = $sharedStringsManager->getStringAtIndex(CachingStrategyFactory::MAX_NUM_STRINGS_PER_TEMP_FILE + 1);
-        $this->assertEquals('str', $sharedString);
-
-        $usedCachingStrategy = \ReflectionHelper::getValueOnObject($sharedStringsManager, 'cachingStrategy');
-        $this->assertTrue($usedCachingStrategy instanceof FileBasedStrategy);
-
-        ini_set('memory_limit', $originalMemoryLimit);
     }
 }

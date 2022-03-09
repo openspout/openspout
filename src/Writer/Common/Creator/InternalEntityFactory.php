@@ -9,7 +9,7 @@ use OpenSpout\Writer\Common\Manager\SheetManager;
 
 /**
  * Class InternalEntityFactory
- * Factory to create internal entities
+ * Factory to create internal entities.
  */
 class InternalEntityFactory
 {
@@ -23,7 +23,7 @@ class InternalEntityFactory
 
     /**
      * @param string $worksheetFilePath
-     * @param Sheet $externalSheet
+     *
      * @return Worksheet
      */
     public function createWorksheet($worksheetFilePath, Sheet $externalSheet)
@@ -32,9 +32,10 @@ class InternalEntityFactory
     }
 
     /**
-     * @param int $sheetIndex Index of the sheet, based on order in the workbook (zero-based)
-     * @param string $associatedWorkbookId ID of the sheet's associated workbook
-     * @param SheetManager $sheetManager To manage sheets
+     * @param int          $sheetIndex           Index of the sheet, based on order in the workbook (zero-based)
+     * @param string       $associatedWorkbookId ID of the sheet's associated workbook
+     * @param SheetManager $sheetManager         To manage sheets
+     *
      * @return Sheet
      */
     public function createSheet($sheetIndex, $associatedWorkbookId, $sheetManager)

@@ -12,13 +12,11 @@ use OpenSpout\Writer\ODS\Helper\FileSystemHelper;
 
 /**
  * Class HelperFactory
- * Factory for helpers needed by the ODS Writer
+ * Factory for helpers needed by the ODS Writer.
  */
 class HelperFactory extends \OpenSpout\Common\Creator\HelperFactory
 {
     /**
-     * @param OptionsManagerInterface $optionsManager
-     * @param InternalEntityFactory $entityFactory
      * @return FileSystemHelper
      */
     public function createSpecificFileSystemHelper(OptionsManagerInterface $optionsManager, InternalEntityFactory $entityFactory)
@@ -27,15 +25,6 @@ class HelperFactory extends \OpenSpout\Common\Creator\HelperFactory
         $zipHelper = $this->createZipHelper($entityFactory);
 
         return new FileSystemHelper($tempFolder, $zipHelper);
-    }
-
-    /**
-     * @param InternalEntityFactory $entityFactory
-     * @return ZipHelper
-     */
-    private function createZipHelper($entityFactory)
-    {
-        return new ZipHelper($entityFactory);
     }
 
     /**
@@ -52,5 +41,15 @@ class HelperFactory extends \OpenSpout\Common\Creator\HelperFactory
     public function createStringHelper()
     {
         return new StringHelper();
+    }
+
+    /**
+     * @param InternalEntityFactory $entityFactory
+     *
+     * @return ZipHelper
+     */
+    private function createZipHelper($entityFactory)
+    {
+        return new ZipHelper($entityFactory);
     }
 }

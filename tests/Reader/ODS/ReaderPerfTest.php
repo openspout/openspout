@@ -8,20 +8,21 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Class ReaderPerfTest
- * Performance tests for ODS Reader
+ * Performance tests for ODS Reader.
+ *
+ * @internal
+ * @coversNothing
  */
-class ReaderPerfTest extends Testcase
+final class ReaderPerfTest extends Testcase
 {
     use TestUsingResource;
 
     /**
      * 1 million rows (each row containing 3 cells) should be read
      * in less than 10 minutes and the execution should not require
-     * more than 1MB of memory
+     * more than 1MB of memory.
      *
      * @group perf-tests
-     *
-     * @return void
      */
     public function testPerfWhenReadingOneMillionRowsODS()
     {
@@ -43,19 +44,19 @@ class ReaderPerfTest extends Testcase
         /** @var Sheet $sheet */
         foreach ($reader->getSheetIterator() as $sheet) {
             foreach ($sheet->getRowIterator() as $row) {
-                $numReadRows++;
+                ++$numReadRows;
             }
         }
 
         $reader->close();
 
         $expectedNumRows = 1000000;
-        $this->assertEquals($expectedNumRows, $numReadRows, "$expectedNumRows rows should have been read");
+        static::assertSame($expectedNumRows, $numReadRows, "{$expectedNumRows} rows should have been read");
 
         $executionTime = time() - $startTime;
-        $this->assertTrue($executionTime < $expectedMaxExecutionTime, "Reading 1 million rows should take less than $expectedMaxExecutionTime seconds (took $executionTime seconds)");
+        static::assertTrue($executionTime < $expectedMaxExecutionTime, "Reading 1 million rows should take less than {$expectedMaxExecutionTime} seconds (took {$executionTime} seconds)");
 
         $memoryPeakUsage = memory_get_peak_usage(true) - $beforeMemoryPeakUsage;
-        $this->assertTrue($memoryPeakUsage < $expectedMaxMemoryPeakUsage, 'Reading 1 million rows should require less than ' . ($expectedMaxMemoryPeakUsage / 1024 / 1024) . ' MB of memory (required ' . round($memoryPeakUsage / 1024 / 1024, 2) . ' MB)');
+        static::assertTrue($memoryPeakUsage < $expectedMaxMemoryPeakUsage, 'Reading 1 million rows should require less than '.($expectedMaxMemoryPeakUsage / 1024 / 1024).' MB of memory (required '.round($memoryPeakUsage / 1024 / 1024, 2).' MB)');
     }
 }

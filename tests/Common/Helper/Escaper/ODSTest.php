@@ -6,9 +6,12 @@ use OpenSpout\Common\Helper\Escaper;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class ODSTest
+ * Class ODSTest.
+ *
+ * @internal
+ * @coversNothing
  */
-class ODSTest extends TestCase
+final class ODSTest extends TestCase
 {
     /**
      * @return array
@@ -31,13 +34,12 @@ class ODSTest extends TestCase
      *
      * @param string $stringToEscape
      * @param string $expectedEscapedString
-     * @return void
      */
     public function testEscape($stringToEscape, $expectedEscapedString)
     {
         $escaper = new Escaper\ODS();
         $escapedString = $escaper->escape($stringToEscape);
 
-        $this->assertEquals($expectedEscapedString, $escapedString, 'Incorrect escaped string');
+        static::assertSame($expectedEscapedString, $escapedString, 'Incorrect escaped string');
     }
 }

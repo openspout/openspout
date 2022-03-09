@@ -6,86 +6,48 @@ use OpenSpout\Reader\XLSX\Creator\InternalEntityFactory;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class StyleManagerTest
+ * Class StyleManagerTest.
+ *
+ * @internal
+ * @coversNothing
  */
-class StyleManagerTest extends TestCase
+final class StyleManagerTest extends TestCase
 {
-    /**
-     * @param array $styleAttributes
-     * @param array $customNumberFormats
-     * @return StyleManager
-     */
-    private function getStyleManagerMock($styleAttributes = [], $customNumberFormats = [])
-    {
-        $entityFactory = $this->createMock(InternalEntityFactory::class);
-        $workbookRelationshipsManager = $this->createMock(WorkbookRelationshipsManager::class);
-        $workbookRelationshipsManager->method('hasStylesXMLFile')->willReturn(true);
-
-        /** @var StyleManager|\PHPUnit\Framework\MockObject\MockObject $styleManager */
-        $styleManager = $this->getMockBuilder('\OpenSpout\Reader\XLSX\Manager\StyleManager')
-                             ->setConstructorArgs(['/path/to/file.xlsx', $workbookRelationshipsManager, $entityFactory])
-                             ->onlyMethods(['getCustomNumberFormats', 'getStylesAttributes'])
-                             ->getMock();
-
-        $styleManager->method('getStylesAttributes')->willReturn($styleAttributes);
-        $styleManager->method('getCustomNumberFormats')->willReturn($customNumberFormats);
-
-        return $styleManager;
-    }
-
-    /**
-     * @return void
-     */
     public function testShouldFormatNumericValueAsDateWithDefaultStyle()
     {
         $styleManager = $this->getStyleManagerMock();
         $shouldFormatAsDate = $styleManager->shouldFormatNumericValueAsDate(0);
-        $this->assertFalse($shouldFormatAsDate);
+        static::assertFalse($shouldFormatAsDate);
     }
 
-    /**
-     * @return void
-     */
     public function testShouldFormatNumericValueAsDateWhenShouldNotApplyNumberFormat()
     {
         $styleManager = $this->getStyleManagerMock([[], ['applyNumberFormat' => false, 'numFmtId' => 14]]);
         $shouldFormatAsDate = $styleManager->shouldFormatNumericValueAsDate(1);
-        $this->assertFalse($shouldFormatAsDate);
+        static::assertFalse($shouldFormatAsDate);
     }
 
-    /**
-     * @return void
-     */
     public function testShouldFormatNumericValueAsDateWithGeneralFormat()
     {
         $styleManager = $this->getStyleManagerMock([[], ['applyNumberFormat' => true, 'numFmtId' => 0]]);
         $shouldFormatAsDate = $styleManager->shouldFormatNumericValueAsDate(1);
-        $this->assertFalse($shouldFormatAsDate);
+        static::assertFalse($shouldFormatAsDate);
     }
 
-    /**
-     * @return void
-     */
     public function testShouldFormatNumericValueAsDateWithNonDateBuiltinFormat()
     {
         $styleManager = $this->getStyleManagerMock([[], ['applyNumberFormat' => true, 'numFmtId' => 9]]);
         $shouldFormatAsDate = $styleManager->shouldFormatNumericValueAsDate(1);
-        $this->assertFalse($shouldFormatAsDate);
+        static::assertFalse($shouldFormatAsDate);
     }
 
-    /**
-     * @return void
-     */
     public function testShouldFormatNumericValueAsDateWithNoNumFmtId()
     {
         $styleManager = $this->getStyleManagerMock([[], ['applyNumberFormat' => true, 'numFmtId' => null]]);
         $shouldFormatAsDate = $styleManager->shouldFormatNumericValueAsDate(1);
-        $this->assertFalse($shouldFormatAsDate);
+        static::assertFalse($shouldFormatAsDate);
     }
 
-    /**
-     * @return void
-     */
     public function testShouldFormatNumericValueAsDateWithBuiltinDateFormats()
     {
         $builtinNumFmtIdsForDate = [14, 15, 16, 17, 18, 19, 20, 21, 22, 45, 46, 47];
@@ -94,41 +56,32 @@ class StyleManagerTest extends TestCase
             $styleManager = $this->getStyleManagerMock([[], ['applyNumberFormat' => true, 'numFmtId' => $builtinNumFmtIdForDate]]);
             $shouldFormatAsDate = $styleManager->shouldFormatNumericValueAsDate(1);
 
-            $this->assertTrue($shouldFormatAsDate);
+            static::assertTrue($shouldFormatAsDate);
         }
     }
 
-    /**
-     * @return void
-     */
     public function testShouldFormatNumericValueAsDateWhenApplyNumberFormatNotSetAndUsingBuiltinDateFormat()
     {
         $styleManager = $this->getStyleManagerMock([[], ['applyNumberFormat' => null, 'numFmtId' => 14]]);
         $shouldFormatAsDate = $styleManager->shouldFormatNumericValueAsDate(1);
 
-        $this->assertTrue($shouldFormatAsDate);
+        static::assertTrue($shouldFormatAsDate);
     }
 
-    /**
-     * @return void
-     */
     public function testShouldFormatNumericValueAsDateWhenApplyNumberFormatNotSetAndUsingBuiltinNonDateFormat()
     {
         $styleManager = $this->getStyleManagerMock([[], ['applyNumberFormat' => null, 'numFmtId' => 9]]);
         $shouldFormatAsDate = $styleManager->shouldFormatNumericValueAsDate(1);
 
-        $this->assertFalse($shouldFormatAsDate);
+        static::assertFalse($shouldFormatAsDate);
     }
 
-    /**
-     * @return void
-     */
     public function testShouldFormatNumericValueAsDateWhenCustomNumberFormatNotFound()
     {
         $styleManager = $this->getStyleManagerMock([[], ['applyNumberFormat' => true, 'numFmtId' => 165]], [166 => []]);
         $shouldFormatAsDate = $styleManager->shouldFormatNumericValueAsDate(1);
 
-        $this->assertFalse($shouldFormatAsDate);
+        static::assertFalse($shouldFormatAsDate);
     }
 
     /**
@@ -169,8 +122,7 @@ class StyleManagerTest extends TestCase
      * @dataProvider dataProviderForCustomDateFormats
      *
      * @param string $numberFormat
-     * @param bool $expectedResult
-     * @return void
+     * @param bool   $expectedResult
      */
     public function testShouldFormatNumericValueAsDateWithCustomDateFormats($numberFormat, $expectedResult)
     {
@@ -178,6 +130,31 @@ class StyleManagerTest extends TestCase
         $styleManager = $this->getStyleManagerMock([[], ['applyNumberFormat' => true, 'numFmtId' => $numFmtId]], [$numFmtId => $numberFormat]);
         $shouldFormatAsDate = $styleManager->shouldFormatNumericValueAsDate(1);
 
-        $this->assertEquals($expectedResult, $shouldFormatAsDate);
+        static::assertSame($expectedResult, $shouldFormatAsDate);
+    }
+
+    /**
+     * @param array $styleAttributes
+     * @param array $customNumberFormats
+     *
+     * @return StyleManager
+     */
+    private function getStyleManagerMock($styleAttributes = [], $customNumberFormats = [])
+    {
+        $entityFactory = $this->createMock(InternalEntityFactory::class);
+        $workbookRelationshipsManager = $this->createMock(WorkbookRelationshipsManager::class);
+        $workbookRelationshipsManager->method('hasStylesXMLFile')->willReturn(true);
+
+        /** @var \PHPUnit\Framework\MockObject\MockObject|StyleManager $styleManager */
+        $styleManager = $this->getMockBuilder('\OpenSpout\Reader\XLSX\Manager\StyleManager')
+            ->setConstructorArgs(['/path/to/file.xlsx', $workbookRelationshipsManager, $entityFactory])
+            ->onlyMethods(['getCustomNumberFormats', 'getStylesAttributes'])
+            ->getMock()
+        ;
+
+        $styleManager->method('getStylesAttributes')->willReturn($styleAttributes);
+        $styleManager->method('getCustomNumberFormats')->willReturn($customNumberFormats);
+
+        return $styleManager;
     }
 }

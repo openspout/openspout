@@ -3,7 +3,7 @@
 namespace OpenSpout;
 
 /**
- * Trait TestUsingResource
+ * Trait TestUsingResource.
  */
 trait TestUsingResource
 {
@@ -21,36 +21,36 @@ trait TestUsingResource
 
     /**
      * @param string $resourceName
-     * @return string|null Path of the resource who matches the given name or null if resource not found
+     *
+     * @return null|string Path of the resource who matches the given name or null if resource not found
      */
     protected function getResourcePath($resourceName)
     {
         $resourceType = pathinfo($resourceName, PATHINFO_EXTENSION);
-        $resourcePath = realpath($this->resourcesPath) . '/' . strtolower($resourceType) . '/' . $resourceName;
+        $resourcePath = realpath($this->resourcesPath).'/'.strtolower($resourceType).'/'.$resourceName;
 
-        return (file_exists($resourcePath) ? $resourcePath : null);
+        return file_exists($resourcePath) ? $resourcePath : null;
     }
 
     /**
      * @param string $resourceName
+     *
      * @return string Path of the generated resource for the given name
      */
     protected function getGeneratedResourcePath($resourceName)
     {
         $resourceType = pathinfo($resourceName, PATHINFO_EXTENSION);
-        $generatedResourcePath = realpath($this->generatedResourcesPath) . '/' . strtolower($resourceType) . '/' . $resourceName;
 
-        return $generatedResourcePath;
+        return realpath($this->generatedResourcesPath).'/'.strtolower($resourceType).'/'.$resourceName;
     }
 
     /**
      * @param string $resourceName
-     * @return void
      */
     protected function createGeneratedFolderIfNeeded($resourceName)
     {
         $resourceType = pathinfo($resourceName, PATHINFO_EXTENSION);
-        $generatedResourcePathForType = $this->generatedResourcesPath . '/' . strtolower($resourceType);
+        $generatedResourcePathForType = $this->generatedResourcesPath.'/'.strtolower($resourceType);
 
         if (!file_exists($generatedResourcePathForType)) {
             mkdir($generatedResourcePathForType, 0777, true);
@@ -59,16 +59,14 @@ trait TestUsingResource
 
     /**
      * @param string $resourceName
+     *
      * @return string Path of the generated unwritable (because parent folder is read only) resource for the given name
      */
     protected function getGeneratedUnwritableResourcePath($resourceName)
     {
-        return realpath($this->generatedUnwritableResourcesPath) . '/' . $resourceName;
+        return realpath($this->generatedUnwritableResourcesPath).'/'.$resourceName;
     }
 
-    /**
-     * @return void
-     */
     protected function createUnwritableFolderIfNeeded()
     {
         // On Windows, chmod() or the mkdir's mode is ignored
@@ -95,9 +93,6 @@ trait TestUsingResource
         return realpath($this->tempFolderPath);
     }
 
-    /**
-     * @return void
-     */
     protected function recreateTempFolder()
     {
         if (file_exists($this->tempFolderPath)) {
@@ -108,8 +103,15 @@ trait TestUsingResource
     }
 
     /**
+     * @return bool Whether the OS on which PHP is installed is Windows
+     */
+    protected function isWindows()
+    {
+        return 'WIN' === strtoupper(substr(PHP_OS, 0, 3));
+    }
+
+    /**
      * @param string $folderPath
-     * @return void
      */
     private function deleteFolderRecursively($folderPath)
     {
@@ -127,13 +129,5 @@ trait TestUsingResource
         }
 
         rmdir($folderPath);
-    }
-
-    /**
-     * @return bool Whether the OS on which PHP is installed is Windows
-     */
-    protected function isWindows()
-    {
-        return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
     }
 }

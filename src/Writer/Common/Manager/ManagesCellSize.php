@@ -4,17 +4,17 @@ namespace OpenSpout\Writer\Common\Manager;
 
 trait ManagesCellSize
 {
-    /** @var float|null The default column width to use */
+    /** @var null|float The default column width to use */
     private $defaultColumnWidth;
 
-    /** @var float|null The default row height to use */
+    /** @var null|float The default row height to use */
     private $defaultRowHeight;
 
     /** @var array Array of min-max-width arrays */
     private $columnWidths = [];
 
     /**
-     * @param float|null $width
+     * @param null|float $width
      */
     public function setDefaultColumnWidth($width)
     {
@@ -22,7 +22,7 @@ trait ManagesCellSize
     }
 
     /**
-     * @param float|null $height
+     * @param null|float $height
      */
     public function setDefaultRowHeight($height)
     {
@@ -30,7 +30,6 @@ trait ManagesCellSize
     }
 
     /**
-     * @param float $width
      * @param int $columns One or more columns with this width
      */
     public function setColumnWidth(float $width, ...$columns)
@@ -38,7 +37,7 @@ trait ManagesCellSize
         // Gather sequences
         $sequence = [];
         foreach ($columns as $i) {
-            $sequenceLength = count($sequence);
+            $sequenceLength = \count($sequence);
             if ($sequenceLength > 0) {
                 $previousValue = $sequence[$sequenceLength - 1];
                 if ($i !== $previousValue + 1) {
@@ -48,13 +47,13 @@ trait ManagesCellSize
             }
             $sequence[] = $i;
         }
-        $this->setColumnWidthForRange($width, $sequence[0], $sequence[count($sequence) - 1]);
+        $this->setColumnWidthForRange($width, $sequence[0], $sequence[\count($sequence) - 1]);
     }
 
     /**
      * @param float $width The width to set
-     * @param int $start First column index of the range
-     * @param int $end Last column index of the range
+     * @param int   $start First column index of the range
+     * @param int   $end   Last column index of the range
      */
     public function setColumnWidthForRange(float $width, int $start, int $end)
     {

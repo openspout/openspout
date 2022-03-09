@@ -7,7 +7,7 @@ use OpenSpout\Common\Entity\Style\BorderPart;
 use OpenSpout\Common\Entity\Style\Color;
 
 /**
- * Class BorderBuilder
+ * Class BorderBuilder.
  */
 class BorderBuilder
 {
@@ -25,6 +25,7 @@ class BorderBuilder
      * @param string $color Border A RGB color code
      * @param string $width Border width @see BorderPart::allowedWidths
      * @param string $style Border style @see BorderPart::allowedStyles
+     *
      * @return BorderBuilder
      */
     public function setBorderTop($color = Color::BLACK, $width = Border::WIDTH_MEDIUM, $style = Border::STYLE_SOLID)
@@ -38,6 +39,7 @@ class BorderBuilder
      * @param string $color Border A RGB color code
      * @param string $width Border width @see BorderPart::allowedWidths
      * @param string $style Border style @see BorderPart::allowedStyles
+     *
      * @return BorderBuilder
      */
     public function setBorderRight($color = Color::BLACK, $width = Border::WIDTH_MEDIUM, $style = Border::STYLE_SOLID)
@@ -51,6 +53,7 @@ class BorderBuilder
      * @param string $color Border A RGB color code
      * @param string $width Border width @see BorderPart::allowedWidths
      * @param string $style Border style @see BorderPart::allowedStyles
+     *
      * @return BorderBuilder
      */
     public function setBorderBottom($color = Color::BLACK, $width = Border::WIDTH_MEDIUM, $style = Border::STYLE_SOLID)
@@ -64,6 +67,7 @@ class BorderBuilder
      * @param string $color Border A RGB color code
      * @param string $width Border width @see BorderPart::allowedWidths
      * @param string $style Border style @see BorderPart::allowedStyles
+     *
      * @return BorderBuilder
      */
     public function setBorderLeft($color = Color::BLACK, $width = Border::WIDTH_MEDIUM, $style = Border::STYLE_SOLID)

@@ -3,7 +3,7 @@
 namespace OpenSpout\Common\Exception;
 
 /**
- * Class EncodingConversionException
+ * Class EncodingConversionException.
  */
 class EncodingConversionException extends SpoutException
 {

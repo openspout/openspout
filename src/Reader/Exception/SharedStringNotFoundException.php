@@ -3,7 +3,7 @@
 namespace OpenSpout\Reader\Exception;
 
 /**
- * Class SharedStringNotFoundException
+ * Class SharedStringNotFoundException.
  */
 class SharedStringNotFoundException extends ReaderException
 {

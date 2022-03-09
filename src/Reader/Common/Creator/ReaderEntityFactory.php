@@ -8,15 +8,17 @@ use OpenSpout\Reader\ReaderInterface;
 
 /**
  * Class ReaderEntityFactory
- * Factory to create external entities
+ * Factory to create external entities.
  */
 class ReaderEntityFactory
 {
     /**
-     * Creates a reader by file extension
+     * Creates a reader by file extension.
      *
      * @param string $path The path to the spreadsheet file. Supported extensions are .csv, .ods and .xlsx
+     *
      * @throws \OpenSpout\Common\Exception\UnsupportedTypeException
+     *
      * @return ReaderInterface
      */
     public static function createReaderFromFile(string $path)
@@ -25,7 +27,7 @@ class ReaderEntityFactory
     }
 
     /**
-     * This creates an instance of a CSV reader
+     * This creates an instance of a CSV reader.
      *
      * @return \OpenSpout\Reader\CSV\Reader
      */
@@ -40,7 +42,7 @@ class ReaderEntityFactory
     }
 
     /**
-     * This creates an instance of a XLSX reader
+     * This creates an instance of a XLSX reader.
      *
      * @return \OpenSpout\Reader\XLSX\Reader
      */
@@ -55,7 +57,7 @@ class ReaderEntityFactory
     }
 
     /**
-     * This creates an instance of a ODS reader
+     * This creates an instance of a ODS reader.
      *
      * @return \OpenSpout\Reader\ODS\Reader
      */

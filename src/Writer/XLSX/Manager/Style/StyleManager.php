@@ -9,7 +9,7 @@ use OpenSpout\Writer\XLSX\Helper\BorderHelper;
 
 /**
  * Class StyleManager
- * Manages styles to be applied to a cell
+ * Manages styles to be applied to a cell.
  */
 class StyleManager extends \OpenSpout\Writer\Common\Manager\Style\StyleManager
 {
@@ -24,20 +24,21 @@ class StyleManager extends \OpenSpout\Writer\Common\Manager\Style\StyleManager
      * (fonts property don't really matter here).
      *
      * @param int $styleId
+     *
      * @return bool Whether the cell should define a custom style
      */
     public function shouldApplyStyleOnEmptyCell($styleId)
     {
         $associatedFillId = $this->styleRegistry->getFillIdForStyleId($styleId);
-        $hasStyleCustomFill = ($associatedFillId !== null && $associatedFillId !== 0);
+        $hasStyleCustomFill = (null !== $associatedFillId && 0 !== $associatedFillId);
 
         $associatedBorderId = $this->styleRegistry->getBorderIdForStyleId($styleId);
-        $hasStyleCustomBorders = ($associatedBorderId !== null && $associatedBorderId !== 0);
+        $hasStyleCustomBorders = (null !== $associatedBorderId && 0 !== $associatedBorderId);
 
         $associatedFormatId = $this->styleRegistry->getFormatIdForStyleId($styleId);
-        $hasStyleCustomFormats = ($associatedFormatId !== null && $associatedFormatId !== 0);
+        $hasStyleCustomFormats = (null !== $associatedFormatId && 0 !== $associatedFormatId);
 
-        return ($hasStyleCustomFill || $hasStyleCustomBorders || $hasStyleCustomFormats);
+        return $hasStyleCustomFill || $hasStyleCustomBorders || $hasStyleCustomFormats;
     }
 
     /**
@@ -48,9 +49,9 @@ class StyleManager extends \OpenSpout\Writer\Common\Manager\Style\StyleManager
     public function getStylesXMLFileContent()
     {
         $content = <<<'EOD'
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-EOD;
+            <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+            <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+            EOD;
 
         $content .= $this->getFormatsSectionContent();
         $content .= $this->getFontsSectionContent();
@@ -61,8 +62,8 @@ EOD;
         $content .= $this->getCellStylesSectionContent();
 
         $content .= <<<'EOD'
-</styleSheet>
-EOD;
+            </styleSheet>
+            EOD;
 
         return $content;
     }
@@ -87,10 +88,10 @@ EOD;
             /** @var Style $style */
             $style = $this->styleRegistry->getStyleFromStyleId($styleId);
             $format = $style->getFormat();
-            $tags[] = '<numFmt numFmtId="' . $numFmtId . '" formatCode="' . $format . '"/>';
+            $tags[] = '<numFmt numFmtId="'.$numFmtId.'" formatCode="'.$format.'"/>';
         }
-        $content = '<numFmts count="' . \count($tags) . '">';
-        $content .= \implode('', $tags);
+        $content = '<numFmts count="'.\count($tags).'">';
+        $content .= implode('', $tags);
         $content .= '</numFmts>';
 
         return $content;
@@ -105,15 +106,15 @@ EOD;
     {
         $registeredStyles = $this->styleRegistry->getRegisteredStyles();
 
-        $content = '<fonts count="' . \count($registeredStyles) . '">';
+        $content = '<fonts count="'.\count($registeredStyles).'">';
 
         /** @var Style $style */
         foreach ($registeredStyles as $style) {
             $content .= '<font>';
 
-            $content .= '<sz val="' . $style->getFontSize() . '"/>';
-            $content .= '<color rgb="' . Color::toARGB($style->getFontColor()) . '"/>';
-            $content .= '<name val="' . $style->getFontName() . '"/>';
+            $content .= '<sz val="'.$style->getFontSize().'"/>';
+            $content .= '<color rgb="'.Color::toARGB($style->getFontColor()).'"/>';
+            $content .= '<name val="'.$style->getFontName().'"/>';
 
             if ($style->isFontBold()) {
                 $content .= '<b/>';
@@ -147,7 +148,7 @@ EOD;
 
         // Excel reserves two default fills
         $fillsCount = \count($registeredFills) + 2;
-        $content = \sprintf('<fills count="%d">', $fillsCount);
+        $content = sprintf('<fills count="%d">', $fillsCount);
 
         $content .= '<fill><patternFill patternType="none"/></fill>';
         $content .= '<fill><patternFill patternType="gray125"/></fill>';
@@ -158,7 +159,7 @@ EOD;
             $style = $this->styleRegistry->getStyleFromStyleId($styleId);
 
             $backgroundColor = $style->getBackgroundColor();
-            $content .= \sprintf(
+            $content .= sprintf(
                 '<fill><patternFill patternType="solid"><fgColor rgb="%s"/></patternFill></fill>',
                 $backgroundColor
             );
@@ -181,7 +182,7 @@ EOD;
         // There is one default border with index 0
         $borderCount = \count($registeredBorders) + 1;
 
-        $content = '<borders count="' . $borderCount . '">';
+        $content = '<borders count="'.$borderCount.'">';
 
         // Default border starting at index 0
         $content .= '<border><left/><right/><top/><bottom/></border>';
@@ -192,7 +193,7 @@ EOD;
             $border = $style->getBorder();
             $content .= '<border>';
 
-            // @link https://github.com/box/spout/issues/271
+            /** @see https://github.com/box/spout/issues/271 */
             $sortOrder = ['left', 'right', 'top', 'bottom'];
 
             foreach ($sortOrder as $partName) {
@@ -219,10 +220,10 @@ EOD;
     protected function getCellStyleXfsSectionContent()
     {
         return <<<'EOD'
-<cellStyleXfs count="1">
-    <xf borderId="0" fillId="0" fontId="0" numFmtId="0"/>
-</cellStyleXfs>
-EOD;
+            <cellStyleXfs count="1">
+                <xf borderId="0" fillId="0" fontId="0" numFmtId="0"/>
+            </cellStyleXfs>
+            EOD;
     }
 
     /**
@@ -234,7 +235,7 @@ EOD;
     {
         $registeredStyles = $this->styleRegistry->getRegisteredStyles();
 
-        $content = '<cellXfs count="' . \count($registeredStyles) . '">';
+        $content = '<cellXfs count="'.\count($registeredStyles).'">';
 
         foreach ($registeredStyles as $style) {
             $styleId = $style->getId();
@@ -242,19 +243,19 @@ EOD;
             $borderId = $this->getBorderIdForStyleId($styleId);
             $numFmtId = $this->getFormatIdForStyleId($styleId);
 
-            $content .= '<xf numFmtId="' . $numFmtId . '" fontId="' . $styleId . '" fillId="' . $fillId . '" borderId="' . $borderId . '" xfId="0"';
+            $content .= '<xf numFmtId="'.$numFmtId.'" fontId="'.$styleId.'" fillId="'.$fillId.'" borderId="'.$borderId.'" xfId="0"';
 
             if ($style->shouldApplyFont()) {
                 $content .= ' applyFont="1"';
             }
 
-            $content .= \sprintf(' applyBorder="%d"', $style->shouldApplyBorder() ? 1 : 0);
+            $content .= sprintf(' applyBorder="%d"', $style->shouldApplyBorder() ? 1 : 0);
 
             if ($style->shouldApplyCellAlignment() || $style->shouldWrapText()) {
                 $content .= ' applyAlignment="1">';
                 $content .= '<alignment';
                 if ($style->shouldApplyCellAlignment()) {
-                    $content .= \sprintf(' horizontal="%s"', $style->getCellAlignment());
+                    $content .= sprintf(' horizontal="%s"', $style->getCellAlignment());
                 }
                 if ($style->shouldWrapText()) {
                     $content .= ' wrapText="1"';
@@ -272,17 +273,32 @@ EOD;
     }
 
     /**
+     * Returns the content of the "<cellStyles>" section.
+     *
+     * @return string
+     */
+    protected function getCellStylesSectionContent()
+    {
+        return <<<'EOD'
+            <cellStyles count="1">
+                <cellStyle builtinId="0" name="Normal" xfId="0"/>
+            </cellStyles>
+            EOD;
+    }
+
+    /**
      * Returns the fill ID associated to the given style ID.
      * For the default style, we don't a fill.
      *
      * @param int $styleId
+     *
      * @return int
      */
     private function getFillIdForStyleId($styleId)
     {
         // For the default style (ID = 0), we don't want to override the fill.
         // Otherwise all cells of the spreadsheet will have a background color.
-        $isDefaultStyle = ($styleId === 0);
+        $isDefaultStyle = (0 === $styleId);
 
         return $isDefaultStyle ? 0 : ($this->styleRegistry->getFillIdForStyleId($styleId) ?: 0);
     }
@@ -292,13 +308,14 @@ EOD;
      * For the default style, we don't a border.
      *
      * @param int $styleId
+     *
      * @return int
      */
     private function getBorderIdForStyleId($styleId)
     {
         // For the default style (ID = 0), we don't want to override the border.
         // Otherwise all cells of the spreadsheet will have a border.
-        $isDefaultStyle = ($styleId === 0);
+        $isDefaultStyle = (0 === $styleId);
 
         return $isDefaultStyle ? 0 : ($this->styleRegistry->getBorderIdForStyleId($styleId) ?: 0);
     }
@@ -308,28 +325,15 @@ EOD;
      * For the default style use general format.
      *
      * @param int $styleId
+     *
      * @return int
      */
     private function getFormatIdForStyleId($styleId)
     {
         // For the default style (ID = 0), we don't want to override the format.
         // Otherwise all cells of the spreadsheet will have a format.
-        $isDefaultStyle = ($styleId === 0);
+        $isDefaultStyle = (0 === $styleId);
 
         return $isDefaultStyle ? 0 : ($this->styleRegistry->getFormatIdForStyleId($styleId) ?: 0);
-    }
-
-    /**
-     * Returns the content of the "<cellStyles>" section.
-     *
-     * @return string
-     */
-    protected function getCellStylesSectionContent()
-    {
-        return <<<'EOD'
-<cellStyles count="1">
-    <cellStyle builtinId="0" name="Normal" xfId="0"/>
-</cellStyles>
-EOD;
     }
 }

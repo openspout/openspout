@@ -4,14 +4,14 @@ namespace OpenSpout\Writer\Common\Entity;
 
 /**
  * Class Worksheet
- * Entity describing a Worksheet
+ * Entity describing a Worksheet.
  */
 class Worksheet
 {
     /** @var string Path to the XML file that will contain the sheet data */
     private $filePath;
 
-    /** @var resource|null Pointer to the sheet data file (e.g. xl/worksheets/sheet1.xml) */
+    /** @var null|resource Pointer to the sheet data file (e.g. xl/worksheets/sheet1.xml) */
     private $filePointer;
 
     /** @var Sheet The "external" sheet */
@@ -30,7 +30,6 @@ class Worksheet
      * Worksheet constructor.
      *
      * @param string $worksheetFilePath
-     * @param Sheet $externalSheet
      */
     public function __construct($worksheetFilePath, Sheet $externalSheet)
     {

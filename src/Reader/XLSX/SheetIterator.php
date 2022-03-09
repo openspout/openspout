@@ -20,6 +20,7 @@ class SheetIterator implements IteratorInterface
 
     /**
      * @param SheetManager $sheetManager Manages sheets
+     *
      * @throws \OpenSpout\Reader\Exception\NoSheetsFoundException If there are no sheets in the file
      */
     public function __construct($sheetManager)
@@ -27,16 +28,15 @@ class SheetIterator implements IteratorInterface
         // Fetch all available sheets
         $this->sheets = $sheetManager->getSheets();
 
-        if (\count($this->sheets) === 0) {
+        if (0 === \count($this->sheets)) {
             throw new NoSheetsFoundException('The file must contain at least one sheet.');
         }
     }
 
     /**
-     * Rewind the Iterator to the first element
-     * @see http://php.net/manual/en/iterator.rewind.php
+     * Rewind the Iterator to the first element.
      *
-     * @return void
+     * @see http://php.net/manual/en/iterator.rewind.php
      */
     public function rewind()
     {
@@ -44,21 +44,21 @@ class SheetIterator implements IteratorInterface
     }
 
     /**
-     * Checks if current position is valid
+     * Checks if current position is valid.
+     *
      * @see http://php.net/manual/en/iterator.valid.php
      *
      * @return bool
      */
     public function valid()
     {
-        return ($this->currentSheetIndex < \count($this->sheets));
+        return $this->currentSheetIndex < \count($this->sheets);
     }
 
     /**
-     * Move forward to next element
-     * @see http://php.net/manual/en/iterator.next.php
+     * Move forward to next element.
      *
-     * @return void
+     * @see http://php.net/manual/en/iterator.next.php
      */
     public function next()
     {
@@ -67,12 +67,13 @@ class SheetIterator implements IteratorInterface
             $currentSheet = $this->sheets[$this->currentSheetIndex];
             $currentSheet->getRowIterator()->end();
 
-            $this->currentSheetIndex++;
+            ++$this->currentSheetIndex;
         }
     }
 
     /**
-     * Return the current element
+     * Return the current element.
+     *
      * @see http://php.net/manual/en/iterator.current.php
      *
      * @return \OpenSpout\Reader\XLSX\Sheet
@@ -83,7 +84,8 @@ class SheetIterator implements IteratorInterface
     }
 
     /**
-     * Return the key of the current element
+     * Return the key of the current element.
+     *
      * @see http://php.net/manual/en/iterator.key.php
      *
      * @return int
@@ -95,8 +97,6 @@ class SheetIterator implements IteratorInterface
 
     /**
      * Cleans up what was created to iterate over the object.
-     *
-     * @return void
      */
     public function end()
     {

@@ -10,7 +10,7 @@ use OpenSpout\Writer\WriterAbstract;
 
 /**
  * Class Writer
- * This class provides support to write data to CSV files
+ * This class provides support to write data to CSV files.
  */
 class Writer extends WriterAbstract
 {
@@ -24,9 +24,10 @@ class Writer extends WriterAbstract
     protected $lastWrittenRowIndex = 0;
 
     /**
-     * Sets the field delimiter for the CSV
+     * Sets the field delimiter for the CSV.
      *
      * @param string $fieldDelimiter Character that delimits fields
+     *
      * @return Writer
      */
     public function setFieldDelimiter($fieldDelimiter)
@@ -37,9 +38,10 @@ class Writer extends WriterAbstract
     }
 
     /**
-     * Sets the field enclosure for the CSV
+     * Sets the field enclosure for the CSV.
      *
      * @param string $fieldEnclosure Character that enclose fields
+     *
      * @return Writer
      */
     public function setFieldEnclosure($fieldEnclosure)
@@ -50,9 +52,10 @@ class Writer extends WriterAbstract
     }
 
     /**
-     * Set if a BOM has to be added to the file
+     * Set if a BOM has to be added to the file.
      *
      * @param bool $shouldAddBOM
+     *
      * @return Writer
      */
     public function setShouldAddBOM($shouldAddBOM)
@@ -64,8 +67,6 @@ class Writer extends WriterAbstract
 
     /**
      * Opens the CSV streamer and makes it ready to accept data.
-     *
-     * @return void
      */
     protected function openWriter()
     {
@@ -79,8 +80,8 @@ class Writer extends WriterAbstract
      * Adds a row to the currently opened writer.
      *
      * @param Row $row The row containing cells and styles
+     *
      * @throws IOException If unable to write data
-     * @return void
      */
     protected function addRowToWriter(Row $row)
     {
@@ -88,12 +89,12 @@ class Writer extends WriterAbstract
         $fieldEnclosure = $this->optionsManager->getOption(Options::FIELD_ENCLOSURE);
 
         $wasWriteSuccessful = $this->globalFunctionsHelper->fputcsv($this->filePointer, $row->getCells(), $fieldDelimiter, $fieldEnclosure);
-        if ($wasWriteSuccessful === false) {
+        if (false === $wasWriteSuccessful) {
             throw new IOException('Unable to write data');
         }
 
-        $this->lastWrittenRowIndex++;
-        if ($this->lastWrittenRowIndex % self::FLUSH_THRESHOLD === 0) {
+        ++$this->lastWrittenRowIndex;
+        if (0 === $this->lastWrittenRowIndex % self::FLUSH_THRESHOLD) {
             $this->globalFunctionsHelper->fflush($this->filePointer);
         }
     }
@@ -101,8 +102,6 @@ class Writer extends WriterAbstract
     /**
      * Closes the CSV streamer, preventing any additional writing.
      * If set, sets the headers and redirects output to the browser.
-     *
-     * @return void
      */
     protected function closeWriter()
     {

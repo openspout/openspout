@@ -3,7 +3,7 @@
 namespace OpenSpout\Common\Exception;
 
 /**
- * Class UnsupportedTypeException
+ * Class UnsupportedTypeException.
  */
 class UnsupportedTypeException extends SpoutException
 {

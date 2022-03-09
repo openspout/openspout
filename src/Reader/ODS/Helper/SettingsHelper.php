@@ -31,12 +31,13 @@ class SettingsHelper
 
     /**
      * @param string $filePath Path of the file to be read
-     * @return string|null Name of the sheet that was defined as active or NULL if none found
+     *
+     * @return null|string Name of the sheet that was defined as active or NULL if none found
      */
     public function getActiveSheetName($filePath)
     {
         $xmlReader = $this->entityFactory->createXMLReader();
-        if ($xmlReader->openFileInZip($filePath, self::SETTINGS_XML_FILE_PATH) === false) {
+        if (false === $xmlReader->openFileInZip($filePath, self::SETTINGS_XML_FILE_PATH)) {
             return null;
         }
 
@@ -44,8 +45,9 @@ class SettingsHelper
 
         try {
             while ($xmlReader->readUntilNodeFound(self::XML_NODE_CONFIG_ITEM)) {
-                if ($xmlReader->getAttribute(self::XML_ATTRIBUTE_CONFIG_NAME) === self::XML_ATTRIBUTE_VALUE_ACTIVE_TABLE) {
+                if (self::XML_ATTRIBUTE_VALUE_ACTIVE_TABLE === $xmlReader->getAttribute(self::XML_ATTRIBUTE_CONFIG_NAME)) {
                     $activeSheetName = $xmlReader->readString();
+
                     break;
                 }
             }

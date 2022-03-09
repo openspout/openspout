@@ -6,7 +6,7 @@ use OpenSpout\Common\Exception\InvalidArgumentException;
 
 /**
  * Class CellHelper
- * This class provides helper functions when working with cells
+ * This class provides helper functions when working with cells.
  */
 class CellHelper
 {
@@ -25,7 +25,9 @@ class CellHelper
      * The mapping is zero based, so that A1 maps to 0, B2 maps to 1, Z13 to 25 and AA4 to 26.
      *
      * @param string $cellIndex The Excel cell index ('A1', 'BC13', ...)
+     *
      * @throws \OpenSpout\Common\Exception\InvalidArgumentException When the given cell index is invalid
+     *
      * @return int
      */
     public static function getColumnIndexFromCellIndex($cellIndex)
@@ -37,7 +39,7 @@ class CellHelper
         $columnIndex = 0;
 
         // Remove row information
-        $columnLetters = \preg_replace('/\d/', '', $cellIndex);
+        $columnLetters = preg_replace('/\d/', '', $cellIndex);
 
         // strlen() is super slow too... Using isset() is way faster and not too unreadable,
         // since we checked before that there are between 1 and 3 letters.
@@ -48,17 +50,22 @@ class CellHelper
         switch ($columnLength) {
             case 1:
                 $columnIndex = (self::$columnLetterToIndexMapping[$columnLetters]);
+
                 break;
+
             case 2:
                 $firstLetterIndex = (self::$columnLetterToIndexMapping[$columnLetters[0]] + 1) * 26;
                 $secondLetterIndex = self::$columnLetterToIndexMapping[$columnLetters[1]];
                 $columnIndex = $firstLetterIndex + $secondLetterIndex;
+
                 break;
+
             case 3:
                 $firstLetterIndex = (self::$columnLetterToIndexMapping[$columnLetters[0]] + 1) * 676;
                 $secondLetterIndex = (self::$columnLetterToIndexMapping[$columnLetters[1]] + 1) * 26;
                 $thirdLetterIndex = self::$columnLetterToIndexMapping[$columnLetters[2]];
                 $columnIndex = $firstLetterIndex + $secondLetterIndex + $thirdLetterIndex;
+
                 break;
         }
 
@@ -71,10 +78,11 @@ class CellHelper
      * There can only be 3 letters, as there can only be 16,384 rows, which is equivalent to 'XFE'.
      *
      * @param string $cellIndex The Excel cell index ('A1', 'BC13', ...)
+     *
      * @return bool
      */
     protected static function isValidCellIndex($cellIndex)
     {
-        return (\preg_match('/^[A-Z]{1,3}\d+$/', $cellIndex) === 1);
+        return 1 === preg_match('/^[A-Z]{1,3}\d+$/', $cellIndex);
     }
 }

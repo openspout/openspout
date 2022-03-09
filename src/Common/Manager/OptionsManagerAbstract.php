@@ -3,7 +3,7 @@
 namespace OpenSpout\Common\Manager;
 
 /**
- * Class OptionsManager
+ * Class OptionsManager.
  */
 abstract class OptionsManagerAbstract implements OptionsManagerInterface
 {
@@ -25,35 +25,22 @@ abstract class OptionsManagerAbstract implements OptionsManagerInterface
     }
 
     /**
-     * @return array List of supported options
-     */
-    abstract protected function getSupportedOptions();
-
-    /**
-     * Sets the default options.
-     * To be overriden by child classes
-     *
-     * @return void
-     */
-    abstract protected function setDefaultOptions();
-
-    /**
      * Sets the given option, if this option is supported.
      *
      * @param string $optionName
-     * @param mixed $optionValue
-     * @return void
+     * @param mixed  $optionValue
      */
     public function setOption($optionName, $optionValue)
     {
-        if (\in_array($optionName, $this->supportedOptions)) {
+        if (\in_array($optionName, $this->supportedOptions, true)) {
             $this->options[$optionName] = $optionValue;
         }
     }
 
     /**
      * @param string $optionName
-     * @return mixed|null The set option or NULL if no option with given name found
+     *
+     * @return null|mixed The set option or NULL if no option with given name found
      */
     public function getOption($optionName)
     {
@@ -65,4 +52,15 @@ abstract class OptionsManagerAbstract implements OptionsManagerInterface
 
         return $optionValue;
     }
+
+    /**
+     * @return array List of supported options
+     */
+    abstract protected function getSupportedOptions();
+
+    /**
+     * Sets the default options.
+     * To be overriden by child classes.
+     */
+    abstract protected function setDefaultOptions();
 }

@@ -6,9 +6,12 @@ use OpenSpout\Common\Exception\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class CellHelperTest
+ * Class CellHelperTest.
+ *
+ * @internal
+ * @coversNothing
  */
-class CellHelperTest extends TestCase
+final class CellHelperTest extends TestCase
 {
     /**
      * @return array
@@ -29,17 +32,13 @@ class CellHelperTest extends TestCase
      * @dataProvider dataProviderForTestGetColumnIndexFromCellIndex
      *
      * @param string $cellIndex
-     * @param int $expectedColumnIndex
-     * @return void
+     * @param int    $expectedColumnIndex
      */
     public function testGetColumnIndexFromCellIndex($cellIndex, $expectedColumnIndex)
     {
-        $this->assertEquals($expectedColumnIndex, CellHelper::getColumnIndexFromCellIndex($cellIndex));
+        static::assertSame($expectedColumnIndex, CellHelper::getColumnIndexFromCellIndex($cellIndex));
     }
 
-    /**
-     * @return void
-     */
     public function testGetColumnIndexFromCellIndexShouldThrowIfInvalidCellIndex()
     {
         $this->expectException(InvalidArgumentException::class);

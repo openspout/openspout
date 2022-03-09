@@ -6,9 +6,12 @@ use OpenSpout\Reader\XLSX\Creator\HelperFactory;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class CachingStrategyFactoryTest
+ * Class CachingStrategyFactoryTest.
+ *
+ * @internal
+ * @coversNothing
  */
-class CachingStrategyFactoryTest extends TestCase
+final class CachingStrategyFactoryTest extends TestCase
 {
     /**
      * @return array
@@ -29,10 +32,9 @@ class CachingStrategyFactoryTest extends TestCase
     /**
      * @dataProvider dataProviderForTestCreateBestCachingStrategy
      *
-     * @param int|null $sharedStringsUniqueCount
-     * @param int $memoryLimitInKB
-     * @param string $expectedStrategyClassName
-     * @return void
+     * @param null|int $sharedStringsUniqueCount
+     * @param int      $memoryLimitInKB
+     * @param string   $expectedStrategyClassName
      */
     public function testCreateBestCachingStrategy($sharedStringsUniqueCount, $memoryLimitInKB, $expectedStrategyClassName)
     {
@@ -41,7 +43,8 @@ class CachingStrategyFactoryTest extends TestCase
             ->getMockBuilder('\OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory')
             ->disableOriginalConstructor()
             ->onlyMethods(['getMemoryLimitInKB'])
-            ->getMock();
+            ->getMock()
+        ;
 
         $factoryStub->method('getMemoryLimitInKB')->willReturn($memoryLimitInKB);
 
@@ -49,8 +52,8 @@ class CachingStrategyFactoryTest extends TestCase
         $helperFactory = new HelperFactory();
         $strategy = $factoryStub->createBestCachingStrategy($sharedStringsUniqueCount, $tempFolder, $helperFactory);
 
-        $fullExpectedStrategyClassName = 'OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\\' . $expectedStrategyClassName;
-        $this->assertEquals($fullExpectedStrategyClassName, get_class($strategy));
+        $fullExpectedStrategyClassName = 'OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\\'.$expectedStrategyClassName;
+        static::assertSame($fullExpectedStrategyClassName, \get_class($strategy));
 
         $strategy->clearCache();
     }
@@ -79,8 +82,7 @@ class CachingStrategyFactoryTest extends TestCase
      * @dataProvider dataProviderForTestGetMemoryLimitInKB
      *
      * @param string $memoryLimitFormatted
-     * @param float $expectedMemoryLimitInKB
-     * @return void
+     * @param float  $expectedMemoryLimitInKB
      */
     public function testGetMemoryLimitInKB($memoryLimitFormatted, $expectedMemoryLimitInKB)
     {
@@ -89,12 +91,13 @@ class CachingStrategyFactoryTest extends TestCase
             ->getMockBuilder('\OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory')
             ->disableOriginalConstructor()
             ->onlyMethods(['getMemoryLimitFromIni'])
-            ->getMock();
+            ->getMock()
+        ;
 
         $factoryStub->method('getMemoryLimitFromIni')->willReturn($memoryLimitFormatted);
 
         $memoryLimitInKB = \ReflectionHelper::callMethodOnObject($factoryStub, 'getMemoryLimitInKB');
 
-        $this->assertEquals($expectedMemoryLimitInKB, $memoryLimitInKB);
+        static::assertSame($expectedMemoryLimitInKB, $memoryLimitInKB);
     }
 }

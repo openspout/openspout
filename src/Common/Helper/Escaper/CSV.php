@@ -4,16 +4,17 @@ namespace OpenSpout\Common\Helper\Escaper;
 
 /**
  * Class CSV
- * Provides functions to escape and unescape data for CSV files
+ * Provides functions to escape and unescape data for CSV files.
  */
 class CSV implements EscaperInterface
 {
     /**
-     * Escapes the given string to make it compatible with CSV
+     * Escapes the given string to make it compatible with CSV.
      *
      * @codeCoverageIgnore
      *
      * @param string $string The string to escape
+     *
      * @return string The escaped string
      */
     public function escape($string)
@@ -22,11 +23,12 @@ class CSV implements EscaperInterface
     }
 
     /**
-     * Unescapes the given string to make it compatible with CSV
+     * Unescapes the given string to make it compatible with CSV.
      *
      * @codeCoverageIgnore
      *
      * @param string $string The string to unescape
+     *
      * @return string The unescaped string
      */
     public function unescape($string)

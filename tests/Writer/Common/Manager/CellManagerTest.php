@@ -8,21 +8,22 @@ use OpenSpout\Writer\Common\Manager\CellManager;
 use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
 use PHPUnit\Framework\TestCase;
 
-class CellManagerTest extends TestCase
+/**
+ * @internal
+ * @coversNothing
+ */
+final class CellManagerTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function testApplyStyle()
     {
         $cellManager = new CellManager(new StyleMerger());
         $cell = new Cell('test');
 
-        $this->assertFalse($cell->getStyle()->isFontBold());
+        static::assertFalse($cell->getStyle()->isFontBold());
 
         $style = (new StyleBuilder())->setFontBold()->build();
         $cellManager->applyStyle($cell, $style);
 
-        $this->assertTrue($cell->getStyle()->isFontBold());
+        static::assertTrue($cell->getStyle()->isFontBold());
     }
 }

@@ -8,7 +8,7 @@ use OpenSpout\Reader\ReaderAbstract;
 
 /**
  * Class Reader
- * This class provides support to read data from a ODS file
+ * This class provides support to read data from a ODS file.
  */
 class Reader extends ReaderAbstract
 {
@@ -19,7 +19,7 @@ class Reader extends ReaderAbstract
     protected $sheetIterator;
 
     /**
-     * Returns whether stream wrappers are supported
+     * Returns whether stream wrappers are supported.
      *
      * @return bool
      */
@@ -31,10 +31,10 @@ class Reader extends ReaderAbstract
     /**
      * Opens the file at the given file path to make it ready to be read.
      *
-     * @param  string $filePath Path of the file to be read
-     * @throws \OpenSpout\Common\Exception\IOException If the file at the given path or its content cannot be read
+     * @param string $filePath Path of the file to be read
+     *
+     * @throws \OpenSpout\Common\Exception\IOException            If the file at the given path or its content cannot be read
      * @throws \OpenSpout\Reader\Exception\NoSheetsFoundException If there are no sheets in the file
-     * @return void
      */
     protected function openReader($filePath)
     {
@@ -43,12 +43,12 @@ class Reader extends ReaderAbstract
 
         $this->zip = $entityFactory->createZipArchive();
 
-        if ($this->zip->open($filePath) === true) {
+        if (true === $this->zip->open($filePath)) {
             /** @var InternalEntityFactory $entityFactory */
             $entityFactory = $this->entityFactory;
             $this->sheetIterator = $entityFactory->createSheetIterator($filePath, $this->optionsManager);
         } else {
-            throw new IOException("Could not open $filePath for reading.");
+            throw new IOException("Could not open {$filePath} for reading.");
         }
     }
 
@@ -64,12 +64,10 @@ class Reader extends ReaderAbstract
 
     /**
      * Closes the reader. To be used after reading the file.
-     *
-     * @return void
      */
     protected function closeReader()
     {
-        if ($this->zip !== null) {
+        if (null !== $this->zip) {
             $this->zip->close();
         }
     }

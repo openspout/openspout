@@ -10,8 +10,6 @@ class ReflectionHelper
     /**
      * Resets any static vars that were set to their
      * original values (to not screw up later unit test runs).
-     *
-     * @return void
      */
     public static function reset()
     {
@@ -25,11 +23,12 @@ class ReflectionHelper
 
     /**
      * Get the value of a static private or public class property.
-     * Used to test internals of class without having to make the property public
+     * Used to test internals of class without having to make the property public.
      *
      * @param string $class
      * @param string $valueName
-     * @return mixed|null
+     *
+     * @return null|mixed
      */
     public static function getStaticValue($class, $valueName)
     {
@@ -46,13 +45,12 @@ class ReflectionHelper
 
     /**
      * Set the value of a static private or public class property.
-     * Used to test internals of class without having to make the property public
+     * Used to test internals of class without having to make the property public.
      *
-     * @param string $class
-     * @param string $valueName
-     * @param mixed|null $value
-     * @param bool $saveOriginalValue
-     * @return void
+     * @param string     $class
+     * @param string     $valueName
+     * @param null|mixed $value
+     * @param bool       $saveOriginalValue
      */
     public static function setStaticValue($class, $valueName, $value, $saveOriginalValue = true)
     {
@@ -75,7 +73,7 @@ class ReflectionHelper
      * @param object $object
      * @param string $valueName
      *
-     * @return mixed|null
+     * @return null|mixed
      */
     public static function getValueOnObject($object, $valueName)
     {
@@ -96,7 +94,7 @@ class ReflectionHelper
      * @param object $object
      * @param string $methodName
      *
-     * @return mixed|null
+     * @return null|mixed
      */
     public static function callMethodOnObject($object, $methodName)
     {

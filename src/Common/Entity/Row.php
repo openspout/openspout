@@ -7,27 +7,31 @@ use OpenSpout\Common\Entity\Style\Style;
 class Row
 {
     /**
-     * The cells in this row
+     * The cells in this row.
+     *
      * @var Cell[]
      */
     protected $cells = [];
 
     /**
-     * The row style
+     * The row style.
+     *
      * @var Style
      */
     protected $style;
 
     /**
      * Row constructor.
-     * @param Cell[] $cells
-     * @param Style|null $style
+     *
+     * @param Cell[]     $cells
+     * @param null|Style $style
      */
     public function __construct(array $cells, $style)
     {
         $this
             ->setCells($cells)
-            ->setStyle($style);
+            ->setStyle($style)
+        ;
     }
 
     /**
@@ -40,6 +44,7 @@ class Row
 
     /**
      * @param Cell[] $cells
+     *
      * @return Row
      */
     public function setCells(array $cells)
@@ -53,8 +58,8 @@ class Row
     }
 
     /**
-     * @param Cell $cell
      * @param int $cellIndex
+     *
      * @return Row
      */
     public function setCellAtIndex(Cell $cell, $cellIndex)
@@ -66,7 +71,8 @@ class Row
 
     /**
      * @param int $cellIndex
-     * @return Cell|null
+     *
+     * @return null|Cell
      */
     public function getCellAtIndex($cellIndex)
     {
@@ -74,7 +80,6 @@ class Row
     }
 
     /**
-     * @param Cell $cell
      * @return Row
      */
     public function addCell(Cell $cell)
@@ -95,7 +100,7 @@ class Row
             return 0;
         }
 
-        return \max(\array_keys($this->cells)) + 1;
+        return max(array_keys($this->cells)) + 1;
     }
 
     /**
@@ -107,7 +112,8 @@ class Row
     }
 
     /**
-     * @param Style|null $style
+     * @param null|Style $style
+     *
      * @return Row
      */
     public function setStyle($style)
@@ -122,7 +128,7 @@ class Row
      */
     public function toArray()
     {
-        return \array_map(function (Cell $cell) {
+        return array_map(function (Cell $cell) {
             return $cell->getValue();
         }, $this->cells);
     }

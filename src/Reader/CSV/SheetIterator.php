@@ -25,66 +25,59 @@ class SheetIterator implements SheetIteratorInterface
     }
 
     /**
-     * Rewind the Iterator to the first element
-     * @see http://php.net/manual/en/iterator.rewind.php
+     * Rewind the Iterator to the first element.
      *
-     * @return void
+     * @see http://php.net/manual/en/iterator.rewind.php
      */
-    public function rewind() : void
+    public function rewind(): void
     {
         $this->hasReadUniqueSheet = false;
     }
 
     /**
-     * Checks if current position is valid
-     * @see http://php.net/manual/en/iterator.valid.php
+     * Checks if current position is valid.
      *
-     * @return bool
+     * @see http://php.net/manual/en/iterator.valid.php
      */
-    public function valid() : bool
+    public function valid(): bool
     {
-        return (!$this->hasReadUniqueSheet);
+        return !$this->hasReadUniqueSheet;
     }
 
     /**
-     * Move forward to next element
-     * @see http://php.net/manual/en/iterator.next.php
+     * Move forward to next element.
      *
-     * @return void
+     * @see http://php.net/manual/en/iterator.next.php
      */
-    public function next() : void
+    public function next(): void
     {
         $this->hasReadUniqueSheet = true;
     }
 
     /**
-     * Return the current element
-     * @see http://php.net/manual/en/iterator.current.php
+     * Return the current element.
      *
-     * @return Sheet
+     * @see http://php.net/manual/en/iterator.current.php
      */
-    public function current() : Sheet
+    public function current(): Sheet
     {
         return $this->sheet;
     }
 
     /**
-     * Return the key of the current element
-     * @see http://php.net/manual/en/iterator.key.php
+     * Return the key of the current element.
      *
-     * @return int
+     * @see http://php.net/manual/en/iterator.key.php
      */
-    public function key() : int
+    public function key(): int
     {
         return 1;
     }
 
     /**
      * Cleans up what was created to iterate over the object.
-     *
-     * @return void
      */
-    public function end() : void
+    public function end(): void
     {
         // do nothing
     }

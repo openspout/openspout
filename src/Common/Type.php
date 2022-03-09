@@ -4,7 +4,7 @@ namespace OpenSpout\Common;
 
 /**
  * Class Type
- * This class references the supported types
+ * This class references the supported types.
  */
 abstract class Type
 {

@@ -4,7 +4,7 @@ namespace OpenSpout\Writer\Common\Entity;
 
 /**
  * Class Workbook
- * Entity describing a workbook
+ * Entity describing a workbook.
  */
 class Workbook
 {
@@ -19,7 +19,7 @@ class Workbook
      */
     public function __construct()
     {
-        $this->internalId = \uniqid();
+        $this->internalId = uniqid();
     }
 
     /**

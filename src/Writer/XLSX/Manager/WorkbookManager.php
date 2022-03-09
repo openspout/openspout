@@ -14,7 +14,8 @@ use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
 class WorkbookManager extends WorkbookManagerAbstract
 {
     /**
-     * Maximum number of rows a XLSX sheet can contain
+     * Maximum number of rows a XLSX sheet can contain.
+     *
      * @see http://office.microsoft.com/en-us/excel-help/excel-specifications-and-limits-HP010073849.aspx
      */
     protected static $maxRowsPerWorksheet = 1048576;
@@ -29,6 +30,16 @@ class WorkbookManager extends WorkbookManagerAbstract
     protected $fileSystemHelper;
 
     /**
+     * @return string The file path where the data for the given sheet will be stored
+     */
+    public function getWorksheetFilePath(Sheet $sheet)
+    {
+        $worksheetFilesFolder = $this->fileSystemHelper->getXlWorksheetsFolder();
+
+        return $worksheetFilesFolder.'/'.strtolower($sheet->getName()).'.xml';
+    }
+
+    /**
      * @return int Maximum number of rows/columns a sheet can contain
      */
     protected function getMaxRowsPerWorksheet()
@@ -37,20 +48,7 @@ class WorkbookManager extends WorkbookManagerAbstract
     }
 
     /**
-     * @param Sheet $sheet
-     * @return string The file path where the data for the given sheet will be stored
-     */
-    public function getWorksheetFilePath(Sheet $sheet)
-    {
-        $worksheetFilesFolder = $this->fileSystemHelper->getXlWorksheetsFolder();
-
-        return $worksheetFilesFolder . '/' . \strtolower($sheet->getName()) . '.xml';
-    }
-
-    /**
-     * Closes custom objects that are still opened
-     *
-     * @return void
+     * Closes custom objects that are still opened.
      */
     protected function closeRemainingObjects()
     {
@@ -61,7 +59,6 @@ class WorkbookManager extends WorkbookManagerAbstract
      * Writes all the necessary files to disk and zip them together to create the final file.
      *
      * @param resource $finalFilePointer Pointer to the spreadsheet that will be created
-     * @return void
      */
     protected function writeAllFilesToDiskAndZipThem($finalFilePointer)
     {
@@ -72,6 +69,7 @@ class WorkbookManager extends WorkbookManagerAbstract
             ->createWorkbookFile($worksheets)
             ->createWorkbookRelsFile($worksheets)
             ->createStylesFile($this->styleManager)
-            ->zipRootFolderAndCopyToStream($finalFilePointer);
+            ->zipRootFolderAndCopyToStream($finalFilePointer)
+        ;
     }
 }

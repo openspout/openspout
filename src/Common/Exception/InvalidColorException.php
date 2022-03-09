@@ -3,7 +3,7 @@
 namespace OpenSpout\Common\Exception;
 
 /**
- * Class InvalidColorException
+ * Class InvalidColorException.
  */
 class InvalidColorException extends SpoutException
 {

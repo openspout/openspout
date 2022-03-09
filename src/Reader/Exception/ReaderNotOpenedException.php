@@ -3,7 +3,7 @@
 namespace OpenSpout\Reader\Exception;
 
 /**
- * Class ReaderNotOpenedException
+ * Class ReaderNotOpenedException.
  */
 class ReaderNotOpenedException extends ReaderException
 {

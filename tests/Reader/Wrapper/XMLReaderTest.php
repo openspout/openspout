@@ -7,15 +7,15 @@ use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class XMLReaderTest
+ * Class XMLReaderTest.
+ *
+ * @internal
+ * @coversNothing
  */
-class XMLReaderTest extends TestCase
+final class XMLReaderTest extends TestCase
 {
     use TestUsingResource;
 
-    /**
-     * @return void
-     */
     public function testOpenShouldFailIfFileInsideZipDoesNotExist()
     {
         $resourcePath = $this->getResourcePath('one_sheet_with_inline_strings.xlsx');
@@ -25,48 +25,36 @@ class XMLReaderTest extends TestCase
         // using "@" to prevent errors/warning to be displayed
         $wasOpenSuccessful = @$xmlReader->openFileInZip($resourcePath, 'path/to/fake/file.xml');
 
-        $this->assertFalse($wasOpenSuccessful);
+        static::assertFalse($wasOpenSuccessful);
     }
 
     /**
      * Testing a HHVM bug: https://github.com/facebook/hhvm/issues/5779
      * The associated code in XMLReader::open() can be removed when the issue is fixed (and this test starts failing).
-     * @see XMLReader::open()
      *
-     * @return void
+     * @see XMLReader::open()
      */
     public function testHHVMStillDoesNotComplainWhenCallingOpenWithFileInsideZipNotExisting()
     {
         // Test should only be run on HHVM
         if ($this->isRunningHHVM()) {
             $resourcePath = $this->getResourcePath('one_sheet_with_inline_strings.xlsx');
-            $nonExistingXMLFilePath = 'zip://' . $resourcePath . '#path/to/fake/file.xml';
+            $nonExistingXMLFilePath = 'zip://'.$resourcePath.'#path/to/fake/file.xml';
 
             libxml_clear_errors();
             $initialUseInternalErrorsSetting = libxml_use_internal_errors(true);
 
             // using the built-in XMLReader
             $xmlReader = new \XMLReader();
-            $this->assertNotFalse($xmlReader->open($nonExistingXMLFilePath));
-            $this->assertFalse(libxml_get_last_error());
+            static::assertNotFalse($xmlReader->open($nonExistingXMLFilePath));
+            static::assertFalse(libxml_get_last_error());
 
             libxml_use_internal_errors($initialUseInternalErrorsSetting);
         } else {
-            $this->markTestSkipped();
+            static::markTestSkipped();
         }
     }
 
-    /**
-     * @return bool TRUE if running on HHVM, FALSE otherwise
-     */
-    private function isRunningHHVM()
-    {
-        return defined('HHVM_VERSION');
-    }
-
-    /**
-     * @return void
-     */
     public function testReadShouldThrowExceptionOnError()
     {
         $this->expectException(XMLProcessingException::class);
@@ -74,19 +62,15 @@ class XMLReaderTest extends TestCase
         $resourcePath = $this->getResourcePath('one_sheet_with_invalid_xml_characters.xlsx');
 
         $xmlReader = new XMLReader();
-        if ($xmlReader->openFileInZip($resourcePath, 'xl/worksheets/sheet1.xml') === false) {
-            $this->fail();
+        if (false === $xmlReader->openFileInZip($resourcePath, 'xl/worksheets/sheet1.xml')) {
+            static::fail();
         }
 
         // using "@" to prevent errors/warning to be displayed
-        while (@$xmlReader->read()) {
-            // do nothing
-        }
+        while (@$xmlReader->read());
+        // do nothing
     }
 
-    /**
-     * @return void
-     */
     public function testNextShouldThrowExceptionOnError()
     {
         $this->expectException(XMLProcessingException::class);
@@ -96,7 +80,7 @@ class XMLReaderTest extends TestCase
         $resourcePath = $this->getResourcePath('attack_billion_laughs.xlsx');
 
         $xmlReader = new XMLReader();
-        if ($xmlReader->openFileInZip($resourcePath, 'xl/sharedStrings.xml') !== false) {
+        if (false !== $xmlReader->openFileInZip($resourcePath, 'xl/sharedStrings.xml')) {
             @$xmlReader->next('sst');
         }
     }
@@ -119,18 +103,17 @@ class XMLReaderTest extends TestCase
      * @dataProvider dataProviderForTestFileExistsWithinZip
      *
      * @param string $innerFilePath
-     * @param bool $expectedResult
-     * @return void
+     * @param bool   $expectedResult
      */
     public function testFileExistsWithinZip($innerFilePath, $expectedResult)
     {
         $resourcePath = $this->getResourcePath('one_sheet_with_inline_strings.xlsx');
-        $zipStreamURI = 'zip://' . $resourcePath . '#' . $innerFilePath;
+        $zipStreamURI = 'zip://'.$resourcePath.'#'.$innerFilePath;
 
         $xmlReader = new XMLReader();
         $isZipStream = \ReflectionHelper::callMethodOnObject($xmlReader, 'fileExistsWithinZip', $zipStreamURI);
 
-        $this->assertEquals($expectedResult, $isZipStream);
+        static::assertSame($expectedResult, $isZipStream);
     }
 
     /**
@@ -140,11 +123,11 @@ class XMLReaderTest extends TestCase
     {
         $tempFolder = realpath(sys_get_temp_dir());
         $tempFolderName = basename($tempFolder);
-        $expectedRealPathURI = 'zip://' . $tempFolder . '/test.xlsx#test.xml';
+        $expectedRealPathURI = 'zip://'.$tempFolder.'/test.xlsx#test.xml';
 
         return [
-            [$tempFolder, "$tempFolder/test.xlsx", 'test.xml', $expectedRealPathURI],
-            [$tempFolder, "$tempFolder/../$tempFolderName/test.xlsx", 'test.xml', $expectedRealPathURI],
+            [$tempFolder, "{$tempFolder}/test.xlsx", 'test.xml', $expectedRealPathURI],
+            [$tempFolder, "{$tempFolder}/../{$tempFolderName}/test.xlsx", 'test.xml', $expectedRealPathURI],
         ];
     }
 
@@ -155,11 +138,10 @@ class XMLReaderTest extends TestCase
      * @param string $zipFilePath
      * @param string $fileInsideZipPath
      * @param string $expectedRealPathURI
-     * @return void
      */
     public function testGetRealPathURIForFileInZip($tempFolder, $zipFilePath, $fileInsideZipPath, $expectedRealPathURI)
     {
-        touch($tempFolder . '/test.xlsx');
+        touch($tempFolder.'/test.xlsx');
 
         $xmlReader = new XMLReader();
         $realPathURI = \ReflectionHelper::callMethodOnObject($xmlReader, 'getRealPathURIForFileInZip', $zipFilePath, $fileInsideZipPath);
@@ -168,9 +150,9 @@ class XMLReaderTest extends TestCase
         $normalizedRealPathURI = str_replace('\\', '/', $realPathURI);
         $normalizedExpectedRealPathURI = str_replace('\\', '/', $expectedRealPathURI);
 
-        $this->assertEquals($normalizedExpectedRealPathURI, $normalizedRealPathURI);
+        static::assertSame($normalizedExpectedRealPathURI, $normalizedRealPathURI);
 
-        unlink($tempFolder . '/test.xlsx');
+        unlink($tempFolder.'/test.xlsx');
     }
 
     /**
@@ -188,7 +170,6 @@ class XMLReaderTest extends TestCase
      * @dataProvider dataProviderForTestIsPositionedOnStartingAndEndingNode
      *
      * @param string $testXML
-     * @return void
      */
     public function testIsPositionedOnStartingAndEndingNode($testXML)
     {
@@ -197,14 +178,22 @@ class XMLReaderTest extends TestCase
 
         // the first read moves the pointer to "<test>"
         $xmlReader->read();
-        $this->assertTrue($xmlReader->isPositionedOnStartingNode('test'));
-        $this->assertFalse($xmlReader->isPositionedOnEndingNode('test'));
+        static::assertTrue($xmlReader->isPositionedOnStartingNode('test'));
+        static::assertFalse($xmlReader->isPositionedOnEndingNode('test'));
 
         // the seconds read moves the pointer to "</test>"
         $xmlReader->read();
-        $this->assertFalse($xmlReader->isPositionedOnStartingNode('test'));
-        $this->assertTrue($xmlReader->isPositionedOnEndingNode('test'));
+        static::assertFalse($xmlReader->isPositionedOnStartingNode('test'));
+        static::assertTrue($xmlReader->isPositionedOnEndingNode('test'));
 
         $xmlReader->close();
+    }
+
+    /**
+     * @return bool TRUE if running on HHVM, FALSE otherwise
+     */
+    private function isRunningHHVM()
+    {
+        return \defined('HHVM_VERSION');
     }
 }

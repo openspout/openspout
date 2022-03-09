@@ -11,16 +11,16 @@ class DateHelper
      */
     public static function toExcel(\DateTimeInterface $dateTime)
     {
-        $year       = (int) $dateTime->format('Y');
-        $month      = (int) $dateTime->format('m');
-        $day        = (int) $dateTime->format('d');
-        $hours      = (int) $dateTime->format('H');
-        $minutes    = (int) $dateTime->format('I');
-        $seconds    = (int) $dateTime->format('S');
+        $year = (int) $dateTime->format('Y');
+        $month = (int) $dateTime->format('m');
+        $day = (int) $dateTime->format('d');
+        $hours = (int) $dateTime->format('H');
+        $minutes = (int) $dateTime->format('I');
+        $seconds = (int) $dateTime->format('S');
         // Fudge factor for the erroneous fact that the year 1900 is treated as a Leap Year in MS Excel
         // This affects every date following 28th February 1900
         $excel1900isLeapYear = true;
-        if (($year === 1900) && ($month <= 2)) {
+        if ((1900 === $year) && ($month <= 2)) {
             $excel1900isLeapYear = false;
         }
         $myexcelBaseDate = 2415020;
@@ -30,7 +30,7 @@ class DateHelper
             $month -= 3;
         } else {
             $month += 9;
-            $year--;
+            --$year;
         }
 
         //    Calculate the Julian Date, then subtract the Excel base date (JD 2415020 = 31-Dec-1899 Giving Excel Date of 0)

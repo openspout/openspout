@@ -5,7 +5,7 @@ namespace OpenSpout\Reader\CSV;
 use OpenSpout\Reader\SheetInterface;
 
 /**
- * Class Sheet
+ * Class Sheet.
  */
 class Sheet implements SheetInterface
 {

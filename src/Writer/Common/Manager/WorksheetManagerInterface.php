@@ -12,25 +12,24 @@ use OpenSpout\Writer\Common\Entity\Worksheet;
 interface WorksheetManagerInterface
 {
     /**
-     * @param float|null $width
+     * @param null|float $width
      */
     public function setDefaultColumnWidth($width);
 
     /**
-     * @param float|null $height
+     * @param null|float $height
      */
     public function setDefaultRowHeight($height);
 
     /**
-     * @param float $width
      * @param int $columns One or more columns with this width
      */
     public function setColumnWidth(float $width, ...$columns);
 
     /**
      * @param float $width The width to set
-     * @param int $start First column index of the range
-     * @param int $end Last column index of the range
+     * @param int   $start First column index of the range
+     * @param int   $end   Last column index of the range
      */
     public function setColumnWidthForRange(float $width, int $start, int $end);
 
@@ -38,27 +37,24 @@ interface WorksheetManagerInterface
      * Adds a row to the worksheet.
      *
      * @param Worksheet $worksheet The worksheet to add the row to
-     * @param Row $row The row to be added
-     * @throws \OpenSpout\Common\Exception\IOException If the data cannot be written
+     * @param Row       $row       The row to be added
+     *
+     * @throws \OpenSpout\Common\Exception\IOException              If the data cannot be written
      * @throws \OpenSpout\Common\Exception\InvalidArgumentException If a cell value's type is not supported
-     * @return void
      */
     public function addRow(Worksheet $worksheet, Row $row);
 
     /**
-     * Prepares the worksheet to accept data
+     * Prepares the worksheet to accept data.
      *
      * @param Worksheet $worksheet The worksheet to start
+     *
      * @throws \OpenSpout\Common\Exception\IOException If the sheet data file cannot be opened for writing
-     * @return void
      */
     public function startSheet(Worksheet $worksheet);
 
     /**
-     * Closes the worksheet
-     *
-     * @param Worksheet $worksheet
-     * @return void
+     * Closes the worksheet.
      */
     public function close(Worksheet $worksheet);
 }

@@ -5,9 +5,12 @@ namespace OpenSpout\Writer\XLSX\Manager\Style;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class StyleManagerTest
+ * Class StyleManagerTest.
+ *
+ * @internal
+ * @coversNothing
  */
-class StyleManagerTest extends TestCase
+final class StyleManagerTest extends TestCase
 {
     /**
      * @return array
@@ -31,29 +34,31 @@ class StyleManagerTest extends TestCase
     /**
      * @dataProvider dataProviderForTestShouldApplyStyleOnEmptyCell
      *
-     * @param int|null $fillId
-     * @param int|null $borderId
-     * @param bool $expectedResult
-     * @return void
+     * @param null|int $fillId
+     * @param null|int $borderId
+     * @param bool     $expectedResult
      */
     public function testShouldApplyStyleOnEmptyCell($fillId, $borderId, $expectedResult)
     {
         $styleRegistryMock = $this->getMockBuilder(StyleRegistry::class)
-                                ->disableOriginalConstructor()
-                                ->onlyMethods(['getFillIdForStyleId', 'getBorderIdForStyleId'])
-                                ->getMock();
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getFillIdForStyleId', 'getBorderIdForStyleId'])
+            ->getMock()
+        ;
 
         $styleRegistryMock
             ->method('getFillIdForStyleId')
-            ->willReturn($fillId);
+            ->willReturn($fillId)
+        ;
 
         $styleRegistryMock
             ->method('getBorderIdForStyleId')
-            ->willReturn($borderId);
+            ->willReturn($borderId)
+        ;
 
         $styleManager = new StyleManager($styleRegistryMock);
         $shouldApply = $styleManager->shouldApplyStyleOnEmptyCell(99);
 
-        $this->assertEquals($expectedResult, $shouldApply);
+        static::assertSame($expectedResult, $shouldApply);
     }
 }

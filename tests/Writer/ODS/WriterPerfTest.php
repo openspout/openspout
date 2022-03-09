@@ -8,20 +8,21 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Class WriterPerfTest
- * Performance tests for ODS Writer
+ * Performance tests for ODS Writer.
+ *
+ * @internal
+ * @coversNothing
  */
-class WriterPerfTest extends TestCase
+final class WriterPerfTest extends TestCase
 {
     use TestUsingResource;
 
     /**
      * 1 million rows (each row containing 3 cells) should be written
      * in less than 4 minutes and the execution should not require
-     * more than 3MB of memory
+     * more than 3MB of memory.
      *
      * @group perf-tests
-     *
-     * @return void
      */
     public function testPerfWhenWritingOneMillionRowsODS()
     {
@@ -42,23 +43,24 @@ class WriterPerfTest extends TestCase
 
         $writer->openToFile($resourcePath);
 
-        for ($i = 1; $i <= $numRows; $i++) {
+        for ($i = 1; $i <= $numRows; ++$i) {
             $writer->addRow(WriterEntityFactory::createRowFromArray(["ods--{$i}-1", "ods--{$i}-2", "ods--{$i}-3"]));
         }
 
         $writer->close();
 
-        $this->assertEquals($numRows, $this->getNumWrittenRows($resourcePath), "The created ODS ($fileName) should contain $numRows rows");
+        static::assertSame($numRows, $this->getNumWrittenRows($resourcePath), "The created ODS ({$fileName}) should contain {$numRows} rows");
 
         $executionTime = time() - $startTime;
-        $this->assertTrue($executionTime < $expectedMaxExecutionTime, "Writing 1 million rows should take less than $expectedMaxExecutionTime seconds (took $executionTime seconds)");
+        static::assertTrue($executionTime < $expectedMaxExecutionTime, "Writing 1 million rows should take less than {$expectedMaxExecutionTime} seconds (took {$executionTime} seconds)");
 
         $memoryPeakUsage = memory_get_peak_usage(true) - $beforeMemoryPeakUsage;
-        $this->assertTrue($memoryPeakUsage < $expectedMaxMemoryPeakUsage, 'Writing 1 million rows should require less than ' . ($expectedMaxMemoryPeakUsage / 1024 / 1024) . ' MB of memory (required ' . ($memoryPeakUsage / 1024 / 1024) . ' MB)');
+        static::assertTrue($memoryPeakUsage < $expectedMaxMemoryPeakUsage, 'Writing 1 million rows should require less than '.($expectedMaxMemoryPeakUsage / 1024 / 1024).' MB of memory (required '.($memoryPeakUsage / 1024 / 1024).' MB)');
     }
 
     /**
      * @param string $resourcePath
+     *
      * @return int
      */
     private function getNumWrittenRows($resourcePath)
@@ -77,18 +79,19 @@ class WriterPerfTest extends TestCase
 
     /**
      * @param string $resourcePath
+     *
      * @return string
      */
     private function getLastCharactersOfContentXmlFile($resourcePath)
     {
-        $pathToContentXmlFile = 'zip://' . $resourcePath . '#content.xml';
+        $pathToContentXmlFile = 'zip://'.$resourcePath.'#content.xml';
 
         // since we cannot execute "tail" on a file inside a zip, we need to copy it outside first
-        $tmpFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'get_last_characters.xml';
+        $tmpFile = sys_get_temp_dir().\DIRECTORY_SEPARATOR.'get_last_characters.xml';
         copy($pathToContentXmlFile, $tmpFile);
 
         // Get the last 200 characters
-        $lastCharacters = shell_exec("tail -c 200 $tmpFile");
+        $lastCharacters = shell_exec("tail -c 200 {$tmpFile}");
 
         // remove the temporary file
         unlink($tmpFile);

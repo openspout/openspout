@@ -11,15 +11,17 @@ use OpenSpout\Writer\WriterInterface;
 
 /**
  * Class WriterEntityFactory
- * Factory to create external entities
+ * Factory to create external entities.
  */
 class WriterEntityFactory
 {
     /**
-     * This creates an instance of the appropriate writer, given the type of the file to be written
+     * This creates an instance of the appropriate writer, given the type of the file to be written.
      *
-     * @param  string $writerType Type of the writer to instantiate
+     * @param string $writerType Type of the writer to instantiate
+     *
      * @throws \OpenSpout\Common\Exception\UnsupportedTypeException
+     *
      * @return WriterInterface
      */
     public static function createWriter($writerType)
@@ -28,10 +30,12 @@ class WriterEntityFactory
     }
 
     /**
-     * This creates an instance of the appropriate writer, given the extension of the file to be written
+     * This creates an instance of the appropriate writer, given the extension of the file to be written.
      *
      * @param string $path The path to the spreadsheet file. Supported extensions are .csv, .ods and .xlsx
+     *
      * @throws \OpenSpout\Common\Exception\UnsupportedTypeException
+     *
      * @return WriterInterface
      */
     public static function createWriterFromFile(string $path)
@@ -40,7 +44,7 @@ class WriterEntityFactory
     }
 
     /**
-     * This creates an instance of a CSV writer
+     * This creates an instance of a CSV writer.
      *
      * @return \OpenSpout\Writer\CSV\Writer
      */
@@ -55,7 +59,7 @@ class WriterEntityFactory
     }
 
     /**
-     * This creates an instance of a XLSX writer
+     * This creates an instance of a XLSX writer.
      *
      * @return \OpenSpout\Writer\XLSX\Writer
      */
@@ -70,7 +74,7 @@ class WriterEntityFactory
     }
 
     /**
-     * This creates an instance of a ODS writer
+     * This creates an instance of a ODS writer.
      *
      * @return \OpenSpout\Writer\ODS\Writer
      */
@@ -86,7 +90,7 @@ class WriterEntityFactory
 
     /**
      * @param Cell[] $cells
-     * @param Style|null $rowStyle
+     *
      * @return Row
      */
     public static function createRow(array $cells = [], Style $rowStyle = null)
@@ -95,13 +99,11 @@ class WriterEntityFactory
     }
 
     /**
-     * @param array $cellValues
-     * @param Style|null $rowStyle
      * @return Row
      */
     public static function createRowFromArray(array $cellValues = [], Style $rowStyle = null)
     {
-        $cells = \array_map(function ($cellValue) {
+        $cells = array_map(function ($cellValue) {
             return new Cell($cellValue);
         }, $cellValues);
 
@@ -110,7 +112,7 @@ class WriterEntityFactory
 
     /**
      * @param mixed $cellValue
-     * @param Style|null $cellStyle
+     *
      * @return Cell
      */
     public static function createCell($cellValue, Style $cellStyle = null)

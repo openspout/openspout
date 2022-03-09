@@ -7,12 +7,13 @@ use OpenSpout\Reader\ODS\Helper\SettingsHelper;
 
 /**
  * Class HelperFactory
- * Factory to create helpers
+ * Factory to create helpers.
  */
 class HelperFactory extends \OpenSpout\Common\Creator\HelperFactory
 {
     /**
      * @param bool $shouldFormatDates Whether date/time values should be returned as PHP objects or be formatted as strings
+     *
      * @return CellValueFormatter
      */
     public function createCellValueFormatter($shouldFormatDates)
@@ -24,6 +25,7 @@ class HelperFactory extends \OpenSpout\Common\Creator\HelperFactory
 
     /**
      * @param InternalEntityFactory $entityFactory
+     *
      * @return SettingsHelper
      */
     public function createSettingsHelper($entityFactory)
@@ -36,7 +38,7 @@ class HelperFactory extends \OpenSpout\Common\Creator\HelperFactory
      */
     public function createStringsEscaper()
     {
-        /* @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+        // @noinspection PhpUnnecessaryFullyQualifiedNameInspection
         return new \OpenSpout\Common\Helper\Escaper\ODS();
     }
 }

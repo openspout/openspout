@@ -7,7 +7,7 @@ use OpenSpout\Writer\XLSX\Entity\SheetView;
 
 /**
  * Class Sheet
- * External representation of a worksheet
+ * External representation of a worksheet.
  */
 class Sheet
 {
@@ -32,9 +32,9 @@ class Sheet
     private $sheetView;
 
     /**
-     * @param int $sheetIndex Index of the sheet, based on order in the workbook (zero-based)
-     * @param string $associatedWorkbookId ID of the sheet's associated workbook
-     * @param SheetManager $sheetManager To manage sheets
+     * @param int          $sheetIndex           Index of the sheet, based on order in the workbook (zero-based)
+     * @param string       $associatedWorkbookId ID of the sheet's associated workbook
+     * @param SheetManager $sheetManager         To manage sheets
      */
     public function __construct($sheetIndex, $associatedWorkbookId, SheetManager $sheetManager)
     {
@@ -44,7 +44,7 @@ class Sheet
         $this->sheetManager = $sheetManager;
         $this->sheetManager->markWorkbookIdAsUsed($associatedWorkbookId);
 
-        $this->setName(self::DEFAULT_SHEET_NAME_PREFIX . ($sheetIndex + 1));
+        $this->setName(self::DEFAULT_SHEET_NAME_PREFIX.($sheetIndex + 1));
         $this->setIsVisible(true);
     }
 
@@ -77,10 +77,12 @@ class Sheet
      *  - it should not be blank
      *  - it should not exceed 31 characters
      *  - it should not contain these characters: \ / ? * : [ or ]
-     *  - it should be unique
+     *  - it should be unique.
      *
      * @param string $name Name of the sheet
-     * @throws \OpenSpout\Writer\Exception\InvalidSheetNameException If the sheet's name is invalid.
+     *
+     * @throws \OpenSpout\Writer\Exception\InvalidSheetNameException if the sheet's name is invalid
+     *
      * @return Sheet
      */
     public function setName($name)
@@ -104,6 +106,7 @@ class Sheet
 
     /**
      * @param bool $isVisible Visibility of the sheet
+     *
      * @return Sheet
      */
     public function setIsVisible($isVisible)
@@ -113,16 +116,12 @@ class Sheet
         return $this;
     }
 
-    /**
-     * @return SheetView|null
-     */
-    public function getSheetView() : ?SheetView
+    public function getSheetView(): ?SheetView
     {
         return $this->sheetView;
     }
 
     /**
-     * @param SheetView $sheetView
      * @return $this
      */
     public function setSheetView(SheetView $sheetView)
@@ -132,10 +131,7 @@ class Sheet
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasSheetView() : bool
+    public function hasSheetView(): bool
     {
         return $this->sheetView instanceof SheetView;
     }

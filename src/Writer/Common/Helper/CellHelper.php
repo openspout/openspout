@@ -4,7 +4,7 @@ namespace OpenSpout\Writer\Common\Helper;
 
 /**
  * Class CellHelper
- * This class provides helper functions when working with cells
+ * This class provides helper functions when working with cells.
  */
 class CellHelper
 {
@@ -32,7 +32,7 @@ class CellHelper
 
             do {
                 $modulus = $columnIndexZeroBased % 26;
-                $columnLetters = \chr($capitalAAsciiValue + $modulus) . $columnLetters;
+                $columnLetters = \chr($capitalAAsciiValue + $modulus).$columnLetters;
 
                 // substracting 1 because it's zero-based
                 $columnIndexZeroBased = (int) ($columnIndexZeroBased / 26) - 1;

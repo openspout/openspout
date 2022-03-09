@@ -7,12 +7,11 @@ use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 
 /**
- * Trait RowCreationHelper
+ * Trait RowCreationHelper.
  */
 trait RowCreationHelper
 {
     /**
-     * @param array $cellValues
      * @return Row
      */
     protected function createRowFromValues(array $cellValues)
@@ -21,8 +20,6 @@ trait RowCreationHelper
     }
 
     /**
-     * @param array $cellValues
-     * @param Style|null $rowStyle
      * @return Row
      */
     protected function createStyledRowFromValues(array $cellValues, Style $rowStyle = null)
@@ -31,7 +28,6 @@ trait RowCreationHelper
     }
 
     /**
-     * @param array $rowValues
      * @return Row[]
      */
     protected function createRowsFromValues(array $rowValues)
@@ -40,8 +36,6 @@ trait RowCreationHelper
     }
 
     /**
-     * @param array $rowValues
-     * @param Style|null $rowsStyle
      * @return Row[]
      */
     protected function createStyledRowsFromValues(array $rowValues, Style $rowsStyle = null)

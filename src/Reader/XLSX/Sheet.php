@@ -6,7 +6,7 @@ use OpenSpout\Reader\SheetInterface;
 
 /**
  * Class Sheet
- * Represents a sheet within a XLSX file
+ * Represents a sheet within a XLSX file.
  */
 class Sheet implements SheetInterface
 {
@@ -26,11 +26,11 @@ class Sheet implements SheetInterface
     protected $isVisible;
 
     /**
-     * @param RowIterator $rowIterator The corresponding row iterator
-     * @param int $sheetIndex Index of the sheet, based on order in the workbook (zero-based)
-     * @param string $sheetName Name of the sheet
-     * @param bool $isSheetActive Whether the sheet was defined as active
-     * @param bool $isSheetVisible Whether the sheet is visible
+     * @param RowIterator $rowIterator    The corresponding row iterator
+     * @param int         $sheetIndex     Index of the sheet, based on order in the workbook (zero-based)
+     * @param string      $sheetName      Name of the sheet
+     * @param bool        $isSheetActive  Whether the sheet was defined as active
+     * @param bool        $isSheetVisible Whether the sheet is visible
      */
     public function __construct($rowIterator, $sheetIndex, $sheetName, $isSheetActive, $isSheetVisible)
     {

@@ -8,7 +8,7 @@ use OpenSpout\Writer\Common\Entity\Options;
 
 /**
  * Class OptionsManager
- * XLSX Writer options manager
+ * XLSX Writer options manager.
  */
 class OptionsManager extends OptionsManagerAbstract
 {
@@ -21,7 +21,6 @@ class OptionsManager extends OptionsManagerAbstract
 
     /**
      * OptionsManager constructor.
-     * @param StyleBuilder $styleBuilder
      */
     public function __construct(StyleBuilder $styleBuilder)
     {
@@ -53,9 +52,10 @@ class OptionsManager extends OptionsManagerAbstract
         $defaultRowStyle = $this->styleBuilder
             ->setFontSize(self::DEFAULT_FONT_SIZE)
             ->setFontName(self::DEFAULT_FONT_NAME)
-            ->build();
+            ->build()
+        ;
 
-        $this->setOption(Options::TEMP_FOLDER, \sys_get_temp_dir());
+        $this->setOption(Options::TEMP_FOLDER, sys_get_temp_dir());
         $this->setOption(Options::DEFAULT_ROW_STYLE, $defaultRowStyle);
         $this->setOption(Options::SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY, true);
         $this->setOption(Options::SHOULD_USE_INLINE_STRINGS, true);

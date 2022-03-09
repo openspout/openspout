@@ -3,9 +3,7 @@
 namespace OpenSpout\Common\Exception;
 
 /**
- * Class SpoutException
- *
- * @abstract
+ * Class SpoutException.
  */
 abstract class SpoutException extends \Exception
 {

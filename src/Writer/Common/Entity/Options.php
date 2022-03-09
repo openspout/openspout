@@ -4,7 +4,7 @@ namespace OpenSpout\Writer\Common\Entity;
 
 /**
  * Class Options
- * Writers' options holder
+ * Writers' options holder.
  */
 abstract class Options
 {

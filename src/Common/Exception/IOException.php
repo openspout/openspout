@@ -3,7 +3,7 @@
 namespace OpenSpout\Common\Exception;
 
 /**
- * Class IOException
+ * Class IOException.
  */
 class IOException extends SpoutException
 {

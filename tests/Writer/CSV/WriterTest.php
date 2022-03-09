@@ -13,16 +13,16 @@ use OpenSpout\Writer\RowCreationHelper;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class WriterTest
+ * Class WriterTest.
+ *
+ * @internal
+ * @coversNothing
  */
-class WriterTest extends TestCase
+final class WriterTest extends TestCase
 {
-    use TestUsingResource;
     use RowCreationHelper;
+    use TestUsingResource;
 
-    /**
-     * @return void
-     */
     public function testWriteShouldThrowExceptionIfCannotOpenFileForWriting()
     {
         $this->expectException(IOException::class);
@@ -37,9 +37,6 @@ class WriterTest extends TestCase
         $writer->close();
     }
 
-    /**
-     * @return void
-     */
     public function testWriteShouldThrowExceptionIfCallAddRowBeforeOpeningWriter()
     {
         $this->expectException(WriterNotOpenedException::class);
@@ -49,9 +46,6 @@ class WriterTest extends TestCase
         $writer->close();
     }
 
-    /**
-     * @return void
-     */
     public function testWriteShouldThrowExceptionIfCallAddRowsBeforeOpeningWriter()
     {
         $this->expectException(WriterNotOpenedException::class);
@@ -61,9 +55,6 @@ class WriterTest extends TestCase
         $writer->close();
     }
 
-    /**
-     * @return void
-     */
     public function testAddRowsShouldThrowExceptionIfRowsAreNotArrayOfArrays()
     {
         $fileName = 'test_non_array_values.csv';
@@ -78,9 +69,6 @@ class WriterTest extends TestCase
         $writer->close();
     }
 
-    /**
-     * @return void
-     */
     public function testCloseShouldNoopWhenWriterIsNotOpened()
     {
         $fileName = 'test_double_close_calls.csv';
@@ -96,9 +84,6 @@ class WriterTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
-    /**
-     * @return void
-     */
     public function testWriteShouldAddUtf8Bom()
     {
         $allRows = $this->createRowsFromValues([
@@ -106,12 +91,9 @@ class WriterTest extends TestCase
         ]);
         $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_utf8_bom.csv');
 
-        $this->assertStringStartsWith(EncodingHelper::BOM_UTF8, $writtenContent, 'The CSV file should contain a UTF-8 BOM');
+        static::assertStringStartsWith(EncodingHelper::BOM_UTF8, $writtenContent, 'The CSV file should contain a UTF-8 BOM');
     }
 
-    /**
-     * @return void
-     */
     public function testWriteShouldNotAddUtf8Bom()
     {
         $allRows = $this->createRowsFromValues([
@@ -119,12 +101,9 @@ class WriterTest extends TestCase
         ]);
         $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_no_bom.csv', ',', '"', false);
 
-        $this->assertStringNotContainsString(EncodingHelper::BOM_UTF8, $writtenContent, 'The CSV file should not contain a UTF-8 BOM');
+        static::assertStringNotContainsString(EncodingHelper::BOM_UTF8, $writtenContent, 'The CSV file should not contain a UTF-8 BOM');
     }
 
-    /**
-     * @return void
-     */
     public function testWriteShouldSupportNullValues()
     {
         $allRows = $this->createRowsFromValues([
@@ -133,12 +112,9 @@ class WriterTest extends TestCase
         $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_null_values.csv');
         $writtenContent = $this->trimWrittenContent($writtenContent);
 
-        $this->assertEquals('csv--11,,csv--13', $writtenContent, 'The null values should be replaced by empty values');
+        static::assertSame('csv--11,,csv--13', $writtenContent, 'The null values should be replaced by empty values');
     }
 
-    /**
-     * @return void
-     */
     public function testWriteShouldNotSkipEmptyRows()
     {
         $allRows = $this->createRowsFromValues([
@@ -149,12 +125,9 @@ class WriterTest extends TestCase
         $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_empty_rows.csv');
         $writtenContent = $this->trimWrittenContent($writtenContent);
 
-        $this->assertEquals("csv--11,csv--12\n\ncsv--31,csv--32", $writtenContent, 'Empty rows should be skipped');
+        static::assertSame("csv--11,csv--12\n\ncsv--31,csv--32", $writtenContent, 'Empty rows should be skipped');
     }
 
-    /**
-     * @return void
-     */
     public function testWriteShouldSupportCustomFieldDelimiter()
     {
         $allRows = $this->createRowsFromValues([
@@ -164,12 +137,9 @@ class WriterTest extends TestCase
         $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_pipe_delimiters.csv', '|');
         $writtenContent = $this->trimWrittenContent($writtenContent);
 
-        $this->assertEquals("csv--11|csv--12|csv--13\ncsv--21|csv--22|csv--23", $writtenContent, 'The fields should be delimited with |');
+        static::assertSame("csv--11|csv--12|csv--13\ncsv--21|csv--22|csv--23", $writtenContent, 'The fields should be delimited with |');
     }
 
-    /**
-     * @return void
-     */
     public function testWriteShouldSupportCustomFieldEnclosure()
     {
         $allRows = $this->createRowsFromValues([
@@ -178,7 +148,7 @@ class WriterTest extends TestCase
         $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_pound_enclosures.csv', ',', '#');
         $writtenContent = $this->trimWrittenContent($writtenContent);
 
-        $this->assertEquals('#This is, a comma#,csv--12,csv--13', $writtenContent, 'The fields should be enclosed with #');
+        static::assertSame('#This is, a comma#,csv--12,csv--13', $writtenContent, 'The fields should be enclosed with #');
     }
 
     public function testWriteShouldSupportedEscapedCharacters()
@@ -189,7 +159,7 @@ class WriterTest extends TestCase
         $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_escaped_characters.csv');
         $writtenContent = $this->trimWrittenContent($writtenContent);
 
-        $this->assertEquals('"""csv--11""",csv--12\\,csv--13\\\\,csv--14\\\\\\', $writtenContent, 'The \'"\' and \'\\\' characters should be properly escaped');
+        static::assertSame('"""csv--11""",csv--12\\,csv--13\\\\,csv--14\\\\\\', $writtenContent, 'The \'"\' and \'\\\' characters should be properly escaped');
     }
 
     /**
@@ -198,6 +168,7 @@ class WriterTest extends TestCase
      * @param string $fieldDelimiter
      * @param string $fieldEnclosure
      * @param bool   $shouldAddBOM
+     *
      * @return string
      */
     private function writeToCsvFileAndReturnWrittenContent($allRows, $fileName, $fieldDelimiter = ',', $fieldEnclosure = '"', $shouldAddBOM = true)
@@ -219,11 +190,12 @@ class WriterTest extends TestCase
 
     /**
      * @param string $writtenContent
+     *
      * @return string
      */
     private function trimWrittenContent($writtenContent)
     {
         // remove line feeds and UTF-8 BOM
-        return trim($writtenContent, PHP_EOL . EncodingHelper::BOM_UTF8);
+        return trim($writtenContent, PHP_EOL.EncodingHelper::BOM_UTF8);
     }
 }

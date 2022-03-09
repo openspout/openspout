@@ -7,30 +7,16 @@ use OpenSpout\Common\Entity\Style\Style;
 
 /**
  * Class StyleManager
- * Manages styles to be applied to a cell
+ * Manages styles to be applied to a cell.
  */
 class StyleManager implements StyleManagerInterface
 {
     /** @var StyleRegistry Registry for all used styles */
     protected $styleRegistry;
 
-    /**
-     * @param StyleRegistry $styleRegistry
-     */
     public function __construct(StyleRegistry $styleRegistry)
     {
         $this->styleRegistry = $styleRegistry;
-    }
-
-    /**
-     * Returns the default style
-     *
-     * @return Style Default style
-     */
-    protected function getDefaultStyle()
-    {
-        // By construction, the default style has ID 0
-        return $this->styleRegistry->getRegisteredStyles()[0];
     }
 
     /**
@@ -38,7 +24,8 @@ class StyleManager implements StyleManagerInterface
      * Duplicate styles won't be registered more than once.
      *
      * @param Style $style The style to be registered
-     * @return Style The registered style, updated with an internal ID.
+     *
+     * @return Style the registered style, updated with an internal ID
      */
     public function registerStyle($style)
     {
@@ -49,12 +36,22 @@ class StyleManager implements StyleManagerInterface
      * Apply additional styles if the given row needs it.
      * Typically, set "wrap text" if a cell contains a new line.
      *
-     * @param Cell $cell
      * @return PossiblyUpdatedStyle The eventually updated style
      */
-    public function applyExtraStylesIfNeeded(Cell $cell) : PossiblyUpdatedStyle
+    public function applyExtraStylesIfNeeded(Cell $cell): PossiblyUpdatedStyle
     {
         return $this->applyWrapTextIfCellContainsNewLine($cell);
+    }
+
+    /**
+     * Returns the default style.
+     *
+     * @return Style Default style
+     */
+    protected function getDefaultStyle()
+    {
+        // By construction, the default style has ID 0
+        return $this->styleRegistry->getRegisteredStyles()[0];
     }
 
     /**
@@ -67,14 +64,15 @@ class StyleManager implements StyleManagerInterface
      *        on the Windows version of Excel...
      *
      * @param Cell $cell The cell the style should be applied to
+     *
      * @return PossiblyUpdatedStyle The eventually updated style
      */
-    protected function applyWrapTextIfCellContainsNewLine(Cell $cell) : PossiblyUpdatedStyle
+    protected function applyWrapTextIfCellContainsNewLine(Cell $cell): PossiblyUpdatedStyle
     {
         $cellStyle = $cell->getStyle();
 
         // if the "wrap text" option is already set, no-op
-        if (!$cellStyle->hasSetWrapText() && $cell->isString() && \strpos($cell->getValue(), "\n") !== false) {
+        if (!$cellStyle->hasSetWrapText() && $cell->isString() && false !== strpos($cell->getValue(), "\n")) {
             $cellStyle->setShouldWrapText();
 
             return new PossiblyUpdatedStyle($cellStyle, true);

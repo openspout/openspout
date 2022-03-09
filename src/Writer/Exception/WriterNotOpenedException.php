@@ -3,7 +3,7 @@
 namespace OpenSpout\Writer\Exception;
 
 /**
- * Class WriterNotOpenedException
+ * Class WriterNotOpenedException.
  */
 class WriterNotOpenedException extends WriterException
 {

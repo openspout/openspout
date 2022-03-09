@@ -10,9 +10,12 @@ use OpenSpout\Reader\XLSX\Creator\ManagerFactory;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class RowManagerTest
+ * Class RowManagerTest.
+ *
+ * @internal
+ * @coversNothing
  */
-class RowManagerTest extends TestCase
+final class RowManagerTest extends TestCase
 {
     /**
      * @return array
@@ -31,8 +34,8 @@ class RowManagerTest extends TestCase
     /**
      * @dataProvider dataProviderForTestFillMissingIndexesWithEmptyCells
      *
-     * @param Cell[]|null $rowCells
-     * @param Cell[] $expectedFilledCells
+     * @param null|Cell[] $rowCells
+     * @param Cell[]      $expectedFilledCells
      */
     public function testFillMissingIndexesWithEmptyCells($rowCells, $expectedFilledCells)
     {
@@ -44,7 +47,7 @@ class RowManagerTest extends TestCase
         }
 
         $filledRow = $rowManager->fillMissingIndexesWithEmptyCells($rowToFill);
-        $this->assertEquals($expectedFilledCells, $filledRow->getCells());
+        static::assertEquals($expectedFilledCells, $filledRow->getCells());
     }
 
     /**
@@ -64,16 +67,14 @@ class RowManagerTest extends TestCase
     /**
      * @dataProvider dataProviderForTestIsEmptyRow
      *
-     * @param array $cells
      * @param bool $expectedIsEmpty
-     * @return void
      */
     public function testIsEmptyRow(array $cells, $expectedIsEmpty)
     {
         $rowManager = $this->createRowManager();
         $row = new Row($cells, null);
 
-        $this->assertEquals($expectedIsEmpty, $rowManager->isEmpty($row));
+        static::assertSame($expectedIsEmpty, $rowManager->isEmpty($row));
     }
 
     /**
