@@ -5,7 +5,6 @@ namespace OpenSpout\Writer\Common\Manager;
 use OpenSpout\Common\Entity\Style\Style;
 
 /**
- * Class RegisteredStyle
  * Allow to know if this style must replace actual row style.
  */
 class RegisteredStyle
@@ -26,12 +25,12 @@ class RegisteredStyle
         $this->isMatchingRowStyle = $isMatchingRowStyle;
     }
 
-    public function getStyle() : Style
+    public function getStyle(): Style
     {
         return $this->style;
     }
 
-    public function isMatchingRowStyle() : bool
+    public function isMatchingRowStyle(): bool
     {
         return $this->isMatchingRowStyle;
     }

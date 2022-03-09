@@ -8,13 +8,13 @@ use OpenSpout\Writer\ODS\Helper\FileSystemHelper;
 use OpenSpout\Writer\ODS\Manager\Style\StyleManager;
 
 /**
- * Class WorkbookManager
  * ODS workbook manager, providing the interfaces to work with workbook.
  */
 class WorkbookManager extends WorkbookManagerAbstract
 {
     /**
-     * Maximum number of rows a ODS sheet can contain
+     * Maximum number of rows a ODS sheet can contain.
+     *
      * @see https://ask.libreoffice.org/en/question/8631/upper-limit-to-number-of-rows-in-calc/
      */
     protected static $maxRowsPerWorksheet = 1048576;
@@ -29,6 +29,16 @@ class WorkbookManager extends WorkbookManagerAbstract
     protected $styleManager;
 
     /**
+     * @return string The file path where the data for the given sheet will be stored
+     */
+    public function getWorksheetFilePath(Sheet $sheet)
+    {
+        $sheetsContentTempFolder = $this->fileSystemHelper->getSheetsContentTempFolder();
+
+        return $sheetsContentTempFolder.'/sheet'.$sheet->getIndex().'.xml';
+    }
+
+    /**
      * @return int Maximum number of rows/columns a sheet can contain
      */
     protected function getMaxRowsPerWorksheet()
@@ -37,21 +47,9 @@ class WorkbookManager extends WorkbookManagerAbstract
     }
 
     /**
-     * @param Sheet $sheet
-     * @return string The file path where the data for the given sheet will be stored
-     */
-    public function getWorksheetFilePath(Sheet $sheet)
-    {
-        $sheetsContentTempFolder = $this->fileSystemHelper->getSheetsContentTempFolder();
-
-        return $sheetsContentTempFolder . '/sheet' . $sheet->getIndex() . '.xml';
-    }
-
-    /**
      * Writes all the necessary files to disk and zip them together to create the final file.
      *
      * @param resource $finalFilePointer Pointer to the spreadsheet that will be created
-     * @return void
      */
     protected function writeAllFilesToDiskAndZipThem($finalFilePointer)
     {
@@ -62,6 +60,7 @@ class WorkbookManager extends WorkbookManagerAbstract
             ->createContentFile($this->worksheetManager, $this->styleManager, $worksheets)
             ->deleteWorksheetTempFolder()
             ->createStylesFile($this->styleManager, $numWorksheets)
-            ->zipRootFolderAndCopyToStream($finalFilePointer);
+            ->zipRootFolderAndCopyToStream($finalFilePointer)
+        ;
     }
 }

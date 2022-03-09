@@ -7,55 +7,40 @@ use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class ReaderFactoryTest
+ * @internal
  */
-class ReaderFactoryTest extends TestCase
+final class ReaderFactoryTest extends TestCase
 {
     use TestUsingResource;
 
-    /**
-     * @return void
-     */
     public function testCreateFromFileCSV()
     {
         $validCsv = $this->getResourcePath('csv_test_create_from_file.csv');
         $reader = ReaderFactory::createFromFile($validCsv);
-        $this->assertInstanceOf('OpenSpout\Reader\CSV\Reader', $reader);
+        static::assertInstanceOf('OpenSpout\Reader\CSV\Reader', $reader);
     }
 
-    /**
-     * @return void
-     */
     public function testCreateFromFileCSVAllCaps()
     {
         $validCsv = $this->getResourcePath('csv_test_create_from_file.CSV');
         $reader = ReaderFactory::createFromFile($validCsv);
-        $this->assertInstanceOf('OpenSpout\Reader\CSV\Reader', $reader);
+        static::assertInstanceOf('OpenSpout\Reader\CSV\Reader', $reader);
     }
 
-    /**
-     * @return void
-     */
     public function testCreateFromFileODS()
     {
         $validOds = $this->getResourcePath('csv_test_create_from_file.ods');
         $reader = ReaderFactory::createFromFile($validOds);
-        $this->assertInstanceOf('OpenSpout\Reader\ODS\Reader', $reader);
+        static::assertInstanceOf('OpenSpout\Reader\ODS\Reader', $reader);
     }
 
-    /**
-     * @return void
-     */
     public function testCreateFromFileXLSX()
     {
         $validXlsx = $this->getResourcePath('csv_test_create_from_file.xlsx');
         $reader = ReaderFactory::createFromFile($validXlsx);
-        $this->assertInstanceOf('OpenSpout\Reader\XLSX\Reader', $reader);
+        static::assertInstanceOf('OpenSpout\Reader\XLSX\Reader', $reader);
     }
 
-    /**
-     * @return void
-     */
     public function testCreateReaderShouldThrowWithUnsupportedType()
     {
         $this->expectException(UnsupportedTypeException::class);
@@ -63,9 +48,6 @@ class ReaderFactoryTest extends TestCase
         ReaderFactory::createFromType('unsupportedType');
     }
 
-    /**
-     * @return void
-     */
     public function testCreateFromFileUnsupported()
     {
         $this->expectException(UnsupportedTypeException::class);
@@ -73,13 +55,10 @@ class ReaderFactoryTest extends TestCase
         ReaderFactory::createFromFile($invalid);
     }
 
-    /**
-     * @return void
-     */
     public function testCreateFromFileMissingShouldWork()
     {
         $notExistingFile = 'thereisnosuchfile.csv';
         $reader = ReaderEntityFactory::createReaderFromFile($notExistingFile);
-        $this->assertInstanceOf('OpenSpout\Reader\CSV\Reader', $reader);
+        static::assertInstanceOf('OpenSpout\Reader\CSV\Reader', $reader);
     }
 }

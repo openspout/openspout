@@ -10,7 +10,6 @@ use OpenSpout\Reader\ODS\Helper\SettingsHelper;
 use OpenSpout\Reader\Wrapper\XMLReader;
 
 /**
- * Class SheetIterator
  * Iterate over ODS sheet.
  */
 class SheetIterator implements IteratorInterface
@@ -56,11 +55,11 @@ class SheetIterator implements IteratorInterface
     protected $sheetsVisibility;
 
     /**
-     * @param string $filePath Path of the file to be read
+     * @param string                                            $filePath       Path of the file to be read
      * @param \OpenSpout\Common\Manager\OptionsManagerInterface $optionsManager
-     * @param \OpenSpout\Common\Helper\Escaper\ODS $escaper Used to unescape XML data
-     * @param SettingsHelper $settingsHelper Helper to get data from "settings.xml"
-     * @param InternalEntityFactory $entityFactory Factory to create entities
+     * @param \OpenSpout\Common\Helper\Escaper\ODS              $escaper        Used to unescape XML data
+     * @param SettingsHelper                                    $settingsHelper Helper to get data from "settings.xml"
+     * @param InternalEntityFactory                             $entityFactory  Factory to create entities
      */
     public function __construct($filePath, $optionsManager, $escaper, $settingsHelper, $entityFactory)
     {
@@ -73,18 +72,19 @@ class SheetIterator implements IteratorInterface
     }
 
     /**
-     * Rewind the Iterator to the first element
+     * Rewind the Iterator to the first element.
+     *
      * @see http://php.net/manual/en/iterator.rewind.php
      *
      * @throws \OpenSpout\Common\Exception\IOException If unable to open the XML file containing sheets' data
-     * @return void
      */
     public function rewind()
     {
         $this->xmlReader->close();
 
-        if ($this->xmlReader->openFileInZip($this->filePath, self::CONTENT_XML_FILE_PATH) === false) {
-            $contentXmlFilePath = $this->filePath . '#' . self::CONTENT_XML_FILE_PATH;
+        if (false === $this->xmlReader->openFileInZip($this->filePath, self::CONTENT_XML_FILE_PATH)) {
+            $contentXmlFilePath = $this->filePath.'#'.self::CONTENT_XML_FILE_PATH;
+
             throw new IOException("Could not open \"{$contentXmlFilePath}\".");
         }
 
@@ -99,35 +99,8 @@ class SheetIterator implements IteratorInterface
     }
 
     /**
-     * Extracts the visibility of the sheets
+     * Checks if current position is valid.
      *
-     * @return array Associative array [STYLE_NAME] => [IS_SHEET_VISIBLE]
-     */
-    private function readSheetsVisibility()
-    {
-        $sheetsVisibility = [];
-
-        $this->xmlReader->readUntilNodeFound(self::XML_NODE_AUTOMATIC_STYLES);
-        /** @var \DOMElement $automaticStylesNode */
-        $automaticStylesNode = $this->xmlReader->expand();
-
-        $tableStyleNodes = $automaticStylesNode->getElementsByTagNameNS(self::XML_STYLE_NAMESPACE, self::XML_NODE_STYLE_TABLE_PROPERTIES);
-
-        /** @var \DOMElement $tableStyleNode */
-        foreach ($tableStyleNodes as $tableStyleNode) {
-            $isSheetVisible = ($tableStyleNode->getAttribute(self::XML_ATTRIBUTE_TABLE_DISPLAY) !== 'false');
-
-            $parentStyleNode = $tableStyleNode->parentNode;
-            $styleName = $parentStyleNode->getAttribute(self::XML_ATTRIBUTE_STYLE_NAME);
-
-            $sheetsVisibility[$styleName] = $isSheetVisible;
-        }
-
-        return $sheetsVisibility;
-    }
-
-    /**
-     * Checks if current position is valid
      * @see http://php.net/manual/en/iterator.valid.php
      *
      * @return bool
@@ -138,22 +111,22 @@ class SheetIterator implements IteratorInterface
     }
 
     /**
-     * Move forward to next element
-     * @see http://php.net/manual/en/iterator.next.php
+     * Move forward to next element.
      *
-     * @return void
+     * @see http://php.net/manual/en/iterator.next.php
      */
     public function next()
     {
         $this->hasFoundSheet = $this->xmlReader->readUntilNodeFound(self::XML_NODE_TABLE);
 
         if ($this->hasFoundSheet) {
-            $this->currentSheetIndex++;
+            ++$this->currentSheetIndex;
         }
     }
 
     /**
-     * Return the current element
+     * Return the current element.
+     *
      * @see http://php.net/manual/en/iterator.current.php
      *
      * @return \OpenSpout\Reader\ODS\Sheet
@@ -179,38 +152,8 @@ class SheetIterator implements IteratorInterface
     }
 
     /**
-     * Returns whether the current sheet was defined as the active one
+     * Return the key of the current element.
      *
-     * @param string $sheetName Name of the current sheet
-     * @param int $sheetIndex Index of the current sheet
-     * @param string|null $activeSheetName Name of the sheet that was defined as active or NULL if none defined
-     * @return bool Whether the current sheet was defined as the active one
-     */
-    private function isSheetActive($sheetName, $sheetIndex, $activeSheetName)
-    {
-        // The given sheet is active if its name matches the defined active sheet's name
-        // or if no information about the active sheet was found, it defaults to the first sheet.
-        return (
-            ($activeSheetName === null && $sheetIndex === 0) ||
-            ($activeSheetName === $sheetName)
-        );
-    }
-
-    /**
-     * Returns whether the current sheet is visible
-     *
-     * @param string $sheetStyleName Name of the sheet style
-     * @return bool Whether the current sheet is visible
-     */
-    private function isSheetVisible($sheetStyleName)
-    {
-        return isset($this->sheetsVisibility[$sheetStyleName]) ?
-            $this->sheetsVisibility[$sheetStyleName] :
-            true;
-    }
-
-    /**
-     * Return the key of the current element
      * @see http://php.net/manual/en/iterator.key.php
      *
      * @return int
@@ -222,11 +165,69 @@ class SheetIterator implements IteratorInterface
 
     /**
      * Cleans up what was created to iterate over the object.
-     *
-     * @return void
      */
     public function end()
     {
         $this->xmlReader->close();
+    }
+
+    /**
+     * Extracts the visibility of the sheets.
+     *
+     * @return array Associative array [STYLE_NAME] => [IS_SHEET_VISIBLE]
+     */
+    private function readSheetsVisibility()
+    {
+        $sheetsVisibility = [];
+
+        $this->xmlReader->readUntilNodeFound(self::XML_NODE_AUTOMATIC_STYLES);
+        /** @var \DOMElement $automaticStylesNode */
+        $automaticStylesNode = $this->xmlReader->expand();
+
+        $tableStyleNodes = $automaticStylesNode->getElementsByTagNameNS(self::XML_STYLE_NAMESPACE, self::XML_NODE_STYLE_TABLE_PROPERTIES);
+
+        /** @var \DOMElement $tableStyleNode */
+        foreach ($tableStyleNodes as $tableStyleNode) {
+            $isSheetVisible = ('false' !== $tableStyleNode->getAttribute(self::XML_ATTRIBUTE_TABLE_DISPLAY));
+
+            $parentStyleNode = $tableStyleNode->parentNode;
+            $styleName = $parentStyleNode->getAttribute(self::XML_ATTRIBUTE_STYLE_NAME);
+
+            $sheetsVisibility[$styleName] = $isSheetVisible;
+        }
+
+        return $sheetsVisibility;
+    }
+
+    /**
+     * Returns whether the current sheet was defined as the active one.
+     *
+     * @param string      $sheetName       Name of the current sheet
+     * @param int         $sheetIndex      Index of the current sheet
+     * @param null|string $activeSheetName Name of the sheet that was defined as active or NULL if none defined
+     *
+     * @return bool Whether the current sheet was defined as the active one
+     */
+    private function isSheetActive($sheetName, $sheetIndex, $activeSheetName)
+    {
+        // The given sheet is active if its name matches the defined active sheet's name
+        // or if no information about the active sheet was found, it defaults to the first sheet.
+        return
+            (null === $activeSheetName && 0 === $sheetIndex)
+            || ($activeSheetName === $sheetName)
+        ;
+    }
+
+    /**
+     * Returns whether the current sheet is visible.
+     *
+     * @param string $sheetStyleName Name of the sheet style
+     *
+     * @return bool Whether the current sheet is visible
+     */
+    private function isSheetVisible($sheetStyleName)
+    {
+        return $this->sheetsVisibility[$sheetStyleName] ??
+            true;
     }
 }

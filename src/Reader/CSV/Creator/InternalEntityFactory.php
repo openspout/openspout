@@ -13,26 +13,23 @@ use OpenSpout\Reader\CSV\Sheet;
 use OpenSpout\Reader\CSV\SheetIterator;
 
 /**
- * Class EntityFactory
- * Factory to create entities
+ * Factory to create entities.
  */
 class InternalEntityFactory implements InternalEntityFactoryInterface
 {
     /** @var HelperFactory */
     private $helperFactory;
 
-    /**
-     * @param HelperFactory $helperFactory
-     */
     public function __construct(HelperFactory $helperFactory)
     {
         $this->helperFactory = $helperFactory;
     }
 
     /**
-     * @param resource $filePointer Pointer to the CSV file to read
+     * @param resource                $filePointer           Pointer to the CSV file to read
      * @param OptionsManagerInterface $optionsManager
-     * @param GlobalFunctionsHelper $globalFunctionsHelper
+     * @param GlobalFunctionsHelper   $globalFunctionsHelper
+     *
      * @return SheetIterator
      */
     public function createSheetIterator($filePointer, $optionsManager, $globalFunctionsHelper)
@@ -44,29 +41,8 @@ class InternalEntityFactory implements InternalEntityFactoryInterface
     }
 
     /**
-     * @param RowIterator $rowIterator
-     * @return Sheet
-     */
-    private function createSheet($rowIterator)
-    {
-        return new Sheet($rowIterator);
-    }
-
-    /**
-     * @param resource $filePointer Pointer to the CSV file to read
-     * @param OptionsManagerInterface $optionsManager
-     * @param GlobalFunctionsHelper $globalFunctionsHelper
-     * @return RowIterator
-     */
-    private function createRowIterator($filePointer, $optionsManager, $globalFunctionsHelper)
-    {
-        $encodingHelper = $this->helperFactory->createEncodingHelper($globalFunctionsHelper);
-
-        return new RowIterator($filePointer, $optionsManager, $encodingHelper, $this, $globalFunctionsHelper);
-    }
-
-    /**
      * @param Cell[] $cells
+     *
      * @return Row
      */
     public function createRow(array $cells = [])
@@ -76,6 +52,7 @@ class InternalEntityFactory implements InternalEntityFactoryInterface
 
     /**
      * @param mixed $cellValue
+     *
      * @return Cell
      */
     public function createCell($cellValue)
@@ -84,15 +61,38 @@ class InternalEntityFactory implements InternalEntityFactoryInterface
     }
 
     /**
-     * @param array $cellValues
      * @return Row
      */
     public function createRowFromArray(array $cellValues = [])
     {
-        $cells = \array_map(function ($cellValue) {
+        $cells = array_map(function ($cellValue) {
             return $this->createCell($cellValue);
         }, $cellValues);
 
         return $this->createRow($cells);
+    }
+
+    /**
+     * @param RowIterator $rowIterator
+     *
+     * @return Sheet
+     */
+    private function createSheet($rowIterator)
+    {
+        return new Sheet($rowIterator);
+    }
+
+    /**
+     * @param resource                $filePointer           Pointer to the CSV file to read
+     * @param OptionsManagerInterface $optionsManager
+     * @param GlobalFunctionsHelper   $globalFunctionsHelper
+     *
+     * @return RowIterator
+     */
+    private function createRowIterator($filePointer, $optionsManager, $globalFunctionsHelper)
+    {
+        $encodingHelper = $this->helperFactory->createEncodingHelper($globalFunctionsHelper);
+
+        return new RowIterator($filePointer, $optionsManager, $encodingHelper, $this, $globalFunctionsHelper);
     }
 }

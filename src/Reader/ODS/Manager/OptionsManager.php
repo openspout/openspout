@@ -6,8 +6,7 @@ use OpenSpout\Common\Manager\OptionsManagerAbstract;
 use OpenSpout\Reader\Common\Entity\Options;
 
 /**
- * Class OptionsManager
- * ODS Reader options manager
+ * ODS Reader options manager.
  */
 class OptionsManager extends OptionsManagerAbstract
 {

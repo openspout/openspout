@@ -3,9 +3,8 @@
 namespace OpenSpout\Reader\CSV;
 
 /**
- * Class SpoutTestStream
  * Custom stream that reads CSV files located in the tests/resources/csv folder.
- * For example: spout://foobar will point to tests/resources/csv/foobar.csv
+ * For example: spout://foobar will point to tests/resources/csv/foobar.csv.
  */
 class SpoutTestStream
 {
@@ -22,7 +21,8 @@ class SpoutTestStream
 
     /**
      * @param string $path
-     * @param int $flag
+     * @param int    $flag
+     *
      * @return array
      */
     public function url_stat($path, $flag)
@@ -33,21 +33,11 @@ class SpoutTestStream
     }
 
     /**
-     * @param string $streamPath
-     * @return string
-     */
-    private function getFilePathFromStreamPath($streamPath)
-    {
-        $fileName = parse_url($streamPath, PHP_URL_HOST);
-
-        return self::PATH_TO_CSV_RESOURCES . $fileName . self::CSV_EXTENSION;
-    }
-
-    /**
      * @param string $path
      * @param string $mode
-     * @param int $options
+     * @param int    $options
      * @param string $opened_path
+     *
      * @return bool
      */
     public function stream_open($path, $mode, $options, &$opened_path)
@@ -63,6 +53,7 @@ class SpoutTestStream
 
     /**
      * @param int $numBytes
+     *
      * @return string
      */
     public function stream_read($numBytes)
@@ -83,22 +74,22 @@ class SpoutTestStream
     /**
      * @param int $offset
      * @param int $whence
+     *
      * @return bool
      */
     public function stream_seek($offset, $whence = SEEK_SET)
     {
         $result = fseek($this->fileHandle, $offset, $whence);
-        if ($result === -1) {
+        if (-1 === $result) {
             return false;
         }
 
-        if ($whence === SEEK_SET) {
+        if (SEEK_SET === $whence) {
             $this->position = $offset;
-        } elseif ($whence === SEEK_CUR) {
+        } elseif (SEEK_CUR === $whence) {
             $this->position += $offset;
-        } else {
-            // not implemented
         }
+        // not implemented
 
         return true;
     }
@@ -117,5 +108,17 @@ class SpoutTestStream
     public function stream_eof()
     {
         return feof($this->fileHandle);
+    }
+
+    /**
+     * @param string $streamPath
+     *
+     * @return string
+     */
+    private function getFilePathFromStreamPath($streamPath)
+    {
+        $fileName = parse_url($streamPath, PHP_URL_HOST);
+
+        return self::PATH_TO_CSV_RESOURCES.$fileName.self::CSV_EXTENSION;
     }
 }

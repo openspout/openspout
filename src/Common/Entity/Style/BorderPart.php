@@ -6,33 +6,30 @@ use OpenSpout\Writer\Exception\Border\InvalidNameException;
 use OpenSpout\Writer\Exception\Border\InvalidStyleException;
 use OpenSpout\Writer\Exception\Border\InvalidWidthException;
 
-/**
- * Class BorderPart
- */
 class BorderPart
 {
     /**
-     * @var string The style of this border part.
+     * @var string the style of this border part
      */
     protected $style;
 
     /**
-     * @var string The name of this border part.
+     * @var string the name of this border part
      */
     protected $name;
 
     /**
-     * @var string The color of this border part.
+     * @var string the color of this border part
      */
     protected $color;
 
     /**
-     * @var string The width of this border part.
+     * @var string the width of this border part
      */
     protected $width;
 
     /**
-     * @var array Allowed style constants for parts.
+     * @var array allowed style constants for parts
      */
     protected static $allowedStyles = [
         'none',
@@ -43,7 +40,7 @@ class BorderPart
     ];
 
     /**
-     * @var array Allowed names constants for border parts.
+     * @var array allowed names constants for border parts
      */
     protected static $allowedNames = [
         'left',
@@ -53,7 +50,7 @@ class BorderPart
     ];
 
     /**
-     * @var array Allowed width constants for border parts.
+     * @var array allowed width constants for border parts
      */
     protected static $allowedWidths = [
         'thin',
@@ -62,10 +59,11 @@ class BorderPart
     ];
 
     /**
-     * @param string $name @see  BorderPart::$allowedNames
+     * @param string $name  @see  BorderPart::$allowedNames
      * @param string $color A RGB color code
      * @param string $width @see BorderPart::$allowedWidths
      * @param string $style @see BorderPart::$allowedStyles
+     *
      * @throws InvalidNameException
      * @throws InvalidStyleException
      * @throws InvalidWidthException
@@ -88,12 +86,12 @@ class BorderPart
 
     /**
      * @param string $name The name of the border part @see BorderPart::$allowedNames
+     *
      * @throws InvalidNameException
-     * @return void
      */
     public function setName($name)
     {
-        if (!\in_array($name, self::$allowedNames)) {
+        if (!\in_array($name, self::$allowedNames, true)) {
             throw new InvalidNameException($name);
         }
         $this->name = $name;
@@ -109,12 +107,12 @@ class BorderPart
 
     /**
      * @param string $style The style of the border part @see BorderPart::$allowedStyles
+     *
      * @throws InvalidStyleException
-     * @return void
      */
     public function setStyle($style)
     {
-        if (!\in_array($style, self::$allowedStyles)) {
+        if (!\in_array($style, self::$allowedStyles, true)) {
             throw new InvalidStyleException($style);
         }
         $this->style = $style;
@@ -130,7 +128,6 @@ class BorderPart
 
     /**
      * @param string $color The color of the border part @see Color::rgb()
-     * @return void
      */
     public function setColor($color)
     {
@@ -147,12 +144,12 @@ class BorderPart
 
     /**
      * @param string $width The width of the border part @see BorderPart::$allowedWidths
+     *
      * @throws InvalidWidthException
-     * @return void
      */
     public function setWidth($width)
     {
-        if (!\in_array($width, self::$allowedWidths)) {
+        if (!\in_array($width, self::$allowedWidths, true)) {
             throw new InvalidWidthException($width);
         }
         $this->width = $width;

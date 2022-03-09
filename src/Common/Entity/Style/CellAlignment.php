@@ -3,7 +3,6 @@
 namespace OpenSpout\Common\Entity\Style;
 
 /**
- * Class Alignment
  * This class provides constants to work with text alignment.
  */
 abstract class CellAlignment

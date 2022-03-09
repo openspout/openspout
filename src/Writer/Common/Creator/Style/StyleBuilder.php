@@ -8,17 +8,13 @@ use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Common\Exception\InvalidArgumentException;
 
 /**
- * Class StyleBuilder
- * Builder to create new styles
+ * Builder to create new styles.
  */
 class StyleBuilder
 {
     /** @var Style Style to be created */
     protected $style;
 
-    /**
-     *
-     */
     public function __construct()
     {
         $this->style = new Style();
@@ -76,6 +72,7 @@ class StyleBuilder
      * Sets the font size.
      *
      * @param int $fontSize Font size, in pixels
+     *
      * @return StyleBuilder
      */
     public function setFontSize($fontSize)
@@ -89,6 +86,7 @@ class StyleBuilder
      * Sets the font color.
      *
      * @param string $fontColor ARGB color (@see Color)
+     *
      * @return StyleBuilder
      */
     public function setFontColor($fontColor)
@@ -102,6 +100,7 @@ class StyleBuilder
      * Sets the font name.
      *
      * @param string $fontName Name of the font to use
+     *
      * @return StyleBuilder
      */
     public function setFontName($fontName)
@@ -112,9 +111,10 @@ class StyleBuilder
     }
 
     /**
-     * Makes the text wrap in the cell if requested
+     * Makes the text wrap in the cell if requested.
      *
      * @param bool $shouldWrap Should the text be wrapped
+     *
      * @return StyleBuilder
      */
     public function setShouldWrapText($shouldWrap = true)
@@ -130,6 +130,7 @@ class StyleBuilder
      * @param string $cellAlignment The cell alignment
      *
      * @throws InvalidArgumentException If the given cell alignment is not valid
+     *
      * @return StyleBuilder
      */
     public function setCellAlignment($cellAlignment)
@@ -144,9 +145,8 @@ class StyleBuilder
     }
 
     /**
-     * Set a border
+     * Set a border.
      *
-     * @param Border $border
      * @return $this
      */
     public function setBorder(Border $border)
@@ -157,9 +157,10 @@ class StyleBuilder
     }
 
     /**
-     *  Sets a background color
+     *  Sets a background color.
      *
      * @param string $color ARGB color (@see Color)
+     *
      * @return StyleBuilder
      */
     public function setBackgroundColor($color)
@@ -170,10 +171,12 @@ class StyleBuilder
     }
 
     /**
-     *  Sets a format
+     *  Sets a format.
      *
      * @param string $format Format
+     *
      * @return StyleBuilder
+     *
      * @api
      */
     public function setFormat($format)

@@ -7,10 +7,11 @@ use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class ReaderPerfTest
- * Performance tests for XLSX Reader
+ * Performance tests for XLSX Reader.
+ *
+ * @internal
  */
-class ReaderPerfTest extends TestCase
+final class ReaderPerfTest extends TestCase
 {
     use TestUsingResource;
 
@@ -35,8 +36,7 @@ class ReaderPerfTest extends TestCase
      * @group perf-tests
      *
      * @param bool $shouldUseInlineStrings
-     * @param int $expectedMaxExecutionTime
-     * @return void
+     * @param int  $expectedMaxExecutionTime
      */
     public function testPerfWhenReading300kRowsXLSX($shouldUseInlineStrings, $expectedMaxExecutionTime)
     {
@@ -57,19 +57,19 @@ class ReaderPerfTest extends TestCase
         /** @var Sheet $sheet */
         foreach ($reader->getSheetIterator() as $sheet) {
             foreach ($sheet->getRowIterator() as $row) {
-                $numReadRows++;
+                ++$numReadRows;
             }
         }
 
         $reader->close();
 
         $expectedNumRows = 300000;
-        $this->assertEquals($expectedNumRows, $numReadRows, "$expectedNumRows rows should have been read");
+        static::assertSame($expectedNumRows, $numReadRows, "{$expectedNumRows} rows should have been read");
 
         $executionTime = time() - $startTime;
-        $this->assertTrue($executionTime < $expectedMaxExecutionTime, "Reading 300,000 rows should take less than $expectedMaxExecutionTime seconds (took $executionTime seconds)");
+        static::assertTrue($executionTime < $expectedMaxExecutionTime, "Reading 300,000 rows should take less than {$expectedMaxExecutionTime} seconds (took {$executionTime} seconds)");
 
         $memoryPeakUsage = memory_get_peak_usage(true) - $beforeMemoryPeakUsage;
-        $this->assertTrue($memoryPeakUsage < $expectedMaxMemoryPeakUsage, 'Reading 300,000 rows should require less than ' . ($expectedMaxMemoryPeakUsage / 1024 / 1024) . ' MB of memory (required ' . ($memoryPeakUsage / 1024 / 1024) . ' MB)');
+        static::assertTrue($memoryPeakUsage < $expectedMaxMemoryPeakUsage, 'Reading 300,000 rows should require less than '.($expectedMaxMemoryPeakUsage / 1024 / 1024).' MB of memory (required '.($memoryPeakUsage / 1024 / 1024).' MB)');
     }
 }

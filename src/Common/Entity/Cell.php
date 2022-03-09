@@ -5,68 +5,67 @@ namespace OpenSpout\Common\Entity;
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Common\Helper\CellTypeHelper;
 
-/**
- * Class Cell
- */
 class Cell
 {
     /**
-     * Numeric cell type (whole numbers, fractional numbers, dates)
+     * Numeric cell type (whole numbers, fractional numbers, dates).
      */
     public const TYPE_NUMERIC = 0;
 
     /**
-     * String (text) cell type
+     * String (text) cell type.
      */
     public const TYPE_STRING = 1;
 
     /**
      * Formula cell type
-     * Not used at the moment
+     * Not used at the moment.
      */
     public const TYPE_FORMULA = 2;
 
     /**
-     * Empty cell type
+     * Empty cell type.
      */
     public const TYPE_EMPTY = 3;
 
     /**
-     * Boolean cell type
+     * Boolean cell type.
      */
     public const TYPE_BOOLEAN = 4;
 
     /**
-     * Date cell type
+     * Date cell type.
      */
     public const TYPE_DATE = 5;
 
     /**
-     * Error cell type
+     * Error cell type.
      */
     public const TYPE_ERROR = 6;
 
     /**
-     * The value of this cell
-     * @var mixed|null
+     * The value of this cell.
+     *
+     * @var null|mixed
      */
     protected $value;
 
     /**
-     * The cell type
-     * @var int|null
+     * The cell type.
+     *
+     * @var null|int
      */
     protected $type;
 
     /**
-     * The cell style
+     * The cell style.
+     *
      * @var Style
      */
     protected $style;
 
     /**
-     * @param mixed|null $value
-     * @param Style|null $style
+     * @param null|mixed $value
      */
     public function __construct($value, Style $style = null)
     {
@@ -75,7 +74,15 @@ class Cell
     }
 
     /**
-     * @param mixed|null $value
+     * @return string
+     */
+    public function __toString()
+    {
+        return (string) $this->getValue();
+    }
+
+    /**
+     * @param null|mixed $value
      */
     public function setValue($value)
     {
@@ -84,7 +91,7 @@ class Cell
     }
 
     /**
-     * @return mixed|null
+     * @return null|mixed
      */
     public function getValue()
     {
@@ -100,7 +107,7 @@ class Cell
     }
 
     /**
-     * @param Style|null $style
+     * @param null|Style $style
      */
     public function setStyle($style)
     {
@@ -116,7 +123,7 @@ class Cell
     }
 
     /**
-     * @return int|null
+     * @return null|int
      */
     public function getType()
     {
@@ -132,9 +139,66 @@ class Cell
     }
 
     /**
-     * Get the current value type
+     * @return bool
+     */
+    public function isBoolean()
+    {
+        return self::TYPE_BOOLEAN === $this->type;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEmpty()
+    {
+        return self::TYPE_EMPTY === $this->type;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNumeric()
+    {
+        return self::TYPE_NUMERIC === $this->type;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isString()
+    {
+        return self::TYPE_STRING === $this->type;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDate()
+    {
+        return self::TYPE_DATE === $this->type;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFormula()
+    {
+        return self::TYPE_FORMULA === $this->type;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isError()
+    {
+        return self::TYPE_ERROR === $this->type;
+    }
+
+    /**
+     * Get the current value type.
      *
-     * @param mixed|null $value
+     * @param null|mixed $value
+     *
      * @return int
      */
     protected function detectType($value)
@@ -159,69 +223,5 @@ class Cell
         }
 
         return self::TYPE_ERROR;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isBoolean()
-    {
-        return $this->type === self::TYPE_BOOLEAN;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isEmpty()
-    {
-        return $this->type === self::TYPE_EMPTY;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isNumeric()
-    {
-        return $this->type === self::TYPE_NUMERIC;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isString()
-    {
-        return $this->type === self::TYPE_STRING;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isDate()
-    {
-        return $this->type === self::TYPE_DATE;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isFormula()
-    {
-        return $this->type === self::TYPE_FORMULA;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isError()
-    {
-        return $this->type === self::TYPE_ERROR;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return (string) $this->getValue();
     }
 }

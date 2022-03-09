@@ -12,8 +12,7 @@ use OpenSpout\Reader\XLSX\Creator\InternalEntityFactory;
 use OpenSpout\Reader\XLSX\Creator\ManagerFactory;
 
 /**
- * Class Reader
- * This class provides support to read data from a XLSX file
+ * This class provides support to read data from a XLSX file.
  */
 class Reader extends ReaderAbstract
 {
@@ -29,12 +28,6 @@ class Reader extends ReaderAbstract
     /** @var SheetIterator To iterator over the XLSX sheets */
     protected $sheetIterator;
 
-    /**
-     * @param OptionsManagerInterface $optionsManager
-     * @param GlobalFunctionsHelper $globalFunctionsHelper
-     * @param InternalEntityFactoryInterface $entityFactory
-     * @param ManagerFactory $managerFactory
-     */
     public function __construct(
         OptionsManagerInterface $optionsManager,
         GlobalFunctionsHelper $globalFunctionsHelper,
@@ -47,6 +40,7 @@ class Reader extends ReaderAbstract
 
     /**
      * @param string $tempFolder Temporary folder where the temporary files will be created
+     *
      * @return Reader
      */
     public function setTempFolder($tempFolder)
@@ -57,7 +51,7 @@ class Reader extends ReaderAbstract
     }
 
     /**
-     * Returns whether stream wrappers are supported
+     * Returns whether stream wrappers are supported.
      *
      * @return bool
      */
@@ -71,10 +65,10 @@ class Reader extends ReaderAbstract
      * It also parses the sharedStrings.xml file to get all the shared strings available in memory
      * and fetches all the available sheets.
      *
-     * @param  string $filePath Path of the file to be read
-     * @throws \OpenSpout\Common\Exception\IOException If the file at the given path or its content cannot be read
+     * @param string $filePath Path of the file to be read
+     *
+     * @throws \OpenSpout\Common\Exception\IOException            If the file at the given path or its content cannot be read
      * @throws \OpenSpout\Reader\Exception\NoSheetsFoundException If there are no sheets in the file
-     * @return void
      */
     protected function openReader($filePath)
     {
@@ -83,7 +77,7 @@ class Reader extends ReaderAbstract
 
         $this->zip = $entityFactory->createZipArchive();
 
-        if ($this->zip->open($filePath) === true) {
+        if (true === $this->zip->open($filePath)) {
             $tempFolder = $this->optionsManager->getOption(Options::TEMP_FOLDER);
             $this->sharedStringsManager = $this->managerFactory->createSharedStringsManager($filePath, $tempFolder, $entityFactory);
 
@@ -98,7 +92,7 @@ class Reader extends ReaderAbstract
                 $this->sharedStringsManager
             );
         } else {
-            throw new IOException("Could not open $filePath for reading.");
+            throw new IOException("Could not open {$filePath} for reading.");
         }
     }
 
@@ -114,16 +108,14 @@ class Reader extends ReaderAbstract
 
     /**
      * Closes the reader. To be used after reading the file.
-     *
-     * @return void
      */
     protected function closeReader()
     {
-        if ($this->zip !== null) {
+        if (null !== $this->zip) {
             $this->zip->close();
         }
 
-        if ($this->sharedStringsManager !== null) {
+        if (null !== $this->sharedStringsManager) {
             $this->sharedStringsManager->cleanup();
         }
     }

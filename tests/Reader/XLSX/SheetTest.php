@@ -8,42 +8,37 @@ use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class SheetTest
+ * @internal
  */
-class SheetTest extends TestCase
+final class SheetTest extends TestCase
 {
     use TestUsingResource;
 
-    /**
-     * @return void
-     */
     public function testReaderShouldReturnCorrectSheetInfos()
     {
         // NOTE: This spreadsheet has its second tab defined as active
         $sheets = $this->openFileAndReturnSheets('two_sheets_with_custom_names_and_custom_active_tab.xlsx');
 
-        $this->assertEquals('CustomName1', $sheets[0]->getName());
-        $this->assertEquals(0, $sheets[0]->getIndex());
-        $this->assertFalse($sheets[0]->isActive());
+        static::assertSame('CustomName1', $sheets[0]->getName());
+        static::assertSame(0, $sheets[0]->getIndex());
+        static::assertFalse($sheets[0]->isActive());
 
-        $this->assertEquals('CustomName2', $sheets[1]->getName());
-        $this->assertEquals(1, $sheets[1]->getIndex());
-        $this->assertTrue($sheets[1]->isActive());
+        static::assertSame('CustomName2', $sheets[1]->getName());
+        static::assertSame(1, $sheets[1]->getIndex());
+        static::assertTrue($sheets[1]->isActive());
     }
 
-    /**
-     * @return void
-     */
     public function testReaderShouldReturnCorrectSheetVisibility()
     {
         $sheets = $this->openFileAndReturnSheets('two_sheets_one_hidden_one_not.xlsx');
 
-        $this->assertFalse($sheets[0]->isVisible());
-        $this->assertTrue($sheets[1]->isVisible());
+        static::assertFalse($sheets[0]->isVisible());
+        static::assertTrue($sheets[1]->isVisible());
     }
 
     /**
      * @param string $fileName
+     *
      * @return SheetInterface[]
      */
     private function openFileAndReturnSheets($fileName)

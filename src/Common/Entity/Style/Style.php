@@ -3,8 +3,7 @@
 namespace OpenSpout\Common\Entity\Style;
 
 /**
- * Class Style
- * Represents a style to be applied to a cell
+ * Represents a style to be applied to a cell.
  */
 class Style
 {
@@ -13,7 +12,7 @@ class Style
     public const DEFAULT_FONT_COLOR = Color::BLACK;
     public const DEFAULT_FONT_NAME = 'Arial';
 
-    /** @var int|null Style ID */
+    /** @var null|int Style ID */
     private $id;
 
     /** @var bool Whether the font should be bold */
@@ -66,19 +65,19 @@ class Style
     /** @var bool Whether the wrap text property was set */
     private $hasSetWrapText = false;
 
-    /** @var Border|null */
+    /** @var null|Border */
     private $border;
 
     /** @var bool Whether border properties should be applied */
     private $shouldApplyBorder = false;
 
-    /** @var string Background color */
+    /** @var null|string Background color */
     private $backgroundColor;
 
     /** @var bool */
     private $hasSetBackgroundColor = false;
 
-    /** @var string|null Format */
+    /** @var null|string Format */
     private $format;
 
     /** @var bool */
@@ -91,7 +90,7 @@ class Style
     private $isEmpty = true;
 
     /**
-     * @return int|null
+     * @return null|int
      */
     public function getId()
     {
@@ -100,6 +99,7 @@ class Style
 
     /**
      * @param int $id
+     *
      * @return Style
      */
     public function setId($id)
@@ -110,7 +110,7 @@ class Style
     }
 
     /**
-     * @return Border|null
+     * @return null|Border
      */
     public function getBorder()
     {
@@ -118,7 +118,6 @@ class Style
     }
 
     /**
-     * @param Border $border
      * @return Style
      */
     public function setBorder(Border $border)
@@ -264,6 +263,7 @@ class Style
 
     /**
      * @param int $fontSize Font size, in pixels
+     *
      * @return Style
      */
     public function setFontSize($fontSize)
@@ -296,6 +296,7 @@ class Style
      * Sets the font color.
      *
      * @param string $fontColor ARGB color (@see Color)
+     *
      * @return Style
      */
     public function setFontColor($fontColor)
@@ -326,6 +327,7 @@ class Style
 
     /**
      * @param string $fontName Name of the font to use
+     *
      * @return Style
      */
     public function setFontName($fontName)
@@ -395,6 +397,7 @@ class Style
 
     /**
      * @param bool $shouldWrap Should the text be wrapped
+     *
      * @return Style
      */
     public function setShouldWrapText($shouldWrap = true)
@@ -423,8 +426,10 @@ class Style
     }
 
     /**
-     * Sets the background color
+     * Sets the background color.
+     *
      * @param string $color ARGB color (@see Color)
+     *
      * @return Style
      */
     public function setBackgroundColor($color)
@@ -437,7 +442,7 @@ class Style
     }
 
     /**
-     * @return string
+     * @return null|string
      */
     public function getBackgroundColor()
     {
@@ -453,8 +458,10 @@ class Style
     }
 
     /**
-     * Sets format
+     * Sets format.
+     *
      * @param string $format
+     *
      * @return Style
      */
     public function setFormat($format)
@@ -467,7 +474,7 @@ class Style
     }
 
     /**
-     * @return string|null
+     * @return null|string
      */
     public function getFormat()
     {
@@ -482,27 +489,24 @@ class Style
         return $this->hasSetFormat;
     }
 
-    /**
-     * @return bool
-     */
-    public function isRegistered() : bool
+    public function isRegistered(): bool
     {
         return $this->isRegistered;
     }
 
-    public function markAsRegistered(?int $id) : void
+    public function markAsRegistered(?int $id): void
     {
         $this->setId($id);
         $this->isRegistered = true;
     }
 
-    public function unmarkAsRegistered() : void
+    public function unmarkAsRegistered(): void
     {
         $this->setId(0);
         $this->isRegistered = false;
     }
 
-    public function isEmpty() : bool
+    public function isEmpty(): bool
     {
         return $this->isEmpty;
     }

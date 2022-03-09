@@ -11,14 +11,11 @@ use OpenSpout\Writer\Common\Helper\ZipHelper;
 use OpenSpout\Writer\XLSX\Helper\FileSystemHelper;
 
 /**
- * Class HelperFactory
- * Factory for helpers needed by the XLSX Writer
+ * Factory for helpers needed by the XLSX Writer.
  */
 class HelperFactory extends \OpenSpout\Common\Creator\HelperFactory
 {
     /**
-     * @param OptionsManagerInterface $optionsManager
-     * @param InternalEntityFactory $entityFactory
      * @return FileSystemHelper
      */
     public function createSpecificFileSystemHelper(OptionsManagerInterface $optionsManager, InternalEntityFactory $entityFactory)
@@ -28,15 +25,6 @@ class HelperFactory extends \OpenSpout\Common\Creator\HelperFactory
         $escaper = $this->createStringsEscaper();
 
         return new FileSystemHelper($tempFolder, $zipHelper, $escaper);
-    }
-
-    /**
-     * @param InternalEntityFactory $entityFactory
-     * @return ZipHelper
-     */
-    private function createZipHelper(InternalEntityFactory $entityFactory)
-    {
-        return new ZipHelper($entityFactory);
     }
 
     /**
@@ -53,5 +41,13 @@ class HelperFactory extends \OpenSpout\Common\Creator\HelperFactory
     public function createStringHelper()
     {
         return new StringHelper();
+    }
+
+    /**
+     * @return ZipHelper
+     */
+    private function createZipHelper(InternalEntityFactory $entityFactory)
+    {
+        return new ZipHelper($entityFactory);
     }
 }

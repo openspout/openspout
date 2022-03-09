@@ -5,101 +5,86 @@ namespace OpenSpout\Common\Helper;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class CellTypeHelperTest
+ * @internal
  */
-class CellTypeHelperTest extends TestCase
+final class CellTypeHelperTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function testIsEmpty()
     {
-        $this->assertTrue(CellTypeHelper::isEmpty(null));
-        $this->assertTrue(CellTypeHelper::isEmpty(''));
+        static::assertTrue(CellTypeHelper::isEmpty(null));
+        static::assertTrue(CellTypeHelper::isEmpty(''));
 
-        $this->assertFalse(CellTypeHelper::isEmpty('string'));
-        $this->assertFalse(CellTypeHelper::isEmpty(0));
-        $this->assertFalse(CellTypeHelper::isEmpty(1));
-        $this->assertFalse(CellTypeHelper::isEmpty(true));
-        $this->assertFalse(CellTypeHelper::isEmpty(false));
-        $this->assertFalse(CellTypeHelper::isEmpty(['string']));
-        $this->assertFalse(CellTypeHelper::isEmpty(new \stdClass()));
+        static::assertFalse(CellTypeHelper::isEmpty('string'));
+        static::assertFalse(CellTypeHelper::isEmpty(0));
+        static::assertFalse(CellTypeHelper::isEmpty(1));
+        static::assertFalse(CellTypeHelper::isEmpty(true));
+        static::assertFalse(CellTypeHelper::isEmpty(false));
+        static::assertFalse(CellTypeHelper::isEmpty(['string']));
+        static::assertFalse(CellTypeHelper::isEmpty(new \stdClass()));
     }
 
-    /**
-     * @return void
-     */
     public function testIsNonEmptyString()
     {
-        $this->assertTrue(CellTypeHelper::isNonEmptyString('string'));
+        static::assertTrue(CellTypeHelper::isNonEmptyString('string'));
 
-        $this->assertFalse(CellTypeHelper::isNonEmptyString(''));
-        $this->assertFalse(CellTypeHelper::isNonEmptyString(0));
-        $this->assertFalse(CellTypeHelper::isNonEmptyString(1));
-        $this->assertFalse(CellTypeHelper::isNonEmptyString(true));
-        $this->assertFalse(CellTypeHelper::isNonEmptyString(false));
-        $this->assertFalse(CellTypeHelper::isNonEmptyString(['string']));
-        $this->assertFalse(CellTypeHelper::isNonEmptyString(new \stdClass()));
-        $this->assertFalse(CellTypeHelper::isNonEmptyString(null));
+        static::assertFalse(CellTypeHelper::isNonEmptyString(''));
+        static::assertFalse(CellTypeHelper::isNonEmptyString(0));
+        static::assertFalse(CellTypeHelper::isNonEmptyString(1));
+        static::assertFalse(CellTypeHelper::isNonEmptyString(true));
+        static::assertFalse(CellTypeHelper::isNonEmptyString(false));
+        static::assertFalse(CellTypeHelper::isNonEmptyString(['string']));
+        static::assertFalse(CellTypeHelper::isNonEmptyString(new \stdClass()));
+        static::assertFalse(CellTypeHelper::isNonEmptyString(null));
     }
 
-    /**
-     * @return void
-     */
     public function testIsNumeric()
     {
-        $this->assertTrue(CellTypeHelper::isNumeric(0));
-        $this->assertTrue(CellTypeHelper::isNumeric(10));
-        $this->assertTrue(CellTypeHelper::isNumeric(10.1));
-        $this->assertTrue(CellTypeHelper::isNumeric(10.10000000000000000000001));
-        $this->assertTrue(CellTypeHelper::isNumeric(0x539));
-        $this->assertTrue(CellTypeHelper::isNumeric(02471));
-        $this->assertTrue(CellTypeHelper::isNumeric(0b10100111001));
-        $this->assertTrue(CellTypeHelper::isNumeric(1337e0));
+        static::assertTrue(CellTypeHelper::isNumeric(0));
+        static::assertTrue(CellTypeHelper::isNumeric(10));
+        static::assertTrue(CellTypeHelper::isNumeric(10.1));
+        static::assertTrue(CellTypeHelper::isNumeric(10.10000000000000000000001));
+        static::assertTrue(CellTypeHelper::isNumeric(0x539));
+        static::assertTrue(CellTypeHelper::isNumeric(02471));
+        static::assertTrue(CellTypeHelper::isNumeric(0b10100111001));
+        static::assertTrue(CellTypeHelper::isNumeric(1337e0));
 
-        $this->assertFalse(CellTypeHelper::isNumeric('0'));
-        $this->assertFalse(CellTypeHelper::isNumeric('42'));
-        $this->assertFalse(CellTypeHelper::isNumeric(true));
-        $this->assertFalse(CellTypeHelper::isNumeric([2]));
-        $this->assertFalse(CellTypeHelper::isNumeric(new \stdClass()));
-        $this->assertFalse(CellTypeHelper::isNumeric(null));
+        static::assertFalse(CellTypeHelper::isNumeric('0'));
+        static::assertFalse(CellTypeHelper::isNumeric('42'));
+        static::assertFalse(CellTypeHelper::isNumeric(true));
+        static::assertFalse(CellTypeHelper::isNumeric([2]));
+        static::assertFalse(CellTypeHelper::isNumeric(new \stdClass()));
+        static::assertFalse(CellTypeHelper::isNumeric(null));
     }
 
-    /**
-     * @return void
-     */
     public function testIsBoolean()
     {
-        $this->assertTrue(CellTypeHelper::isBoolean(true));
-        $this->assertTrue(CellTypeHelper::isBoolean(false));
+        static::assertTrue(CellTypeHelper::isBoolean(true));
+        static::assertTrue(CellTypeHelper::isBoolean(false));
 
-        $this->assertFalse(CellTypeHelper::isBoolean(0));
-        $this->assertFalse(CellTypeHelper::isBoolean(1));
-        $this->assertFalse(CellTypeHelper::isBoolean('0'));
-        $this->assertFalse(CellTypeHelper::isBoolean('1'));
-        $this->assertFalse(CellTypeHelper::isBoolean('true'));
-        $this->assertFalse(CellTypeHelper::isBoolean('false'));
-        $this->assertFalse(CellTypeHelper::isBoolean([true]));
-        $this->assertFalse(CellTypeHelper::isBoolean(new \stdClass()));
-        $this->assertFalse(CellTypeHelper::isBoolean(null));
+        static::assertFalse(CellTypeHelper::isBoolean(0));
+        static::assertFalse(CellTypeHelper::isBoolean(1));
+        static::assertFalse(CellTypeHelper::isBoolean('0'));
+        static::assertFalse(CellTypeHelper::isBoolean('1'));
+        static::assertFalse(CellTypeHelper::isBoolean('true'));
+        static::assertFalse(CellTypeHelper::isBoolean('false'));
+        static::assertFalse(CellTypeHelper::isBoolean([true]));
+        static::assertFalse(CellTypeHelper::isBoolean(new \stdClass()));
+        static::assertFalse(CellTypeHelper::isBoolean(null));
     }
 
-    /**
-     * @return void
-     */
     public function testIsFormula()
     {
-        $this->assertTrue(CellTypeHelper::isFormula('=SUM(A1:A2)'));
+        static::assertTrue(CellTypeHelper::isFormula('=SUM(A1:A2)'));
 
-        $this->assertFalse(CellTypeHelper::isFormula(0));
-        $this->assertFalse(CellTypeHelper::isFormula(1));
-        $this->assertFalse(CellTypeHelper::isFormula('0'));
-        $this->assertFalse(CellTypeHelper::isFormula('1'));
-        $this->assertFalse(CellTypeHelper::isFormula('true'));
-        $this->assertFalse(CellTypeHelper::isFormula('false'));
-        $this->assertFalse(CellTypeHelper::isFormula(''));
-        $this->assertFalse(CellTypeHelper::isFormula([true]));
-        $this->assertFalse(CellTypeHelper::isFormula(new \stdClass()));
-        $this->assertFalse(CellTypeHelper::isFormula(null));
+        static::assertFalse(CellTypeHelper::isFormula(0));
+        static::assertFalse(CellTypeHelper::isFormula(1));
+        static::assertFalse(CellTypeHelper::isFormula('0'));
+        static::assertFalse(CellTypeHelper::isFormula('1'));
+        static::assertFalse(CellTypeHelper::isFormula('true'));
+        static::assertFalse(CellTypeHelper::isFormula('false'));
+        static::assertFalse(CellTypeHelper::isFormula(''));
+        static::assertFalse(CellTypeHelper::isFormula([true]));
+        static::assertFalse(CellTypeHelper::isFormula(new \stdClass()));
+        static::assertFalse(CellTypeHelper::isFormula(null));
     }
 }

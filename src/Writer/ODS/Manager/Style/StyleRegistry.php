@@ -5,8 +5,7 @@ namespace OpenSpout\Writer\ODS\Manager\Style;
 use OpenSpout\Common\Entity\Style\Style;
 
 /**
- * Class StyleRegistry
- * Registry for all used styles
+ * Registry for all used styles.
  */
 class StyleRegistry extends \OpenSpout\Writer\Common\Manager\Style\StyleRegistry
 {
@@ -18,7 +17,8 @@ class StyleRegistry extends \OpenSpout\Writer\Common\Manager\Style\StyleRegistry
      * Duplicate styles won't be registered more than once.
      *
      * @param Style $style The style to be registered
-     * @return Style The registered style, updated with an internal ID.
+     *
+     * @return Style the registered style, updated with an internal ID
      */
     public function registerStyle(Style $style)
     {
@@ -37,6 +37,6 @@ class StyleRegistry extends \OpenSpout\Writer\Common\Manager\Style\StyleRegistry
      */
     public function getUsedFonts()
     {
-        return \array_keys($this->usedFontsSet);
+        return array_keys($this->usedFontsSet);
     }
 }

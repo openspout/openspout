@@ -12,52 +12,40 @@ use OpenSpout\Writer\XLSX\Entity\SheetView;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class SheetTest
+ * @internal
  */
-class SheetTest extends TestCase
+final class SheetTest extends TestCase
 {
-    use TestUsingResource;
     use RowCreationHelper;
+    use TestUsingResource;
 
-    /**
-     * @return void
-     */
     public function testGetSheetIndex()
     {
         $sheets = $this->writeDataToMultipleSheetsAndReturnSheets('test_get_sheet_index.xlsx');
 
-        $this->assertCount(2, $sheets, '2 sheets should have been created');
-        $this->assertEquals(0, $sheets[0]->getIndex(), 'The first sheet should be index 0');
-        $this->assertEquals(1, $sheets[1]->getIndex(), 'The second sheet should be index 1');
+        static::assertCount(2, $sheets, '2 sheets should have been created');
+        static::assertSame(0, $sheets[0]->getIndex(), 'The first sheet should be index 0');
+        static::assertSame(1, $sheets[1]->getIndex(), 'The second sheet should be index 1');
     }
 
-    /**
-     * @return void
-     */
     public function testGetSheetName()
     {
         $sheets = $this->writeDataToMultipleSheetsAndReturnSheets('test_get_sheet_name.xlsx');
 
-        $this->assertCount(2, $sheets, '2 sheets should have been created');
-        $this->assertEquals('Sheet1', $sheets[0]->getName(), 'Invalid name for the first sheet');
-        $this->assertEquals('Sheet2', $sheets[1]->getName(), 'Invalid name for the second sheet');
+        static::assertCount(2, $sheets, '2 sheets should have been created');
+        static::assertSame('Sheet1', $sheets[0]->getName(), 'Invalid name for the first sheet');
+        static::assertSame('Sheet2', $sheets[1]->getName(), 'Invalid name for the second sheet');
     }
 
-    /**
-     * @return void
-     */
     public function testSetSheetNameShouldCreateSheetWithCustomName()
     {
         $fileName = 'test_set_name_should_create_sheet_with_custom_name.xlsx';
         $customSheetName = 'CustomName';
         $this->writeDataToSheetWithCustomName($fileName, $customSheetName);
 
-        $this->assertSheetNameEquals($customSheetName, $fileName, "The sheet name should have been changed to '$customSheetName'");
+        $this->assertSheetNameEquals($customSheetName, $fileName, "The sheet name should have been changed to '{$customSheetName}'");
     }
 
-    /**
-     * @return void
-     */
     public function testSetSheetNameShouldThrowWhenNameIsAlreadyUsed()
     {
         $this->expectException(InvalidSheetNameException::class);
@@ -79,19 +67,16 @@ class SheetTest extends TestCase
         $sheet->setName($customSheetName);
     }
 
-    /**
-     * @return void
-     */
     public function testSetSheetVisibilityShouldCreateSheetHidden()
     {
         $fileName = 'test_set_visibility_should_create_sheet_hidden.xlsx';
         $this->writeDataToHiddenSheet($fileName);
 
         $resourcePath = $this->getGeneratedResourcePath($fileName);
-        $pathToWorkbookFile = $resourcePath . '#xl/workbook.xml';
-        $xmlContents = file_get_contents('zip://' . $pathToWorkbookFile);
+        $pathToWorkbookFile = $resourcePath.'#xl/workbook.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
 
-        $this->assertStringContainsString(' state="hidden"', $xmlContents, 'The sheet visibility should have been changed to "hidden"');
+        static::assertStringContainsString(' state="hidden"', $xmlContents, 'The sheet visibility should have been changed to "hidden"');
     }
 
     public function testThrowsIfWorkbookIsNotInitialized()
@@ -115,13 +100,13 @@ class SheetTest extends TestCase
         $writer->addRow($this->createRowFromValues(['xlsx--11', 'xlsx--12']));
         $writer->close();
 
-        $pathToWorkbookFile = $resourcePath . '#xl/worksheets/sheet1.xml';
-        $xmlContents = file_get_contents('zip://' . $pathToWorkbookFile);
+        $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
 
-        $this->assertStringContainsString('<sheetFormatPr', $xmlContents, 'No sheetFormatPr tag found in sheet');
-        $this->assertStringContainsString(' defaultColWidth="10', $xmlContents, 'No default column width found in sheet');
-        $this->assertStringContainsString(' defaultRowHeight="20', $xmlContents, 'No default row height found in sheet');
-        $this->assertStringContainsString(' customHeight="1"', $xmlContents, 'No row height override flag found in row');
+        static::assertStringContainsString('<sheetFormatPr', $xmlContents, 'No sheetFormatPr tag found in sheet');
+        static::assertStringContainsString(' defaultColWidth="10', $xmlContents, 'No default column width found in sheet');
+        static::assertStringContainsString(' defaultRowHeight="20', $xmlContents, 'No default row height found in sheet');
+        static::assertStringContainsString(' customHeight="1"', $xmlContents, 'No row height override flag found in row');
     }
 
     public function testWritesDefaultRequiredRowHeightIfOmitted()
@@ -137,12 +122,12 @@ class SheetTest extends TestCase
         $writer->addRow($this->createRowFromValues(['xlsx--11', 'xlsx--12']));
         $writer->close();
 
-        $pathToWorkbookFile = $resourcePath . '#xl/worksheets/sheet1.xml';
-        $xmlContents = file_get_contents('zip://' . $pathToWorkbookFile);
+        $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
 
-        $this->assertStringContainsString('<sheetFormatPr', $xmlContents, 'No sheetFormatPr tag found in sheet');
-        $this->assertStringContainsString(' defaultColWidth="10', $xmlContents, 'No default column width found in sheet');
-        $this->assertStringContainsString(' defaultRowHeight="0', $xmlContents, 'No default row height found in sheet');
+        static::assertStringContainsString('<sheetFormatPr', $xmlContents, 'No sheetFormatPr tag found in sheet');
+        static::assertStringContainsString(' defaultColWidth="10', $xmlContents, 'No default column width found in sheet');
+        static::assertStringContainsString(' defaultRowHeight="0', $xmlContents, 'No default row height found in sheet');
     }
 
     public function testWritesColumnWidths()
@@ -157,11 +142,11 @@ class SheetTest extends TestCase
         $writer->addRow($this->createRowFromValues(['xlsx--11', 'xlsx--12']));
         $writer->close();
 
-        $pathToWorkbookFile = $resourcePath . '#xl/worksheets/sheet1.xml';
-        $xmlContents = file_get_contents('zip://' . $pathToWorkbookFile);
+        $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
 
-        $this->assertStringContainsString('<cols', $xmlContents, 'No cols tag found in sheet');
-        $this->assertStringContainsString('<col min="1" max="1" width="100" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
+        static::assertStringContainsString('<cols', $xmlContents, 'No cols tag found in sheet');
+        static::assertStringContainsString('<col min="1" max="1" width="100" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
     }
 
     public function testWritesMultipleColumnWidths()
@@ -176,11 +161,11 @@ class SheetTest extends TestCase
         $writer->addRow($this->createRowFromValues(['xlsx--11', 'xlsx--12', 'xlsx--13']));
         $writer->close();
 
-        $pathToWorkbookFile = $resourcePath . '#xl/worksheets/sheet1.xml';
-        $xmlContents = file_get_contents('zip://' . $pathToWorkbookFile);
+        $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
 
-        $this->assertStringContainsString('<cols', $xmlContents, 'No cols tag found in sheet');
-        $this->assertStringContainsString('<col min="1" max="3" width="100" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
+        static::assertStringContainsString('<cols', $xmlContents, 'No cols tag found in sheet');
+        static::assertStringContainsString('<col min="1" max="3" width="100" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
     }
 
     public function testWritesMultipleColumnWidthsInRanges()
@@ -196,15 +181,15 @@ class SheetTest extends TestCase
         $writer->addRow($this->createRowFromValues(['xlsx--11', 'xlsx--12', 'xlsx--13', 'xlsx--14', 'xlsx--15', 'xlsx--16']));
         $writer->close();
 
-        $pathToWorkbookFile = $resourcePath . '#xl/worksheets/sheet1.xml';
-        $xmlContents = file_get_contents('zip://' . $pathToWorkbookFile);
+        $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
 
-        $this->assertStringContainsString('<cols', $xmlContents, 'No cols tag found in sheet');
-        $this->assertStringContainsString('<col min="1" max="1" width="50" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
-        $this->assertStringContainsString('<col min="3" max="4" width="50" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
-        $this->assertStringContainsString('<col min="6" max="6" width="50" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
-        $this->assertStringContainsString('<col min="2" max="2" width="100" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
-        $this->assertStringContainsString('<col min="5" max="5" width="100" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
+        static::assertStringContainsString('<cols', $xmlContents, 'No cols tag found in sheet');
+        static::assertStringContainsString('<col min="1" max="1" width="50" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
+        static::assertStringContainsString('<col min="3" max="4" width="50" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
+        static::assertStringContainsString('<col min="6" max="6" width="50" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
+        static::assertStringContainsString('<col min="2" max="2" width="100" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
+        static::assertStringContainsString('<col min="5" max="5" width="100" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
     }
 
     public function testCanTakeColumnWidthsAsRange()
@@ -219,11 +204,11 @@ class SheetTest extends TestCase
         $writer->addRow($this->createRowFromValues(['xlsx--11', 'xlsx--12', 'xlsx--13']));
         $writer->close();
 
-        $pathToWorkbookFile = $resourcePath . '#xl/worksheets/sheet1.xml';
-        $xmlContents = file_get_contents('zip://' . $pathToWorkbookFile);
+        $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
 
-        $this->assertStringContainsString('<cols', $xmlContents, 'No cols tag found in sheet');
-        $this->assertStringContainsString('<col min="1" max="3" width="50" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
+        static::assertStringContainsString('<cols', $xmlContents, 'No cols tag found in sheet');
+        static::assertStringContainsString('<col min="1" max="3" width="50" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
     }
 
     public function testCanWriteAFormula()
@@ -239,10 +224,10 @@ class SheetTest extends TestCase
         $writer->addRow($this->createRowFromValues(['=SUM(A1:A2)']));
         $writer->close();
 
-        $pathToWorkbookFile = $resourcePath . '#xl/worksheets/sheet1.xml';
-        $xmlContents = file_get_contents('zip://' . $pathToWorkbookFile);
+        $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
 
-        $this->assertStringContainsString('<f>SUM(A1:A2)</f>', $xmlContents, 'Formula not found');
+        static::assertStringContainsString('<f>SUM(A1:A2)</f>', $xmlContents, 'Formula not found');
     }
 
     public function testCanSetSheetViewProperties()
@@ -256,15 +241,15 @@ class SheetTest extends TestCase
 
         $writer->getCurrentSheet()->setSheetView(
             (new SheetView())
-            ->setShowFormulas(true)
-            ->setShowGridLines(false)
-            ->setShowRowColHeaders(false)
-            ->setShowZeroes(false)
-            ->setRightToLeft(false)
-            ->setTabSelected(false)
-            ->setColorId(1)
-            ->setFreezeColumn('B')
-            ->setFreezeRow(2)
+                ->setShowFormulas(true)
+                ->setShowGridLines(false)
+                ->setShowRowColHeaders(false)
+                ->setShowZeroes(false)
+                ->setRightToLeft(false)
+                ->setTabSelected(false)
+                ->setColorId(1)
+                ->setFreezeColumn('B')
+                ->setFreezeRow(2)
         );
 
         $writer->addRow($this->createRowFromValues([1]));
@@ -272,16 +257,17 @@ class SheetTest extends TestCase
         $writer->addRow($this->createRowFromValues(['=SUM(A1:A2)']));
         $writer->close();
 
-        $pathToWorkbookFile = $resourcePath . '#xl/worksheets/sheet1.xml';
-        $xmlContents = file_get_contents('zip://' . $pathToWorkbookFile);
+        $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
 
-        $this->assertStringContainsString('<sheetView', $xmlContents);
-        $this->assertStringContainsString('<pane', $xmlContents);
+        static::assertStringContainsString('<sheetView', $xmlContents);
+        static::assertStringContainsString('<pane', $xmlContents);
     }
 
     /**
      * @param string $fileName
      * @param string $sheetName
+     *
      * @return Sheet
      */
     private function writeDataToSheetWithCustomName($fileName, $sheetName)
@@ -303,6 +289,7 @@ class SheetTest extends TestCase
 
     /**
      * @param string $fileName
+     *
      * @return Sheet[]
      */
     private function writeDataToMultipleSheetsAndReturnSheets($fileName)
@@ -324,7 +311,6 @@ class SheetTest extends TestCase
 
     /**
      * @param string $fileName
-     * @return void
      */
     private function writeDataToHiddenSheet($fileName)
     {
@@ -345,14 +331,13 @@ class SheetTest extends TestCase
      * @param string $expectedName
      * @param string $fileName
      * @param string $message
-     * @return void
      */
     private function assertSheetNameEquals($expectedName, $fileName, $message = '')
     {
         $resourcePath = $this->getGeneratedResourcePath($fileName);
-        $pathToWorkbookFile = $resourcePath . '#xl/workbook.xml';
-        $xmlContents = file_get_contents('zip://' . $pathToWorkbookFile);
+        $pathToWorkbookFile = $resourcePath.'#xl/workbook.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
 
-        $this->assertStringContainsString("<sheet name=\"$expectedName\"", $xmlContents, $message);
+        static::assertStringContainsString("<sheet name=\"{$expectedName}\"", $xmlContents, $message);
     }
 }

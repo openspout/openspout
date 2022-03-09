@@ -5,9 +5,9 @@ namespace OpenSpout\Writer\Common\Helper;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class CellHelperTest
+ * @internal
  */
-class CellHelperTest extends TestCase
+final class CellHelperTest extends TestCase
 {
     /**
      * @return array
@@ -28,11 +28,9 @@ class CellHelperTest extends TestCase
      *
      * @param int    $columnIndex
      * @param string $expectedColumnLetters
-     *
-     * @return void
      */
     public function testGetColumnLettersFromColumnIndex($columnIndex, $expectedColumnLetters)
     {
-        $this->assertEquals($expectedColumnLetters, CellHelper::getColumnLettersFromColumnIndex($columnIndex));
+        static::assertSame($expectedColumnLetters, CellHelper::getColumnLettersFromColumnIndex($columnIndex));
     }
 }

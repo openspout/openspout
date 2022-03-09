@@ -5,7 +5,6 @@ namespace OpenSpout\Writer\Common\Manager\Style;
 use OpenSpout\Common\Entity\Style\Style;
 
 /**
- * Class PossiblyUpdatedStyle
  * Indicates if style is updated.
  * It allow to know if style registration must be done.
  */
@@ -20,12 +19,12 @@ class PossiblyUpdatedStyle
         $this->isUpdated = $isUpdated;
     }
 
-    public function getStyle() : Style
+    public function getStyle(): Style
     {
         return $this->style;
     }
 
-    public function isUpdated() : bool
+    public function isUpdated(): bool
     {
         return $this->isUpdated;
     }

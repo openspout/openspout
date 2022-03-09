@@ -11,7 +11,6 @@ use OpenSpout\Reader\CSV\Creator\InternalEntityFactory;
 use OpenSpout\Reader\ReaderAbstract;
 
 /**
- * Class Reader
  * This class provides support to read data from a CSV file.
  */
 class Reader extends ReaderAbstract
@@ -28,18 +27,13 @@ class Reader extends ReaderAbstract
     /** @var bool Whether the code is running with PHP >= 8.1 */
     private $isRunningAtLeastPhp81;
 
-    /**
-     * @param OptionsManagerInterface $optionsManager
-     * @param GlobalFunctionsHelper $globalFunctionsHelper
-     * @param InternalEntityFactoryInterface $entityFactory
-     */
     public function __construct(
         OptionsManagerInterface $optionsManager,
         GlobalFunctionsHelper $globalFunctionsHelper,
         InternalEntityFactoryInterface $entityFactory
     ) {
         parent::__construct($optionsManager, $globalFunctionsHelper, $entityFactory);
-        $this->isRunningAtLeastPhp81 = \version_compare(PHP_VERSION, '8.1.0') >= 0;
+        $this->isRunningAtLeastPhp81 = version_compare(PHP_VERSION, '8.1.0') >= 0;
     }
 
     /**
@@ -47,6 +41,7 @@ class Reader extends ReaderAbstract
      * Needs to be called before opening the reader.
      *
      * @param string $fieldDelimiter Character that delimits fields
+     *
      * @return Reader
      */
     public function setFieldDelimiter($fieldDelimiter)
@@ -61,6 +56,7 @@ class Reader extends ReaderAbstract
      * Needs to be called before opening the reader.
      *
      * @param string $fieldEnclosure Character that enclose fields
+     *
      * @return Reader
      */
     public function setFieldEnclosure($fieldEnclosure)
@@ -75,6 +71,7 @@ class Reader extends ReaderAbstract
      * Needs to be called before opening the reader.
      *
      * @param string $encoding Encoding of the CSV file to be read
+     *
      * @return Reader
      */
     public function setEncoding($encoding)
@@ -85,7 +82,7 @@ class Reader extends ReaderAbstract
     }
 
     /**
-     * Returns whether stream wrappers are supported
+     * Returns whether stream wrappers are supported.
      *
      * @return bool
      */
@@ -98,21 +95,21 @@ class Reader extends ReaderAbstract
      * Opens the file at the given path to make it ready to be read.
      * If setEncoding() was not called, it assumes that the file is encoded in UTF-8.
      *
-     * @param  string $filePath Path of the CSV file to be read
+     * @param string $filePath Path of the CSV file to be read
+     *
      * @throws \OpenSpout\Common\Exception\IOException
-     * @return void
      */
     protected function openReader($filePath)
     {
         // "auto_detect_line_endings" is deprecated in PHP 8.1
         if (!$this->isRunningAtLeastPhp81) {
-            $this->originalAutoDetectLineEndings = \ini_get('auto_detect_line_endings');
-            \ini_set('auto_detect_line_endings', '1');
+            $this->originalAutoDetectLineEndings = ini_get('auto_detect_line_endings');
+            ini_set('auto_detect_line_endings', '1');
         }
 
         $this->filePointer = $this->globalFunctionsHelper->fopen($filePath, 'r');
         if (!$this->filePointer) {
-            throw new IOException("Could not open file $filePath for reading.");
+            throw new IOException("Could not open file {$filePath} for reading.");
         }
 
         /** @var InternalEntityFactory $entityFactory */
@@ -137,18 +134,16 @@ class Reader extends ReaderAbstract
 
     /**
      * Closes the reader. To be used after reading the file.
-     *
-     * @return void
      */
     protected function closeReader()
     {
-        if (is_resource($this->filePointer)) {
+        if (\is_resource($this->filePointer)) {
             $this->globalFunctionsHelper->fclose($this->filePointer);
         }
 
         // "auto_detect_line_endings" is deprecated in PHP 8.1
         if (!$this->isRunningAtLeastPhp81) {
-            \ini_set('auto_detect_line_endings', $this->originalAutoDetectLineEndings);
+            ini_set('auto_detect_line_endings', $this->originalAutoDetectLineEndings);
         }
     }
 }

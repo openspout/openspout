@@ -5,13 +5,13 @@ namespace OpenSpout\Reader\ODS\Creator;
 use OpenSpout\Reader\Common\Manager\RowManager;
 
 /**
- * Class ManagerFactory
- * Factory to create managers
+ * Factory to create managers.
  */
 class ManagerFactory
 {
     /**
      * @param InternalEntityFactory $entityFactory Factory to create entities
+     *
      * @return RowManager
      */
     public function createRowManager($entityFactory)

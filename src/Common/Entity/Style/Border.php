@@ -2,9 +2,6 @@
 
 namespace OpenSpout\Common\Entity\Style;
 
-/**
- * Class Border
- */
 class Border
 {
     public const LEFT = 'left';
@@ -25,9 +22,6 @@ class Border
     /** @var array A list of BorderPart objects for this border. */
     private $parts = [];
 
-    /**
-     * @param array $borderParts
-     */
     public function __construct(array $borderParts = [])
     {
         $this->setParts($borderParts);
@@ -35,7 +29,8 @@ class Border
 
     /**
      * @param string $name The name of the border part
-     * @return BorderPart|null
+     *
+     * @return null|BorderPart
      */
     public function getPart($name)
     {
@@ -44,6 +39,7 @@ class Border
 
     /**
      * @param string $name The name of the border part
+     *
      * @return bool
      */
     public function hasPart($name)
@@ -60,20 +56,19 @@ class Border
     }
 
     /**
-     * Set BorderParts
+     * Set BorderParts.
+     *
      * @param array $parts
-     * @return void
      */
     public function setParts($parts)
     {
-        unset($this->parts);
+        $this->parts = [];
         foreach ($parts as $part) {
             $this->addPart($part);
         }
     }
 
     /**
-     * @param BorderPart $borderPart
      * @return Border
      */
     public function addPart(BorderPart $borderPart)

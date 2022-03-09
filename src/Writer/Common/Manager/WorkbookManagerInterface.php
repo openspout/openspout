@@ -17,7 +17,7 @@ use OpenSpout\Writer\Exception\WriterException;
 interface WorkbookManagerInterface
 {
     /**
-     * @return Workbook|null
+     * @return null|Workbook
      */
     public function getWorkbook();
 
@@ -26,6 +26,7 @@ interface WorkbookManagerInterface
      * The writing will resume where it stopped (i.e. data won't be truncated).
      *
      * @throws IOException If unable to open the sheet for writing
+     *
      * @return Worksheet The created sheet
      */
     public function addNewSheetAndMakeItCurrent();
@@ -36,37 +37,30 @@ interface WorkbookManagerInterface
     public function getWorksheets();
 
     /**
-     * Returns the current sheet
+     * Returns the current sheet.
      *
      * @return Worksheet The current sheet
      */
     public function getCurrentWorksheet();
 
     /**
-     * Starts the current sheet and opens its file pointer
+     * Starts the current sheet and opens its file pointer.
      */
     public function startCurrentSheet();
 
-    /**
-     * @param float $width
-     */
     public function setDefaultColumnWidth(float $width);
 
-    /**
-     * @param float $height
-     */
     public function setDefaultRowHeight(float $height);
 
     /**
-     * @param float $width
      * @param array $columns One or more columns with this width
      */
     public function setColumnWidth(float $width, ...$columns);
 
     /**
      * @param float $width The width to set
-     * @param int $start First column index of the range
-     * @param int $end Last column index of the range
+     * @param int   $start First column index of the range
+     * @param int   $end   Last column index of the range
      */
     public function setColumnWidthForRange(float $width, int $start, int $end);
 
@@ -75,8 +69,8 @@ interface WorkbookManagerInterface
      * The writing will resume where it stopped (i.e. data won't be truncated).
      *
      * @param Sheet $sheet The "external" sheet to set as current
+     *
      * @throws SheetNotFoundException If the given sheet does not exist in the workbook
-     * @return void
      */
     public function setCurrentSheet(Sheet $sheet);
 
@@ -86,9 +80,9 @@ interface WorkbookManagerInterface
      * with the creation of new worksheets if one worksheet has reached its maximum capicity.
      *
      * @param Row $row The row to be added
-     * @throws IOException If trying to create a new sheet and unable to open the sheet for writing
+     *
+     * @throws IOException     If trying to create a new sheet and unable to open the sheet for writing
      * @throws WriterException If unable to write data
-     * @return void
      */
     public function addRowToCurrentWorksheet(Row $row);
 
@@ -98,7 +92,6 @@ interface WorkbookManagerInterface
      * All the temporary files are then deleted.
      *
      * @param resource $finalFilePointer Pointer to the spreadsheet that will be created
-     * @return void
      */
     public function close($finalFilePointer);
 }

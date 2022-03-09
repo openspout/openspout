@@ -8,8 +8,7 @@ use OpenSpout\Reader\XLSX\Creator\InternalEntityFactory;
 use OpenSpout\Reader\XLSX\Sheet;
 
 /**
- * Class SheetManager
- * This class manages XLSX sheets
+ * This class manages XLSX sheets.
  */
 class SheetManager
 {
@@ -64,12 +63,12 @@ class SheetManager
     protected $activeSheetIndex;
 
     /**
-     * @param string $filePath Path of the XLSX file being read
-     * @param \OpenSpout\Common\Manager\OptionsManagerInterface $optionsManager Reader's options manager
+     * @param string                                              $filePath             Path of the XLSX file being read
+     * @param \OpenSpout\Common\Manager\OptionsManagerInterface   $optionsManager       Reader's options manager
      * @param \OpenSpout\Reader\XLSX\Manager\SharedStringsManager $sharedStringsManager Manages shared strings
-     * @param \OpenSpout\Common\Helper\Escaper\XLSX $escaper Used to unescape XML data
-     * @param InternalEntityFactory $entityFactory Factory to create entities
-     * @param mixed $sharedStringsManager
+     * @param \OpenSpout\Common\Helper\Escaper\XLSX               $escaper              Used to unescape XML data
+     * @param InternalEntityFactory                               $entityFactory        Factory to create entities
+     * @param mixed                                               $sharedStringsManager
      */
     public function __construct($filePath, $optionsManager, $sharedStringsManager, $escaper, $entityFactory)
     {
@@ -110,13 +109,14 @@ class SheetManager
 
     /**
      * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader XMLReader object, positioned on a "<workbookPr>" starting node
+     *
      * @return int A return code that indicates what action should the processor take next
      */
     protected function processWorkbookPropertiesStartingNode($xmlReader)
     {
         // Using "filter_var($x, FILTER_VALIDATE_BOOLEAN)" here because the value of the "date1904" attribute
         // may be the string "false", that is not mapped to the boolean "false" by default...
-        $shouldUse1904Dates = \filter_var($xmlReader->getAttribute(self::XML_ATTRIBUTE_DATE_1904), FILTER_VALIDATE_BOOLEAN);
+        $shouldUse1904Dates = filter_var($xmlReader->getAttribute(self::XML_ATTRIBUTE_DATE_1904), FILTER_VALIDATE_BOOLEAN);
         $this->optionsManager->setOption(Options::SHOULD_USE_1904_DATES, $shouldUse1904Dates);
 
         return XMLProcessor::PROCESSING_CONTINUE;
@@ -124,6 +124,7 @@ class SheetManager
 
     /**
      * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader XMLReader object, positioned on a "<workbookView>" starting node
+     *
      * @return int A return code that indicates what action should the processor take next
      */
     protected function processWorkbookViewStartingNode($xmlReader)
@@ -137,13 +138,14 @@ class SheetManager
 
     /**
      * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader XMLReader object, positioned on a "<sheet>" starting node
+     *
      * @return int A return code that indicates what action should the processor take next
      */
     protected function processSheetStartingNode($xmlReader)
     {
         $isSheetActive = ($this->currentSheetIndex === $this->activeSheetIndex);
         $this->sheets[] = $this->getSheetFromSheetXMLNode($xmlReader, $this->currentSheetIndex, $isSheetActive);
-        $this->currentSheetIndex++;
+        ++$this->currentSheetIndex;
 
         return XMLProcessor::PROCESSING_CONTINUE;
     }
@@ -162,8 +164,9 @@ class SheetManager
      * ("r:id" in "workbook.xml", "Id" in "workbook.xml.res").
      *
      * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReaderOnSheetNode XML Reader instance, pointing on the node describing the sheet, as defined in "workbook.xml"
-     * @param int $sheetIndexZeroBased Index of the sheet, based on order of appearance in the workbook (zero-based)
-     * @param bool $isSheetActive Whether this sheet was defined as active
+     * @param int                                 $sheetIndexZeroBased  Index of the sheet, based on order of appearance in the workbook (zero-based)
+     * @param bool                                $isSheetActive        Whether this sheet was defined as active
+     *
      * @return \OpenSpout\Reader\XLSX\Sheet Sheet instance
      */
     protected function getSheetFromSheetXMLNode($xmlReaderOnSheetNode, $sheetIndexZeroBased, $isSheetActive)
@@ -171,7 +174,7 @@ class SheetManager
         $sheetId = $xmlReaderOnSheetNode->getAttribute(self::XML_ATTRIBUTE_R_ID);
 
         $sheetState = $xmlReaderOnSheetNode->getAttribute(self::XML_ATTRIBUTE_STATE);
-        $isSheetVisible = ($sheetState !== self::SHEET_STATE_HIDDEN);
+        $isSheetVisible = (self::SHEET_STATE_HIDDEN !== $sheetState);
 
         $escapedSheetName = $xmlReaderOnSheetNode->getAttribute(self::XML_ATTRIBUTE_NAME);
         $sheetName = $this->escaper->unescape($escapedSheetName);
@@ -192,6 +195,7 @@ class SheetManager
 
     /**
      * @param string $sheetId The sheet ID, as defined in "workbook.xml"
+     *
      * @return string The XML file path describing the sheet inside "workbook.xml.res", for the given sheet ID
      */
     protected function getSheetDataXMLFilePathForSheetId($sheetId)
@@ -211,8 +215,9 @@ class SheetManager
                         $sheetDataXMLFilePath = $xmlReader->getAttribute(self::XML_ATTRIBUTE_TARGET);
 
                         // sometimes, the sheet data file path already contains "/xl/"...
-                        if (\strpos($sheetDataXMLFilePath, '/xl/') !== 0) {
-                            $sheetDataXMLFilePath = '/xl/' . $sheetDataXMLFilePath;
+                        if (0 !== strpos($sheetDataXMLFilePath, '/xl/')) {
+                            $sheetDataXMLFilePath = '/xl/'.$sheetDataXMLFilePath;
+
                             break;
                         }
                     }

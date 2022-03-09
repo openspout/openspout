@@ -9,13 +9,10 @@ use OpenSpout\Writer\Exception\Border\InvalidWidthException;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class BorderTest
+ * @internal
  */
-class BorderTest extends TestCase
+final class BorderTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function testValidInstance()
     {
         $noConstructorParams = new Border();
@@ -25,9 +22,6 @@ class BorderTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
-    /**
-     * @return void
-     */
     public function testInvalidBorderPart()
     {
         $this->expectException(InvalidNameException::class);
@@ -35,9 +29,6 @@ class BorderTest extends TestCase
         new BorderPart('invalid');
     }
 
-    /**
-     * @return void
-     */
     public function testInvalidBorderPartStyle()
     {
         $this->expectException(InvalidStyleException::class);
@@ -45,9 +36,6 @@ class BorderTest extends TestCase
         new BorderPart(Border::LEFT, Color::BLACK, Border::WIDTH_THIN, 'invalid');
     }
 
-    /**
-     * @return void
-     */
     public function testInvalidBorderPartWidth()
     {
         $this->expectException(InvalidWidthException::class);
@@ -55,9 +43,6 @@ class BorderTest extends TestCase
         new BorderPart(Border::LEFT, Color::BLACK, 'invalid', Border::STYLE_DASHED);
     }
 
-    /**
-     * @return void
-     */
     public function testNotMoreThanFourPartsPossible()
     {
         $border = new Border();
@@ -66,14 +51,12 @@ class BorderTest extends TestCase
             ->addPart(new BorderPart(Border::RIGHT))
             ->addPart(new BorderPart(Border::TOP))
             ->addPart(new BorderPart(Border::BOTTOM))
-            ->addPart(new BorderPart(Border::LEFT));
+            ->addPart(new BorderPart(Border::LEFT))
+        ;
 
-        $this->assertCount(4, $border->getParts(), 'There should never be more than 4 border parts');
+        static::assertCount(4, $border->getParts(), 'There should never be more than 4 border parts');
     }
 
-    /**
-     * @return void
-     */
     public function testSetParts()
     {
         $border = new Border();
@@ -81,12 +64,9 @@ class BorderTest extends TestCase
             new BorderPart(Border::LEFT),
         ]);
 
-        $this->assertCount(1, $border->getParts(), 'It should be possible to set the border parts');
+        static::assertCount(1, $border->getParts(), 'It should be possible to set the border parts');
     }
 
-    /**
-     * @return void
-     */
     public function testBorderBuilderFluent()
     {
         $border = (new BorderBuilder())
@@ -94,13 +74,13 @@ class BorderTest extends TestCase
             ->setBorderTop()
             ->setBorderLeft()
             ->setBorderRight()
-            ->build();
-        $this->assertCount(4, $border->getParts(), 'The border builder exposes a fluent interface');
+            ->build()
+        ;
+        static::assertCount(4, $border->getParts(), 'The border builder exposes a fluent interface');
     }
 
     /**
-     * :D :S
-     * @return void
+     * :D :S.
      */
     public function testAnyCombinationOfAllowedBorderPartsParams()
     {
@@ -111,14 +91,14 @@ class BorderTest extends TestCase
                     $borderPart = new BorderPart($allowedName, $color, $allowedWidth, $allowedStyle);
                     $border = new Border();
                     $border->addPart($borderPart);
-                    $this->assertCount(1, $border->getParts());
+                    static::assertCount(1, $border->getParts());
 
                     /** @var BorderPart $part */
                     $part = $border->getParts()[$allowedName];
 
-                    $this->assertEquals($allowedStyle, $part->getStyle());
-                    $this->assertEquals($allowedWidth, $part->getWidth());
-                    $this->assertEquals($color, $part->getColor());
+                    static::assertSame($allowedStyle, $part->getStyle());
+                    static::assertSame($allowedWidth, $part->getWidth());
+                    static::assertSame($color, $part->getColor());
                 }
             }
         }

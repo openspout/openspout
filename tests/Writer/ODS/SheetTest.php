@@ -10,52 +10,40 @@ use OpenSpout\Writer\RowCreationHelper;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class SheetTest
+ * @internal
  */
-class SheetTest extends TestCase
+final class SheetTest extends TestCase
 {
-    use TestUsingResource;
     use RowCreationHelper;
+    use TestUsingResource;
 
-    /**
-     * @return void
-     */
     public function testGetSheetIndex()
     {
         $sheets = $this->writeDataToMulitpleSheetsAndReturnSheets('test_get_sheet_index.ods');
 
-        $this->assertCount(2, $sheets, '2 sheets should have been created');
-        $this->assertEquals(0, $sheets[0]->getIndex(), 'The first sheet should be index 0');
-        $this->assertEquals(1, $sheets[1]->getIndex(), 'The second sheet should be index 1');
+        static::assertCount(2, $sheets, '2 sheets should have been created');
+        static::assertSame(0, $sheets[0]->getIndex(), 'The first sheet should be index 0');
+        static::assertSame(1, $sheets[1]->getIndex(), 'The second sheet should be index 1');
     }
 
-    /**
-     * @return void
-     */
     public function testGetSheetName()
     {
         $sheets = $this->writeDataToMulitpleSheetsAndReturnSheets('test_get_sheet_name.ods');
 
-        $this->assertCount(2, $sheets, '2 sheets should have been created');
-        $this->assertEquals('Sheet1', $sheets[0]->getName(), 'Invalid name for the first sheet');
-        $this->assertEquals('Sheet2', $sheets[1]->getName(), 'Invalid name for the second sheet');
+        static::assertCount(2, $sheets, '2 sheets should have been created');
+        static::assertSame('Sheet1', $sheets[0]->getName(), 'Invalid name for the first sheet');
+        static::assertSame('Sheet2', $sheets[1]->getName(), 'Invalid name for the second sheet');
     }
 
-    /**
-     * @return void
-     */
     public function testSetSheetNameShouldCreateSheetWithCustomName()
     {
         $fileName = 'test_set_name_should_create_sheet_with_custom_name.ods';
         $customSheetName = 'CustomName';
         $this->writeDataAndReturnSheetWithCustomName($fileName, $customSheetName);
 
-        $this->assertSheetNameEquals($customSheetName, $fileName, "The sheet name should have been changed to '$customSheetName'");
+        $this->assertSheetNameEquals($customSheetName, $fileName, "The sheet name should have been changed to '{$customSheetName}'");
     }
 
-    /**
-     * @return void
-     */
     public function testSetSheetNameShouldThrowWhenNameIsAlreadyUsed()
     {
         $this->expectException(InvalidSheetNameException::class);
@@ -77,19 +65,16 @@ class SheetTest extends TestCase
         $sheet->setName($customSheetName);
     }
 
-    /**
-     * @return void
-     */
     public function testSetSheetVisibilityShouldCreateSheetHidden()
     {
         $fileName = 'test_set_visibility_should_create_sheet_hidden.ods';
         $this->writeDataToHiddenSheet($fileName);
 
         $resourcePath = $this->getGeneratedResourcePath($fileName);
-        $pathToContentFile = $resourcePath . '#content.xml';
-        $xmlContents = file_get_contents('zip://' . $pathToContentFile);
+        $pathToContentFile = $resourcePath.'#content.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToContentFile);
 
-        $this->assertStringContainsString(' table:display="false"', $xmlContents, 'The sheet visibility should have been changed to "hidden"');
+        static::assertStringContainsString(' table:display="false"', $xmlContents, 'The sheet visibility should have been changed to "hidden"');
     }
 
     private function writerForFile($fileName)
@@ -106,7 +91,6 @@ class SheetTest extends TestCase
     /**
      * @param string $fileName
      * @param string $sheetName
-     * @return void
      */
     private function writeDataAndReturnSheetWithCustomName($fileName, $sheetName)
     {
@@ -121,6 +105,7 @@ class SheetTest extends TestCase
 
     /**
      * @param string $fileName
+     *
      * @return Sheet[]
      */
     private function writeDataToMulitpleSheetsAndReturnSheets($fileName)
@@ -142,7 +127,6 @@ class SheetTest extends TestCase
 
     /**
      * @param string $fileName
-     * @return void
      */
     private function writeDataToHiddenSheet($fileName)
     {
@@ -163,14 +147,13 @@ class SheetTest extends TestCase
      * @param string $expectedName
      * @param string $fileName
      * @param string $message
-     * @return void
      */
     private function assertSheetNameEquals($expectedName, $fileName, $message = '')
     {
         $resourcePath = $this->getGeneratedResourcePath($fileName);
-        $pathToWorkbookFile = $resourcePath . '#content.xml';
-        $xmlContents = file_get_contents('zip://' . $pathToWorkbookFile);
+        $pathToWorkbookFile = $resourcePath.'#content.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
 
-        $this->assertStringContainsString("table:name=\"$expectedName\"", $xmlContents, $message);
+        static::assertStringContainsString("table:name=\"{$expectedName}\"", $xmlContents, $message);
     }
 }

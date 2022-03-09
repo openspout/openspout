@@ -7,8 +7,7 @@ use OpenSpout\Common\Manager\OptionsManagerAbstract;
 use OpenSpout\Reader\Common\Entity\Options;
 
 /**
- * Class OptionsManager
- * CSV Reader options manager
+ * CSV Reader options manager.
  */
 class OptionsManager extends OptionsManagerAbstract
 {

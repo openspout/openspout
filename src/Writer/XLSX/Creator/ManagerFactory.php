@@ -16,8 +16,7 @@ use OpenSpout\Writer\XLSX\Manager\WorkbookManager;
 use OpenSpout\Writer\XLSX\Manager\WorksheetManager;
 
 /**
- * Class ManagerFactory
- * Factory for managers needed by the XLSX Writer
+ * Factory for managers needed by the XLSX Writer.
  */
 class ManagerFactory implements ManagerFactoryInterface
 {
@@ -27,10 +26,6 @@ class ManagerFactory implements ManagerFactoryInterface
     /** @var HelperFactory */
     protected $helperFactory;
 
-    /**
-     * @param InternalEntityFactory $entityFactory
-     * @param HelperFactory $helperFactory
-     */
     public function __construct(InternalEntityFactory $entityFactory, HelperFactory $helperFactory)
     {
         $this->entityFactory = $entityFactory;
@@ -38,7 +33,6 @@ class ManagerFactory implements ManagerFactoryInterface
     }
 
     /**
-     * @param OptionsManagerInterface $optionsManager
      * @return WorkbookManager
      */
     public function createWorkbookManager(OptionsManagerInterface $optionsManager)
@@ -68,10 +62,24 @@ class ManagerFactory implements ManagerFactoryInterface
     }
 
     /**
-     * @param OptionsManagerInterface $optionsManager
-     * @param StyleManager $styleManager
-     * @param StyleMerger $styleMerger
-     * @param SharedStringsManager $sharedStringsManager
+     * @return SheetManager
+     */
+    public function createSheetManager()
+    {
+        $stringHelper = $this->helperFactory->createStringHelper();
+
+        return new SheetManager($stringHelper);
+    }
+
+    /**
+     * @return RowManager
+     */
+    public function createRowManager()
+    {
+        return new RowManager();
+    }
+
+    /**
      * @return WorksheetManager
      */
     private function createWorksheetManager(
@@ -96,25 +104,6 @@ class ManagerFactory implements ManagerFactoryInterface
     }
 
     /**
-     * @return SheetManager
-     */
-    public function createSheetManager()
-    {
-        $stringHelper = $this->helperFactory->createStringHelper();
-
-        return new SheetManager($stringHelper);
-    }
-
-    /**
-     * @return RowManager
-     */
-    public function createRowManager()
-    {
-        return new RowManager();
-    }
-
-    /**
-     * @param OptionsManagerInterface $optionsManager
      * @return StyleManager
      */
     private function createStyleManager(OptionsManagerInterface $optionsManager)
@@ -125,7 +114,6 @@ class ManagerFactory implements ManagerFactoryInterface
     }
 
     /**
-     * @param OptionsManagerInterface $optionsManager
      * @return StyleRegistry
      */
     private function createStyleRegistry(OptionsManagerInterface $optionsManager)
@@ -145,6 +133,7 @@ class ManagerFactory implements ManagerFactoryInterface
 
     /**
      * @param string $xlFolder Path to the "xl" folder
+     *
      * @return SharedStringsManager
      */
     private function createSharedStringsManager($xlFolder)

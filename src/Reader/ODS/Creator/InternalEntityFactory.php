@@ -13,8 +13,7 @@ use OpenSpout\Reader\ODS\SheetIterator;
 use OpenSpout\Reader\Wrapper\XMLReader;
 
 /**
- * Class EntityFactory
- * Factory to create entities
+ * Factory to create entities.
  */
 class InternalEntityFactory implements InternalEntityFactoryInterface
 {
@@ -24,10 +23,6 @@ class InternalEntityFactory implements InternalEntityFactoryInterface
     /** @var ManagerFactory */
     private $managerFactory;
 
-    /**
-     * @param HelperFactory $helperFactory
-     * @param ManagerFactory $managerFactory
-     */
     public function __construct(HelperFactory $helperFactory, ManagerFactory $managerFactory)
     {
         $this->helperFactory = $helperFactory;
@@ -35,8 +30,9 @@ class InternalEntityFactory implements InternalEntityFactoryInterface
     }
 
     /**
-     * @param string $filePath Path of the file to be read
+     * @param string                                            $filePath       Path of the file to be read
      * @param \OpenSpout\Common\Manager\OptionsManagerInterface $optionsManager Reader's options manager
+     *
      * @return SheetIterator
      */
     public function createSheetIterator($filePath, $optionsManager)
@@ -48,12 +44,13 @@ class InternalEntityFactory implements InternalEntityFactoryInterface
     }
 
     /**
-     * @param XMLReader $xmlReader XML Reader
-     * @param int $sheetIndex Index of the sheet, based on order in the workbook (zero-based)
-     * @param string $sheetName Name of the sheet
-     * @param bool $isSheetActive Whether the sheet was defined as active
-     * @param bool $isSheetVisible Whether the sheet is visible
+     * @param XMLReader                                         $xmlReader      XML Reader
+     * @param int                                               $sheetIndex     Index of the sheet, based on order in the workbook (zero-based)
+     * @param string                                            $sheetName      Name of the sheet
+     * @param bool                                              $isSheetActive  Whether the sheet was defined as active
+     * @param bool                                              $isSheetVisible Whether the sheet is visible
      * @param \OpenSpout\Common\Manager\OptionsManagerInterface $optionsManager Reader's options manager
+     *
      * @return Sheet
      */
     public function createSheet($xmlReader, $sheetIndex, $sheetName, $isSheetActive, $isSheetVisible, $optionsManager)
@@ -64,22 +61,8 @@ class InternalEntityFactory implements InternalEntityFactoryInterface
     }
 
     /**
-     * @param XMLReader $xmlReader XML Reader
-     * @param \OpenSpout\Common\Manager\OptionsManagerInterface $optionsManager Reader's options manager
-     * @return RowIterator
-     */
-    private function createRowIterator($xmlReader, $optionsManager)
-    {
-        $shouldFormatDates = $optionsManager->getOption(Options::SHOULD_FORMAT_DATES);
-        $cellValueFormatter = $this->helperFactory->createCellValueFormatter($shouldFormatDates);
-        $xmlProcessor = $this->createXMLProcessor($xmlReader);
-        $rowManager = $this->managerFactory->createRowManager($this);
-
-        return new RowIterator($xmlReader, $optionsManager, $cellValueFormatter, $xmlProcessor, $rowManager, $this);
-    }
-
-    /**
      * @param Cell[] $cells
+     *
      * @return Row
      */
     public function createRow(array $cells = [])
@@ -89,6 +72,7 @@ class InternalEntityFactory implements InternalEntityFactoryInterface
 
     /**
      * @param mixed $cellValue
+     *
      * @return Cell
      */
     public function createCell($cellValue)
@@ -105,19 +89,36 @@ class InternalEntityFactory implements InternalEntityFactoryInterface
     }
 
     /**
-     * @param XMLReader $xmlReader
-     * @return XMLProcessor
-     */
-    private function createXMLProcessor($xmlReader)
-    {
-        return new XMLProcessor($xmlReader);
-    }
-
-    /**
      * @return \ZipArchive
      */
     public function createZipArchive()
     {
         return new \ZipArchive();
+    }
+
+    /**
+     * @param XMLReader                                         $xmlReader      XML Reader
+     * @param \OpenSpout\Common\Manager\OptionsManagerInterface $optionsManager Reader's options manager
+     *
+     * @return RowIterator
+     */
+    private function createRowIterator($xmlReader, $optionsManager)
+    {
+        $shouldFormatDates = $optionsManager->getOption(Options::SHOULD_FORMAT_DATES);
+        $cellValueFormatter = $this->helperFactory->createCellValueFormatter($shouldFormatDates);
+        $xmlProcessor = $this->createXMLProcessor($xmlReader);
+        $rowManager = $this->managerFactory->createRowManager($this);
+
+        return new RowIterator($xmlReader, $optionsManager, $cellValueFormatter, $xmlProcessor, $rowManager, $this);
+    }
+
+    /**
+     * @param XMLReader $xmlReader
+     *
+     * @return XMLProcessor
+     */
+    private function createXMLProcessor($xmlReader)
+    {
+        return new XMLProcessor($xmlReader);
     }
 }

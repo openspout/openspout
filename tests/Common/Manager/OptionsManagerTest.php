@@ -5,16 +5,16 @@ namespace OpenSpout\Common\Manager;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class OptionsManagerTest
+ * @internal
  */
-class OptionsManagerTest extends TestCase
+final class OptionsManagerTest extends TestCase
 {
     /**
      * @var OptionsManagerAbstract
      */
     protected $optionsManager;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->optionsManager = new class() extends OptionsManagerAbstract {
             protected function getSupportedOptions()
@@ -35,42 +35,30 @@ class OptionsManagerTest extends TestCase
         parent::setUp();
     }
 
-    /**
-     * @return void
-     */
     public function testOptionsManagerShouldReturnDefaultOptionsIfNothingSet()
     {
         $optionsManager = $this->optionsManager;
-        $this->assertEquals('foo-val', $optionsManager->getOption('foo'));
-        $this->assertFalse($optionsManager->getOption('bar'));
+        static::assertSame('foo-val', $optionsManager->getOption('foo'));
+        static::assertFalse($optionsManager->getOption('bar'));
     }
 
-    /**
-     * @return void
-     */
     public function testOptionsManagerShouldReturnUpdatedOptionValue()
     {
         $optionsManager = $this->optionsManager;
         $optionsManager->setOption('foo', 'new-val');
-        $this->assertEquals('new-val', $optionsManager->getOption('foo'));
+        static::assertSame('new-val', $optionsManager->getOption('foo'));
     }
 
-    /**
-     * @return void
-     */
     public function testOptionsManagerShouldReturnNullIfNoDefaultValueSet()
     {
         $optionsManager = $this->optionsManager;
-        $this->assertNull($optionsManager->getOption('baz'));
+        static::assertNull($optionsManager->getOption('baz'));
     }
 
-    /**
-     * @return void
-     */
     public function testOptionsManagerShouldReturnNullIfNoOptionNotSupported()
     {
         $optionsManager = $this->optionsManager;
         $optionsManager->setOption('not-supported', 'something');
-        $this->assertNull($optionsManager->getOption('not-supported'));
+        static::assertNull($optionsManager->getOption('not-supported'));
     }
 }

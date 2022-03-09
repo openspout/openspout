@@ -5,8 +5,7 @@ namespace OpenSpout\Reader\XLSX\Manager;
 use OpenSpout\Reader\XLSX\Creator\InternalEntityFactory;
 
 /**
- * Class StyleManager
- * This class manages XLSX styles
+ * This class manages XLSX styles.
  */
 class StyleManager
 {
@@ -28,6 +27,7 @@ class StyleManager
 
     /**
      * @see https://msdn.microsoft.com/en-us/library/ff529597(v=office.12).aspx
+     *
      * @var array Mapping between built-in numFmtId and the associated format - for dates only
      */
     protected static $builtinNumFmtIdToNumFormatMapping = [
@@ -51,7 +51,7 @@ class StyleManager
     /** @var bool Whether the XLSX file contains a styles XML file */
     protected $hasStylesXMLFile;
 
-    /** @var string|null Path of the styles XML file */
+    /** @var null|string Path of the styles XML file */
     protected $stylesXMLFilePath;
 
     /** @var InternalEntityFactory Factory to create entities */
@@ -60,25 +60,25 @@ class StyleManager
     /** @var array Array containing the IDs of built-in number formats indicating a date */
     protected $builtinNumFmtIdIndicatingDates;
 
-    /** @var array|null Array containing a mapping NUM_FMT_ID => FORMAT_CODE */
+    /** @var null|array Array containing a mapping NUM_FMT_ID => FORMAT_CODE */
     protected $customNumberFormats;
 
-    /** @var array|null Array containing a mapping STYLE_ID => [STYLE_ATTRIBUTES] */
+    /** @var null|array Array containing a mapping STYLE_ID => [STYLE_ATTRIBUTES] */
     protected $stylesAttributes;
 
     /** @var array Cache containing a mapping NUM_FMT_ID => IS_DATE_FORMAT. Used to avoid lots of recalculations */
     protected $numFmtIdToIsDateFormatCache = [];
 
     /**
-     * @param string $filePath Path of the XLSX file being read
+     * @param string                       $filePath                     Path of the XLSX file being read
      * @param WorkbookRelationshipsManager $workbookRelationshipsManager Helps retrieving workbook relationships
-     * @param InternalEntityFactory $entityFactory Factory to create entities
+     * @param InternalEntityFactory        $entityFactory                Factory to create entities
      */
     public function __construct($filePath, $workbookRelationshipsManager, $entityFactory)
     {
         $this->filePath = $filePath;
         $this->entityFactory = $entityFactory;
-        $this->builtinNumFmtIdIndicatingDates = \array_keys(self::$builtinNumFmtIdToNumFormatMapping);
+        $this->builtinNumFmtIdIndicatingDates = array_keys(self::$builtinNumFmtIdToNumFormatMapping);
         $this->hasStylesXMLFile = $workbookRelationshipsManager->hasStylesXMLFile();
         if ($this->hasStylesXMLFile) {
             $this->stylesXMLFilePath = $workbookRelationshipsManager->getStylesXMLFilePath();
@@ -90,6 +90,7 @@ class StyleManager
      * numeric values as timestamps and format the cell as a date.
      *
      * @param int $styleId Zero-based style ID
+     *
      * @return bool Whether the cell with the given cell should display a date instead of a numeric value
      */
     public function shouldFormatNumericValueAsDate($styleId)
@@ -103,7 +104,7 @@ class StyleManager
         // Default style (0) does not format numeric values as timestamps. Only custom styles do.
         // Also if the style ID does not exist in the styles.xml file, format as numeric value.
         // Using isset here because it is way faster than array_key_exists...
-        if ($styleId === self::DEFAULT_STYLE_ID || !isset($stylesAttributes[$styleId])) {
+        if (self::DEFAULT_STYLE_ID === $styleId || !isset($stylesAttributes[$styleId])) {
             return false;
         }
 
@@ -113,9 +114,31 @@ class StyleManager
     }
 
     /**
-     * Reads the styles.xml file and extract the relevant information from the file.
+     * Returns the format as defined in "styles.xml" of the given style.
+     * NOTE: It is assumed that the style DOES have a number format associated to it.
      *
-     * @return void
+     * @param int $styleId Zero-based style ID
+     *
+     * @return string The number format code associated with the given style
+     */
+    public function getNumberFormatCode($styleId)
+    {
+        $stylesAttributes = $this->getStylesAttributes();
+        $styleAttributes = $stylesAttributes[$styleId];
+        $numFmtId = $styleAttributes[self::XML_ATTRIBUTE_NUM_FMT_ID];
+
+        if ($this->isNumFmtIdBuiltInDateFormat($numFmtId)) {
+            $numberFormatCode = self::$builtinNumFmtIdToNumFormatMapping[$numFmtId];
+        } else {
+            $customNumberFormats = $this->getCustomNumberFormats();
+            $numberFormatCode = $customNumberFormats[$numFmtId];
+        }
+
+        return $numberFormatCode;
+    }
+
+    /**
+     * Reads the styles.xml file and extract the relevant information from the file.
      */
     protected function extractRelevantInfo()
     {
@@ -143,7 +166,6 @@ class StyleManager
      * to the reuse of formats. So 1 million cells should not use 1 million formats.
      *
      * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader XML Reader positioned on the "numFmts" node
-     * @return void
      */
     protected function extractNumberFormats($xmlReader)
     {
@@ -165,20 +187,19 @@ class StyleManager
      * to the reuse of styles. So 1 million cells should not use 1 million styles.
      *
      * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader XML Reader positioned on the "cellXfs" node
-     * @return void
      */
     protected function extractStyleAttributes($xmlReader)
     {
         while ($xmlReader->read()) {
             if ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_XF)) {
                 $numFmtId = $xmlReader->getAttribute(self::XML_ATTRIBUTE_NUM_FMT_ID);
-                $normalizedNumFmtId = ($numFmtId !== null) ? (int) $numFmtId : null;
+                $normalizedNumFmtId = (null !== $numFmtId) ? (int) $numFmtId : null;
 
                 $applyNumberFormat = $xmlReader->getAttribute(self::XML_ATTRIBUTE_APPLY_NUMBER_FORMAT);
-                $normalizedApplyNumberFormat = ($applyNumberFormat !== null) ? (bool) $applyNumberFormat : null;
+                $normalizedApplyNumberFormat = (null !== $applyNumberFormat) ? (bool) $applyNumberFormat : null;
 
                 $this->stylesAttributes[] = [
-                    self::XML_ATTRIBUTE_NUM_FMT_ID          => $normalizedNumFmtId,
+                    self::XML_ATTRIBUTE_NUM_FMT_ID => $normalizedNumFmtId,
                     self::XML_ATTRIBUTE_APPLY_NUMBER_FORMAT => $normalizedApplyNumberFormat,
                 ];
             } elseif ($xmlReader->isPositionedOnEndingNode(self::XML_NODE_CELL_XFS)) {
@@ -214,6 +235,7 @@ class StyleManager
 
     /**
      * @param array $styleAttributes Array containing the style attributes (2 keys: "applyNumberFormat" and "numFmtId")
+     *
      * @return bool Whether the style with the given attributes indicates that the number is a date
      */
     protected function doesStyleIndicateDate($styleAttributes)
@@ -226,7 +248,7 @@ class StyleManager
         //  - "numFmtId" attribute set
         // This is a preliminary check, as having "numFmtId" set just means the style should apply a specific number format,
         // but this is not necessarily a date.
-        if ($applyNumberFormat === false || $numFmtId === null) {
+        if (false === $applyNumberFormat || null === $numFmtId) {
             return false;
         }
 
@@ -239,6 +261,7 @@ class StyleManager
      * "numFmtId" attributes can be shared between multiple styles.
      *
      * @param int $numFmtId
+     *
      * @return bool Whether the number format ID indicates that the number is a date
      */
     protected function doesNumFmtIdIndicateDate($numFmtId)
@@ -247,8 +270,8 @@ class StyleManager
             $formatCode = $this->getFormatCodeForNumFmtId($numFmtId);
 
             $this->numFmtIdToIsDateFormatCache[$numFmtId] = (
-                $this->isNumFmtIdBuiltInDateFormat($numFmtId) ||
-                $this->isFormatCodeCustomDateFormat($formatCode)
+                $this->isNumFmtIdBuiltInDateFormat($numFmtId)
+                || $this->isFormatCodeCustomDateFormat($formatCode)
             );
         }
 
@@ -257,7 +280,8 @@ class StyleManager
 
     /**
      * @param int $numFmtId
-     * @return string|null The custom number format or NULL if none defined for the given numFmtId
+     *
+     * @return null|string The custom number format or NULL if none defined for the given numFmtId
      */
     protected function getFormatCodeForNumFmtId($numFmtId)
     {
@@ -269,21 +293,23 @@ class StyleManager
 
     /**
      * @param int $numFmtId
+     *
      * @return bool Whether the number format ID indicates that the number is a date
      */
     protected function isNumFmtIdBuiltInDateFormat($numFmtId)
     {
-        return \in_array($numFmtId, $this->builtinNumFmtIdIndicatingDates);
+        return \in_array($numFmtId, $this->builtinNumFmtIdIndicatingDates, true);
     }
 
     /**
-     * @param string|null $formatCode
+     * @param null|string $formatCode
+     *
      * @return bool Whether the given format code indicates that the number is a date
      */
     protected function isFormatCodeCustomDateFormat($formatCode)
     {
         // if no associated format code or if using the default "General" format
-        if ($formatCode === null || \strcasecmp($formatCode, self::NUMBER_FORMAT_GENERAL) === 0) {
+        if (null === $formatCode || 0 === strcasecmp($formatCode, self::NUMBER_FORMAT_GENERAL)) {
             return false;
         }
 
@@ -292,13 +318,14 @@ class StyleManager
 
     /**
      * @param string $formatCode
+     *
      * @return bool Whether the given format code matches a date format pattern
      */
     protected function isFormatCodeMatchingDateFormatPattern($formatCode)
     {
         // Remove extra formatting (what's between [ ], the brackets should not be preceded by a "\")
         $pattern = '((?<!\\\)\[.+?(?<!\\\)\])';
-        $formatCode = \preg_replace($pattern, '', $formatCode);
+        $formatCode = preg_replace($pattern, '', $formatCode);
 
         // custom date formats contain specific characters to represent the date:
         // e - yy - m - d - h - s
@@ -308,37 +335,15 @@ class StyleManager
         $hasFoundDateFormatCharacter = false;
         foreach ($dateFormatCharacters as $dateFormatCharacter) {
             // character not preceded by "\" (case insensitive)
-            $pattern = '/(?<!\\\)' . $dateFormatCharacter . '/i';
+            $pattern = '/(?<!\\\)'.$dateFormatCharacter.'/i';
 
-            if (\preg_match($pattern, $formatCode)) {
+            if (preg_match($pattern, $formatCode)) {
                 $hasFoundDateFormatCharacter = true;
+
                 break;
             }
         }
 
         return $hasFoundDateFormatCharacter;
-    }
-
-    /**
-     * Returns the format as defined in "styles.xml" of the given style.
-     * NOTE: It is assumed that the style DOES have a number format associated to it.
-     *
-     * @param int $styleId Zero-based style ID
-     * @return string The number format code associated with the given style
-     */
-    public function getNumberFormatCode($styleId)
-    {
-        $stylesAttributes = $this->getStylesAttributes();
-        $styleAttributes = $stylesAttributes[$styleId];
-        $numFmtId = $styleAttributes[self::XML_ATTRIBUTE_NUM_FMT_ID];
-
-        if ($this->isNumFmtIdBuiltInDateFormat($numFmtId)) {
-            $numberFormatCode = self::$builtinNumFmtIdToNumFormatMapping[$numFmtId];
-        } else {
-            $customNumberFormats = $this->getCustomNumberFormats();
-            $numberFormatCode = $customNumberFormats[$numFmtId];
-        }
-
-        return $numberFormatCode;
     }
 }

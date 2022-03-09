@@ -14,15 +14,12 @@ use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class ReaderTest
+ * @internal
  */
-class ReaderTest extends TestCase
+final class ReaderTest extends TestCase
 {
     use TestUsingResource;
 
-    /**
-     * @return void
-     */
     public function testOpenShouldThrowExceptionIfFileDoesNotExist()
     {
         $this->expectException(IOException::class);
@@ -30,9 +27,6 @@ class ReaderTest extends TestCase
         $this->createCSVReader()->open('/path/to/fake/file.csv');
     }
 
-    /**
-     * @return void
-     */
     public function testOpenShouldThrowExceptionIfTryingToReadBeforeOpeningReader()
     {
         $this->expectException(ReaderNotOpenedException::class);
@@ -40,17 +34,15 @@ class ReaderTest extends TestCase
         $this->createCSVReader()->getSheetIterator();
     }
 
-    /**
-     * @return void
-     */
     public function testOpenShouldThrowExceptionIfFileNotReadable()
     {
         $this->expectException(IOException::class);
 
         /** @var \OpenSpout\Common\Helper\GlobalFunctionsHelper|\PHPUnit\Framework\MockObject\MockObject $helperStub */
         $helperStub = $this->getMockBuilder('\OpenSpout\Common\Helper\GlobalFunctionsHelper')
-                        ->onlyMethods(['is_readable'])
-                        ->getMock();
+            ->onlyMethods(['is_readable'])
+            ->getMock()
+        ;
         $helperStub->method('is_readable')->willReturn(false);
 
         $resourcePath = $this->getResourcePath('csv_standard.csv');
@@ -59,17 +51,15 @@ class ReaderTest extends TestCase
         $reader->open($resourcePath);
     }
 
-    /**
-     * @return void
-     */
     public function testOpenShouldThrowExceptionIfCannotOpenFile()
     {
         $this->expectException(IOException::class);
 
         /** @var \OpenSpout\Common\Helper\GlobalFunctionsHelper|\PHPUnit\Framework\MockObject\MockObject $helperStub */
         $helperStub = $this->getMockBuilder('\OpenSpout\Common\Helper\GlobalFunctionsHelper')
-                        ->onlyMethods(['fopen'])
-                        ->getMock();
+            ->onlyMethods(['fopen'])
+            ->getMock()
+        ;
         $helperStub->method('fopen')->willReturn(false);
 
         $resourcePath = $this->getResourcePath('csv_standard.csv');
@@ -78,9 +68,6 @@ class ReaderTest extends TestCase
         $reader->open($resourcePath);
     }
 
-    /**
-     * @return void
-     */
     public function testReadStandardCSV()
     {
         $allRows = $this->getAllRowsForFile('csv_standard.csv');
@@ -90,21 +77,15 @@ class ReaderTest extends TestCase
             ['csv--21', 'csv--22', 'csv--23'],
             ['csv--31', 'csv--32', 'csv--33'],
         ];
-        $this->assertEquals($expectedRows, $allRows);
+        static::assertSame($expectedRows, $allRows);
     }
 
-    /**
-     * @return void
-     */
     public function testReadShouldNotStopAtCommaIfEnclosed()
     {
         $allRows = $this->getAllRowsForFile('csv_with_comma_enclosed.csv');
-        $this->assertEquals('This is, a comma', $allRows[0][0]);
+        static::assertSame('This is, a comma', $allRows[0][0]);
     }
 
-    /**
-     * @return void
-     */
     public function testReadShouldKeepEmptyCells()
     {
         $allRows = $this->getAllRowsForFile('csv_with_empty_cells.csv');
@@ -114,12 +95,9 @@ class ReaderTest extends TestCase
             ['csv--21', '', 'csv--23'],
             ['csv--31', 'csv--32', ''],
         ];
-        $this->assertEquals($expectedRows, $allRows);
+        static::assertSame($expectedRows, $allRows);
     }
 
-    /**
-     * @return void
-     */
     public function testReadShouldSkipEmptyLinesIfShouldPreserveEmptyRowsNotSet()
     {
         $allRows = $this->getAllRowsForFile('csv_with_multiple_empty_lines.csv');
@@ -132,12 +110,9 @@ class ReaderTest extends TestCase
             // skipped row here
             // last row empty
         ];
-        $this->assertEquals($expectedRows, $allRows);
+        static::assertSame($expectedRows, $allRows);
     }
 
-    /**
-     * @return void
-     */
     public function testReadShouldReturnEmptyLinesIfShouldPreserveEmptyRowsSet()
     {
         $allRows = $this->getAllRowsForFile(
@@ -155,7 +130,7 @@ class ReaderTest extends TestCase
             ['csv--41', 'csv--42', 'csv--43'],
             [''],
         ];
-        $this->assertEquals($expectedRows, $allRows);
+        static::assertSame($expectedRows, $allRows);
     }
 
     /**
@@ -173,17 +148,13 @@ class ReaderTest extends TestCase
      * @dataProvider dataProviderForTestReadShouldReadEmptyFile
      *
      * @param string $fileName
-     * @return void
      */
     public function testReadShouldReadEmptyFile($fileName)
     {
         $allRows = $this->getAllRowsForFile($fileName);
-        $this->assertEquals([], $allRows);
+        static::assertSame([], $allRows);
     }
 
-    /**
-     * @return void
-     */
     public function testReadShouldHaveTheRightNumberOfCells()
     {
         $allRows = $this->getAllRowsForFile('csv_with_different_cells_number.csv');
@@ -193,12 +164,9 @@ class ReaderTest extends TestCase
             ['csv--21', 'csv--22'],
             ['csv--31'],
         ];
-        $this->assertEquals($expectedRows, $allRows);
+        static::assertSame($expectedRows, $allRows);
     }
 
-    /**
-     * @return void
-     */
     public function testReadShouldSupportCustomFieldDelimiter()
     {
         $allRows = $this->getAllRowsForFile('csv_delimited_with_pipes.csv', '|');
@@ -208,38 +176,29 @@ class ReaderTest extends TestCase
             ['csv--21', 'csv--22', 'csv--23'],
             ['csv--31', 'csv--32', 'csv--33'],
         ];
-        $this->assertEquals($expectedRows, $allRows);
+        static::assertSame($expectedRows, $allRows);
     }
 
-    /**
-     * @return void
-     */
     public function testReadShouldSupportCustomFieldEnclosure()
     {
         $allRows = $this->getAllRowsForFile('csv_text_enclosed_with_pound.csv', ',', '#');
-        $this->assertEquals('This is, a comma', $allRows[0][0]);
+        static::assertSame('This is, a comma', $allRows[0][0]);
     }
 
-    /**
-     * @return void
-     */
     public function testReadShouldSupportEscapedCharacters()
     {
         $allRows = $this->getAllRowsForFile('csv_with_escaped_characters.csv');
 
         $expectedRow = ['"csv--11"', 'csv--12\\', 'csv--13\\\\', 'csv--14\\\\\\'];
-        $this->assertEquals([$expectedRow], $allRows);
+        static::assertSame([$expectedRow], $allRows);
     }
 
-    /**
-     * @return void
-     */
     public function testReadShouldNotTruncateLineBreak()
     {
         $allRows = $this->getAllRowsForFile('csv_with_line_breaks.csv');
 
         $newLine = PHP_EOL; // to support both Unix and Windows
-        $this->assertEquals("This is,{$newLine}a comma", $allRows[0][0]);
+        static::assertSame("This is,{$newLine}a comma", $allRows[0][0]);
     }
 
     /**
@@ -261,7 +220,6 @@ class ReaderTest extends TestCase
      *
      * @param string $fileName
      * @param string $fileEncoding
-     * @return void
      */
     public function testReadShouldSkipBom($fileName, $fileEncoding)
     {
@@ -272,7 +230,7 @@ class ReaderTest extends TestCase
             ['csv--21', 'csv--22', 'csv--23'],
             ['csv--31', 'csv--32', 'csv--33'],
         ];
-        $this->assertEquals($expectedRows, $allRows);
+        static::assertSame($expectedRows, $allRows);
     }
 
     /**
@@ -296,8 +254,7 @@ class ReaderTest extends TestCase
      *
      * @param string $fileName
      * @param string $fileEncoding
-     * @param bool $shouldUseIconv
-     * @return void
+     * @param bool   $shouldUseIconv
      */
     public function testReadShouldSupportNonUTF8FilesWithoutBOMs($fileName, $fileEncoding, $shouldUseIconv)
     {
@@ -306,20 +263,22 @@ class ReaderTest extends TestCase
 
         /** @var \OpenSpout\Common\Helper\GlobalFunctionsHelper|\PHPUnit\Framework\MockObject\MockObject $helperStub */
         $helperStub = $this->getMockBuilder('\OpenSpout\Common\Helper\GlobalFunctionsHelper')
-                        ->onlyMethods(['function_exists'])
-                        ->getMock();
+            ->onlyMethods(['function_exists'])
+            ->getMock()
+        ;
 
         $returnValueMap = [
             ['iconv', $shouldUseIconv],
             ['mb_convert_encoding', true],
         ];
-        $helperStub->method('function_exists')->will($this->returnValueMap($returnValueMap));
+        $helperStub->method('function_exists')->willReturnMap($returnValueMap);
 
         /** @var \OpenSpout\Reader\CSV\Reader $reader */
         $reader = $this->createCSVReader(null, $helperStub);
         $reader
             ->setEncoding($fileEncoding)
-            ->open($resourcePath);
+            ->open($resourcePath)
+        ;
 
         foreach ($reader->getSheetIterator() as $sheet) {
             foreach ($sheet->getRowIterator() as $row) {
@@ -334,12 +293,9 @@ class ReaderTest extends TestCase
             ['csv--21', 'csv--22', 'csv--23'],
             ['csv--31', 'csv--32', 'csv--33'],
         ];
-        $this->assertEquals($expectedRows, $allRows);
+        static::assertSame($expectedRows, $allRows);
     }
 
-    /**
-     * @return void
-     */
     public function testReadMultipleTimesShouldRewindReader()
     {
         $allRows = [];
@@ -348,18 +304,19 @@ class ReaderTest extends TestCase
         $reader = $this->createCSVReader();
         $reader->open($resourcePath);
 
-        foreach ($reader->getSheetIterator() as $sheet) {
-            // do nothing
-        }
+        foreach ($reader->getSheetIterator() as $sheet);
+        // do nothing
 
         foreach ($reader->getSheetIterator() as $sheet) {
             foreach ($sheet->getRowIterator() as $row) {
                 $allRows[] = $row->toArray();
+
                 break;
             }
 
             foreach ($sheet->getRowIterator() as $row) {
                 $allRows[] = $row->toArray();
+
                 break;
             }
         }
@@ -367,6 +324,7 @@ class ReaderTest extends TestCase
         foreach ($reader->getSheetIterator() as $sheet) {
             foreach ($sheet->getRowIterator() as $row) {
                 $allRows[] = $row->toArray();
+
                 break;
             }
         }
@@ -378,12 +336,11 @@ class ReaderTest extends TestCase
             ['csv--11', 'csv--12', 'csv--13'],
             ['csv--11', 'csv--12', 'csv--13'],
         ];
-        $this->assertEquals($expectedRows, $allRows);
+        static::assertSame($expectedRows, $allRows);
     }
 
     /**
-     * https://github.com/box/spout/issues/184
-     * @return void
+     * https://github.com/box/spout/issues/184.
      */
     public function testReadShouldInludeRowsWithZerosOnly()
     {
@@ -394,12 +351,11 @@ class ReaderTest extends TestCase
             ['1', '2', '3'],
             ['0', '0', '0'],
         ];
-        $this->assertEquals($expectedRows, $allRows, 'There should be only 3 rows, because zeros (0) are valid values');
+        static::assertSame($expectedRows, $allRows, 'There should be only 3 rows, because zeros (0) are valid values');
     }
 
     /**
-     * https://github.com/box/spout/issues/184
-     * @return void
+     * https://github.com/box/spout/issues/184.
      */
     public function testReadShouldCreateOutputEmptyCellPreserved()
     {
@@ -410,12 +366,11 @@ class ReaderTest extends TestCase
             ['0', '', ''],
             ['1', '1', ''],
         ];
-        $this->assertEquals($expectedRows, $allRows, 'There should be 3 rows, with equal length');
+        static::assertSame($expectedRows, $allRows, 'There should be 3 rows, with equal length');
     }
 
     /**
-     * https://github.com/box/spout/issues/195
-     * @return void
+     * https://github.com/box/spout/issues/195.
      */
     public function testReaderShouldNotTrimCellValues()
     {
@@ -425,15 +380,12 @@ class ReaderTest extends TestCase
         $expectedRows = [
             ['A'],
             [' A '],
-            ["$newLine\tA$newLine\t"],
+            ["{$newLine}\tA{$newLine}\t"],
         ];
 
-        $this->assertEquals($expectedRows, $allRows, 'Cell values should not be trimmed');
+        static::assertSame($expectedRows, $allRows, 'Cell values should not be trimmed');
     }
 
-    /**
-     * @return void
-     */
     public function testReadCustomStreamWrapper()
     {
         $allRows = [];
@@ -459,15 +411,12 @@ class ReaderTest extends TestCase
             ['csv--21', 'csv--22', 'csv--23'],
             ['csv--31', 'csv--32', 'csv--33'],
         ];
-        $this->assertEquals($expectedRows, $allRows);
+        static::assertSame($expectedRows, $allRows);
 
         // cleanup
         stream_wrapper_unregister('spout');
     }
 
-    /**
-     * @return void
-     */
     public function testReadWithUnsupportedCustomStreamWrapper()
     {
         $this->expectException(IOException::class);
@@ -478,8 +427,9 @@ class ReaderTest extends TestCase
     }
 
     /**
-     * @param \OpenSpout\Common\Helper\GlobalFunctionsHelper|null $optionsManager
-     * @param \OpenSpout\Common\Manager\OptionsManagerInterface|null $globalFunctionsHelper
+     * @param null|\OpenSpout\Common\Helper\GlobalFunctionsHelper    $optionsManager
+     * @param null|\OpenSpout\Common\Manager\OptionsManagerInterface $globalFunctionsHelper
+     *
      * @return ReaderInterface
      */
     private function createCSVReader($optionsManager = null, $globalFunctionsHelper = null)
@@ -496,7 +446,8 @@ class ReaderTest extends TestCase
      * @param string $fieldDelimiter
      * @param string $fieldEnclosure
      * @param string $encoding
-     * @param bool $shouldPreserveEmptyRows
+     * @param bool   $shouldPreserveEmptyRows
+     *
      * @return array All the read rows the given file
      */
     private function getAllRowsForFile(
@@ -516,7 +467,8 @@ class ReaderTest extends TestCase
             ->setFieldEnclosure($fieldEnclosure)
             ->setEncoding($encoding)
             ->setShouldPreserveEmptyRows($shouldPreserveEmptyRows)
-            ->open($resourcePath);
+            ->open($resourcePath)
+        ;
 
         foreach ($reader->getSheetIterator() as $sheetIndex => $sheet) {
             foreach ($sheet->getRowIterator() as $rowIndex => $row) {

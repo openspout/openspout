@@ -20,41 +20,47 @@ use OpenSpout\Writer\XLSX\Manager\OptionsManager as XLSXOptionsManager;
 use OpenSpout\Writer\XLSX\Writer as XLSXWriter;
 
 /**
- * Class WriterFactory
  * This factory is used to create writers, based on the type of the file to be read.
  * It supports CSV, XLSX and ODS formats.
  */
 class WriterFactory
 {
     /**
-     * This creates an instance of the appropriate writer, given the extension of the file to be written
+     * This creates an instance of the appropriate writer, given the extension of the file to be written.
      *
      * @param string $path The path to the spreadsheet file. Supported extensions are .csv,.ods and .xlsx
+     *
      * @throws \OpenSpout\Common\Exception\UnsupportedTypeException
+     *
      * @return WriterInterface
      */
     public static function createFromFile(string $path)
     {
-        $extension = \strtolower(\pathinfo($path, PATHINFO_EXTENSION));
+        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
 
         return self::createFromType($extension);
     }
 
     /**
-     * This creates an instance of the appropriate writer, given the type of the file to be written
+     * This creates an instance of the appropriate writer, given the type of the file to be written.
      *
      * @param string $writerType Type of the writer to instantiate
+     *
      * @throws \OpenSpout\Common\Exception\UnsupportedTypeException
+     *
      * @return WriterInterface
      */
     public static function createFromType($writerType)
     {
         switch ($writerType) {
             case Type::CSV: return self::createCSVWriter();
+
             case Type::XLSX: return self::createXLSXWriter();
+
             case Type::ODS: return self::createODSWriter();
+
             default:
-                throw new UnsupportedTypeException('No writers supporting the given type: ' . $writerType);
+                throw new UnsupportedTypeException('No writers supporting the given type: '.$writerType);
         }
     }
 

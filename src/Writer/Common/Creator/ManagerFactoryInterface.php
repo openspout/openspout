@@ -7,12 +7,11 @@ use OpenSpout\Writer\Common\Manager\SheetManager;
 use OpenSpout\Writer\Common\Manager\WorkbookManagerInterface;
 
 /**
- * Interface ManagerFactoryInterface
+ * Interface ManagerFactoryInterface.
  */
 interface ManagerFactoryInterface
 {
     /**
-     * @param OptionsManagerInterface $optionsManager
      * @return WorkbookManagerInterface
      */
     public function createWorkbookManager(OptionsManagerInterface $optionsManager);

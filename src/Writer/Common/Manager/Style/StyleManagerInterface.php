@@ -6,7 +6,7 @@ use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Style\Style;
 
 /**
- * Interface StyleHManagernterface
+ * Interface StyleHManagernterface.
  */
 interface StyleManagerInterface
 {
@@ -15,7 +15,8 @@ interface StyleManagerInterface
      * Duplicate styles won't be registered more than once.
      *
      * @param Style $style The style to be registered
-     * @return Style The registered style, updated with an internal ID.
+     *
+     * @return Style the registered style, updated with an internal ID
      */
     public function registerStyle($style);
 
@@ -23,8 +24,7 @@ interface StyleManagerInterface
      * Apply additional styles if the given row needs it.
      * Typically, set "wrap text" if a cell contains a new line.
      *
-     * @param Cell $cell
      * @return PossiblyUpdatedStyle The eventually updated style
      */
-    public function applyExtraStylesIfNeeded(Cell $cell) : PossiblyUpdatedStyle;
+    public function applyExtraStylesIfNeeded(Cell $cell): PossiblyUpdatedStyle;
 }

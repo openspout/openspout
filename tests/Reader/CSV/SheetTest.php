@@ -8,26 +8,24 @@ use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class SheetTest
+ * @internal
  */
-class SheetTest extends TestCase
+final class SheetTest extends TestCase
 {
     use TestUsingResource;
 
-    /**
-     * @return void
-     */
     public function testReaderShouldReturnCorrectSheetInfos()
     {
         $sheet = $this->openFileAndReturnSheet('csv_standard.csv');
 
-        $this->assertEquals('', $sheet->getName());
-        $this->assertEquals(0, $sheet->getIndex());
-        $this->assertTrue($sheet->isActive());
+        static::assertSame('', $sheet->getName());
+        static::assertSame(0, $sheet->getIndex());
+        static::assertTrue($sheet->isActive());
     }
 
     /**
      * @param string $fileName
+     *
      * @return SheetInterface
      */
     private function openFileAndReturnSheet($fileName)

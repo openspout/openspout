@@ -5,8 +5,7 @@ namespace OpenSpout\Common\Entity\Style;
 use OpenSpout\Common\Exception\InvalidColorException;
 
 /**
- * Class Color
- * This class provides constants and functions to work with colors
+ * This class provides constants and functions to work with colors.
  */
 abstract class Color
 {
@@ -25,11 +24,12 @@ abstract class Color
     public const PURPLE = '7030A0';
 
     /**
-     * Returns an RGB color from R, G and B values
+     * Returns an RGB color from R, G and B values.
      *
-     * @param int $red Red component, 0 - 255
+     * @param int $red   Red component, 0 - 255
      * @param int $green Green component, 0 - 255
-     * @param int $blue Blue component, 0 - 255
+     * @param int $blue  Blue component, 0 - 255
+     *
      * @return string RGB color
      */
     public static function rgb($red, $green, $blue)
@@ -38,36 +38,11 @@ abstract class Color
         self::throwIfInvalidColorComponentValue($green);
         self::throwIfInvalidColorComponentValue($blue);
 
-        return \strtoupper(
-            self::convertColorComponentToHex($red) .
-            self::convertColorComponentToHex($green) .
+        return strtoupper(
+            self::convertColorComponentToHex($red).
+            self::convertColorComponentToHex($green).
             self::convertColorComponentToHex($blue)
         );
-    }
-
-    /**
-     * Throws an exception is the color component value is outside of bounds (0 - 255)
-     *
-     * @param int $colorComponent
-     * @throws \OpenSpout\Common\Exception\InvalidColorException
-     * @return void
-     */
-    protected static function throwIfInvalidColorComponentValue($colorComponent)
-    {
-        if (!\is_int($colorComponent) || $colorComponent < 0 || $colorComponent > 255) {
-            throw new InvalidColorException("The RGB components must be between 0 and 255. Received: $colorComponent");
-        }
-    }
-
-    /**
-     * Converts the color component to its corresponding hexadecimal value
-     *
-     * @param int $colorComponent Color component, 0 - 255
-     * @return string Corresponding hexadecimal value, with a leading 0 if needed. E.g "0f", "2d"
-     */
-    protected static function convertColorComponentToHex($colorComponent)
-    {
-        return \str_pad(\dechex($colorComponent), 2, '0', STR_PAD_LEFT);
     }
 
     /**
@@ -75,10 +50,37 @@ abstract class Color
      * assuming that alpha value is always 1.
      *
      * @param string $rgbColor RGB color like "FF08B2"
+     *
      * @return string ARGB color
      */
     public static function toARGB($rgbColor)
     {
-        return 'FF' . $rgbColor;
+        return 'FF'.$rgbColor;
+    }
+
+    /**
+     * Throws an exception is the color component value is outside of bounds (0 - 255).
+     *
+     * @param int $colorComponent
+     *
+     * @throws \OpenSpout\Common\Exception\InvalidColorException
+     */
+    protected static function throwIfInvalidColorComponentValue($colorComponent)
+    {
+        if (!\is_int($colorComponent) || $colorComponent < 0 || $colorComponent > 255) {
+            throw new InvalidColorException("The RGB components must be between 0 and 255. Received: {$colorComponent}");
+        }
+    }
+
+    /**
+     * Converts the color component to its corresponding hexadecimal value.
+     *
+     * @param int $colorComponent Color component, 0 - 255
+     *
+     * @return string Corresponding hexadecimal value, with a leading 0 if needed. E.g "0f", "2d"
+     */
+    protected static function convertColorComponentToHex($colorComponent)
+    {
+        return str_pad(dechex($colorComponent), 2, '0', STR_PAD_LEFT);
     }
 }

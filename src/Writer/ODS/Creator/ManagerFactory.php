@@ -14,8 +14,7 @@ use OpenSpout\Writer\ODS\Manager\WorkbookManager;
 use OpenSpout\Writer\ODS\Manager\WorksheetManager;
 
 /**
- * Class ManagerFactory
- * Factory for managers needed by the ODS Writer
+ * Factory for managers needed by the ODS Writer.
  */
 class ManagerFactory implements ManagerFactoryInterface
 {
@@ -25,10 +24,6 @@ class ManagerFactory implements ManagerFactoryInterface
     /** @var HelperFactory */
     protected $helperFactory;
 
-    /**
-     * @param InternalEntityFactory $entityFactory
-     * @param HelperFactory $helperFactory
-     */
     public function __construct(InternalEntityFactory $entityFactory, HelperFactory $helperFactory)
     {
         $this->entityFactory = $entityFactory;
@@ -36,7 +31,6 @@ class ManagerFactory implements ManagerFactoryInterface
     }
 
     /**
-     * @param OptionsManagerInterface $optionsManager
      * @return WorkbookManager
      */
     public function createWorkbookManager(OptionsManagerInterface $optionsManager)
@@ -63,8 +57,16 @@ class ManagerFactory implements ManagerFactoryInterface
     }
 
     /**
-     * @param StyleManager $styleManager
-     * @param StyleMerger $styleMerger
+     * @return SheetManager
+     */
+    public function createSheetManager()
+    {
+        $stringHelper = $this->helperFactory->createStringHelper();
+
+        return new SheetManager($stringHelper);
+    }
+
+    /**
      * @return WorksheetManager
      */
     private function createWorksheetManager(StyleManager $styleManager, StyleMerger $styleMerger)
@@ -76,17 +78,6 @@ class ManagerFactory implements ManagerFactoryInterface
     }
 
     /**
-     * @return SheetManager
-     */
-    public function createSheetManager()
-    {
-        $stringHelper = $this->helperFactory->createStringHelper();
-
-        return new SheetManager($stringHelper);
-    }
-
-    /**
-     * @param OptionsManagerInterface $optionsManager
      * @return StyleManager
      */
     private function createStyleManager(OptionsManagerInterface $optionsManager)
@@ -97,7 +88,6 @@ class ManagerFactory implements ManagerFactoryInterface
     }
 
     /**
-     * @param OptionsManagerInterface $optionsManager
      * @return StyleRegistry
      */
     private function createStyleRegistry(OptionsManagerInterface $optionsManager)

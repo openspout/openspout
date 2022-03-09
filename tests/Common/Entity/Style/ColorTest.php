@@ -6,9 +6,9 @@ use OpenSpout\Common\Exception\InvalidColorException;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class ColorTest
+ * @internal
  */
-class ColorTest extends TestCase
+final class ColorTest extends TestCase
 {
     /**
      * @return array
@@ -41,16 +41,15 @@ class ColorTest extends TestCase
     /**
      * @dataProvider dataProviderForTestRGB
      *
-     * @param int $red
-     * @param int $green
-     * @param int $blue
+     * @param int    $red
+     * @param int    $green
+     * @param int    $blue
      * @param string $expectedColor
-     * @return void
      */
     public function testRGB($red, $green, $blue, $expectedColor)
     {
         $color = Color::rgb($red, $green, $blue);
-        $this->assertEquals($expectedColor, $color);
+        static::assertSame($expectedColor, $color);
     }
 
     /**
@@ -83,7 +82,6 @@ class ColorTest extends TestCase
      * @param int $red
      * @param int $green
      * @param int $blue
-     * @return void
      */
     public function testRGBInvalidColorComponents($red, $green, $blue)
     {

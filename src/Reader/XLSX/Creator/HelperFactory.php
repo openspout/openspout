@@ -8,16 +8,16 @@ use OpenSpout\Reader\XLSX\Manager\SharedStringsManager;
 use OpenSpout\Reader\XLSX\Manager\StyleManager;
 
 /**
- * Class HelperFactory
- * Factory to create helpers
+ * Factory to create helpers.
  */
 class HelperFactory extends \OpenSpout\Common\Creator\HelperFactory
 {
     /**
      * @param SharedStringsManager $sharedStringsManager Manages shared strings
-     * @param StyleManager $styleManager Manages styles
-     * @param bool $shouldFormatDates Whether date/time values should be returned as PHP objects or be formatted as strings
-     * @param bool $shouldUse1904Dates Whether date/time values should use a calendar starting in 1904 instead of 1900
+     * @param StyleManager         $styleManager         Manages styles
+     * @param bool                 $shouldFormatDates    Whether date/time values should be returned as PHP objects or be formatted as strings
+     * @param bool                 $shouldUse1904Dates   Whether date/time values should use a calendar starting in 1904 instead of 1900
+     *
      * @return CellValueFormatter
      */
     public function createCellValueFormatter($sharedStringsManager, $styleManager, $shouldFormatDates, $shouldUse1904Dates)
@@ -32,7 +32,7 @@ class HelperFactory extends \OpenSpout\Common\Creator\HelperFactory
      */
     public function createStringsEscaper()
     {
-        /* @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+        // @noinspection PhpUnnecessaryFullyQualifiedNameInspection
         return new Escaper\XLSX();
     }
 }

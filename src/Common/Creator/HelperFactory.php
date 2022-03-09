@@ -8,8 +8,7 @@ use OpenSpout\Common\Helper\GlobalFunctionsHelper;
 use OpenSpout\Common\Helper\StringHelper;
 
 /**
- * Class HelperFactory
- * Factory to create helpers
+ * Factory to create helpers.
  */
 class HelperFactory
 {
@@ -23,6 +22,7 @@ class HelperFactory
 
     /**
      * @param string $baseFolderPath The path of the base folder where all the I/O can occur
+     *
      * @return FileSystemHelper
      */
     public function createFileSystemHelper($baseFolderPath)
@@ -31,7 +31,6 @@ class HelperFactory
     }
 
     /**
-     * @param GlobalFunctionsHelper $globalFunctionsHelper
      * @return EncodingHelper
      */
     public function createEncodingHelper(GlobalFunctionsHelper $globalFunctionsHelper)
