@@ -147,7 +147,7 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
 
     /**
      * @param null|float $width
-     * @param array      $columns One or more columns with this width
+     * @param int        ...$columns One or more columns with this width
      *
      * @throws WriterNotOpenedException
      */

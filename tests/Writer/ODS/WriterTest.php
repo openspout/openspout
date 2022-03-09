@@ -250,7 +250,7 @@ final class WriterTest extends TestCase
 
     public function testAddRowShouldSupportFloatValuesInDifferentLocale()
     {
-        $previousLocale = setlocale(LC_ALL, 0);
+        $previousLocale = setlocale(LC_ALL, '0');
 
         try {
             // Pick a supported locale whose decimal point is a comma.

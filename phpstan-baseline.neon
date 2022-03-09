@@ -60,3 +60,13 @@ parameters:
 			count: 1
 			path: src/Writer/Common/Creator/WriterEntityFactory.php
 
+		-
+			message: "#^Parameter \\#1 \\$rows of method OpenSpout\\\\Writer\\\\WriterAbstract\\:\\:addRows\\(\\) expects array\\<OpenSpout\\\\Common\\\\Entity\\\\Row\\>, array\\<int, array\\<int, string\\>\\> given\\.$#"
+			count: 1
+			path: tests/Writer/CSV/WriterTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$allRows of method OpenSpout\\\\Writer\\\\XLSX\\\\WriterTest\\:\\:writeToXLSXFile\\(\\) expects array\\<OpenSpout\\\\Common\\\\Entity\\\\Row\\>, array\\<int, array\\<int, string\\>\\> given\\.$#"
+			count: 1
+			path: tests/Writer/XLSX/WriterTest.php
+

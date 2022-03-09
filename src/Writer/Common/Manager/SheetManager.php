@@ -82,7 +82,7 @@ class SheetManager
     }
 
     /**
-     * @param int $workbookId Workbook ID associated to a Sheet
+     * @param string $workbookId Workbook ID associated to a Sheet
      */
     public function markWorkbookIdAsUsed($workbookId)
     {

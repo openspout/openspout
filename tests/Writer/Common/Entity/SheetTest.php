@@ -110,8 +110,8 @@ final class SheetTest extends TestCase
     }
 
     /**
-     * @param int $sheetIndex
-     * @param int $associatedWorkbookId
+     * @param int    $sheetIndex
+     * @param string $associatedWorkbookId
      *
      * @return Sheet
      */

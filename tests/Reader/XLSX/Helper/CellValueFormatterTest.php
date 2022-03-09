@@ -4,6 +4,7 @@ namespace OpenSpout\Reader\XLSX\Helper;
 
 use OpenSpout\Common\Helper\Escaper;
 use OpenSpout\Reader\Exception\InvalidValueException;
+use OpenSpout\Reader\XLSX\Manager\SharedStringsManager;
 use OpenSpout\Reader\XLSX\Manager\StyleManager;
 use PHPUnit\Framework\TestCase;
 
@@ -100,7 +101,7 @@ final class CellValueFormatterTest extends TestCase
             ->willReturn(true)
         ;
 
-        $formatter = new CellValueFormatter(null, $styleManagerMock, false, $shouldUse1904Dates, new Escaper\XLSX());
+        $formatter = new CellValueFormatter($this->createMock(SharedStringsManager::class), $styleManagerMock, false, $shouldUse1904Dates, new Escaper\XLSX());
 
         try {
             $result = $formatter->extractAndFormatNodeValue($nodeMock);
@@ -159,7 +160,7 @@ final class CellValueFormatterTest extends TestCase
             ->willReturn(false)
         ;
 
-        $formatter = new CellValueFormatter(null, $styleManagerMock, false, false, new Escaper\XLSX());
+        $formatter = new CellValueFormatter($this->createMock(SharedStringsManager::class), $styleManagerMock, false, false, new Escaper\XLSX());
         $formattedValue = \ReflectionHelper::callMethodOnObject($formatter, 'formatNumericCellValue', $value, 0);
 
         static::assertSame($expectedFormattedValue, $formattedValue);
@@ -208,7 +209,13 @@ final class CellValueFormatterTest extends TestCase
             ->willReturn($nodeListMock)
         ;
 
-        $formatter = new CellValueFormatter(null, null, false, false, new Escaper\XLSX());
+        $formatter = new CellValueFormatter(
+            $this->createMock(SharedStringsManager::class),
+            $this->createMock(StyleManager::class),
+            false,
+            false,
+            new Escaper\XLSX()
+        );
         $formattedValue = \ReflectionHelper::callMethodOnObject($formatter, 'formatInlineStringCellValue', $nodeMock);
 
         static::assertSame($expectedFormattedValue, $formattedValue);

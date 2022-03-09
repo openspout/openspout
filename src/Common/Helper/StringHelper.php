@@ -99,7 +99,7 @@ class StringHelper
             return str_replace(
                 [$this->localeInfo['thousands_sep'], $this->localeInfo['decimal_point']],
                 ['', '.'],
-                $numericValue
+                (string) $numericValue
             );
         }
 
