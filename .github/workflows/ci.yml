@@ -1,270 +1,154 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  pull_request:
+  push:
 
 jobs:
-  tests-on-php-latest:
+
+  tests:
+    name: "Tests"
+
+    runs-on: ${{ matrix.os }}
+
+    env:
+      code-coverage: "none"
+
     strategy:
       matrix:
-        operating-system: [ubuntu-latest, windows-latest]
-    runs-on: ${{ matrix.operating-system }}
-    name: Tests - PHP 8.1 on ${{ matrix.operating-system }}
-    env:
-      extensions: zip, xmlreader, dom
-      cache-key: cache-matrix-v1 # can be any string, change to clear the extension cache.
+        os:
+          - "ubuntu-latest"
+        php-version:
+          - "7.3"
+          - "7.4"
+          - "8.0"
+        include:
+            - os: "windows-latest"
+              php-version: "8.1"
+              code-coverage: "none"
+            - os: "ubuntu-latest"
+              php-version: "8.1"
+              code-coverage: "pcov"
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - name: "Checkout"
+        uses: "actions/checkout@v3"
 
-      - name: Setup cache environment
-        id: extcache
-        uses: shivammathur/cache-extensions@v1
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
         with:
-          php-version: '8.1'
-          extensions: ${{ env.extensions }}
-          key: ${{ env.cache-key }}
+          coverage: ${{ matrix.code-coverage }}
+          php-version: ${{ matrix.php-version }}
+          extensions: zip, xmlreader, dom
+          ini-values: zend.assertions=1
 
-      - name: Cache extensions
-        uses: actions/cache@v2
-        with:
-          path: ${{ steps.extcache.outputs.dir }}
-          key: ${{ steps.extcache.outputs.key }}
-          restore-keys: ${{ steps.extcache.outputs.key }}
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2 #https://github.com/shivammathur/setup-php
-        with:
-          php-version: '8.1'
-          extensions: ${{ env.extensions }}
-
-      - name: Get composer cache directory
-        id: composer-cache
+      - name: "Get composer cache directory"
+        id: "composercache"
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
-      - name: Cache composer dependencies
-        uses: actions/cache@v2
+      - name: "Cache dependencies"
+        uses: "actions/cache@v2"
         with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          # Use composer.json for key, if composer.lock is not committed.
-          # key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-composer-
+          path: ${{ steps.composercache.outputs.dir }}
+          key: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-
 
-      - name: Install dependencies
-        run: composer install --no-progress --prefer-dist --optimize-autoloader
+      - name: "Install dependencies"
+        run: "composer update --no-interaction --no-progress"
 
-      - name: Test with phpunit
-        run: vendor/bin/phpunit --no-coverage
+      - name: "Run tests"
+        if: ${{ matrix.code-coverage == 'none' }}
+        timeout-minutes: 3
+        run: "vendor/bin/phpunit --no-coverage --no-logging"
 
-  tests-on-older-php:
+      - name: "Run tests"
+        if: ${{ matrix.code-coverage != 'none' }}
+        timeout-minutes: 3
+        run: "vendor/bin/phpunit --coverage-clover=coverage.xml"
+
+      - name: "Send code coverage report to Codecov.io"
+        if: ${{ matrix.code-coverage != 'none' }}
+        uses: codecov/codecov-action@v2.1.0
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml
+          fail_ci_if_error: true
+
+  coding-standards:
+    name: "Coding Standards"
+
+    runs-on: "ubuntu-latest"
+
     strategy:
       matrix:
-        php-versions: ['7.3', '7.4', '8.0']
-    runs-on: ubuntu-latest
-    name: Tests - PHP ${{ matrix.php-versions }}
-    env:
-      extensions: zip, xmlreader, dom
-      cache-key: cache-matrix-v1 # can be any string, change to clear the extension cache.
+        php-version:
+          - "8.1"
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - name: "Checkout"
+        uses: "actions/checkout@v3"
 
-      - name: Setup cache environment
-        id: extcache
-        uses: shivammathur/cache-extensions@v1
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
         with:
-          php-version: ${{ matrix.php-versions }}
-          extensions: ${{ env.extensions }}
-          key: ${{ env.cache-key }}
+          coverage: "none"
+          php-version: ${{ matrix.php-version }}
+          extensions: zip, xmlreader, dom
+          ini-values: zend.assertions=1
 
-      - name: Cache extensions
-        uses: actions/cache@v2
-        with:
-          path: ${{ steps.extcache.outputs.dir }}
-          key: ${{ steps.extcache.outputs.key }}
-          restore-keys: ${{ steps.extcache.outputs.key }}
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2 #https://github.com/shivammathur/setup-php
-        with:
-          php-version: ${{ matrix.php-versions }}
-          extensions: ${{ env.extensions }}
-
-      - name: Get composer cache directory
-        id: composer-cache
+      - name: "Get composer cache directory"
+        id: "composercache"
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
-      - name: Cache composer dependencies
-        uses: actions/cache@v2
+      - name: "Cache dependencies"
+        uses: "actions/cache@v2"
         with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          # Use composer.json for key, if composer.lock is not committed.
-          # key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-composer-
+          path: ${{ steps.composercache.outputs.dir }}
+          key: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-
 
-      - name: Install dependencies
-        run: composer install --no-progress --prefer-dist --optimize-autoloader
+      - name: "Install dependencies"
+        run: "composer update --no-interaction --no-progress"
 
-      - name: Test with phpunit
-        run: vendor/bin/phpunit --no-coverage
-
-  code-coverage:
-    name: Code coverage
-    runs-on: ubuntu-latest
-    env:
-      extensions: zip, xmlreader, dom
-      cache-key: cache-single-v1 # can be any string, change to clear the extension cache.
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Setup cache environment
-        id: extcache
-        uses: shivammathur/cache-extensions@v1
-        with:
-          php-version: '8.1'
-          extensions: ${{ env.extensions }}
-          key: ${{ env.cache-key }}
-
-      - name: Cache extensions
-        uses: actions/cache@v2
-        with:
-          path: ${{ steps.extcache.outputs.dir }}
-          key: ${{ steps.extcache.outputs.key }}
-          restore-keys: ${{ steps.extcache.outputs.key }}
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.1'
-          extensions: ${{ env.extensions }}
-
-      - name: Get composer cache directory
-        id: composer-cache
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-      - name: Cache composer dependencies
-        uses: actions/cache@v2
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          # Use composer.json for key, if composer.lock is not committed.
-          # key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-composer-
-
-      - name: Install dependencies
-        run: composer install --no-progress --prefer-dist --optimize-autoloader
-
-      - name: Run Tests with Code Coverage
-        run: |
-          mkdir -p build/logs
-          vendor/bin/phpunit --coverage-clover=build/logs/clover.xml
-
-      - name: Upload coverage results to Coveralls
-        env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          composer global require php-coveralls/php-coveralls
-          php-coveralls --coverage_clover=build/logs/clover.xml -v --exclude-no-stmt
-
-  coding-style:
-    name: Coding Style
-    runs-on: ubuntu-latest
-    env:
-      extensions: zip, xmlreader, dom
-      cache-key: cache-single-v1 # can be any string, change to clear the extension cache.
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Setup cache environment
-        id: extcache
-        uses: shivammathur/cache-extensions@v1
-        with:
-          php-version: '8.1'
-          extensions: ${{ env.extensions }}
-          key: ${{ env.cache-key }}
-
-      - name: Cache extensions
-        uses: actions/cache@v2
-        with:
-          path: ${{ steps.extcache.outputs.dir }}
-          key: ${{ steps.extcache.outputs.key }}
-          restore-keys: ${{ steps.extcache.outputs.key }}
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.1'
-          extensions: ${{ env.extensions }}
-
-      - name: Get composer cache directory
-        id: composer-cache
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-      - name: Cache composer dependencies
-        uses: actions/cache@v2
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          # Use composer.json for key, if composer.lock is not committed.
-          # key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-composer-
-
-      - name: Install dependencies
-        run: composer install --no-progress --prefer-dist --optimize-autoloader
-
-      - name: Run PHP-CS-Fixer
-        run: vendor/bin/php-cs-fixer fix --verbose --diff --dry-run
+      - name: "Run PHP-CS-Fixer"
+        run: "vendor/bin/php-cs-fixer fix --verbose --dry-run --diff"
 
   static-analysis:
-    name: Static Analysis
-    runs-on: ubuntu-latest
-    env:
-      extensions: zip, xmlreader, dom
-      cache-key: cache-single-v1 # can be any string, change to clear the extension cache.
+    name: "Static Analysis"
+
+    runs-on: "ubuntu-latest"
+
+    strategy:
+      matrix:
+        php-version:
+          - "8.1"
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - name: "Checkout"
+        uses: "actions/checkout@v3"
 
-      - name: Setup cache environment
-        id: extcache
-        uses: shivammathur/cache-extensions@v1
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
         with:
-          php-version: '8.1'
-          extensions: ${{ env.extensions }}
-          key: ${{ env.cache-key }}
+          coverage: "none"
+          php-version: ${{ matrix.php-version }}
+          extensions: zip, xmlreader, dom
+          ini-values: zend.assertions=1
+          tools: cs2pr
 
-      - name: Cache extensions
-        uses: actions/cache@v2
-        with:
-          path: ${{ steps.extcache.outputs.dir }}
-          key: ${{ steps.extcache.outputs.key }}
-          restore-keys: ${{ steps.extcache.outputs.key }}
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.1'
-          extensions: ${{ env.extensions }}
-          tools: phpstan
-
-      - name: Get composer cache directory
-        id: composer-cache
+      - name: "Get composer cache directory"
+        id: "composercache"
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
-      - name: Cache composer dependencies
-        uses: actions/cache@v2
+      - name: "Cache dependencies"
+        uses: "actions/cache@v2"
         with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          # Use composer.json for key, if composer.lock is not committed.
-          # key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-composer-
+          path: ${{ steps.composercache.outputs.dir }}
+          key: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-
 
-      - name: Install dependencies
-        run: composer install --no-progress --prefer-dist --optimize-autoloader
+      - name: "Install dependencies"
+        run: "composer update --no-interaction --no-progress"
 
-      - name: Static Analysis using PHPStan
-        run: ./vendor/bin/phpstan analyse -c phpstan.neon --no-progress
+      - name: "Run static analysis"
+        run: "vendor/bin/phpstan analyse --no-progress --error-format=checkstyle | cs2pr"
