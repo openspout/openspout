@@ -1,6 +1,3 @@
-/.idea
-*.iml
-
 /tests/**/resources/generated
 /tests/coverage
 /vendor
