@@ -4,9 +4,6 @@ on:
   pull_request:
   push:
 
-env:
-  LATEST_PHP: "8.1"
-
 jobs:
 
   tests:
@@ -27,9 +24,9 @@ jobs:
           - "8.0"
         include:
             - os: "windows-latest"
-              php-version: ${{ env.LATEST_PHP }}
+              php-version: "8.1"
             - os: "ubuntu-latest"
-              php-version: ${{ env.LATEST_PHP }}
+              php-version: "8.1"
               code-coverage: "pcov"
 
     steps:
@@ -84,7 +81,7 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - ${{ env.LATEST_PHP }}
+          - "8.1"
 
     steps:
       - name: "Checkout"
@@ -123,7 +120,7 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - ${{ env.LATEST_PHP }}
+          - "8.1"
 
     steps:
       - name: "Checkout"
