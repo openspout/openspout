@@ -2,7 +2,7 @@
 
 [![Latest Stable Version](https://poser.pugx.org/openspout/openspout/v/stable)](https://packagist.org/packages/openspout/openspout)
 [![Build Status](https://github.com/openspout/openspout/actions/workflows/ci.yml/badge.svg)](https://github.com/openspout/openspout/actions/workflows/ci.yml)
-[![Coverage Status](https://coveralls.io/repos/github/openspout/openspout/badge.svg?branch=main)](https://coveralls.io/github/openspout/openspout?branch=main)
+[![Code Coverage](https://codecov.io/gh/openspout/openspout/coverage.svg?branch=main)](https://codecov.io/gh/openspout/openspout?branch=main)
 [![Total Downloads](https://poser.pugx.org/openspout/openspout/downloads)](https://packagist.org/packages/openspout/openspout)
 
 OpenSpout is a community driven fork of `box/spout`, a PHP library to read and write spreadsheet files (CSV, XLSX and ODS), in a fast and scalable way.
