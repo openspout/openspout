@@ -126,7 +126,7 @@ final class WriterWithStyleTest extends TestCase
         $this->writeToXLSXFile($dataRows, $fileName);
 
         $cellDomElements = $this->getCellElementsFromSheetXmlFile($fileName);
-        static::assertCount('3', $cellDomElements, 'There should be 3 cells.');
+        static::assertCount(3, $cellDomElements, 'There should be 3 cells.');
 
         static::assertSame('1', $cellDomElements[0]->getAttribute('s'));
         static::assertSame('2', $cellDomElements[1]->getAttribute('s'));

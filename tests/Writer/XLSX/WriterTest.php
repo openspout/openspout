@@ -92,13 +92,12 @@ final class WriterTest extends TestCase
 
     public function testAddRowShouldThrowExceptionIfUnsupportedDataTypePassedIn()
     {
-        $this->expectException(InvalidArgumentException::class);
-
         $fileName = 'test_add_row_should_throw_exception_if_unsupported_data_type_passed_in.xlsx';
         $dataRows = [
             [str_repeat('a', WorksheetManager::MAX_CHARACTERS_PER_CELL + 1)],
         ];
 
+        $this->expectException(InvalidArgumentException::class);
         $this->writeToXLSXFile($dataRows, $fileName);
     }
 
@@ -344,7 +343,7 @@ final class WriterTest extends TestCase
 
     public function testAddRowShouldSupportFloatValuesInDifferentLocale()
     {
-        $previousLocale = setlocale(LC_ALL, 0);
+        $previousLocale = setlocale(LC_ALL, '0');
         $valueToWrite = 1234.5; // needs to be defined before changing the locale as PHP8 would expect 1234,5
 
         try {

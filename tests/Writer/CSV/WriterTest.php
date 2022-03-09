@@ -63,7 +63,6 @@ final class WriterTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $writer->addRows([['csv--11', 'csv--12']]);
-        $writer->close();
     }
 
     public function testCloseShouldNoopWhenWriterIsNotOpened()

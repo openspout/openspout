@@ -22,7 +22,7 @@ interface WorksheetManagerInterface
     public function setDefaultRowHeight($height);
 
     /**
-     * @param int $columns One or more columns with this width
+     * @param int ...$columns One or more columns with this width
      */
     public function setColumnWidth(float $width, ...$columns);
 
