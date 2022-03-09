@@ -5,7 +5,6 @@ namespace OpenSpout\Writer\Common\Manager\Style;
 use OpenSpout\Common\Entity\Style\Style;
 
 /**
- * Class StyleMerger
  * Takes care of merging styles together.
  */
 class StyleMerger

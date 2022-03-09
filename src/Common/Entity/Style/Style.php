@@ -3,7 +3,6 @@
 namespace OpenSpout\Common\Entity\Style;
 
 /**
- * Class Style
  * Represents a style to be applied to a cell.
  */
 class Style

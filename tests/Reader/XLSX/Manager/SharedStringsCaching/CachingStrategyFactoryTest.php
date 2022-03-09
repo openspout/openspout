@@ -6,10 +6,7 @@ use OpenSpout\Reader\XLSX\Creator\HelperFactory;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class CachingStrategyFactoryTest.
- *
  * @internal
- * @coversNothing
  */
 final class CachingStrategyFactoryTest extends TestCase
 {

@@ -5,7 +5,6 @@ namespace OpenSpout\Reader\XLSX\Manager;
 use OpenSpout\Reader\XLSX\Creator\InternalEntityFactory;
 
 /**
- * Class StyleManager
  * This class manages XLSX styles.
  */
 class StyleManager

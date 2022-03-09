@@ -11,7 +11,6 @@ use OpenSpout\Reader\CSV\Creator\InternalEntityFactory;
 use OpenSpout\Reader\ReaderAbstract;
 
 /**
- * Class Reader
  * This class provides support to read data from a CSV file.
  */
 class Reader extends ReaderAbstract

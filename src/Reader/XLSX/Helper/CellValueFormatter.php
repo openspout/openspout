@@ -7,7 +7,6 @@ use OpenSpout\Reader\XLSX\Manager\SharedStringsManager;
 use OpenSpout\Reader\XLSX\Manager\StyleManager;
 
 /**
- * Class CellValueFormatter
  * This class provides helper functions to format cell values.
  */
 class CellValueFormatter

@@ -8,7 +8,6 @@ use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Common\Exception\InvalidArgumentException;
 
 /**
- * Class StyleBuilder
  * Builder to create new styles.
  */
 class StyleBuilder

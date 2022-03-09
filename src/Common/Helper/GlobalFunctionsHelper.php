@@ -3,7 +3,6 @@
 namespace OpenSpout\Common\Helper;
 
 /**
- * Class GlobalFunctionsHelper
  * This class wraps global functions to facilitate testing.
  *
  * @codeCoverageIgnore

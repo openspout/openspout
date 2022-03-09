@@ -8,10 +8,7 @@ use OpenSpout\Writer\Exception\InvalidSheetNameException;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class SheetTest.
- *
  * @internal
- * @coversNothing
  */
 final class SheetTest extends TestCase
 {

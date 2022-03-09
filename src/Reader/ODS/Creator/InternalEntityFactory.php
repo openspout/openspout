@@ -13,7 +13,6 @@ use OpenSpout\Reader\ODS\SheetIterator;
 use OpenSpout\Reader\Wrapper\XMLReader;
 
 /**
- * Class EntityFactory
  * Factory to create entities.
  */
 class InternalEntityFactory implements InternalEntityFactoryInterface

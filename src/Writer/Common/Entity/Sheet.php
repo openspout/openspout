@@ -6,7 +6,6 @@ use OpenSpout\Writer\Common\Manager\SheetManager;
 use OpenSpout\Writer\XLSX\Entity\SheetView;
 
 /**
- * Class Sheet
  * External representation of a worksheet.
  */
 class Sheet

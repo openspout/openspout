@@ -16,7 +16,6 @@ use OpenSpout\Writer\XLSX\Manager\WorkbookManager;
 use OpenSpout\Writer\XLSX\Manager\WorksheetManager;
 
 /**
- * Class ManagerFactory
  * Factory for managers needed by the XLSX Writer.
  */
 class ManagerFactory implements ManagerFactoryInterface

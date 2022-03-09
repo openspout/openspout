@@ -5,10 +5,7 @@ namespace OpenSpout\Common\Helper;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class CellTypeHelperTest.
- *
  * @internal
- * @coversNothing
  */
 final class CellTypeHelperTest extends TestCase
 {

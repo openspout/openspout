@@ -22,7 +22,6 @@ use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory;
 use OpenSpout\Reader\XLSX\Reader as XLSXReader;
 
 /**
- * Class ReaderFactory
  * This factory is used to create readers, based on the type of the file to be read.
  * It supports CSV, XLSX and ODS formats.
  */

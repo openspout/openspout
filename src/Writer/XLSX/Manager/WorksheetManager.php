@@ -22,7 +22,6 @@ use OpenSpout\Writer\XLSX\Helper\DateHelper;
 use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
 
 /**
- * Class WorksheetManager
  * XLSX worksheet manager, providing the interfaces to work with XLSX worksheets.
  */
 class WorksheetManager implements WorksheetManagerInterface

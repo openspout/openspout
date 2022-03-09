@@ -9,10 +9,7 @@ use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class ReaderTest.
- *
  * @internal
- * @coversNothing
  */
 final class ReaderTest extends TestCase
 {

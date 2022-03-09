@@ -10,7 +10,6 @@ use OpenSpout\Common\Type;
 use OpenSpout\Writer\WriterInterface;
 
 /**
- * Class WriterEntityFactory
  * Factory to create external entities.
  */
 class WriterEntityFactory

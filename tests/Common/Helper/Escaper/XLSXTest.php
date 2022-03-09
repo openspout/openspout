@@ -6,10 +6,7 @@ use OpenSpout\Common\Helper\Escaper;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class XLSXTest.
- *
  * @internal
- * @coversNothing
  */
 final class XLSXTest extends TestCase
 {

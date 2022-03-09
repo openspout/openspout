@@ -9,7 +9,6 @@ use OpenSpout\Writer\ODS\Manager\Style\StyleManager;
 use OpenSpout\Writer\ODS\Manager\WorksheetManager;
 
 /**
- * Class FileSystemHelper
  * This class provides helper functions to help with the file system operations
  * like files/folders creation & deletion for ODS files.
  */

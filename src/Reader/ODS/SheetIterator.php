@@ -10,7 +10,6 @@ use OpenSpout\Reader\ODS\Helper\SettingsHelper;
 use OpenSpout\Reader\Wrapper\XMLReader;
 
 /**
- * Class SheetIterator
  * Iterate over ODS sheet.
  */
 class SheetIterator implements IteratorInterface

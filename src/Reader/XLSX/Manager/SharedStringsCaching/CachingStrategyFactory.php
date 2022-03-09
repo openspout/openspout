@@ -4,9 +4,6 @@ namespace OpenSpout\Reader\XLSX\Manager\SharedStringsCaching;
 
 use OpenSpout\Reader\XLSX\Creator\HelperFactory;
 
-/**
- * Class CachingStrategyFactory.
- */
 class CachingStrategyFactory
 {
     /**

@@ -10,7 +10,6 @@ use OpenSpout\Reader\XLSX\Manager\StyleManager;
 use OpenSpout\Reader\XLSX\Manager\WorkbookRelationshipsManager;
 
 /**
- * Class ManagerFactory
  * Factory to create managers.
  */
 class ManagerFactory

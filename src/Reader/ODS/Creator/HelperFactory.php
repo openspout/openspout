@@ -6,7 +6,6 @@ use OpenSpout\Reader\ODS\Helper\CellValueFormatter;
 use OpenSpout\Reader\ODS\Helper\SettingsHelper;
 
 /**
- * Class HelperFactory
  * Factory to create helpers.
  */
 class HelperFactory extends \OpenSpout\Common\Creator\HelperFactory

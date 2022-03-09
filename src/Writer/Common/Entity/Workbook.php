@@ -3,7 +3,6 @@
 namespace OpenSpout\Writer\Common\Entity;
 
 /**
- * Class Workbook
  * Entity describing a workbook.
  */
 class Workbook

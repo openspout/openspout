@@ -16,7 +16,6 @@ use OpenSpout\Writer\Common\Manager\WorksheetManagerInterface;
 use OpenSpout\Writer\ODS\Manager\Style\StyleManager;
 
 /**
- * Class WorksheetManager
  * ODS worksheet manager, providing the interfaces to work with ODS worksheets.
  */
 class WorksheetManager implements WorksheetManagerInterface

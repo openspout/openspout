@@ -8,10 +8,7 @@ use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class StyleMergerTest.
- *
  * @internal
- * @coversNothing
  */
 final class StyleMergerTest extends TestCase
 {

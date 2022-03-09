@@ -3,7 +3,6 @@
 namespace OpenSpout\Reader\Wrapper;
 
 /**
- * Class XMLReader
  * Wrapper around the built-in XMLReader.
  *
  * @see \XMLReader

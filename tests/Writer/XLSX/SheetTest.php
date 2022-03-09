@@ -12,10 +12,7 @@ use OpenSpout\Writer\XLSX\Entity\SheetView;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class SheetTest.
- *
  * @internal
- * @coversNothing
  */
 final class SheetTest extends TestCase
 {

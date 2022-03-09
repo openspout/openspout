@@ -5,7 +5,6 @@ namespace OpenSpout\Reader\ODS\Helper;
 use OpenSpout\Reader\Exception\InvalidValueException;
 
 /**
- * Class CellValueFormatter
  * This class provides helper functions to format cell values.
  */
 class CellValueFormatter

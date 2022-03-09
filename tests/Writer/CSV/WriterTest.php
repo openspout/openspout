@@ -13,10 +13,7 @@ use OpenSpout\Writer\RowCreationHelper;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class WriterTest.
- *
  * @internal
- * @coversNothing
  */
 final class WriterTest extends TestCase
 {

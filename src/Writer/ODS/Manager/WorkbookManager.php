@@ -8,7 +8,6 @@ use OpenSpout\Writer\ODS\Helper\FileSystemHelper;
 use OpenSpout\Writer\ODS\Manager\Style\StyleManager;
 
 /**
- * Class WorkbookManager
  * ODS workbook manager, providing the interfaces to work with workbook.
  */
 class WorkbookManager extends WorkbookManagerAbstract

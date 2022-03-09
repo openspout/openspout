@@ -6,10 +6,7 @@ use OpenSpout\Common\Helper\Escaper;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class ODSTest.
- *
  * @internal
- * @coversNothing
  */
 final class ODSTest extends TestCase
 {

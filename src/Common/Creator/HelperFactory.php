@@ -8,7 +8,6 @@ use OpenSpout\Common\Helper\GlobalFunctionsHelper;
 use OpenSpout\Common\Helper\StringHelper;
 
 /**
- * Class HelperFactory
  * Factory to create helpers.
  */
 class HelperFactory

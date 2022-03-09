@@ -9,9 +9,6 @@ use OpenSpout\Reader\Common\Creator\InternalEntityFactoryInterface;
 use OpenSpout\Reader\Common\Entity\Options;
 use OpenSpout\Reader\Exception\ReaderNotOpenedException;
 
-/**
- * Class ReaderAbstract.
- */
 abstract class ReaderAbstract implements ReaderInterface
 {
     /** @var bool Indicates whether the stream is currently open */

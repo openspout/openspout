@@ -3,7 +3,6 @@
 namespace OpenSpout\Writer\Common\Helper;
 
 /**
- * Class CellHelper
  * This class provides helper functions when working with cells.
  */
 class CellHelper

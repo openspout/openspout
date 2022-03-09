@@ -13,10 +13,7 @@ use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class SharedStringsManagerTest.
- *
  * @internal
- * @coversNothing
  */
 final class SharedStringsManagerTest extends TestCase
 {

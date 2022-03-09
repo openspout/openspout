@@ -6,10 +6,7 @@ use OpenSpout\Common\Exception\IOException;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class FileSystemHelperTest.
- *
  * @internal
- * @coversNothing
  */
 final class FileSystemHelperTest extends TestCase
 {

@@ -7,10 +7,7 @@ use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class EncodingHelperTest.
- *
  * @internal
- * @coversNothing
  */
 final class EncodingHelperTest extends TestCase
 {

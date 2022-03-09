@@ -7,7 +7,6 @@ use OpenSpout\Reader\Wrapper\XMLReader;
 use OpenSpout\Reader\XLSX\Creator\InternalEntityFactory;
 
 /**
- * Class WorkbookRelationshipsManager
  * This class manages the workbook relationships defined in the associated XML file.
  */
 class WorkbookRelationshipsManager

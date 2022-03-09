@@ -5,9 +5,6 @@ namespace OpenSpout\Common\Entity;
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Common\Helper\CellTypeHelper;
 
-/**
- * Class Cell.
- */
 class Cell
 {
     /**

@@ -6,9 +6,6 @@ use OpenSpout\Writer\Exception\Border\InvalidNameException;
 use OpenSpout\Writer\Exception\Border\InvalidStyleException;
 use OpenSpout\Writer\Exception\Border\InvalidWidthException;
 
-/**
- * Class BorderPart.
- */
 class BorderPart
 {
     /**

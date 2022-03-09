@@ -16,10 +16,7 @@ use OpenSpout\Writer\XLSX\Manager\WorksheetManager;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class WriterTest.
- *
  * @internal
- * @coversNothing
  */
 final class WriterTest extends TestCase
 {

@@ -5,7 +5,6 @@ namespace OpenSpout\Reader\XLSX\Helper;
 use OpenSpout\Common\Exception\InvalidArgumentException;
 
 /**
- * Class CellHelper
  * This class provides helper functions when working with cells.
  */
 class CellHelper

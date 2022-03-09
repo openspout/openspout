@@ -5,7 +5,6 @@ namespace OpenSpout\Writer\Common\Manager\Style;
 use OpenSpout\Common\Entity\Style\Style;
 
 /**
- * Class PossiblyUpdatedStyle
  * Indicates if style is updated.
  * It allow to know if style registration must be done.
  */

@@ -8,10 +8,7 @@ use OpenSpout\Reader\XLSX\Manager\StyleManager;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class CellValueFormatterTest.
- *
  * @internal
- * @coversNothing
  */
 final class CellValueFormatterTest extends TestCase
 {

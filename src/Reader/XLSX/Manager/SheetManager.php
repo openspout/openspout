@@ -8,7 +8,6 @@ use OpenSpout\Reader\XLSX\Creator\InternalEntityFactory;
 use OpenSpout\Reader\XLSX\Sheet;
 
 /**
- * Class SheetManager
  * This class manages XLSX sheets.
  */
 class SheetManager

@@ -5,10 +5,7 @@ namespace OpenSpout\Common\Manager;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class OptionsManagerTest.
- *
  * @internal
- * @coversNothing
  */
 final class OptionsManagerTest extends TestCase
 {

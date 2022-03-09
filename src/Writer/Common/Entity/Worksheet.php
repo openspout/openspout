@@ -3,7 +3,6 @@
 namespace OpenSpout\Writer\Common\Entity;
 
 /**
- * Class Worksheet
  * Entity describing a Worksheet.
  */
 class Worksheet

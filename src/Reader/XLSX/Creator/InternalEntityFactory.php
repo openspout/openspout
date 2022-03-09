@@ -14,7 +14,6 @@ use OpenSpout\Reader\XLSX\Sheet;
 use OpenSpout\Reader\XLSX\SheetIterator;
 
 /**
- * Class InternalEntityFactory
  * Factory to create entities.
  */
 class InternalEntityFactory implements InternalEntityFactoryInterface

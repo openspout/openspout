@@ -6,7 +6,6 @@ use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\Escaper;
 
 /**
- * Class SharedStringsManager
  * This class provides functions to write shared strings.
  */
 class SharedStringsManager

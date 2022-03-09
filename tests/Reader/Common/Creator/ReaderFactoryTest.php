@@ -7,10 +7,7 @@ use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class ReaderFactoryTest.
- *
  * @internal
- * @coversNothing
  */
 final class ReaderFactoryTest extends TestCase
 {

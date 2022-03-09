@@ -3,7 +3,6 @@
 namespace OpenSpout\Common\Helper;
 
 /**
- * Class CellTypeHelper
  * This class provides helper functions to determine the type of the cell value.
  */
 class CellTypeHelper

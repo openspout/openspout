@@ -3,7 +3,6 @@
 namespace OpenSpout\Reader\XLSX\Helper;
 
 /**
- * Class DateFormatHelper
  * This class provides helper functions to format Excel dates.
  */
 class DateFormatHelper

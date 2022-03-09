@@ -9,10 +9,7 @@ use OpenSpout\Writer\Exception\Border\InvalidWidthException;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class BorderTest.
- *
  * @internal
- * @coversNothing
  */
 final class BorderTest extends TestCase
 {

@@ -6,7 +6,6 @@ use OpenSpout\Common\Entity\Style\Style;
 
 /**
  * @internal
- * @coversNothing
  */
 final class RowTest extends \PHPUnit\Framework\TestCase
 {

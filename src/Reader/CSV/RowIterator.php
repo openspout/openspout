@@ -11,7 +11,6 @@ use OpenSpout\Reader\CSV\Creator\InternalEntityFactory;
 use OpenSpout\Reader\RowIteratorInterface;
 
 /**
- * Class RowIterator
  * Iterate over CSV rows.
  */
 class RowIterator implements RowIteratorInterface

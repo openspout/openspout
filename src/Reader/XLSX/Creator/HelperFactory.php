@@ -8,7 +8,6 @@ use OpenSpout\Reader\XLSX\Manager\SharedStringsManager;
 use OpenSpout\Reader\XLSX\Manager\StyleManager;
 
 /**
- * Class HelperFactory
  * Factory to create helpers.
  */
 class HelperFactory extends \OpenSpout\Common\Creator\HelperFactory

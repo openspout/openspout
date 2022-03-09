@@ -14,9 +14,6 @@ use OpenSpout\Writer\Common\Entity\Options;
 use OpenSpout\Writer\Exception\WriterAlreadyOpenedException;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
 
-/**
- * Class WriterAbstract.
- */
 abstract class WriterAbstract implements WriterInterface
 {
     /** @var string Path to the output file */

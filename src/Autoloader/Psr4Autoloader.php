@@ -3,8 +3,6 @@
 namespace OpenSpout\Autoloader;
 
 /**
- * Class Psr4Autoloader.
- *
  * @see https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader-examples.md#class-example
  */
 class Psr4Autoloader

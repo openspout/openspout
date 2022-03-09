@@ -10,10 +10,7 @@ use OpenSpout\Reader\XLSX\Creator\ManagerFactory;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class RowManagerTest.
- *
  * @internal
- * @coversNothing
  */
 final class RowManagerTest extends TestCase
 {

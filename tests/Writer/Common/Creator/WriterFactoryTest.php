@@ -7,10 +7,7 @@ use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class WriterFactoryTest.
- *
  * @internal
- * @coversNothing
  */
 final class WriterFactoryTest extends TestCase
 {

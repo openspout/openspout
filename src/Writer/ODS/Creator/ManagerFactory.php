@@ -14,7 +14,6 @@ use OpenSpout\Writer\ODS\Manager\WorkbookManager;
 use OpenSpout\Writer\ODS\Manager\WorksheetManager;
 
 /**
- * Class ManagerFactory
  * Factory for managers needed by the ODS Writer.
  */
 class ManagerFactory implements ManagerFactoryInterface

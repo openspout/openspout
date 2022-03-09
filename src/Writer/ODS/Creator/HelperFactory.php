@@ -11,7 +11,6 @@ use OpenSpout\Writer\Common\Helper\ZipHelper;
 use OpenSpout\Writer\ODS\Helper\FileSystemHelper;
 
 /**
- * Class HelperFactory
  * Factory for helpers needed by the ODS Writer.
  */
 class HelperFactory extends \OpenSpout\Common\Creator\HelperFactory

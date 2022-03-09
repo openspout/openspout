@@ -15,9 +15,6 @@ use OpenSpout\Reader\XLSX\Creator\InternalEntityFactory;
 use OpenSpout\Reader\XLSX\Helper\CellHelper;
 use OpenSpout\Reader\XLSX\Helper\CellValueFormatter;
 
-/**
- * Class RowIterator.
- */
 class RowIterator implements IteratorInterface
 {
     /** Definition of XML nodes names used to parse data */

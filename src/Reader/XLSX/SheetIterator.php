@@ -7,7 +7,6 @@ use OpenSpout\Reader\IteratorInterface;
 use OpenSpout\Reader\XLSX\Manager\SheetManager;
 
 /**
- * Class SheetIterator
  * Iterate over XLSX sheet.
  */
 class SheetIterator implements IteratorInterface

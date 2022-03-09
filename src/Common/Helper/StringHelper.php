@@ -3,7 +3,6 @@
 namespace OpenSpout\Common\Helper;
 
 /**
- * Class StringHelper
  * This class provides helper functions to work with strings and multibyte strings.
  *
  * @codeCoverageIgnore

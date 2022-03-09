@@ -7,11 +7,9 @@ use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class WriterPerfTest
  * Performance tests for CSV Writer.
  *
  * @internal
- * @coversNothing
  */
 final class WriterPerfTest extends TestCase
 {

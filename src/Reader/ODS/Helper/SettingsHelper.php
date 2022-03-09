@@ -6,7 +6,6 @@ use OpenSpout\Reader\Exception\XMLProcessingException;
 use OpenSpout\Reader\ODS\Creator\InternalEntityFactory;
 
 /**
- * Class SettingsHelper
  * This class provides helper functions to extract data from the "settings.xml" file.
  */
 class SettingsHelper

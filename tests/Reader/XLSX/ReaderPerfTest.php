@@ -7,11 +7,9 @@ use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class ReaderPerfTest
  * Performance tests for XLSX Reader.
  *
  * @internal
- * @coversNothing
  */
 final class ReaderPerfTest extends TestCase
 {

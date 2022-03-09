@@ -15,9 +15,6 @@ use OpenSpout\Writer\Exception\SheetNotFoundException;
 use OpenSpout\Writer\Exception\WriterAlreadyOpenedException;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
 
-/**
- * Class WriterMultiSheetsAbstract.
- */
 abstract class WriterMultiSheetsAbstract extends WriterAbstract
 {
     /** @var ManagerFactoryInterface */

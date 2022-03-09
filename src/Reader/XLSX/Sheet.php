@@ -5,7 +5,6 @@ namespace OpenSpout\Reader\XLSX;
 use OpenSpout\Reader\SheetInterface;
 
 /**
- * Class Sheet
  * Represents a sheet within a XLSX file.
  */
 class Sheet implements SheetInterface

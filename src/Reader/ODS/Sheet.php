@@ -5,7 +5,6 @@ namespace OpenSpout\Reader\ODS;
 use OpenSpout\Reader\SheetInterface;
 
 /**
- * Class Sheet
  * Represents a sheet within a ODS file.
  */
 class Sheet implements SheetInterface

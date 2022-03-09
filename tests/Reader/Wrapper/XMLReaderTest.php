@@ -7,10 +7,7 @@ use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class XMLReaderTest.
- *
  * @internal
- * @coversNothing
  */
 final class XMLReaderTest extends TestCase
 {

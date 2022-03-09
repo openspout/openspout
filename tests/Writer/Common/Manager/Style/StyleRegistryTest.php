@@ -7,10 +7,7 @@ use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class StyleRegistryTest.
- *
  * @internal
- * @coversNothing
  */
 final class StyleRegistryTest extends TestCase
 {

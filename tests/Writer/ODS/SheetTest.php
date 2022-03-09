@@ -10,10 +10,7 @@ use OpenSpout\Writer\RowCreationHelper;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class SheetTest.
- *
  * @internal
- * @coversNothing
  */
 final class SheetTest extends TestCase
 {

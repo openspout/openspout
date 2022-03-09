@@ -11,7 +11,6 @@ use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyInterface;
 
 /**
- * Class SharedStringsManager
  * This class manages the shared strings defined in the associated XML file.
  */
 class SharedStringsManager

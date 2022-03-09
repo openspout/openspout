@@ -19,10 +19,7 @@ use OpenSpout\Writer\XLSX\Manager\OptionsManager;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class WriterWithStyleTest.
- *
  * @internal
- * @coversNothing
  */
 final class WriterWithStyleTest extends TestCase
 {

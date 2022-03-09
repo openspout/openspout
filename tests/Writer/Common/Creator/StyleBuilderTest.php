@@ -10,10 +10,7 @@ use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class StyleManagerTest.
- *
  * @internal
- * @coversNothing
  */
 final class StyleBuilderTest extends TestCase
 {

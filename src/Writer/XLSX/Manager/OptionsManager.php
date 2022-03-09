@@ -7,7 +7,6 @@ use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
 use OpenSpout\Writer\Common\Entity\Options;
 
 /**
- * Class OptionsManager
  * XLSX Writer options manager.
  */
 class OptionsManager extends OptionsManagerAbstract

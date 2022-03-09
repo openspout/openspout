@@ -3,7 +3,6 @@
 namespace OpenSpout\Reader\CSV;
 
 /**
- * Class SpoutTestStream
  * Custom stream that reads CSV files located in the tests/resources/csv folder.
  * For example: spout://foobar will point to tests/resources/csv/foobar.csv.
  */

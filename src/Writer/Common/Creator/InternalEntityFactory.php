@@ -8,7 +8,6 @@ use OpenSpout\Writer\Common\Entity\Worksheet;
 use OpenSpout\Writer\Common\Manager\SheetManager;
 
 /**
- * Class InternalEntityFactory
  * Factory to create internal entities.
  */
 class InternalEntityFactory

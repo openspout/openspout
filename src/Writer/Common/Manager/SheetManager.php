@@ -7,7 +7,6 @@ use OpenSpout\Writer\Common\Entity\Sheet;
 use OpenSpout\Writer\Exception\InvalidSheetNameException;
 
 /**
- * Class SheetManager
  * Sheet manager.
  */
 class SheetManager

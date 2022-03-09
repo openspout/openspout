@@ -5,7 +5,6 @@ namespace OpenSpout\Writer\Common\Helper;
 use OpenSpout\Writer\Common\Creator\InternalEntityFactory;
 
 /**
- * Class ZipHelper
  * This class provides helper functions to create zip files.
  */
 class ZipHelper

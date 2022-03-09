@@ -7,7 +7,6 @@ use OpenSpout\Reader\ODS\Creator\InternalEntityFactory;
 use OpenSpout\Reader\ReaderAbstract;
 
 /**
- * Class Reader
  * This class provides support to read data from a ODS file.
  */
 class Reader extends ReaderAbstract

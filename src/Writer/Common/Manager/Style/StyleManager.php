@@ -6,7 +6,6 @@ use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Style\Style;
 
 /**
- * Class StyleManager
  * Manages styles to be applied to a cell.
  */
 class StyleManager implements StyleManagerInterface

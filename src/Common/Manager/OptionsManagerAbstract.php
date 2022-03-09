@@ -2,9 +2,6 @@
 
 namespace OpenSpout\Common\Manager;
 
-/**
- * Class OptionsManager.
- */
 abstract class OptionsManagerAbstract implements OptionsManagerInterface
 {
     public const PREFIX_OPTION = 'OPTION_';

@@ -3,7 +3,6 @@
 namespace OpenSpout\Reader\Common\Entity;
 
 /**
- * Class Options
  * Readers' options holder.
  */
 abstract class Options

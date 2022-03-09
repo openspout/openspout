@@ -2,9 +2,6 @@
 
 namespace OpenSpout\Common\Entity\Style;
 
-/**
- * Class Border.
- */
 class Border
 {
     public const LEFT = 'left';

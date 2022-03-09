@@ -9,7 +9,6 @@ use OpenSpout\Writer\Common\Entity\Options;
 use OpenSpout\Writer\WriterAbstract;
 
 /**
- * Class Writer
  * This class provides support to write data to CSV files.
  */
 class Writer extends WriterAbstract

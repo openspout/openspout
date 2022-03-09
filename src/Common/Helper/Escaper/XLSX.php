@@ -3,7 +3,6 @@
 namespace OpenSpout\Common\Helper\Escaper;
 
 /**
- * Class XLSX
  * Provides functions to escape and unescape data for XLSX files.
  */
 class XLSX implements EscaperInterface

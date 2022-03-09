@@ -8,10 +8,7 @@ use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class SheetTest.
- *
  * @internal
- * @coversNothing
  */
 final class SheetTest extends TestCase
 {

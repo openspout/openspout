@@ -8,7 +8,6 @@ use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Writer\XLSX\Helper\BorderHelper;
 
 /**
- * Class StyleManager
  * Manages styles to be applied to a cell.
  */
 class StyleManager extends \OpenSpout\Writer\Common\Manager\Style\StyleManager

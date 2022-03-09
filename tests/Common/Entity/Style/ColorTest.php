@@ -6,10 +6,7 @@ use OpenSpout\Common\Exception\InvalidColorException;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class ColorTest.
- *
  * @internal
- * @coversNothing
  */
 final class ColorTest extends TestCase
 {

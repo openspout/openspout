@@ -5,10 +5,7 @@ namespace OpenSpout\Reader\XLSX\Helper;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class DateFormatHelperTest.
- *
  * @internal
- * @coversNothing
  */
 final class DateFormatHelperTest extends TestCase
 {

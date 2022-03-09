@@ -17,7 +17,6 @@ use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
 use OpenSpout\Writer\Exception\SheetNotFoundException;
 
 /**
- * Class WorkbookManagerAbstract
  * Abstract workbook manager, providing the generic interfaces to work with workbook.
  */
 abstract class WorkbookManagerAbstract implements WorkbookManagerInterface

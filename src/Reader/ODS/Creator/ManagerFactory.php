@@ -5,7 +5,6 @@ namespace OpenSpout\Reader\ODS\Creator;
 use OpenSpout\Reader\Common\Manager\RowManager;
 
 /**
- * Class ManagerFactory
  * Factory to create managers.
  */
 class ManagerFactory

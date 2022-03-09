@@ -13,7 +13,6 @@ use OpenSpout\Reader\CSV\Sheet;
 use OpenSpout\Reader\CSV\SheetIterator;
 
 /**
- * Class EntityFactory
  * Factory to create entities.
  */
 class InternalEntityFactory implements InternalEntityFactoryInterface

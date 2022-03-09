@@ -5,9 +5,6 @@ namespace OpenSpout\Reader\Common\Manager;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Reader\Common\Creator\InternalEntityFactoryInterface;
 
-/**
- * Class RowManager.
- */
 class RowManager
 {
     /** @var InternalEntityFactoryInterface Factory to create entities */

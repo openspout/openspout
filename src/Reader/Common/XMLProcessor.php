@@ -5,7 +5,6 @@ namespace OpenSpout\Reader\Common;
 use OpenSpout\Reader\Wrapper\XMLReader;
 
 /**
- * Class XMLProcessor
  * Helps process XML files.
  */
 class XMLProcessor

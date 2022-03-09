@@ -12,7 +12,6 @@ use OpenSpout\Reader\XLSX\Creator\InternalEntityFactory;
 use OpenSpout\Reader\XLSX\Creator\ManagerFactory;
 
 /**
- * Class Reader
  * This class provides support to read data from a XLSX file.
  */
 class Reader extends ReaderAbstract

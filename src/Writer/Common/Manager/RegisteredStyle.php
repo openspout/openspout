@@ -5,7 +5,6 @@ namespace OpenSpout\Writer\Common\Manager;
 use OpenSpout\Common\Entity\Style\Style;
 
 /**
- * Class RegisteredStyle
  * Allow to know if this style must replace actual row style.
  */
 class RegisteredStyle

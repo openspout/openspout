@@ -11,7 +11,6 @@ use OpenSpout\Writer\Common\Manager\ManagesCellSize;
 use OpenSpout\Writer\ODS\Helper\BorderHelper;
 
 /**
- * Class StyleManager
  * Manages styles to be applied to a cell.
  */
 class StyleManager extends \OpenSpout\Writer\Common\Manager\Style\StyleManager

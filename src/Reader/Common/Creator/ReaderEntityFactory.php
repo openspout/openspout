@@ -7,7 +7,6 @@ use OpenSpout\Common\Type;
 use OpenSpout\Reader\ReaderInterface;
 
 /**
- * Class ReaderEntityFactory
  * Factory to create external entities.
  */
 class ReaderEntityFactory

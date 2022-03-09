@@ -6,10 +6,7 @@ use OpenSpout\Common\Exception\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class CellHelperTest.
- *
  * @internal
- * @coversNothing
  */
 final class CellHelperTest extends TestCase
 {

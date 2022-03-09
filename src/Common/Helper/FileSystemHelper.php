@@ -5,7 +5,6 @@ namespace OpenSpout\Common\Helper;
 use OpenSpout\Common\Exception\IOException;
 
 /**
- * Class FileSystemHelper
  * This class provides helper functions to help with the file system operations
  * like files/folders creation & deletion.
  */

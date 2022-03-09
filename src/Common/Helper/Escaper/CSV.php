@@ -3,7 +3,6 @@
 namespace OpenSpout\Common\Helper\Escaper;
 
 /**
- * Class CSV
  * Provides functions to escape and unescape data for CSV files.
  */
 class CSV implements EscaperInterface

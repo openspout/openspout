@@ -6,10 +6,7 @@ use OpenSpout\Reader\XLSX\Creator\InternalEntityFactory;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class StyleManagerTest.
- *
  * @internal
- * @coversNothing
  */
 final class StyleManagerTest extends TestCase
 {

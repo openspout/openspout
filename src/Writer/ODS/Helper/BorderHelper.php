@@ -6,11 +6,9 @@ use OpenSpout\Common\Entity\Style\Border;
 use OpenSpout\Common\Entity\Style\BorderPart;
 
 /**
- * Class BorderHelper.
- *
  * The fo:border, fo:border-top, fo:border-bottom, fo:border-left and fo:border-right attributes
  * specify border properties
- * http://docs.oasis-open.org/office/v1.2/os/OpenDocument-v1.2-os-part1.html#__RefHeading__1419780_253892949
+ * http://docs.oasis-open.org/office/v1.2/os/OpenDocument-v1.2-os-part1.html#__RefHeading__1419780_253892949.
  *
  * Example table-cell-properties
  *

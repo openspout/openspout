@@ -6,7 +6,6 @@ use OpenSpout\Writer\Common\Entity\Options;
 use OpenSpout\Writer\WriterMultiSheetsAbstract;
 
 /**
- * Class Writer
  * This class provides base support to write data to ODS files.
  */
 class Writer extends WriterMultiSheetsAbstract

@@ -3,7 +3,6 @@
 namespace OpenSpout\Common\Helper\Escaper;
 
 /**
- * Class ODS
  * Provides functions to escape and unescape data for ODS files.
  */
 class ODS implements EscaperInterface

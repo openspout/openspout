@@ -8,7 +8,6 @@ use OpenSpout\Writer\XLSX\Helper\FileSystemHelper;
 use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
 
 /**
- * Class WorkbookManager
  * XLSX workbook manager, providing the interfaces to work with workbook.
  */
 class WorkbookManager extends WorkbookManagerAbstract

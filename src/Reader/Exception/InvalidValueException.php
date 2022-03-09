@@ -4,9 +4,6 @@ namespace OpenSpout\Reader\Exception;
 
 use Throwable;
 
-/**
- * Class InvalidValueException.
- */
 class InvalidValueException extends ReaderException
 {
     /** @var mixed */

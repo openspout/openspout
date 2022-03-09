@@ -5,7 +5,6 @@ namespace OpenSpout\Writer\Common\Manager\Style;
 use OpenSpout\Common\Entity\Style\Style;
 
 /**
- * Class StyleRegistry
  * Registry for all used styles.
  */
 class StyleRegistry

@@ -5,7 +5,6 @@ namespace OpenSpout\Common\Helper;
 use OpenSpout\Common\Exception\EncodingConversionException;
 
 /**
- * Class EncodingHelper
  * This class provides helper functions to work with encodings.
  */
 class EncodingHelper
