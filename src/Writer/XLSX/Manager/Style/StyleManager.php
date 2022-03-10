@@ -250,7 +250,7 @@ class StyleManager extends \OpenSpout\Writer\Common\Manager\Style\StyleManager
 
             $content .= sprintf(' applyBorder="%d"', $style->shouldApplyBorder() ? 1 : 0);
 
-            if ($style->shouldApplyCellAlignment() || $style->shouldWrapText()) {
+            if ($style->shouldApplyCellAlignment() || $style->shouldWrapText() || $style->shouldShrinkToFit()) {
                 $content .= ' applyAlignment="1">';
                 $content .= '<alignment';
                 if ($style->shouldApplyCellAlignment()) {
@@ -259,6 +259,10 @@ class StyleManager extends \OpenSpout\Writer\Common\Manager\Style\StyleManager
                 if ($style->shouldWrapText()) {
                     $content .= ' wrapText="1"';
                 }
+                if ($style->shouldShrinkToFit()) {
+                    $content .= ' shrinkToFit="true"';
+                }
+
                 $content .= '/>';
                 $content .= '</xf>';
             } else {

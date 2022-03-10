@@ -61,4 +61,22 @@ final class OptionsManagerTest extends TestCase
         $optionsManager->setOption('not-supported', 'something');
         static::assertNull($optionsManager->getOption('not-supported'));
     }
+
+    public function testOptionManagerShouldReturnArrayIfListOptionsAdded()
+    {
+        $optionsManager = $this->optionsManager;
+        $optionsManager->addOption('baz', 'something');
+        $optionsManager->addOption('baz', 'something-else');
+        static::assertIsArray($optionsManager->getOption('baz'));
+        static::assertCount(2, $optionsManager->getOption('baz'));
+        static::assertEquals('something', $optionsManager->getOption('baz')[0]);
+        static::assertEquals('something-else', $optionsManager->getOption('baz')[1]);
+    }
+
+    public function testOptionsManagerShouldReturnNullIfListOptionNotSupported()
+    {
+        $optionsManager = $this->optionsManager;
+        $optionsManager->addOption('not-supported', 'something');
+        static::assertNull($optionsManager->getOption('not-supported'));
+    }
 }

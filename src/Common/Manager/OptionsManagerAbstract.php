@@ -35,6 +35,25 @@ abstract class OptionsManagerAbstract implements OptionsManagerInterface
     }
 
     /**
+     * Add an option to the internal list of options
+     * Used only for mergeCells() for now.
+     *
+     * @param mixed $optionName
+     * @param mixed $optionValue
+     */
+    public function addOption($optionName, $optionValue)
+    {
+        if (\in_array($optionName, $this->supportedOptions, true)) {
+            if (!isset($this->options[$optionName])) {
+                $this->options[$optionName] = [];
+            } elseif (!\is_array($this->options[$optionName])) {
+                $this->options[$optionName] = [$this->options[$optionName]];
+            }
+            $this->options[$optionName][] = $optionValue;
+        }
+    }
+
+    /**
      * @param string $optionName
      *
      * @return null|mixed The set option or NULL if no option with given name found

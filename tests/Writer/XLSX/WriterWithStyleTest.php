@@ -280,6 +280,21 @@ final class WriterWithStyleTest extends TestCase
         $this->assertFirstChildHasAttributeEquals(CellAlignment::RIGHT, $xfElement, 'alignment', 'horizontal');
     }
 
+    public function testAddRowShouldApplyShrinkToFit()
+    {
+        $fileName = 'test_add_row_should_apply_shrink_to_fit.xlsx';
+
+        $shrinkToFitStyle = (new StyleBuilder())->setShouldShrinkToFit()->build();
+        $dataRows = $this->createStyledRowsFromValues([['xlsx--11']], $shrinkToFitStyle);
+
+        $this->writeToXLSXFile($dataRows, $fileName);
+
+        $cellXfsDomElement = $this->getXmlSectionFromStylesXmlFile($fileName, 'cellXfs');
+        $xfElement = $cellXfsDomElement->getElementsByTagName('xf')->item(1);
+        static::assertEquals(1, $xfElement->getAttribute('applyAlignment'));
+        $this->assertFirstChildHasAttributeEquals('true', $xfElement, 'alignment', 'shrinkToFit');
+    }
+
     public function testAddRowShouldSupportCellStyling()
     {
         $fileName = 'test_add_row_should_support_cell_styling.xlsx';
