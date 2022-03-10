@@ -26,5 +26,5 @@ abstract class Options
     public const COLUMN_WIDTHS = 'columnWidthDefinition';
 
     // XLSX merge cells
-    const MERGE_CELLS = 'mergeCells';
+    public const MERGE_CELLS = 'mergeCells';
 }

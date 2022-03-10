@@ -21,7 +21,8 @@ class Row
     protected $style;
 
     /**
-     * Row height (default is 15)
+     * Row height (default is 15).
+     *
      * @var string
      */
     protected $height = '15';
@@ -140,8 +141,10 @@ class Row
     }
 
     /**
-     * Set row height
+     * Set row height.
+     *
      * @param string $height
+     *
      * @return Row
      */
     public function setHeight($height)
@@ -152,7 +155,8 @@ class Row
     }
 
     /**
-     * Returns row height
+     * Returns row height.
+     *
      * @return string
      */
     public function getHeight()

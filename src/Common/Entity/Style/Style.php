@@ -517,8 +517,10 @@ class Style
     }
 
     /**
-     * Sets should shrink to fit
+     * Sets should shrink to fit.
+     *
      * @param bool $shrinkToFit
+     *
      * @return Style
      */
     public function setShouldShrinkToFit($shrinkToFit = true)

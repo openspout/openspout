@@ -42,11 +42,11 @@ class WorksheetManager implements WorksheetManagerInterface
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
         EOD;
 
-    /** @var OptionsManagerInterface */
-    private $optionsManager;
-
     /** @var bool Whether inline or shared strings should be used */
     protected $shouldUseInlineStrings;
+
+    /** @var OptionsManagerInterface */
+    private $optionsManager;
 
     /** @var RowManager Manages rows */
     private $rowManager;
@@ -176,15 +176,15 @@ class WorksheetManager implements WorksheetManagerInterface
 
         // create nodes for merge cells
         if ($this->optionsManager->getOption(Options::MERGE_CELLS)) {
-            $mergeCellString = '<mergeCells count="'.count($this->optionsManager->getOption(Options::MERGE_CELLS)).'">';
+            $mergeCellString = '<mergeCells count="'.\count($this->optionsManager->getOption(Options::MERGE_CELLS)).'">';
             foreach ($this->optionsManager->getOption(Options::MERGE_CELLS) as $values) {
-                $output = array_map(function($value){
-                    return CellHelper::getColumnLettersFromColumnIndex($value[0]) . $value[1];
+                $output = array_map(function ($value) {
+                    return CellHelper::getColumnLettersFromColumnIndex($value[0]).$value[1];
                 }, $values);
-                $mergeCellString.= '<mergeCell ref="'.implode(':', $output).'"/>';
+                $mergeCellString .= '<mergeCell ref="'.implode(':', $output).'"/>';
             }
-            $mergeCellString.= '</mergeCells>';
-            \fwrite($worksheet->getFilePointer(), $mergeCellString);
+            $mergeCellString .= '</mergeCells>';
+            fwrite($worksheet->getFilePointer(), $mergeCellString);
         }
 
         fwrite($worksheetFilePointer, '</worksheet>');

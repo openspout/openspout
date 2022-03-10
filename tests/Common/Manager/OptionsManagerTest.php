@@ -62,27 +62,21 @@ final class OptionsManagerTest extends TestCase
         static::assertNull($optionsManager->getOption('not-supported'));
     }
 
-    /**
-     * @return void
-     */
     public function testOptionManagerShouldReturnArrayIfListOptionsAdded()
     {
         $optionsManager = $this->optionsManager;
-        $optionsManager->addOption('bar', 'something');
-        $optionsManager->addOption('bar', 'something-else');
-        $this->assertIsArray($optionsManager->getOption('bar'));
-        $this->assertCount(2, $optionsManager->getOption('bar'));
-        $this->assertEquals('something', $optionsManager->getOption('bar')[0]);
-        $this->assertEquals('something-else', $optionsManager->getOption('bar')[1]);
+        $optionsManager->addOption('baz', 'something');
+        $optionsManager->addOption('baz', 'something-else');
+        static::assertIsArray($optionsManager->getOption('baz'));
+        static::assertCount(2, $optionsManager->getOption('baz'));
+        static::assertEquals('something', $optionsManager->getOption('baz')[0]);
+        static::assertEquals('something-else', $optionsManager->getOption('baz')[1]);
     }
 
-    /**
-     * @return void
-     */
     public function testOptionsManagerShouldReturnNullIfListOptionNotSupported()
     {
         $optionsManager = $this->optionsManager;
         $optionsManager->addOption('not-supported', 'something');
-        $this->assertNull($optionsManager->getOption('not-supported'));
+        static::assertNull($optionsManager->getOption('not-supported'));
     }
 }

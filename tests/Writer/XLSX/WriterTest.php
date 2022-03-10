@@ -502,9 +502,6 @@ final class WriterTest extends TestCase
         $this->assertInlineDataWasWrittenToSheet($fileName, 1, 'control _x0015_ character');
     }
 
-    /**
-     * @return void
-     */
     public function testCloseShouldAddMergeCellTags()
     {
         $fileName = 'test_add_row_should_support_column_widths.xlsx';
@@ -518,19 +515,20 @@ final class WriterTest extends TestCase
         $writer->mergeCells([2, 3], [10, 3]);
         $writer->close();
 
-        $xmlReader = $this->getXmlReaderForSheetFromXmlFile($fileName, 1);
+        $xmlReader = $this->getXmlReaderForSheetFromXmlFile($fileName, '1');
         $xmlReader->readUntilNodeFound('mergeCells');
-        $this->assertEquals('mergeCells', $xmlReader->getCurrentNodeName(), 'Sheet does not have mergeCells tag');
-        $this->assertEquals(2, $xmlReader->expand()->childNodes->length, 'Sheet does not have the specified number of mergeCell definitions');
+        static::assertEquals('mergeCells', $xmlReader->getCurrentNodeName(), 'Sheet does not have mergeCells tag');
+        static::assertEquals(2, $xmlReader->expand()->childNodes->length, 'Sheet does not have the specified number of mergeCell definitions');
         $xmlReader->readUntilNodeFound('mergeCell');
-        $this->assertEquals('A1:D1', $xmlReader->expand()->getAttribute('ref'), 'Merge ref for first range is not valid.');
+        $DOMNode = $xmlReader->expand();
+        static::assertInstanceOf(\DOMElement::class, $DOMNode);
+        static::assertEquals('A1:D1', $DOMNode->getAttribute('ref'), 'Merge ref for first range is not valid.');
         $xmlReader->readUntilNodeFound('mergeCell');
-        $this->assertEquals('C3:K3', $xmlReader->expand()->getAttribute('ref'), 'Merge ref for second range is not valid.');
+        $DOMNode1 = $xmlReader->expand();
+        static::assertInstanceOf(\DOMElement::class, $DOMNode1);
+        static::assertEquals('C3:K3', $DOMNode1->getAttribute('ref'), 'Merge ref for second range is not valid.');
     }
 
-    /**
-     * @return void
-     */
     public function testGeneratedFileShouldBeValidForEmptySheets()
     {
         $fileName = 'test_empty_sheet.xlsx';
@@ -542,17 +540,14 @@ final class WriterTest extends TestCase
         $writer->addNewSheetAndMakeItCurrent();
         $writer->close();
 
-        $xmlReader = $this->getXmlReaderForSheetFromXmlFile($fileName, 1);
+        $xmlReader = $this->getXmlReaderForSheetFromXmlFile($fileName, '1');
         $xmlReader->setParserProperty(XMLReader::VALIDATE, true);
-        $this->assertTrue($xmlReader->isValid(), 'worksheet xml is not valid');
+        static::assertTrue($xmlReader->isValid(), 'worksheet xml is not valid');
         $xmlReader->setParserProperty(XMLReader::VALIDATE, false);
         $xmlReader->readUntilNodeFound('sheetData');
-        $this->assertEquals('sheetData', $xmlReader->getCurrentNodeName(), 'worksheet xml does not have sheetData');
+        static::assertEquals('sheetData', $xmlReader->getCurrentNodeName(), 'worksheet xml does not have sheetData');
     }
 
-    /**
-     * @return void
-     */
     public function testGeneratedFileShouldHaveTheCorrectMimeType()
     {
         if (!\function_exists('finfo')) {
@@ -669,8 +664,9 @@ final class WriterTest extends TestCase
     }
 
     /**
-     * @param $fileName
-     * @param $sheetIndex - 1 based
+     * @param string $fileName
+     * @param string $sheetIndex - 1 based
+     *
      * @return XMLReader
      */
     private function getXmlReaderForSheetFromXmlFile($fileName, $sheetIndex)
@@ -678,31 +674,8 @@ final class WriterTest extends TestCase
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
         $xmlReader = new XMLReader();
-        $xmlReader->openFileInZip($resourcePath, 'xl/worksheets/sheet' . $sheetIndex . '.xml');
+        $xmlReader->openFileInZip($resourcePath, 'xl/worksheets/sheet'.$sheetIndex.'.xml');
 
         return $xmlReader;
-    }
-
-    /**
-     * @param $fileName
-     * @param $sheetIndex - 1 based
-     * @param $rowIndex - 1 based
-     * @throws \Box\Spout\Reader\Exception\XMLProcessingException
-     * @return \DOMNode|null
-     */
-    private function getXmlRowFromXmlFile($fileName, $sheetIndex, $rowIndex)
-    {
-        $xmlReader = $this->getXmlReaderForSheetFromXmlFile($fileName, $sheetIndex);
-        $xmlReader->readUntilNodeFound('sheetData');
-
-        for ($i = 0; $i < $rowIndex; $i++) {
-            $xmlReader->readUntilNodeFound('row');
-        }
-
-        $row = $xmlReader->expand();
-
-        $xmlReader->close();
-
-        return $row;
     }
 }

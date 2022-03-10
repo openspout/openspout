@@ -36,16 +36,18 @@ abstract class OptionsManagerAbstract implements OptionsManagerInterface
 
     /**
      * Add an option to the internal list of options
-     * Used only for mergeCells() for now
+     * Used only for mergeCells() for now.
+     *
      * @param mixed $optionName
      * @param mixed $optionValue
-     * @return void
      */
     public function addOption($optionName, $optionValue)
     {
-        if (\in_array($optionName, $this->supportedOptions)) {
+        if (\in_array($optionName, $this->supportedOptions, true)) {
             if (!isset($this->options[$optionName])) {
                 $this->options[$optionName] = [];
+            } elseif (!\is_array($this->options[$optionName])) {
+                $this->options[$optionName] = [$this->options[$optionName]];
             }
             $this->options[$optionName][] = $optionValue;
         }

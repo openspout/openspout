@@ -187,9 +187,12 @@ class StyleBuilder
     }
 
     /**
-     * Set should shrink to fit
+     * Set should shrink to fit.
+     *
      * @param bool $shrinkToFit
+     *
      * @return StyleBuilder
+     *
      * @api
      */
     public function setShouldShrinkToFit($shrinkToFit = true)

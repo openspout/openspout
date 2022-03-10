@@ -81,6 +81,7 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
      *
      * @throws IOException
      * @throws WriterNotOpenedException If the writer has not been opened yet
+     *
      * @return Sheet The created sheet
      */
     public function addNewSheetAndMakeItCurrent()
