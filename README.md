@@ -12,12 +12,6 @@ Unlike other file readers or writers, it is capable of processing very large fil
 
 Documentation can be found at [https://openspout.readthedocs.io/en/latest/](https://openspout.readthedocs.io/en/latest/).
 
-## Requirements
-
-* PHP version 7.3 or higher
-* PHP extension `php_zip` enabled
-* PHP extension `php_xmlreader` enabled
-
 ## Upgrade from `box/spout`
 
 1. Replace `box/spout` with `openspout/openspout` in your `composer.json`
