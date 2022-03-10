@@ -2,13 +2,6 @@
 
 This guide will help you install OpenSpout and teach you how to use it.
 
-## Requirements
-
-* PHP version 7.2 or higher
-* PHP extension `ext-zip` enabled
-* PHP extension `ext-xmlreader` enabled
-
-
 ## Installation
 
 OpenSpout can be installed directly from [Composer](https://getcomposer.org/).

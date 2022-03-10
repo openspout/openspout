@@ -31,9 +31,6 @@
     <include>
       <directory suffix=".php">src/</directory>
     </include>
-    <exclude>
-      <directory>src/Autoloader</directory>
-    </exclude>
     <report>
       <text outputFile="php://stdout" showOnlySummary="true"/>
     </report>
