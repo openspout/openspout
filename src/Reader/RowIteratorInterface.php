@@ -11,6 +11,7 @@ interface RowIteratorInterface extends IteratorInterface
     /**
      * Cleans up what was created to iterate over the object.
      */
+    #[\ReturnTypeWillChange]
     public function end();
 
     /**
