@@ -10,7 +10,7 @@ use OpenSpout\Reader\Exception\SharedStringNotFoundException;
  * Shared strings are stored in small files (with a max number of strings per file).
  * This strategy is slower than an in-memory strategy but is used to avoid out of memory crashes.
  */
-class FileBasedStrategy implements CachingStrategyInterface
+final class FileBasedStrategy implements CachingStrategyInterface
 {
     /** Value to use to escape the line feed character ("\n") */
     public const ESCAPED_LINE_FEED_CHARACTER = '_x000A_';

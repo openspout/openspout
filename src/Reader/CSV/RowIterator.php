@@ -12,7 +12,7 @@ use OpenSpout\Reader\RowIteratorInterface;
 /**
  * Iterate over CSV rows.
  */
-class RowIterator implements RowIteratorInterface
+final class RowIterator implements RowIteratorInterface
 {
     /**
      * Value passed to fgetcsv. 0 means "unlimited" (slightly slower but accomodates for very long lines).

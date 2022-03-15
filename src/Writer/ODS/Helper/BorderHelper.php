@@ -17,7 +17,7 @@ use OpenSpout\Common\Entity\Style\BorderPart;
  * style:diagonal-tl-br="none" fo:border-left="none" fo:border-right="none"
  * style:rotation-align="none" fo:border-top="none"/>
  */
-class BorderHelper
+final class BorderHelper
 {
     /**
      * Width mappings.

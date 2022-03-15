@@ -2,6 +2,6 @@
 
 namespace OpenSpout\Reader\Exception;
 
-class NoSheetsFoundException extends ReaderException
+final class NoSheetsFoundException extends ReaderException
 {
 }

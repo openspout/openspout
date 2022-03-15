@@ -2,6 +2,6 @@
 
 namespace OpenSpout\Reader\Exception;
 
-class IteratorNotRewindableException extends ReaderException
+final class IteratorNotRewindableException extends ReaderException
 {
 }

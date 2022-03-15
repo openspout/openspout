@@ -9,7 +9,7 @@ use OpenSpout\Reader\XLSX\Manager\SheetManager;
 /**
  * Iterate over XLSX sheet.
  */
-class SheetIterator implements SheetIteratorInterface
+final class SheetIterator implements SheetIteratorInterface
 {
     /** @var \OpenSpout\Reader\XLSX\Sheet[] The list of sheet present in the file */
     protected array $sheets;

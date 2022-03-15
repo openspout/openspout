@@ -5,7 +5,7 @@ namespace OpenSpout\Common\Helper;
 /**
  * This class provides helper functions to determine the type of the cell value.
  */
-class CellTypeHelper
+final class CellTypeHelper
 {
     /**
      * @param null|mixed $value

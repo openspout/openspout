@@ -8,7 +8,7 @@ use OpenSpout\Reader\Wrapper\XMLReader;
 /**
  * This class manages the workbook relationships defined in the associated XML file.
  */
-class WorkbookRelationshipsManager
+final class WorkbookRelationshipsManager
 {
     public const BASE_PATH = 'xl/';
 

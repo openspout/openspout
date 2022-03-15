@@ -7,7 +7,7 @@ use OpenSpout\Common\Entity\Style\Style;
 /**
  * Registry for all used styles.
  */
-class StyleRegistry
+final class StyleRegistry
 {
     /** @var array [SERIALIZED_STYLE] => [STYLE_ID] mapping table, keeping track of the registered styles */
     protected array $serializedStyleToStyleIdMappingTable = [];

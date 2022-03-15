@@ -6,7 +6,7 @@ use OpenSpout\Writer\Exception\Border\InvalidNameException;
 use OpenSpout\Writer\Exception\Border\InvalidStyleException;
 use OpenSpout\Writer\Exception\Border\InvalidWidthException;
 
-class BorderPart
+final class BorderPart
 {
     /**
      * @var string the style of this border part

@@ -2,6 +2,6 @@
 
 namespace OpenSpout\Writer\Exception;
 
-class SheetNotFoundException extends WriterException
+final class SheetNotFoundException extends WriterException
 {
 }

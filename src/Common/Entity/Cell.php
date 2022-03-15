@@ -5,7 +5,7 @@ namespace OpenSpout\Common\Entity;
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Common\Helper\CellTypeHelper;
 
-class Cell
+final class Cell
 {
     /**
      * Numeric cell type (whole numbers, fractional numbers, dates).

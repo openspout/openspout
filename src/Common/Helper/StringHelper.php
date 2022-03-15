@@ -7,7 +7,7 @@ namespace OpenSpout\Common\Helper;
  *
  * @codeCoverageIgnore
  */
-class StringHelper
+final class StringHelper
 {
     /** @var bool Whether the mbstring extension is loaded */
     protected bool $hasMbstringSupport;

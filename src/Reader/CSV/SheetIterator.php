@@ -7,7 +7,7 @@ use OpenSpout\Reader\SheetIteratorInterface;
 /**
  * Iterate over CSV unique "sheet".
  */
-class SheetIterator implements SheetIteratorInterface
+final class SheetIterator implements SheetIteratorInterface
 {
     /** @var Sheet The CSV unique "sheet" */
     protected Sheet $sheet;

@@ -6,7 +6,7 @@ use OpenSpout\Common\Entity\Style\Border;
 use OpenSpout\Common\Entity\Style\BorderPart;
 use OpenSpout\Common\Entity\Style\Color;
 
-class BorderBuilder
+final class BorderBuilder
 {
     protected Border $border;
 

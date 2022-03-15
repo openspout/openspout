@@ -5,7 +5,7 @@ namespace OpenSpout\Writer\Common\Entity;
 /**
  * Entity describing a Worksheet.
  */
-class Worksheet
+final class Worksheet
 {
     /** @var string Path to the XML file that will contain the sheet data */
     private string $filePath;

@@ -16,7 +16,7 @@ use OpenSpout\Reader\IteratorInterface;
 use OpenSpout\Reader\ODS\Helper\CellValueFormatter;
 use OpenSpout\Reader\Wrapper\XMLReader;
 
-class RowIterator implements IteratorInterface
+final class RowIterator implements IteratorInterface
 {
     /** Definition of XML nodes names used to parse data */
     public const XML_NODE_TABLE = 'table:table';

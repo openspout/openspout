@@ -7,7 +7,7 @@ use OpenSpout\Common\Entity\Style\Style;
 /**
  * Takes care of merging styles together.
  */
-class StyleMerger
+final class StyleMerger
 {
     /**
      * Merges the current style with the given style, using the given style as a base. This means that:

@@ -14,7 +14,7 @@ use OpenSpout\Reader\Wrapper\XMLReader;
 use OpenSpout\Reader\XLSX\Helper\CellHelper;
 use OpenSpout\Reader\XLSX\Helper\CellValueFormatter;
 
-class RowIterator implements IteratorInterface
+final class RowIterator implements IteratorInterface
 {
     /** Definition of XML nodes names used to parse data */
     public const XML_NODE_DIMENSION = 'dimension';

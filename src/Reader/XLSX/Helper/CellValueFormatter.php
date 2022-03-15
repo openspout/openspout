@@ -3,6 +3,8 @@
 namespace OpenSpout\Reader\XLSX\Helper;
 
 use DateTimeImmutable;
+use OpenSpout\Common\Helper\Escaper\XLSX;
+use OpenSpout\Reader\Common\Manager\StyleManagerInterface;
 use OpenSpout\Reader\Exception\InvalidValueException;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsManager;
 use OpenSpout\Reader\XLSX\Manager\StyleManager;
@@ -10,7 +12,7 @@ use OpenSpout\Reader\XLSX\Manager\StyleManager;
 /**
  * This class provides helper functions to format cell values.
  */
-class CellValueFormatter
+final class CellValueFormatter
 {
     /** Definition of all possible cell types */
     public const CELL_TYPE_INLINE_STRING = 'inlineStr';
@@ -35,8 +37,8 @@ class CellValueFormatter
     /** @var SharedStringsManager Manages shared strings */
     protected SharedStringsManager $sharedStringsManager;
 
-    /** @var StyleManager Manages styles */
-    protected StyleManager $styleManager;
+    /** @var StyleManagerInterface Manages styles */
+    protected StyleManagerInterface $styleManager;
 
     /** @var bool Whether date/time values should be returned as PHP objects or be formatted as strings */
     protected bool $shouldFormatDates;
@@ -44,17 +46,23 @@ class CellValueFormatter
     /** @var bool Whether date/time values should use a calendar starting in 1904 instead of 1900 */
     protected bool $shouldUse1904Dates;
 
-    /** @var \OpenSpout\Common\Helper\Escaper\XLSX Used to unescape XML data */
-    protected \OpenSpout\Common\Helper\Escaper\XLSX $escaper;
+    /** @var XLSX Used to unescape XML data */
+    protected XLSX $escaper;
 
     /**
      * @param SharedStringsManager                  $sharedStringsManager Manages shared strings
-     * @param StyleManager                          $styleManager         Manages styles
+     * @param StyleManagerInterface                 $styleManager         Manages styles
      * @param bool                                  $shouldFormatDates    Whether date/time values should be returned as PHP objects or be formatted as strings
      * @param bool                                  $shouldUse1904Dates   Whether date/time values should use a calendar starting in 1904 instead of 1900
-     * @param \OpenSpout\Common\Helper\Escaper\XLSX $escaper              Used to unescape XML data
+     * @param XLSX $escaper              Used to unescape XML data
      */
-    public function __construct(SharedStringsManager $sharedStringsManager, StyleManager $styleManager, bool $shouldFormatDates, bool $shouldUse1904Dates, \OpenSpout\Common\Helper\Escaper\XLSX $escaper)
+    public function __construct(
+        SharedStringsManager $sharedStringsManager,
+        StyleManagerInterface $styleManager,
+        bool $shouldFormatDates,
+        bool $shouldUse1904Dates,
+        XLSX $escaper
+    )
     {
         $this->sharedStringsManager = $sharedStringsManager;
         $this->styleManager = $styleManager;

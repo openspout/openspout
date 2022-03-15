@@ -5,7 +5,7 @@ namespace OpenSpout\Common\Helper\Escaper;
 /**
  * Provides functions to escape and unescape data for ODS files.
  */
-class ODS implements EscaperInterface
+final class ODS implements EscaperInterface
 {
     /**
      * Escapes the given string to make it compatible with XLSX.

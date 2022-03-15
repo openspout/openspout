@@ -11,7 +11,7 @@ use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyInterface;
 /**
  * This class manages the shared strings defined in the associated XML file.
  */
-class SharedStringsManager
+final class SharedStringsManager
 {
     /** Definition of XML nodes names used to parse data */
     public const XML_NODE_SST = 'sst';

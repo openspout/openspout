@@ -7,7 +7,7 @@ use OpenSpout\Reader\Wrapper\XMLReader;
 /**
  * Helps process XML files.
  */
-class XMLProcessor
+final class XMLProcessor
 {
     // Node types
     public const NODE_TYPE_START = XMLReader::ELEMENT;

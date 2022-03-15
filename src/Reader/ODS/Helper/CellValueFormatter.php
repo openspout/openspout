@@ -8,7 +8,7 @@ use OpenSpout\Reader\Exception\InvalidValueException;
 /**
  * This class provides helper functions to format cell values.
  */
-class CellValueFormatter
+final class CellValueFormatter
 {
     /** Definition of all possible cell types */
     public const CELL_TYPE_STRING = 'string';

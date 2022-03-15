@@ -5,7 +5,7 @@ namespace OpenSpout\Writer\Common\Entity;
 /**
  * Entity describing a workbook.
  */
-class Workbook
+final class Workbook
 {
     /** @var Worksheet[] List of the workbook's sheets */
     private array $worksheets = [];

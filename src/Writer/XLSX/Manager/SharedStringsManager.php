@@ -8,7 +8,7 @@ use OpenSpout\Common\Helper\Escaper;
 /**
  * This class provides functions to write shared strings.
  */
-class SharedStringsManager
+final class SharedStringsManager
 {
     public const SHARED_STRINGS_FILE_NAME = 'sharedStrings.xml';
 

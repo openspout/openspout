@@ -2,12 +2,10 @@
 
 namespace OpenSpout\Reader\XLSX\Manager;
 
+use OpenSpout\Reader\Common\Manager\StyleManagerInterface;
 use OpenSpout\Reader\Wrapper\XMLReader;
 
-/**
- * This class manages XLSX styles.
- */
-class StyleManager
+final class StyleManager implements StyleManagerInterface
 {
     /** Nodes used to find relevant information in the styles XML file */
     public const XML_NODE_NUM_FMTS = 'numFmts';
@@ -80,14 +78,6 @@ class StyleManager
         }
     }
 
-    /**
-     * Returns whether the style with the given ID should consider
-     * numeric values as timestamps and format the cell as a date.
-     *
-     * @param int $styleId Zero-based style ID
-     *
-     * @return bool Whether the cell with the given cell should display a date instead of a numeric value
-     */
     public function shouldFormatNumericValueAsDate(int $styleId): bool
     {
         if (!$this->hasStylesXMLFile) {
@@ -108,14 +98,6 @@ class StyleManager
         return $this->doesStyleIndicateDate($styleAttributes);
     }
 
-    /**
-     * Returns the format as defined in "styles.xml" of the given style.
-     * NOTE: It is assumed that the style DOES have a number format associated to it.
-     *
-     * @param int $styleId Zero-based style ID
-     *
-     * @return string The number format code associated with the given style
-     */
     public function getNumberFormatCode(int $styleId): string
     {
         $stylesAttributes = $this->getStylesAttributes();

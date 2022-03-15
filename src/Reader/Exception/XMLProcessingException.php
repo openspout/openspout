@@ -2,6 +2,6 @@
 
 namespace OpenSpout\Reader\Exception;
 
-class XMLProcessingException extends ReaderException
+final class XMLProcessingException extends ReaderException
 {
 }

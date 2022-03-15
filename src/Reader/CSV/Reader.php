@@ -10,7 +10,7 @@ use OpenSpout\Reader\ReaderAbstract;
 /**
  * This class provides support to read data from a CSV file.
  */
-class Reader extends ReaderAbstract
+final class Reader extends ReaderAbstract
 {
     /** @var resource Pointer to the file to be written */
     protected $filePointer;

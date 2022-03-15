@@ -7,7 +7,7 @@ use OpenSpout\Reader\SheetInterface;
 /**
  * Represents a sheet within a XLSX file.
  */
-class Sheet implements SheetInterface
+final class Sheet implements SheetInterface
 {
     /** @var \OpenSpout\Reader\XLSX\RowIterator To iterate over sheet's rows */
     protected \OpenSpout\Reader\XLSX\RowIterator $rowIterator;

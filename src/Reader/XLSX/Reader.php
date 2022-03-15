@@ -15,7 +15,7 @@ use OpenSpout\Reader\XLSX\Manager\WorkbookRelationshipsManager;
 /**
  * This class provides support to read data from a XLSX file.
  */
-class Reader extends ReaderAbstract
+final class Reader extends ReaderAbstract
 {
     protected \ZipArchive $zip;
 

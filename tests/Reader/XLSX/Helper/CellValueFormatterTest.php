@@ -4,9 +4,13 @@ namespace OpenSpout\Reader\XLSX\Helper;
 
 use DateTimeImmutable;
 use OpenSpout\Common\Helper\Escaper;
+use OpenSpout\Reader\Common\Manager\StyleManagerInterface;
 use OpenSpout\Reader\Exception\InvalidValueException;
+use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory;
+use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\MemoryLimit;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsManager;
 use OpenSpout\Reader\XLSX\Manager\StyleManager;
+use OpenSpout\Reader\XLSX\Manager\WorkbookRelationshipsManager;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -87,9 +91,8 @@ final class CellValueFormatterTest extends TestCase
             ->willReturn($nodeListMock)
         ;
 
-        /** @var \PHPUnit\Framework\MockObject\MockObject|StyleManager $styleManagerMock */
-        $styleManagerMock = $this->createMock(StyleManager::class);
-
+        $styleManagerMock = $this->createMock(StyleManagerInterface::class);
+        
         $styleManagerMock
             ->expects(static::once())
             ->method('shouldFormatNumericValueAsDate')
@@ -97,7 +100,18 @@ final class CellValueFormatterTest extends TestCase
             ->willReturn(true)
         ;
 
-        $formatter = new CellValueFormatter($this->createMock(SharedStringsManager::class), $styleManagerMock, false, $shouldUse1904Dates, new Escaper\XLSX());
+        $formatter = new CellValueFormatter(
+            new SharedStringsManager(
+                uniqid(),
+                sys_get_temp_dir(),
+                new WorkbookRelationshipsManager(uniqid()),
+                new CachingStrategyFactory(new MemoryLimit('1'))
+            ),
+            $styleManagerMock,
+            false,
+            $shouldUse1904Dates,
+            new Escaper\XLSX()
+        );
 
         try {
             $result = $formatter->extractAndFormatNodeValue($nodeMock);
@@ -144,15 +158,25 @@ final class CellValueFormatterTest extends TestCase
      */
     public function testFormatNumericCellValueWithNumbers($value, $expectedFormattedValue, string $expectedType)
     {
-        /** @var \PHPUnit\Framework\MockObject\MockObject|StyleManager $styleManagerMock */
-        $styleManagerMock = $this->createMock(StyleManager::class);
+        $styleManagerMock = $this->createMock(StyleManagerInterface::class);
         $styleManagerMock
             ->expects(static::once())
             ->method('shouldFormatNumericValueAsDate')
             ->willReturn(false)
         ;
 
-        $formatter = new CellValueFormatter($this->createMock(SharedStringsManager::class), $styleManagerMock, false, false, new Escaper\XLSX());
+        $formatter = new CellValueFormatter(
+            new SharedStringsManager(
+                uniqid(),
+                sys_get_temp_dir(),
+                new WorkbookRelationshipsManager(uniqid()),
+                new CachingStrategyFactory(new MemoryLimit('1'))
+            ),
+            $styleManagerMock,
+            false,
+            false,
+            new Escaper\XLSX()
+        );
         $formattedValue = \ReflectionHelper::callMethodOnObject($formatter, 'formatNumericCellValue', $value, 0);
 
         static::assertSame($expectedFormattedValue, $formattedValue);
@@ -196,8 +220,13 @@ final class CellValueFormatterTest extends TestCase
         ;
 
         $formatter = new CellValueFormatter(
-            $this->createMock(SharedStringsManager::class),
-            $this->createMock(StyleManager::class),
+            new SharedStringsManager(
+                uniqid(),
+                sys_get_temp_dir(),
+                new WorkbookRelationshipsManager(uniqid()),
+                new CachingStrategyFactory(new MemoryLimit('1'))
+            ),
+            $this->createMock(StyleManagerInterface::class),
             false,
             false,
             new Escaper\XLSX()

@@ -15,7 +15,7 @@ use OpenSpout\Reader\XLSX\Sheet;
 /**
  * This class manages XLSX sheets.
  */
-class SheetManager
+final class SheetManager
 {
     /** Paths of XML files relative to the XLSX file root */
     public const WORKBOOK_XML_RELS_FILE_PATH = 'xl/_rels/workbook.xml.rels';

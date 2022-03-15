@@ -13,7 +13,7 @@ use OpenSpout\Writer\ODS\Manager\WorksheetManager;
  * This class provides helper functions to help with the file system operations
  * like files/folders creation & deletion for ODS files.
  */
-class FileSystemHelper extends \OpenSpout\Common\Helper\FileSystemHelper implements FileSystemWithRootFolderHelperInterface
+final class FileSystemHelper extends \OpenSpout\Common\Helper\FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 {
     public const APP_NAME = 'Spout';
     public const MIMETYPE = 'application/vnd.oasis.opendocument.spreadsheet';

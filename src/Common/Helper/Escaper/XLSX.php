@@ -5,7 +5,7 @@ namespace OpenSpout\Common\Helper\Escaper;
 /**
  * Provides functions to escape and unescape data for XLSX files.
  */
-class XLSX implements EscaperInterface
+final class XLSX implements EscaperInterface
 {
     /** @var bool Whether the escaper has already been initialized */
     private bool $isAlreadyInitialized = false;

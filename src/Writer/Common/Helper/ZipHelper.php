@@ -5,7 +5,7 @@ namespace OpenSpout\Writer\Common\Helper;
 /**
  * This class provides helper functions to create zip files.
  */
-class ZipHelper
+final class ZipHelper
 {
     public const ZIP_EXTENSION = '.zip';
 

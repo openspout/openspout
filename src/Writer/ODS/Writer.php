@@ -8,7 +8,7 @@ use OpenSpout\Writer\WriterMultiSheetsAbstract;
 /**
  * This class provides base support to write data to ODS files.
  */
-class Writer extends WriterMultiSheetsAbstract
+final class Writer extends WriterMultiSheetsAbstract
 {
     /** @var string Content-Type value for the header */
     protected static string $headerContentType = 'application/vnd.oasis.opendocument.spreadsheet';

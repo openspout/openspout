@@ -17,7 +17,7 @@ use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
  * @property StyleManager     $styleManager
  * @property FileSystemHelper $fileSystemHelper
  */
-class WorkbookManager extends WorkbookManagerAbstract
+final class WorkbookManager extends WorkbookManagerAbstract
 {
     /**
      * Maximum number of rows a XLSX sheet can contain.

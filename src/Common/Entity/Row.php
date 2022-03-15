@@ -4,7 +4,7 @@ namespace OpenSpout\Common\Entity;
 
 use OpenSpout\Common\Entity\Style\Style;
 
-class Row
+final class Row
 {
     /**
      * The cells in this row.

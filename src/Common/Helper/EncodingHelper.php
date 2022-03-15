@@ -7,7 +7,7 @@ use OpenSpout\Common\Exception\EncodingConversionException;
 /**
  * This class provides helper functions to work with encodings.
  */
-class EncodingHelper
+final class EncodingHelper
 {
     /** Definition of the encodings that can have a BOM */
     public const ENCODING_UTF8 = 'UTF-8';

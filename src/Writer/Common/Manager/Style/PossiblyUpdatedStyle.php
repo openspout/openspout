@@ -8,7 +8,7 @@ use OpenSpout\Common\Entity\Style\Style;
  * Indicates if style is updated.
  * It allow to know if style registration must be done.
  */
-class PossiblyUpdatedStyle
+final class PossiblyUpdatedStyle
 {
     private Style $style;
     private bool $isUpdated;

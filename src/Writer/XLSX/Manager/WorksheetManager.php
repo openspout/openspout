@@ -24,7 +24,7 @@ use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
 /**
  * XLSX worksheet manager, providing the interfaces to work with XLSX worksheets.
  */
-class WorksheetManager implements WorksheetManagerInterface
+final class WorksheetManager implements WorksheetManagerInterface
 {
     use ManagesCellSize;
 

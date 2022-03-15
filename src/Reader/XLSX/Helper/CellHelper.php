@@ -7,7 +7,7 @@ use OpenSpout\Common\Exception\InvalidArgumentException;
 /**
  * This class provides helper functions when working with cells.
  */
-class CellHelper
+final class CellHelper
 {
     // Using ord() is super slow... Using a pre-computed hash table instead.
     private static $columnLetterToIndexMapping = [

@@ -2,6 +2,6 @@
 
 namespace OpenSpout\Writer\Exception;
 
-class WriterAlreadyOpenedException extends WriterException
+final class WriterAlreadyOpenedException extends WriterException
 {
 }

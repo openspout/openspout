@@ -8,7 +8,7 @@ use OpenSpout\Common\Entity\Style\Style;
 /**
  * Manages styles to be applied to a cell.
  */
-class StyleManager implements StyleManagerInterface
+final class StyleManager implements StyleManagerInterface
 {
     /** @var StyleRegistry Registry for all used styles */
     protected StyleRegistry $styleRegistry;

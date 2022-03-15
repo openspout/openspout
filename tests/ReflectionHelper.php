@@ -3,7 +3,7 @@
 /**
  * Utility class for making PHP reflection easier to use.
  */
-class ReflectionHelper
+final class ReflectionHelper
 {
     private static $privateVarsToReset = [];
 

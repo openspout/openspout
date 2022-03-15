@@ -16,7 +16,7 @@ use OpenSpout\Reader\Wrapper\XMLReader;
 /**
  * Iterate over ODS sheet.
  */
-class SheetIterator implements SheetIteratorInterface
+final class SheetIterator implements SheetIteratorInterface
 {
     public const CONTENT_XML_FILE_PATH = 'content.xml';
 
