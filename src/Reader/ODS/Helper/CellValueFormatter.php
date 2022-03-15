@@ -2,6 +2,7 @@
 
 namespace OpenSpout\Reader\ODS\Helper;
 
+use DateTimeImmutable;
 use OpenSpout\Reader\Exception\InvalidValueException;
 
 /**
@@ -66,7 +67,7 @@ class CellValueFormatter
      *
      * @throws InvalidValueException If the node value is not valid
      *
-     * @return bool|\DateInterval|\DateTime|float|int|string The value associated with the cell, empty string if cell's type is void/undefined
+     * @return bool|\DateInterval|\DateTimeImmutable|float|int|string The value associated with the cell, empty string if cell's type is void/undefined
      */
     public function extractAndFormatNodeValue(\DOMElement $node)
     {
@@ -150,10 +151,8 @@ class CellValueFormatter
      * Returns the cell Date value from the given node.
      *
      * @throws InvalidValueException If the value is not a valid date
-     *
-     * @return \DateTime|string The value associated with the cell
      */
-    protected function formatDateCellValue(\DOMElement $node)
+    protected function formatDateCellValue(\DOMElement $node): string|DateTimeImmutable
     {
         // The XML node looks like this:
         // <table:table-cell calcext:value-type="date" office:date-value="2016-05-19T16:39:00" office:value-type="date">
@@ -169,7 +168,7 @@ class CellValueFormatter
             $nodeValue = $node->getAttribute(self::XML_ATTRIBUTE_DATE_VALUE);
 
             try {
-                $cellValue = new \DateTime($nodeValue);
+                $cellValue = new DateTimeImmutable($nodeValue);
             } catch (\Exception $e) {
                 throw new InvalidValueException($nodeValue);
             }

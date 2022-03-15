@@ -2,6 +2,7 @@
 
 namespace OpenSpout\Writer\ODS\Helper;
 
+use DateTimeImmutable;
 use OpenSpout\Writer\Common\Entity\Worksheet;
 use OpenSpout\Writer\Common\Helper\FileSystemWithRootFolderHelperInterface;
 use OpenSpout\Writer\Common\Helper\ZipHelper;
@@ -230,7 +231,7 @@ class FileSystemHelper extends \OpenSpout\Common\Helper\FileSystemHelper impleme
     protected function createMetaFile(): self
     {
         $appName = self::APP_NAME;
-        $createdDate = (new \DateTime())->format(\DateTime::W3C);
+        $createdDate = (new DateTimeImmutable())->format(DateTimeImmutable::W3C);
 
         $metaXmlFileContents = <<<EOD
             <?xml version="1.0" encoding="UTF-8" standalone="yes"?>

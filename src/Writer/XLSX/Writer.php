@@ -52,8 +52,6 @@ class Writer extends WriterMultiSheetsAbstract
      *
      * @param int[] $range1 - top left cell's coordinate [column, row]
      * @param int[] $range2 - bottom right cell's coordinate [column, row]
-     *
-     * @return $this
      */
     public function mergeCells(array $range1, array $range2): void
     {

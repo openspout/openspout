@@ -2,6 +2,8 @@
 
 namespace OpenSpout\Common\Entity;
 
+use DateInterval;
+use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -43,8 +45,8 @@ final class CellTest extends TestCase
 
     public function testCellTypeDate()
     {
-        static::assertTrue((new Cell(new \DateTime()))->isDate());
-        static::assertTrue((new Cell(new \DateInterval('P2Y4DT6H8M')))->isDate());
+        static::assertTrue((new Cell(new DateTimeImmutable()))->isDate());
+        static::assertTrue((new Cell(new DateInterval('P2Y4DT6H8M')))->isDate());
     }
 
     public function testCellTypeFormula()

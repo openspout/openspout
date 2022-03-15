@@ -68,7 +68,7 @@ class CellValueFormatter
      *
      * @throws InvalidValueException If the value is not valid
      *
-     * @return bool|\DateTime|float|int|string The value associated with the cell
+     * @return bool|\DateTimeImmutable|float|int|string The value associated with the cell
      */
     public function extractAndFormatNodeValue(\DOMElement $node)
     {
@@ -172,9 +172,9 @@ class CellValueFormatter
      *
      * @param int $cellStyleId 0 being the default style
      *
-     * @return \DateTime|float|int The value associated with the cell
+     * @return \DateTimeImmutable|float|int The value associated with the cell
      */
-    protected function formatNumericCellValue(string $nodeValue, int $cellStyleId)
+    protected function formatNumericCellValue(int|float|string $nodeValue, int $cellStyleId)
     {
         // Numeric values can represent numbers as well as timestamps.
         // We need to look at the style of the cell to determine whether it is one or the other.
@@ -274,16 +274,14 @@ class CellValueFormatter
      * @param string $nodeValue ISO 8601 Date string
      *
      * @throws InvalidValueException If the value is not a valid date
-     *
-     * @return \DateTime|string The value associated with the cell
      */
-    protected function formatDateCellValue(string $nodeValue)
+    protected function formatDateCellValue(string $nodeValue): string|DateTimeImmutable
     {
         // Mitigate thrown Exception on invalid date-time format (http://php.net/manual/en/datetime.construct.php)
         try {
-            $cellValue = ($this->shouldFormatDates) ? $nodeValue : new \DateTime($nodeValue);
-        } catch (\Exception $e) {
-            throw new InvalidValueException($nodeValue);
+            $cellValue = ($this->shouldFormatDates) ? $nodeValue : new DateTimeImmutable($nodeValue);
+        } catch (\Exception $exception) {
+            throw new InvalidValueException($nodeValue, '', 0, $exception);
         }
 
         return $cellValue;

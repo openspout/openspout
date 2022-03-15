@@ -20,7 +20,7 @@ trait TestUsingResource
     private string $tempFolderPath = 'tests/resources/generated/temp';
 
     /**
-     * @return null|string Path of the resource who matches the given name or null if resource not found
+     * @return string Path of the resource who matches the given name or null if resource not found
      */
     protected function getResourcePath(string $resourceName): string
     {

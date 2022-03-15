@@ -2,6 +2,7 @@
 
 namespace OpenSpout\Reader\ODS;
 
+use DateTimeImmutable;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Reader\Common\Creator\ReaderEntityFactory;
 use OpenSpout\Reader\Exception\IteratorNotRewindableException;
@@ -132,8 +133,8 @@ final class ReaderTest extends TestCase
                 'ods--11', 'ods--12',
                 true, false,
                 0, 10.43,
-                new \DateTime('1987-11-29T00:00:00', $utcTz), new \DateTime('1987-11-29T13:37:00', $utcTz),
-                new \DateTime('1987-11-29T13:37:00', $utcTz), new \DateTime('1987-11-29T13:37:00', $honoluluTz),
+                new DateTimeImmutable('1987-11-29T00:00:00', $utcTz), new DateTimeImmutable('1987-11-29T13:37:00', $utcTz),
+                new DateTimeImmutable('1987-11-29T13:37:00', $utcTz), new DateTimeImmutable('1987-11-29T13:37:00', $honoluluTz),
                 new \DateInterval('PT13H37M00S'),
                 0, 0.42,
                 '42 USD', '9.99 EUR',

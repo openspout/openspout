@@ -2,6 +2,7 @@
 
 namespace OpenSpout\Writer\XLSX;
 
+use DateTimeImmutable;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\InvalidArgumentException;
@@ -315,7 +316,7 @@ final class WriterTest extends TestCase
                 0,
                 10.2,
                 null,
-                new \DateTimeImmutable('2020-03-04 06:00:00', new \DateTimeZone('UTC')),
+                new DateTimeImmutable('2020-03-04 06:00:00', new \DateTimeZone('UTC')),
             ],
         ]);
 

@@ -2,6 +2,7 @@
 
 namespace OpenSpout\Writer\XLSX\Helper;
 
+use DateTimeImmutable;
 use OpenSpout\Writer\Common\Entity\Worksheet;
 use OpenSpout\Writer\Common\Helper\FileSystemWithRootFolderHelperInterface;
 use OpenSpout\Writer\Common\Helper\ZipHelper;
@@ -311,7 +312,7 @@ class FileSystemHelper extends \OpenSpout\Common\Helper\FileSystemHelper impleme
      */
     private function createCoreXmlFile(): self
     {
-        $createdDate = (new \DateTime())->format(\DateTime::W3C);
+        $createdDate = (new DateTimeImmutable())->format(DateTimeImmutable::W3C);
         $coreXmlFileContents = <<<EOD
             <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
             <cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">

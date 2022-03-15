@@ -3,6 +3,7 @@
 namespace OpenSpout\Reader\XLSX\Manager;
 
 use OpenSpout\Common\Helper\Escaper\XLSX;
+use OpenSpout\Common\Manager\OptionsManagerInterface;
 use OpenSpout\Reader\Common\Entity\Options;
 use OpenSpout\Reader\Common\Manager\RowManager;
 use OpenSpout\Reader\Common\XMLProcessor;
@@ -42,8 +43,8 @@ class SheetManager
     /** @var string Path of the XLSX file being read */
     protected string $filePath;
 
-    /** @var \OpenSpout\Common\Manager\OptionsManagerInterface Reader's options manager */
-    protected \OpenSpout\Common\Manager\OptionsManagerInterface $optionsManager;
+    /** @var OptionsManagerInterface Reader's options manager */
+    protected OptionsManagerInterface $optionsManager;
 
     /** @var \OpenSpout\Reader\XLSX\Manager\SharedStringsManager Manages shared strings */
     protected \OpenSpout\Reader\XLSX\Manager\SharedStringsManager $sharedStringsManager;
@@ -60,15 +61,12 @@ class SheetManager
     /** @var int Index of the active sheet (0 by default) */
     protected int $activeSheetIndex;
 
-    /**
-     * @param string                                              $filePath             Path of the XLSX file being read
-     * @param \OpenSpout\Common\Manager\OptionsManagerInterface   $optionsManager       Reader's options manager
-     * @param \OpenSpout\Reader\XLSX\Manager\SharedStringsManager $sharedStringsManager Manages shared strings
-     * @param \OpenSpout\Common\Helper\Escaper\XLSX               $escaper              Used to unescape XML data
-     * @param mixed                                               $sharedStringsManager
-     */
-    public function __construct(string $filePath, \OpenSpout\Common\Manager\OptionsManagerInterface $optionsManager, SharedStringsManager $sharedStringsManager, XLSX $escaper)
-    {
+    public function __construct(
+        string $filePath,
+        OptionsManagerInterface $optionsManager,
+        SharedStringsManager $sharedStringsManager,
+        XLSX $escaper
+    ) {
         $this->filePath = $filePath;
         $this->optionsManager = $optionsManager;
         $this->sharedStringsManager = $sharedStringsManager;
@@ -224,12 +222,12 @@ class SheetManager
     }
 
     /**
-     * @param string                                            $filePath             Path of the XLSX file being read
-     * @param string                                            $sheetDataXMLFilePath Path of the sheet data XML file as in [Content_Types].xml
-     * @param \OpenSpout\Common\Manager\OptionsManagerInterface $optionsManager       Reader's options manager
-     * @param SharedStringsManager                              $sharedStringsManager Manages shared strings
+     * @param string                  $filePath             Path of the XLSX file being read
+     * @param string                  $sheetDataXMLFilePath Path of the sheet data XML file as in [Content_Types].xml
+     * @param OptionsManagerInterface $optionsManager       Reader's options manager
+     * @param SharedStringsManager    $sharedStringsManager Manages shared strings
      */
-    private function createRowIterator(string $filePath, string $sheetDataXMLFilePath, \OpenSpout\Common\Manager\OptionsManagerInterface $optionsManager, SharedStringsManager $sharedStringsManager): RowIterator
+    private function createRowIterator(string $filePath, string $sheetDataXMLFilePath, OptionsManagerInterface $optionsManager, SharedStringsManager $sharedStringsManager): RowIterator
     {
         $xmlReader = new XMLReader();
         $xmlProcessor = new XMLProcessor($xmlReader);

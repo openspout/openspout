@@ -2,12 +2,14 @@
 
 namespace OpenSpout\Writer\XLSX\Helper;
 
+use DateTimeInterface;
+
 class DateHelper
 {
     /**
      * @see https://github.com/PHPOffice/PhpSpreadsheet/blob/1.22.0/src/PhpSpreadsheet/Shared/Date.php#L296
      */
-    public static function toExcel(\DateTimeInterface $dateTime): float
+    public static function toExcel(DateTimeInterface $dateTime): float
     {
         $year = (int) $dateTime->format('Y');
         $month = (int) $dateTime->format('m');

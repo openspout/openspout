@@ -222,7 +222,7 @@ class RowIterator implements RowIteratorInterface
                     break;
             }
 
-            $encodedRowData[$cellIndex] = $this->encodingHelper->attemptConversionToUTF8((string) $cellValue, $this->encoding);
+            $encodedRowData[$cellIndex] = $this->encodingHelper->attemptConversionToUTF8($cellValue, $this->encoding);
         }
 
         return $encodedRowData;

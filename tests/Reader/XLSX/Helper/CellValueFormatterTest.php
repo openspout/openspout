@@ -2,6 +2,7 @@
 
 namespace OpenSpout\Reader\XLSX\Helper;
 
+use DateTimeImmutable;
 use OpenSpout\Common\Helper\Escaper;
 use OpenSpout\Reader\Exception\InvalidValueException;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsManager;
@@ -104,7 +105,7 @@ final class CellValueFormatterTest extends TestCase
             if (null === $expectedDateAsString) {
                 static::fail('An exception should have been thrown');
             } else {
-                static::assertInstanceOf(\DateTimeImmutable::class, $result);
+                static::assertInstanceOf(DateTimeImmutable::class, $result);
                 static::assertSame($expectedDateAsString, $result->format('Y-m-d H:i:s'));
             }
         } catch (InvalidValueException $exception) {

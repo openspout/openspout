@@ -2,6 +2,7 @@
 
 namespace OpenSpout\Reader\XLSX;
 
+use DateTimeImmutable;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Reader\Common\Creator\ReaderEntityFactory;
 use OpenSpout\TestUsingResource;
@@ -196,8 +197,8 @@ final class ReaderTest extends TestCase
             [
                 's1--A1', 's1--A2',
                 false, true,
-                \DateTime::createFromFormat('Y-m-d H:i:s', '2015-06-03 13:21:58'),
-                \DateTime::createFromFormat('Y-m-d H:i:s', '2015-06-01 00:00:00'),
+                DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2015-06-03 13:21:58'),
+                DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2015-06-01 00:00:00'),
                 10, 10.43,
                 null,
                 'weird string', // valid 'str' string
@@ -214,7 +215,7 @@ final class ReaderTest extends TestCase
 
         $allRows = $this->getAllRowsForFile('sheet_with_same_numeric_value_date_formatted_differently.xlsx');
 
-        $expectedDate = \DateTime::createFromFormat('Y-m-d H:i:s', '2015-01-01 00:00:00');
+        $expectedDate = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2015-01-01 00:00:00');
         $expectedRows = [
             array_fill(0, 10, $expectedDate),
             array_fill(0, 10, $expectedDate),
@@ -234,14 +235,14 @@ final class ReaderTest extends TestCase
 
         $expectedRows = [
             [
-                \DateTime::createFromFormat('Y-m-d H:i:s', '2015-09-01 00:00:00'),
-                \DateTime::createFromFormat('Y-m-d H:i:s', '2015-09-02 00:00:00'),
-                \DateTime::createFromFormat('Y-m-d H:i:s', '2015-09-01 22:23:00'),
+                DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2015-09-01 00:00:00'),
+                DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2015-09-02 00:00:00'),
+                DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2015-09-01 22:23:00'),
             ],
             [
-                \DateTime::createFromFormat('Y-m-d H:i:s', '1900-02-27 23:59:59'),
-                \DateTime::createFromFormat('Y-m-d H:i:s', '1900-03-01 00:00:00'),
-                \DateTime::createFromFormat('Y-m-d H:i:s', '1900-02-28 11:00:00'),
+                DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '1900-02-27 23:59:59'),
+                DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '1900-03-01 00:00:00'),
+                DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '1900-02-28 11:00:00'),
             ],
         ];
         static::assertEquals($expectedRows, $allRows);
@@ -256,14 +257,14 @@ final class ReaderTest extends TestCase
 
         $expectedRows = [
             [
-                \DateTime::createFromFormat('Y-m-d H:i:s', '2019-09-02 00:00:00'),
-                \DateTime::createFromFormat('Y-m-d H:i:s', '2019-09-03 00:00:00'),
-                \DateTime::createFromFormat('Y-m-d H:i:s', '2019-09-02 22:23:00'),
+                DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-09-02 00:00:00'),
+                DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-09-03 00:00:00'),
+                DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-09-02 22:23:00'),
             ],
             [
-                \DateTime::createFromFormat('Y-m-d H:i:s', '1904-02-29 23:59:59'),
-                \DateTime::createFromFormat('Y-m-d H:i:s', '1904-03-02 00:00:00'),
-                \DateTime::createFromFormat('Y-m-d H:i:s', '1904-03-01 11:00:00'),
+                DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '1904-02-29 23:59:59'),
+                DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '1904-03-02 00:00:00'),
+                DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '1904-03-01 11:00:00'),
             ],
         ];
         static::assertEquals($expectedRows, $allRows);
@@ -278,11 +279,11 @@ final class ReaderTest extends TestCase
 
         $expectedRows = [
             [
-                \DateTime::createFromFormat('Y-m-d H:i:s', '1899-12-30 00:00:00'),
-                \DateTime::createFromFormat('Y-m-d H:i:s', '1899-12-30 11:29:00'),
-                \DateTime::createFromFormat('Y-m-d H:i:s', '1899-12-30 23:29:00'),
-                \DateTime::createFromFormat('Y-m-d H:i:s', '1899-12-30 01:42:25'),
-                \DateTime::createFromFormat('Y-m-d H:i:s', '1899-12-30 13:42:25'),
+                DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '1899-12-30 00:00:00'),
+                DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '1899-12-30 11:29:00'),
+                DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '1899-12-30 23:29:00'),
+                DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '1899-12-30 01:42:25'),
+                DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '1899-12-30 13:42:25'),
             ],
         ];
         static::assertEquals($expectedRows, $allRows);

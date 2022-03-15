@@ -2,6 +2,8 @@
 
 namespace OpenSpout\Writer\ODS;
 
+use DateInterval;
+use DateTimeImmutable;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\InvalidArgumentException;
@@ -233,8 +235,8 @@ final class WriterTest extends TestCase
                 0,
                 10.2,
                 null,
-                new \DateTimeImmutable('2020-03-04 05:06:07', new \DateTimeZone('UTC')),
-                new \DateInterval('P1DT23S'),
+                new DateTimeImmutable('2020-03-04 05:06:07', new \DateTimeZone('UTC')),
+                new DateInterval('P1DT23S'),
             ],
         ]);
 

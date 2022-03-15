@@ -84,7 +84,7 @@ class EncodingHelper
      *
      * @return string The converted, UTF-8 string
      */
-    public function attemptConversionToUTF8(string $string, string $sourceEncoding): string
+    public function attemptConversionToUTF8(?string $string, string $sourceEncoding): ?string
     {
         return $this->attemptConversion($string, $sourceEncoding, self::ENCODING_UTF8);
     }
@@ -99,7 +99,7 @@ class EncodingHelper
      *
      * @return string The converted string, encoded with the given encoding
      */
-    public function attemptConversionFromUTF8(string $string, string $targetEncoding): string
+    public function attemptConversionFromUTF8(?string $string, string $targetEncoding): ?string
     {
         return $this->attemptConversion($string, self::ENCODING_UTF8, $targetEncoding);
     }
@@ -140,10 +140,10 @@ class EncodingHelper
      *
      * @return string The converted string, encoded with the given encoding
      */
-    protected function attemptConversion(string $string, string $sourceEncoding, string $targetEncoding): string
+    protected function attemptConversion(?string $string, string $sourceEncoding, string $targetEncoding): ?string
     {
         // if source and target encodings are the same, it's a no-op
-        if ($sourceEncoding === $targetEncoding) {
+        if (null === $string || $sourceEncoding === $targetEncoding) {
             return $string;
         }
 
