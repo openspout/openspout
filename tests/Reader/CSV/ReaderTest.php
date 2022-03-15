@@ -32,6 +32,9 @@ final class ReaderTest extends TestCase
         $this->createCSVReader(null)->getSheetIterator();
     }
 
+    /**
+     * @requires OSFAMILY Linux
+     */
     public function testOpenShouldThrowExceptionIfFileNotReadable()
     {
         $resourcePath = $this->getResourcePath('csv_standard.csv');
