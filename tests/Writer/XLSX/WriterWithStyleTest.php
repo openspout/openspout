@@ -200,7 +200,7 @@ final class WriterWithStyleTest extends TestCase
         $fileName = 'test_add_row_with_numfmt.xlsx';
         $style = (new StyleBuilder())
             ->setFontBold()
-            ->setFormat('0.00')//Builtin format
+            ->setFormat('0.00')// Builtin format
             ->build()
         ;
         $style2 = (new StyleBuilder())
@@ -520,6 +520,7 @@ final class WriterWithStyleTest extends TestCase
         // A rather relaxed test
         // Where a border is applied - the borderId attribute has to be greater than 0
         $bordersApplied = 0;
+
         /** @var \DOMElement $node */
         foreach ($styleXfsElements->childNodes as $node) {
             $shouldApplyBorder = (1 === (int) $node->getAttribute('applyBorder'));

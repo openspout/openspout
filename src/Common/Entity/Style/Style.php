@@ -17,36 +17,43 @@ class Style
 
     /** @var bool Whether the font should be bold */
     private $fontBold = false;
+
     /** @var bool Whether the bold property was set */
     private $hasSetFontBold = false;
 
     /** @var bool Whether the font should be italic */
     private $fontItalic = false;
+
     /** @var bool Whether the italic property was set */
     private $hasSetFontItalic = false;
 
     /** @var bool Whether the font should be underlined */
     private $fontUnderline = false;
+
     /** @var bool Whether the underline property was set */
     private $hasSetFontUnderline = false;
 
     /** @var bool Whether the font should be struck through */
     private $fontStrikethrough = false;
+
     /** @var bool Whether the strikethrough property was set */
     private $hasSetFontStrikethrough = false;
 
     /** @var int Font size */
     private $fontSize = self::DEFAULT_FONT_SIZE;
+
     /** @var bool Whether the font size property was set */
     private $hasSetFontSize = false;
 
     /** @var string Font color */
     private $fontColor = self::DEFAULT_FONT_COLOR;
+
     /** @var bool Whether the font color property was set */
     private $hasSetFontColor = false;
 
     /** @var string Font name */
     private $fontName = self::DEFAULT_FONT_NAME;
+
     /** @var bool Whether the font name property was set */
     private $hasSetFontName = false;
 
@@ -55,18 +62,22 @@ class Style
 
     /** @var bool Whether specific cell alignment should be applied */
     private $shouldApplyCellAlignment = false;
+
     /** @var string Cell alignment */
     private $cellAlignment;
+
     /** @var bool Whether the cell alignment property was set */
     private $hasSetCellAlignment = false;
 
     /** @var bool Whether the text should wrap in the cell (useful for long or multi-lines text) */
     private $shouldWrapText = false;
+
     /** @var bool Whether the wrap text property was set */
     private $hasSetWrapText = false;
 
     /** @var bool Whether the cell should shrink to fit to content */
     private $shouldShrinkToFit = false;
+
     /** @var bool Whether the shouldShrinkToFit text property was set */
     private $hasSetShrinkToFit = false;
 

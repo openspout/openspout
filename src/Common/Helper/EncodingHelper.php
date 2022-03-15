@@ -28,6 +28,7 @@ class EncodingHelper
 
     /** @var bool */
     private $canUseIconv;
+
     /** @var bool */
     private $canUseMbString;
 

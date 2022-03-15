@@ -4,7 +4,7 @@ $config = (new PhpCsFixer\Config())
     ->setRiskyAllowed(true)
     ->setRules([
         '@DoctrineAnnotation' => true,
-        '@PHP73Migration' => true,
+        '@PHP74Migration' => true,
         '@PHPUnit84Migration:risky' => true,
         '@PhpCsFixer' => true,
         '@PhpCsFixer:risky' => true,

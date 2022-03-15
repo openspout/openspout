@@ -64,7 +64,6 @@ jobs:
         os:
           - "ubuntu-latest"
         php-version:
-          - "7.3"
           - "7.4"
           - "8.0"
         code-coverage:

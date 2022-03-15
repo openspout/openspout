@@ -100,7 +100,7 @@ class Reader extends ReaderAbstract
     {
         // "auto_detect_line_endings" is deprecated in PHP 8.1
         if (!$this->isRunningAtLeastPhp81) {
-            $this->originalAutoDetectLineEndings = ini_get('auto_detect_line_endings');
+            $this->originalAutoDetectLineEndings = \ini_get('auto_detect_line_endings');
             ini_set('auto_detect_line_endings', '1');
         }
 

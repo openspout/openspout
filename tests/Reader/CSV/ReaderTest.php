@@ -400,7 +400,7 @@ final class ReaderTest extends TestCase
      */
     private function createCSVReader($optionsManager, ?EncodingHelper $encodingHelper = null)
     {
-        $optionsManager = $optionsManager ?? new OptionsManager();
+        $optionsManager ??= new OptionsManager();
         $entityFactory = new InternalEntityFactory(
             $encodingHelper ?? EncodingHelper::factory()
         );

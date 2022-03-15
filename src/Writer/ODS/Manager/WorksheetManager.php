@@ -101,6 +101,7 @@ class WorksheetManager implements WorksheetManagerInterface
         for ($i = 0; $i < $row->getNumCells(); ++$i) {
             /** @var Cell $cell */
             $cell = $cells[$currentCellIndex];
+
             /** @var null|Cell $nextCell */
             $nextCell = $cells[$nextCellIndex] ?? null;
 
