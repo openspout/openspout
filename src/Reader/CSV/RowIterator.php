@@ -56,7 +56,7 @@ class RowIterator implements RowIteratorInterface
         $filePointer,
         OptionsManagerInterface $optionsManager,
         EncodingHelper $encodingHelper,
-        InternalEntityFactory $entityFactory,
+        InternalEntityFactory $entityFactory
     ) {
         $this->filePointer = $filePointer;
         $this->fieldDelimiter = $optionsManager->getOption(Options::FIELD_DELIMITER);
