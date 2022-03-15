@@ -91,7 +91,6 @@ class SheetIterator implements SheetIteratorInterface
     /**
      * Cleans up what was created to iterate over the object.
      */
-    #[\ReturnTypeWillChange]
     public function end(): void
     {
         // make sure we are not leaking memory in case the iteration stopped before the end

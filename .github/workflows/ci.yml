@@ -25,7 +25,7 @@ jobs:
           coverage: ${{ matrix.code-coverage }}
           php-version: ${{ matrix.php-version }}
           extensions: zip, xmlreader, dom
-          ini-values: zend.assertions=1
+          ini-values: zend.assertions=1,error_reporting=-1
           tools: composer-normalize, composer-require-checker, composer-unused
 
       - name: "Get composer cache directory"
@@ -85,7 +85,7 @@ jobs:
           coverage: ${{ matrix.code-coverage }}
           php-version: ${{ matrix.php-version }}
           extensions: zip, xmlreader, dom
-          ini-values: zend.assertions=1
+          ini-values: zend.assertions=1,error_reporting=-1
 
       - name: "Get composer cache directory"
         id: "composercache"
@@ -139,7 +139,7 @@ jobs:
           coverage: "none"
           php-version: ${{ matrix.php-version }}
           extensions: zip, xmlreader, dom
-          ini-values: zend.assertions=1
+          ini-values: zend.assertions=1,error_reporting=-1
 
       - name: "Get composer cache directory"
         id: "composercache"
@@ -178,7 +178,7 @@ jobs:
           coverage: "none"
           php-version: ${{ matrix.php-version }}
           extensions: zip, xmlreader, dom
-          ini-values: zend.assertions=1
+          ini-values: zend.assertions=1,error_reporting=-1
           tools: cs2pr
 
       - name: "Get composer cache directory"
