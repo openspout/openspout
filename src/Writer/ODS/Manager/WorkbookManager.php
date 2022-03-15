@@ -5,20 +5,17 @@ namespace OpenSpout\Writer\ODS\Manager;
 use OpenSpout\Common\Manager\OptionsManagerInterface;
 use OpenSpout\Writer\Common\Entity\Sheet;
 use OpenSpout\Writer\Common\Entity\Workbook;
-use OpenSpout\Writer\Common\Helper\FileSystemWithRootFolderHelperInterface;
-use OpenSpout\Writer\Common\Manager\Style\StyleManagerInterface;
 use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
 use OpenSpout\Writer\Common\Manager\WorkbookManagerAbstract;
-use OpenSpout\Writer\Common\Manager\WorksheetManagerInterface;
 use OpenSpout\Writer\ODS\Helper\FileSystemHelper;
 use OpenSpout\Writer\ODS\Manager\Style\StyleManager;
 
 /**
  * ODS workbook manager, providing the interfaces to work with workbook.
- * 
+ *
  * @property WorksheetManager $worksheetManager
  * @property FileSystemHelper $fileSystemHelper
- * @property StyleManager $styleManager
+ * @property StyleManager     $styleManager
  */
 class WorkbookManager extends WorkbookManagerAbstract
 {
@@ -28,7 +25,7 @@ class WorkbookManager extends WorkbookManagerAbstract
      * @see https://ask.libreoffice.org/en/question/8631/upper-limit-to-number-of-rows-in-calc/
      */
     protected static $maxRowsPerWorksheet = 1048576;
-    
+
     public function __construct(
         Workbook $workbook,
         OptionsManagerInterface $optionsManager,
@@ -36,8 +33,7 @@ class WorkbookManager extends WorkbookManagerAbstract
         StyleManager $styleManager,
         StyleMerger $styleMerger,
         FileSystemHelper $fileSystemHelper
-    )
-    {
+    ) {
         parent::__construct(
             $workbook,
             $optionsManager,

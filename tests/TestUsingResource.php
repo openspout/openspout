@@ -25,6 +25,7 @@ trait TestUsingResource
     protected function getResourcePath(string $resourceName): string
     {
         $resourceType = pathinfo($resourceName, PATHINFO_EXTENSION);
+
         return realpath($this->resourcesPath).'/'.strtolower($resourceType).'/'.$resourceName;
     }
 

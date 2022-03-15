@@ -13,7 +13,7 @@ use OpenSpout\Writer\ODS\Helper\BorderHelper;
 
 /**
  * Manages styles to be applied to a cell.
- * 
+ *
  * @property StyleRegistry $styleRegistry
  */
 class StyleManager extends CommonStyleManager

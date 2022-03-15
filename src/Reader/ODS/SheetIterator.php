@@ -8,7 +8,6 @@ use OpenSpout\Reader\Common\Entity\Options;
 use OpenSpout\Reader\Common\Manager\RowManager;
 use OpenSpout\Reader\Common\XMLProcessor;
 use OpenSpout\Reader\Exception\XMLProcessingException;
-use OpenSpout\Reader\IteratorInterface;
 use OpenSpout\Reader\ODS\Helper\CellValueFormatter;
 use OpenSpout\Reader\ODS\Helper\SettingsHelper;
 use OpenSpout\Reader\SheetIteratorInterface;

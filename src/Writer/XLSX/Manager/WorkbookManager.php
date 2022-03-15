@@ -5,19 +5,16 @@ namespace OpenSpout\Writer\XLSX\Manager;
 use OpenSpout\Common\Manager\OptionsManagerInterface;
 use OpenSpout\Writer\Common\Entity\Sheet;
 use OpenSpout\Writer\Common\Entity\Workbook;
-use OpenSpout\Writer\Common\Helper\FileSystemWithRootFolderHelperInterface;
-use OpenSpout\Writer\Common\Manager\Style\StyleManagerInterface;
 use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
 use OpenSpout\Writer\Common\Manager\WorkbookManagerAbstract;
-use OpenSpout\Writer\Common\Manager\WorksheetManagerInterface;
 use OpenSpout\Writer\XLSX\Helper\FileSystemHelper;
 use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
 
 /**
  * XLSX workbook manager, providing the interfaces to work with workbook.
- * 
+ *
  * @property WorksheetManager $worksheetManager
- * @property StyleManager $styleManager
+ * @property StyleManager     $styleManager
  * @property FileSystemHelper $fileSystemHelper
  */
 class WorkbookManager extends WorkbookManagerAbstract
@@ -28,7 +25,7 @@ class WorkbookManager extends WorkbookManagerAbstract
      * @see http://office.microsoft.com/en-us/excel-help/excel-specifications-and-limits-HP010073849.aspx
      */
     protected static $maxRowsPerWorksheet = 1048576;
-    
+
     public function __construct(
         Workbook $workbook,
         OptionsManagerInterface $optionsManager,
@@ -36,8 +33,7 @@ class WorkbookManager extends WorkbookManagerAbstract
         StyleManager $styleManager,
         StyleMerger $styleMerger,
         FileSystemHelper $fileSystemHelper
-    )
-    {
+    ) {
         parent::__construct(
             $workbook,
             $optionsManager,
