@@ -65,7 +65,7 @@ class WorkbookManager extends WorkbookManagerAbstract
     /**
      * Closes custom objects that are still opened.
      */
-    protected function closeRemainingObjects()
+    protected function closeRemainingObjects(): void
     {
         $this->worksheetManager->getSharedStringsManager()->close();
     }
@@ -75,7 +75,7 @@ class WorkbookManager extends WorkbookManagerAbstract
      *
      * @param resource $finalFilePointer Pointer to the spreadsheet that will be created
      */
-    protected function writeAllFilesToDiskAndZipThem($finalFilePointer)
+    protected function writeAllFilesToDiskAndZipThem($finalFilePointer): void
     {
         $worksheets = $this->getWorksheets();
 

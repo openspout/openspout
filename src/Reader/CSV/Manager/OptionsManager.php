@@ -28,7 +28,7 @@ class OptionsManager extends OptionsManagerAbstract
     /**
      * {@inheritdoc}
      */
-    protected function setDefaultOptions()
+    protected function setDefaultOptions(): void
     {
         $this->setOption(Options::SHOULD_FORMAT_DATES, false);
         $this->setOption(Options::SHOULD_PRESERVE_EMPTY_ROWS, false);

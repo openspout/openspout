@@ -31,7 +31,7 @@ class InMemoryStrategy implements CachingStrategyInterface
      * @param string $sharedString      The string to be added to the cache
      * @param int    $sharedStringIndex Index of the shared string in the sharedStrings.xml file
      */
-    public function addStringForIndex(string $sharedString, int $sharedStringIndex)
+    public function addStringForIndex(string $sharedString, int $sharedStringIndex): void
     {
         if (!$this->isCacheClosed) {
             $this->inMemoryCache->offsetSet($sharedStringIndex, $sharedString);
@@ -42,7 +42,7 @@ class InMemoryStrategy implements CachingStrategyInterface
      * Closes the cache after the last shared string was added.
      * This prevents any additional string from being added to the cache.
      */
-    public function closeCache()
+    public function closeCache(): void
     {
         $this->isCacheClosed = true;
     }
@@ -68,7 +68,7 @@ class InMemoryStrategy implements CachingStrategyInterface
     /**
      * Destroys the cache, freeing memory and removing any created artifacts.
      */
-    public function clearCache()
+    public function clearCache(): void
     {
         $this->inMemoryCache = new \SplFixedArray(0);
         $this->isCacheClosed = false;

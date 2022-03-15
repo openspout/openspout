@@ -3,6 +3,7 @@
 namespace OpenSpout\Writer\XLSX\Helper;
 
 use DateTimeImmutable;
+use OpenSpout\Common\Helper\FileSystemHelper as CommonFileSystemHelper;
 use OpenSpout\Writer\Common\Entity\Worksheet;
 use OpenSpout\Writer\Common\Helper\FileSystemWithRootFolderHelperInterface;
 use OpenSpout\Writer\Common\Helper\ZipHelper;
@@ -12,7 +13,7 @@ use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
  * This class provides helper functions to help with the file system operations
  * like files/folders creation & deletion for XLSX files.
  */
-class FileSystemHelper extends \OpenSpout\Common\Helper\FileSystemHelper implements FileSystemWithRootFolderHelperInterface
+class FileSystemHelper extends CommonFileSystemHelper implements FileSystemWithRootFolderHelperInterface
 {
     public const APP_NAME = 'Spout';
 
@@ -85,7 +86,7 @@ class FileSystemHelper extends \OpenSpout\Common\Helper\FileSystemHelper impleme
      *
      * @throws \OpenSpout\Common\Exception\IOException If unable to create at least one of the base folders
      */
-    public function createBaseFilesAndFolders()
+    public function createBaseFilesAndFolders(): void
     {
         $this
             ->createRootFolder()

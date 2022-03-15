@@ -78,7 +78,7 @@ class FileSystemHelper implements FileSystemHelperInterface
      *
      * @throws \OpenSpout\Common\Exception\IOException If the file path is not inside of the base folder
      */
-    public function deleteFile(string $filePath)
+    public function deleteFile(string $filePath): void
     {
         $this->throwIfOperationNotInBaseFolder($filePath);
 
@@ -94,7 +94,7 @@ class FileSystemHelper implements FileSystemHelperInterface
      *
      * @throws \OpenSpout\Common\Exception\IOException If the folder path is not inside of the base folder
      */
-    public function deleteFolderRecursively(string $folderPath)
+    public function deleteFolderRecursively(string $folderPath): void
     {
         $this->throwIfOperationNotInBaseFolder($folderPath);
 

@@ -65,7 +65,7 @@ class FileBasedStrategy implements CachingStrategyInterface
      * @param string $sharedString      The string to be added to the cache
      * @param int    $sharedStringIndex Index of the shared string in the sharedStrings.xml file
      */
-    public function addStringForIndex(string $sharedString, int $sharedStringIndex)
+    public function addStringForIndex(string $sharedString, int $sharedStringIndex): void
     {
         $tempFilePath = $this->getSharedStringTempFilePath($sharedStringIndex);
 
@@ -87,7 +87,7 @@ class FileBasedStrategy implements CachingStrategyInterface
      * Closes the cache after the last shared string was added.
      * This prevents any additional string from being added to the cache.
      */
-    public function closeCache()
+    public function closeCache(): void
     {
         // close pointer to the last temp file that was written
         if ($this->tempFilePointer) {
@@ -136,7 +136,7 @@ class FileBasedStrategy implements CachingStrategyInterface
     /**
      * Destroys the cache, freeing memory and removing any created artifacts.
      */
-    public function clearCache()
+    public function clearCache(): void
     {
         if ($this->tempFolder) {
             $this->fileSystemHelper->deleteFolderRecursively($this->tempFolder);

@@ -59,11 +59,8 @@ class XMLReader extends \XMLReader
      * @see \XMLReader::read
      *
      * @throws \OpenSpout\Reader\Exception\XMLProcessingException If an error/warning occurred
-     *
-     * @return bool TRUE on success or FALSE on failure
      */
-    #[\ReturnTypeWillChange]
-    public function read()
+    public function read(): bool
     {
         $this->useXMLInternalErrors();
 
@@ -101,11 +98,8 @@ class XMLReader extends \XMLReader
      * @param null|string $localName The name of the next node to move to
      *
      * @throws \OpenSpout\Reader\Exception\XMLProcessingException If an error/warning occurred
-     *
-     * @return bool TRUE on success or FALSE on failure
      */
-    #[\ReturnTypeWillChange]
-    public function next($localName = null)
+    public function next($localName = null): bool
     {
         $this->useXMLInternalErrors();
 

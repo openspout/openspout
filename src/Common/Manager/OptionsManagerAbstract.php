@@ -26,7 +26,7 @@ abstract class OptionsManagerAbstract implements OptionsManagerInterface
      *
      * @param mixed $optionValue
      */
-    public function setOption(string $optionName, $optionValue)
+    public function setOption(string $optionName, $optionValue): void
     {
         if (\in_array($optionName, $this->supportedOptions, true)) {
             $this->options[$optionName] = $optionValue;
@@ -40,7 +40,7 @@ abstract class OptionsManagerAbstract implements OptionsManagerInterface
      * @param mixed $optionName
      * @param mixed $optionValue
      */
-    public function addOption($optionName, $optionValue)
+    public function addOption($optionName, $optionValue): void
     {
         if (\in_array($optionName, $this->supportedOptions, true)) {
             if (!isset($this->options[$optionName])) {
@@ -71,9 +71,5 @@ abstract class OptionsManagerAbstract implements OptionsManagerInterface
      */
     abstract protected function getSupportedOptions(): array;
 
-    /**
-     * Sets the default options.
-     * To be overriden by child classes.
-     */
-    abstract protected function setDefaultOptions();
+    abstract protected function setDefaultOptions(): void;
 }

@@ -29,7 +29,7 @@ class OptionsManager extends OptionsManagerAbstract
     /**
      * {@inheritdoc}
      */
-    protected function setDefaultOptions()
+    protected function setDefaultOptions(): void
     {
         $this->setOption(Options::TEMP_FOLDER, sys_get_temp_dir());
         $this->setOption(Options::DEFAULT_ROW_STYLE, new Style());

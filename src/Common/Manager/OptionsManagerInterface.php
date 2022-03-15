@@ -10,7 +10,7 @@ interface OptionsManagerInterface
     /**
      * @param mixed $optionValue
      */
-    public function setOption(string $optionName, $optionValue);
+    public function setOption(string $optionName, $optionValue): void;
 
     /**
      * @return null|mixed The set option or NULL if no option with given name found
@@ -24,5 +24,5 @@ interface OptionsManagerInterface
      * @param mixed $optionName
      * @param mixed $optionValue
      */
-    public function addOption($optionName, $optionValue);
+    public function addOption($optionName, $optionValue): void;
 }

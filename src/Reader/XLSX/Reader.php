@@ -63,35 +63,35 @@ class Reader extends ReaderAbstract
      * @throws \OpenSpout\Common\Exception\IOException            If the file at the given path or its content cannot be read
      * @throws \OpenSpout\Reader\Exception\NoSheetsFoundException If there are no sheets in the file
      */
-    protected function openReader(string $filePath)
+    protected function openReader(string $filePath): void
     {
         $this->zip = new \ZipArchive();
 
-        if (true === $this->zip->open($filePath)) {
-            $tempFolder = $this->optionsManager->getOption(Options::TEMP_FOLDER);
-            $this->sharedStringsManager = new SharedStringsManager(
-                $filePath,
-                $tempFolder,
-                new WorkbookRelationshipsManager($filePath),
-                $this->cachingStrategyFactory
-            );
-
-            if ($this->sharedStringsManager->hasSharedStrings()) {
-                // Extracts all the strings from the sheets for easy access in the future
-                $this->sharedStringsManager->extractSharedStrings();
-            }
-
-            $this->sheetIterator = new SheetIterator(
-                new SheetManager(
-                    $filePath,
-                    $this->optionsManager,
-                    $this->sharedStringsManager,
-                    new XLSX()
-                )
-            );
-        } else {
+        if (true !== $this->zip->open($filePath)) {
             throw new IOException("Could not open {$filePath} for reading.");
         }
+
+        $tempFolder = $this->optionsManager->getOption(Options::TEMP_FOLDER);
+        $this->sharedStringsManager = new SharedStringsManager(
+            $filePath,
+            $tempFolder,
+            new WorkbookRelationshipsManager($filePath),
+            $this->cachingStrategyFactory
+        );
+
+        if ($this->sharedStringsManager->hasSharedStrings()) {
+            // Extracts all the strings from the sheets for easy access in the future
+            $this->sharedStringsManager->extractSharedStrings();
+        }
+
+        $this->sheetIterator = new SheetIterator(
+            new SheetManager(
+                $filePath,
+                $this->optionsManager,
+                $this->sharedStringsManager,
+                new XLSX()
+            )
+        );
     }
 
     /**
@@ -107,7 +107,7 @@ class Reader extends ReaderAbstract
     /**
      * Closes the reader. To be used after reading the file.
      */
-    protected function closeReader()
+    protected function closeReader(): void
     {
         if (null !== $this->zip) {
             $this->zip->close();

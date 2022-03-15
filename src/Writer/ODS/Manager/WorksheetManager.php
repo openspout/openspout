@@ -54,7 +54,7 @@ class WorksheetManager implements WorksheetManagerInterface
      *
      * @throws \OpenSpout\Common\Exception\IOException If the sheet data file cannot be opened for writing
      */
-    public function startSheet(Worksheet $worksheet)
+    public function startSheet(Worksheet $worksheet): void
     {
         $sheetFilePointer = fopen($worksheet->getFilePath(), 'w');
         $this->throwIfSheetFilePointerIsNotAvailable($sheetFilePointer);
@@ -88,7 +88,7 @@ class WorksheetManager implements WorksheetManagerInterface
      * @throws InvalidArgumentException If a cell value's type is not supported
      * @throws IOException              If the data cannot be written
      */
-    public function addRow(Worksheet $worksheet, Row $row)
+    public function addRow(Worksheet $worksheet, Row $row): void
     {
         $cells = $row->getCells();
         $rowStyle = $row->getStyle();
@@ -134,7 +134,7 @@ class WorksheetManager implements WorksheetManagerInterface
     /**
      * Closes the worksheet.
      */
-    public function close(Worksheet $worksheet)
+    public function close(Worksheet $worksheet): void
     {
         $worksheetFilePointer = $worksheet->getFilePointer();
 
@@ -145,12 +145,12 @@ class WorksheetManager implements WorksheetManagerInterface
         fclose($worksheetFilePointer);
     }
 
-    public function setDefaultColumnWidth(?float $width)
+    public function setDefaultColumnWidth(?float $width): void
     {
         $this->styleManager->setDefaultColumnWidth($width);
     }
 
-    public function setDefaultRowHeight(?float $height)
+    public function setDefaultRowHeight(?float $height): void
     {
         $this->styleManager->setDefaultRowHeight($height);
     }
@@ -158,7 +158,7 @@ class WorksheetManager implements WorksheetManagerInterface
     /**
      * @param int ...$columns One or more columns with this width
      */
-    public function setColumnWidth(float $width, ...$columns)
+    public function setColumnWidth(float $width, int ...$columns): void
     {
         $this->styleManager->setColumnWidth($width, ...$columns);
     }
@@ -168,7 +168,7 @@ class WorksheetManager implements WorksheetManagerInterface
      * @param int   $start First column index of the range
      * @param int   $end   Last column index of the range
      */
-    public function setColumnWidthForRange(float $width, int $start, int $end)
+    public function setColumnWidthForRange(float $width, int $start, int $end): void
     {
         $this->styleManager->setColumnWidthForRange($width, $start, $end);
     }

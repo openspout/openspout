@@ -108,7 +108,6 @@ class RowIterator implements IteratorInterface
      *
      * @throws \OpenSpout\Reader\Exception\IteratorNotRewindableException If the iterator is rewound more than once
      */
-    #[\ReturnTypeWillChange]
     public function rewind(): void
     {
         // Because sheet and row data is located in the file, we can't rewind both the
@@ -132,7 +131,6 @@ class RowIterator implements IteratorInterface
      *
      * @see http://php.net/manual/en/iterator.valid.php
      */
-    #[\ReturnTypeWillChange]
     public function valid(): bool
     {
         return !$this->hasReachedEndOfFile;
@@ -146,7 +144,6 @@ class RowIterator implements IteratorInterface
      * @throws \OpenSpout\Reader\Exception\SharedStringNotFoundException If a shared string was not found
      * @throws \OpenSpout\Common\Exception\IOException                   If unable to read the sheet data XML
      */
-    #[\ReturnTypeWillChange]
     public function next(): void
     {
         if ($this->doesNeedDataForNextRowToBeProcessed()) {
@@ -161,7 +158,6 @@ class RowIterator implements IteratorInterface
      *
      * @see http://php.net/manual/en/iterator.current.php
      */
-    #[\ReturnTypeWillChange]
     public function current(): Row
     {
         return $this->rowBuffer;
@@ -172,7 +168,6 @@ class RowIterator implements IteratorInterface
      *
      * @see http://php.net/manual/en/iterator.key.php
      */
-    #[\ReturnTypeWillChange]
     public function key(): int
     {
         return $this->lastRowIndexProcessed;
@@ -181,7 +176,6 @@ class RowIterator implements IteratorInterface
     /**
      * Cleans up what was created to iterate over the object.
      */
-    #[\ReturnTypeWillChange]
     public function end(): void
     {
         $this->xmlReader->close();

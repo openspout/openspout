@@ -28,7 +28,6 @@ class SheetIterator implements SheetIteratorInterface
      *
      * @see http://php.net/manual/en/iterator.rewind.php
      */
-    #[\ReturnTypeWillChange]
     public function rewind(): void
     {
         $this->hasReadUniqueSheet = false;
@@ -39,7 +38,6 @@ class SheetIterator implements SheetIteratorInterface
      *
      * @see http://php.net/manual/en/iterator.valid.php
      */
-    #[\ReturnTypeWillChange]
     public function valid(): bool
     {
         return !$this->hasReadUniqueSheet;
@@ -50,7 +48,6 @@ class SheetIterator implements SheetIteratorInterface
      *
      * @see http://php.net/manual/en/iterator.next.php
      */
-    #[\ReturnTypeWillChange]
     public function next(): void
     {
         $this->hasReadUniqueSheet = true;
@@ -61,7 +58,6 @@ class SheetIterator implements SheetIteratorInterface
      *
      * @see http://php.net/manual/en/iterator.current.php
      */
-    #[\ReturnTypeWillChange]
     public function current(): Sheet
     {
         return $this->sheet;
@@ -72,7 +68,6 @@ class SheetIterator implements SheetIteratorInterface
      *
      * @see http://php.net/manual/en/iterator.key.php
      */
-    #[\ReturnTypeWillChange]
     public function key(): int
     {
         return 1;
@@ -81,7 +76,6 @@ class SheetIterator implements SheetIteratorInterface
     /**
      * Cleans up what was created to iterate over the object.
      */
-    #[\ReturnTypeWillChange]
     public function end(): void
     {
         // do nothing

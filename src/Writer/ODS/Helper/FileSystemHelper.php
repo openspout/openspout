@@ -64,7 +64,7 @@ class FileSystemHelper extends \OpenSpout\Common\Helper\FileSystemHelper impleme
      *
      * @throws \OpenSpout\Common\Exception\IOException If unable to create at least one of the base folders
      */
-    public function createBaseFilesAndFolders()
+    public function createBaseFilesAndFolders(): void
     {
         $this
             ->createRootFolder()

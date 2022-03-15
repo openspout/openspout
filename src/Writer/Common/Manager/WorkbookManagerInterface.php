@@ -43,23 +43,23 @@ interface WorkbookManagerInterface
     /**
      * Starts the current sheet and opens its file pointer.
      */
-    public function startCurrentSheet();
+    public function startCurrentSheet(): void;
 
-    public function setDefaultColumnWidth(float $width);
+    public function setDefaultColumnWidth(float $width): void;
 
-    public function setDefaultRowHeight(float $height);
+    public function setDefaultRowHeight(float $height): void;
 
     /**
      * @param int ...$columns One or more columns with this width
      */
-    public function setColumnWidth(float $width, ...$columns);
+    public function setColumnWidth(float $width, int ...$columns): void;
 
     /**
      * @param float $width The width to set
      * @param int   $start First column index of the range
      * @param int   $end   Last column index of the range
      */
-    public function setColumnWidthForRange(float $width, int $start, int $end);
+    public function setColumnWidthForRange(float $width, int $start, int $end): void;
 
     /**
      * Sets the given sheet as the current one. New data will be written to this sheet.
@@ -69,7 +69,7 @@ interface WorkbookManagerInterface
      *
      * @throws SheetNotFoundException If the given sheet does not exist in the workbook
      */
-    public function setCurrentSheet(Sheet $sheet);
+    public function setCurrentSheet(Sheet $sheet): void;
 
     /**
      * Adds a row to the current sheet.
@@ -81,7 +81,7 @@ interface WorkbookManagerInterface
      * @throws IOException     If trying to create a new sheet and unable to open the sheet for writing
      * @throws WriterException If unable to write data
      */
-    public function addRowToCurrentWorksheet(Row $row);
+    public function addRowToCurrentWorksheet(Row $row): void;
 
     /**
      * Closes the workbook and all its associated sheets.
@@ -90,5 +90,5 @@ interface WorkbookManagerInterface
      *
      * @param resource $finalFilePointer Pointer to the spreadsheet that will be created
      */
-    public function close($finalFilePointer);
+    public function close($finalFilePointer): void;
 }
