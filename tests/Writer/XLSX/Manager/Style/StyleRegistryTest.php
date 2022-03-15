@@ -3,8 +3,8 @@
 namespace OpenSpout\Writer\XLSX\Manager\Style;
 
 use OpenSpout\Common\Entity\Style\Color;
+use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Writer\Common\Creator\Style\BorderBuilder;
-use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -16,10 +16,10 @@ final class StyleRegistryTest extends TestCase
     {
         $styleRegistry = $this->getStyleRegistry();
 
-        $styleBlack = (new StyleBuilder())->setBackgroundColor(Color::BLACK)->build();
-        $styleOrange = (new StyleBuilder())->setBackgroundColor(Color::ORANGE)->build();
-        $styleOrangeBold = (new StyleBuilder())->setBackgroundColor(Color::ORANGE)->setFontBold()->build();
-        $styleNoBackgroundColor = (new StyleBuilder())->setFontItalic()->build();
+        $styleBlack = (new Style())->setBackgroundColor(Color::BLACK);
+        $styleOrange = (new Style())->setBackgroundColor(Color::ORANGE);
+        $styleOrangeBold = (new Style())->setBackgroundColor(Color::ORANGE)->setFontBold();
+        $styleNoBackgroundColor = (new Style())->setFontItalic();
 
         $styleRegistry->registerStyle($styleBlack);
         $styleRegistry->registerStyle($styleOrange);
@@ -41,10 +41,10 @@ final class StyleRegistryTest extends TestCase
         $borderLeft = (new BorderBuilder())->setBorderLeft()->build();
         $borderRight = (new BorderBuilder())->setBorderRight()->build();
 
-        $styleBorderLeft = (new StyleBuilder())->setBorder($borderLeft)->build();
-        $styleBorderRight = (new StyleBuilder())->setBorder($borderRight)->build();
-        $styleBorderRightBold = (new StyleBuilder())->setBorder($borderRight)->setFontBold()->build();
-        $styleNoBorder = (new StyleBuilder())->setFontItalic()->build();
+        $styleBorderLeft = (new Style())->setBorder($borderLeft);
+        $styleBorderRight = (new Style())->setBorder($borderRight);
+        $styleBorderRightBold = (new Style())->setBorder($borderRight)->setFontBold();
+        $styleNoBorder = (new Style())->setFontItalic();
 
         $styleRegistry->registerStyle($styleBorderLeft);
         $styleRegistry->registerStyle($styleBorderRight);
@@ -63,18 +63,18 @@ final class StyleRegistryTest extends TestCase
     {
         $styleRegistry = $this->getStyleRegistry();
 
-        $styleBuiltinFormat = (new StyleBuilder())
+        $styleBuiltinFormat = (new Style())
             ->setFontBold()
             ->setFormat('0.00')// Builtin format
-            ->build()
+
         ;
 
-        $styleUserFormat = (new StyleBuilder())
+        $styleUserFormat = (new Style())
             ->setFontBold()
             ->setFormat('0.000')
-            ->build()
+
         ;
-        $styleNoFormat = (new StyleBuilder())->setFontItalic()->build();
+        $styleNoFormat = (new Style())->setFontItalic();
 
         $styleRegistry->registerStyle($styleBuiltinFormat);
         $styleRegistry->registerStyle($styleUserFormat);
@@ -93,7 +93,7 @@ final class StyleRegistryTest extends TestCase
      */
     private function getStyleRegistry()
     {
-        $defaultStyle = (new StyleBuilder())->build();
+        $defaultStyle = (new Style());
 
         return new StyleRegistry($defaultStyle);
     }

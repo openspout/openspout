@@ -2,12 +2,12 @@
 
 namespace OpenSpout\Writer;
 
-use OpenSpout\Common\Creator\HelperFactory;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Common\Exception\InvalidArgumentException;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Exception\SpoutException;
+use OpenSpout\Common\Helper\FileSystemHelper;
 use OpenSpout\Common\Manager\OptionsManagerInterface;
 use OpenSpout\Writer\Common\Entity\Options;
 use OpenSpout\Writer\Exception\WriterAlreadyOpenedException;
@@ -24,9 +24,6 @@ abstract class WriterAbstract implements WriterInterface
     /** @var bool Indicates whether the writer has been opened or not */
     protected $isWriterOpened = false;
 
-    /** @var HelperFactory */
-    protected $helperFactory;
-
     /** @var OptionsManagerInterface Writer options manager */
     protected $optionsManager;
 
@@ -34,11 +31,9 @@ abstract class WriterAbstract implements WriterInterface
     protected static $headerContentType;
 
     public function __construct(
-        OptionsManagerInterface $optionsManager,
-        HelperFactory $helperFactory
+        OptionsManagerInterface $optionsManager
     ) {
         $this->optionsManager = $optionsManager;
-        $this->helperFactory = $helperFactory;
     }
 
     /**
@@ -242,7 +237,7 @@ abstract class WriterAbstract implements WriterInterface
         // remove output file if it was created
         if (file_exists($this->outputFilePath)) {
             $outputFolderPath = \dirname($this->outputFilePath);
-            $fileSystemHelper = $this->helperFactory->createFileSystemHelper($outputFolderPath);
+            $fileSystemHelper = new FileSystemHelper($outputFolderPath);
             $fileSystemHelper->deleteFile($this->outputFilePath);
         }
     }

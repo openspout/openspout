@@ -3,21 +3,20 @@
 namespace OpenSpout\Reader\XLSX;
 
 use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Common\Helper\Escaper\XLSX;
 use OpenSpout\Common\Manager\OptionsManagerInterface;
-use OpenSpout\Reader\Common\Creator\InternalEntityFactoryInterface;
 use OpenSpout\Reader\Common\Entity\Options;
 use OpenSpout\Reader\ReaderAbstract;
-use OpenSpout\Reader\XLSX\Creator\InternalEntityFactory;
-use OpenSpout\Reader\XLSX\Creator\ManagerFactory;
+use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory;
+use OpenSpout\Reader\XLSX\Manager\SharedStringsManager;
+use OpenSpout\Reader\XLSX\Manager\SheetManager;
+use OpenSpout\Reader\XLSX\Manager\WorkbookRelationshipsManager;
 
 /**
  * This class provides support to read data from a XLSX file.
  */
 class Reader extends ReaderAbstract
 {
-    /** @var ManagerFactory */
-    protected $managerFactory;
-
     /** @var \ZipArchive */
     protected $zip;
 
@@ -27,13 +26,14 @@ class Reader extends ReaderAbstract
     /** @var SheetIterator To iterator over the XLSX sheets */
     protected $sheetIterator;
 
+    private CachingStrategyFactory $cachingStrategyFactory;
+
     public function __construct(
         OptionsManagerInterface $optionsManager,
-        InternalEntityFactoryInterface $entityFactory,
-        ManagerFactory $managerFactory
+        CachingStrategyFactory $cachingStrategyFactory
     ) {
-        parent::__construct($optionsManager, $entityFactory);
-        $this->managerFactory = $managerFactory;
+        parent::__construct($optionsManager);
+        $this->cachingStrategyFactory = $cachingStrategyFactory;
     }
 
     /**
@@ -70,24 +70,29 @@ class Reader extends ReaderAbstract
      */
     protected function openReader($filePath)
     {
-        /** @var InternalEntityFactory $entityFactory */
-        $entityFactory = $this->entityFactory;
-
-        $this->zip = $entityFactory->createZipArchive();
+        $this->zip = new \ZipArchive();
 
         if (true === $this->zip->open($filePath)) {
             $tempFolder = $this->optionsManager->getOption(Options::TEMP_FOLDER);
-            $this->sharedStringsManager = $this->managerFactory->createSharedStringsManager($filePath, $tempFolder, $entityFactory);
+            $this->sharedStringsManager = new SharedStringsManager(
+                $filePath,
+                $tempFolder,
+                new WorkbookRelationshipsManager($filePath),
+                $this->cachingStrategyFactory
+            );
 
             if ($this->sharedStringsManager->hasSharedStrings()) {
                 // Extracts all the strings from the sheets for easy access in the future
                 $this->sharedStringsManager->extractSharedStrings();
             }
 
-            $this->sheetIterator = $entityFactory->createSheetIterator(
-                $filePath,
-                $this->optionsManager,
-                $this->sharedStringsManager
+            $this->sheetIterator = new SheetIterator(
+                new SheetManager(
+                    $filePath,
+                    $this->optionsManager,
+                    $this->sharedStringsManager,
+                    new XLSX()
+                )
             );
         } else {
             throw new IOException("Could not open {$filePath} for reading.");

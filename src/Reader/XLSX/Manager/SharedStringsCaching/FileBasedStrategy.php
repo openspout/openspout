@@ -2,8 +2,8 @@
 
 namespace OpenSpout\Reader\XLSX\Manager\SharedStringsCaching;
 
+use OpenSpout\Common\Helper\FileSystemHelper;
 use OpenSpout\Reader\Exception\SharedStringNotFoundException;
-use OpenSpout\Reader\XLSX\Creator\HelperFactory;
 
 /**
  * This class implements the file-based caching strategy for shared strings.
@@ -46,13 +46,12 @@ class FileBasedStrategy implements CachingStrategyInterface
     protected $inMemoryTempFileContents;
 
     /**
-     * @param string        $tempFolder               Temporary folder where the temporary files to store shared strings will be stored
-     * @param int           $maxNumStringsPerTempFile Maximum number of strings that can be stored in one temp file
-     * @param HelperFactory $helperFactory            Factory to create helpers
+     * @param string $tempFolder               Temporary folder where the temporary files to store shared strings will be stored
+     * @param int    $maxNumStringsPerTempFile Maximum number of strings that can be stored in one temp file
      */
-    public function __construct($tempFolder, $maxNumStringsPerTempFile, $helperFactory)
+    public function __construct($tempFolder, $maxNumStringsPerTempFile)
     {
-        $this->fileSystemHelper = $helperFactory->createFileSystemHelper($tempFolder);
+        $this->fileSystemHelper = new FileSystemHelper($tempFolder);
         $this->tempFolder = $this->fileSystemHelper->createFolder($tempFolder, uniqid('sharedstrings'));
 
         $this->maxNumStringsPerTempFile = $maxNumStringsPerTempFile;

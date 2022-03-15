@@ -4,7 +4,6 @@ namespace OpenSpout\Reader;
 
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Manager\OptionsManagerInterface;
-use OpenSpout\Reader\Common\Creator\InternalEntityFactoryInterface;
 use OpenSpout\Reader\Common\Entity\Options;
 use OpenSpout\Reader\Exception\ReaderException;
 use OpenSpout\Reader\Exception\ReaderNotOpenedException;
@@ -14,18 +13,13 @@ abstract class ReaderAbstract implements ReaderInterface
     /** @var bool Indicates whether the stream is currently open */
     protected $isStreamOpened = false;
 
-    /** @var InternalEntityFactoryInterface Factory to create entities */
-    protected $entityFactory;
-
     /** @var OptionsManagerInterface Writer options manager */
     protected $optionsManager;
 
     public function __construct(
-        OptionsManagerInterface $optionsManager,
-        InternalEntityFactoryInterface $entityFactory
+        OptionsManagerInterface $optionsManager
     ) {
         $this->optionsManager = $optionsManager;
-        $this->entityFactory = $entityFactory;
     }
 
     /**

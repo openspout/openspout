@@ -2,8 +2,6 @@
 
 namespace OpenSpout\Writer\Common\Helper;
 
-use OpenSpout\Writer\Common\Creator\InternalEntityFactory;
-
 /**
  * This class provides helper functions to create zip files.
  */
@@ -15,17 +13,6 @@ class ZipHelper
     public const EXISTING_FILES_SKIP = 'skip';
     public const EXISTING_FILES_OVERWRITE = 'overwrite';
 
-    /** @var InternalEntityFactory Factory to create entities */
-    private $entityFactory;
-
-    /**
-     * @param InternalEntityFactory $entityFactory Factory to create entities
-     */
-    public function __construct($entityFactory)
-    {
-        $this->entityFactory = $entityFactory;
-    }
-
     /**
      * Returns a new ZipArchive instance pointing at the given path.
      *
@@ -35,7 +22,7 @@ class ZipHelper
      */
     public function createZip($tmpFolderPath)
     {
-        $zip = $this->entityFactory->createZipArchive();
+        $zip = new \ZipArchive();
         $zipFilePath = $tmpFolderPath.self::ZIP_EXTENSION;
 
         $zip->open($zipFilePath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);

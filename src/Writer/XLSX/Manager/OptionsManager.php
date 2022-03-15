@@ -2,8 +2,8 @@
 
 namespace OpenSpout\Writer\XLSX\Manager;
 
+use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Common\Manager\OptionsManagerAbstract;
-use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
 use OpenSpout\Writer\Common\Entity\Options;
 
 /**
@@ -14,18 +14,6 @@ class OptionsManager extends OptionsManagerAbstract
     /** Default style font values */
     public const DEFAULT_FONT_SIZE = 12;
     public const DEFAULT_FONT_NAME = 'Calibri';
-
-    /** @var StyleBuilder Style builder */
-    protected $styleBuilder;
-
-    /**
-     * OptionsManager constructor.
-     */
-    public function __construct(StyleBuilder $styleBuilder)
-    {
-        $this->styleBuilder = $styleBuilder;
-        parent::__construct();
-    }
 
     /**
      * {@inheritdoc}
@@ -49,10 +37,9 @@ class OptionsManager extends OptionsManagerAbstract
      */
     protected function setDefaultOptions()
     {
-        $defaultRowStyle = $this->styleBuilder
+        $defaultRowStyle = (new Style())
             ->setFontSize(self::DEFAULT_FONT_SIZE)
             ->setFontName(self::DEFAULT_FONT_NAME)
-            ->build()
         ;
 
         $this->setOption(Options::TEMP_FOLDER, sys_get_temp_dir());

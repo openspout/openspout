@@ -3,7 +3,7 @@
 namespace OpenSpout\Writer\Common\Manager\Style;
 
 use OpenSpout\Common\Entity\Cell;
-use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
+use OpenSpout\Common\Entity\Style\Style;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -13,7 +13,7 @@ final class StyleManagerTest extends TestCase
 {
     public function testApplyExtraStylesIfNeededShouldApplyWrapTextIfCellContainsNewLine(): void
     {
-        $style = (new StyleBuilder())->build();
+        $style = (new Style());
         static::assertFalse($style->shouldWrapText());
 
         $styleManager = $this->getStyleManager();
@@ -25,7 +25,7 @@ final class StyleManagerTest extends TestCase
 
     public function testApplyExtraStylesIfNeededShouldReturnNullIfWrapTextNotNeeded(): void
     {
-        $style = (new StyleBuilder())->build();
+        $style = (new Style());
         static::assertFalse($style->shouldWrapText());
 
         $styleManager = $this->getStyleManager();
@@ -36,7 +36,7 @@ final class StyleManagerTest extends TestCase
 
     public function testApplyExtraStylesIfNeededShouldReturnNullIfWrapTextAlreadyApplied(): void
     {
-        $style = (new StyleBuilder())->setShouldWrapText()->build();
+        $style = (new Style())->setShouldWrapText();
         static::assertTrue($style->shouldWrapText());
 
         $styleManager = $this->getStyleManager();
@@ -47,7 +47,7 @@ final class StyleManagerTest extends TestCase
 
     private function getStyleManager(): StyleManager
     {
-        $style = (new StyleBuilder())->build();
+        $style = (new Style());
         $styleRegistry = new StyleRegistry($style);
 
         return new StyleManager($styleRegistry);

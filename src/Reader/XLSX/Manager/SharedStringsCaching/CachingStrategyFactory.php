@@ -2,8 +2,6 @@
 
 namespace OpenSpout\Reader\XLSX\Manager\SharedStringsCaching;
 
-use OpenSpout\Reader\XLSX\Creator\HelperFactory;
-
 class CachingStrategyFactory
 {
     /**
@@ -51,19 +49,18 @@ class CachingStrategyFactory
      * Returns the best caching strategy, given the number of unique shared strings
      * and the amount of memory available.
      *
-     * @param null|int      $sharedStringsUniqueCount Number of unique shared strings (NULL if unknown)
-     * @param string        $tempFolder               Temporary folder where the temporary files to store shared strings will be stored
-     * @param HelperFactory $helperFactory            Factory to create helpers
+     * @param null|int $sharedStringsUniqueCount Number of unique shared strings (NULL if unknown)
+     * @param string   $tempFolder               Temporary folder where the temporary files to store shared strings will be stored
      *
      * @return CachingStrategyInterface The best caching strategy
      */
-    public function createBestCachingStrategy($sharedStringsUniqueCount, $tempFolder, $helperFactory)
+    public function createBestCachingStrategy($sharedStringsUniqueCount, $tempFolder)
     {
         if ($this->isInMemoryStrategyUsageSafe($sharedStringsUniqueCount)) {
             return new InMemoryStrategy($sharedStringsUniqueCount);
         }
 
-        return new FileBasedStrategy($tempFolder, self::MAX_NUM_STRINGS_PER_TEMP_FILE, $helperFactory);
+        return new FileBasedStrategy($tempFolder, self::MAX_NUM_STRINGS_PER_TEMP_FILE);
     }
 
     /**

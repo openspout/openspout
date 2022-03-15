@@ -3,9 +3,13 @@
 namespace OpenSpout\Reader\ODS;
 
 use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Common\Helper\Escaper\ODS;
+use OpenSpout\Reader\Common\Entity\Options;
+use OpenSpout\Reader\Common\Manager\RowManager;
+use OpenSpout\Reader\Common\XMLProcessor;
 use OpenSpout\Reader\Exception\XMLProcessingException;
 use OpenSpout\Reader\IteratorInterface;
-use OpenSpout\Reader\ODS\Creator\InternalEntityFactory;
+use OpenSpout\Reader\ODS\Helper\CellValueFormatter;
 use OpenSpout\Reader\ODS\Helper\SettingsHelper;
 use OpenSpout\Reader\Wrapper\XMLReader;
 
@@ -33,9 +37,6 @@ class SheetIterator implements IteratorInterface
     /** @var \OpenSpout\Common\Manager\OptionsManagerInterface Reader's options manager */
     protected $optionsManager;
 
-    /** @var InternalEntityFactory Factory to create entities */
-    protected $entityFactory;
-
     /** @var XMLReader The XMLReader object that will help read sheet's XML data */
     protected $xmlReader;
 
@@ -59,14 +60,12 @@ class SheetIterator implements IteratorInterface
      * @param \OpenSpout\Common\Manager\OptionsManagerInterface $optionsManager
      * @param \OpenSpout\Common\Helper\Escaper\ODS              $escaper        Used to unescape XML data
      * @param SettingsHelper                                    $settingsHelper Helper to get data from "settings.xml"
-     * @param InternalEntityFactory                             $entityFactory  Factory to create entities
      */
-    public function __construct($filePath, $optionsManager, $escaper, $settingsHelper, $entityFactory)
+    public function __construct($filePath, $optionsManager, $escaper, $settingsHelper)
     {
         $this->filePath = $filePath;
         $this->optionsManager = $optionsManager;
-        $this->entityFactory = $entityFactory;
-        $this->xmlReader = $entityFactory->createXMLReader();
+        $this->xmlReader = new XMLReader();
         $this->escaper = $escaper;
         $this->activeSheetName = $settingsHelper->getActiveSheetName($filePath);
     }
@@ -145,13 +144,18 @@ class SheetIterator implements IteratorInterface
         $sheetStyleName = $this->xmlReader->getAttribute(self::XML_ATTRIBUTE_TABLE_STYLE_NAME);
         $isSheetVisible = $this->isSheetVisible($sheetStyleName);
 
-        return $this->entityFactory->createSheet(
-            $this->xmlReader,
+        return new Sheet(
+            new RowIterator(
+                $this->xmlReader,
+                $this->optionsManager,
+                new CellValueFormatter($this->optionsManager->getOption(Options::SHOULD_FORMAT_DATES), new ODS()),
+                new XMLProcessor($this->xmlReader),
+                new RowManager()
+            ),
             $this->currentSheetIndex,
             $sheetName,
             $isSheetActive,
-            $isSheetVisible,
-            $this->optionsManager
+            $isSheetVisible
         );
     }
 

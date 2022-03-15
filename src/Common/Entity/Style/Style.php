@@ -2,6 +2,8 @@
 
 namespace OpenSpout\Common\Entity\Style;
 
+use OpenSpout\Common\Exception\InvalidArgumentException;
+
 /**
  * Represents a style to be applied to a cell.
  */
@@ -379,6 +381,10 @@ class Style
      */
     public function setCellAlignment($cellAlignment)
     {
+        if (!CellAlignment::isValid($cellAlignment)) {
+            throw new InvalidArgumentException('Invalid cell alignment value');
+        }
+
         $this->cellAlignment = $cellAlignment;
         $this->hasSetCellAlignment = true;
         $this->shouldApplyCellAlignment = true;

@@ -5,6 +5,7 @@ namespace OpenSpout\Writer\Common\Creator\Style;
 use OpenSpout\Common\Entity\Style\Border;
 use OpenSpout\Common\Entity\Style\CellAlignment;
 use OpenSpout\Common\Entity\Style\Color;
+use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Common\Exception\InvalidArgumentException;
 use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
 use PHPUnit\Framework\TestCase;
@@ -12,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  */
-final class StyleBuilderTest extends TestCase
+final class StyleTest extends TestCase
 {
     public function testStyleBuilderShouldApplyBorders()
     {
@@ -20,7 +21,7 @@ final class StyleBuilderTest extends TestCase
             ->setBorderBottom()
             ->build()
         ;
-        $style = (new StyleBuilder())->setBorder($border)->build();
+        $style = (new Style())->setBorder($border);
         static::assertTrue($style->shouldApplyBorder());
     }
 
@@ -28,8 +29,8 @@ final class StyleBuilderTest extends TestCase
     {
         $border = (new BorderBuilder())->setBorderBottom(Color::RED, Border::WIDTH_THIN, Border::STYLE_DASHED)->build();
 
-        $baseStyle = (new StyleBuilder())->setBorder($border)->build();
-        $currentStyle = (new StyleBuilder())->build();
+        $baseStyle = (new Style())->setBorder($border);
+        $currentStyle = (new Style());
 
         $styleMerger = new StyleMerger();
         $mergedStyle = $styleMerger->merge($currentStyle, $baseStyle);
@@ -41,13 +42,13 @@ final class StyleBuilderTest extends TestCase
 
     public function testStyleBuilderShouldApplyCellAlignment()
     {
-        $style = (new StyleBuilder())->setCellAlignment(CellAlignment::CENTER)->build();
+        $style = (new Style())->setCellAlignment(CellAlignment::CENTER);
         static::assertTrue($style->shouldApplyCellAlignment());
     }
 
     public function testStyleBuilderShouldThrowOnInvalidCellAlignment()
     {
         $this->expectException(InvalidArgumentException::class);
-        (new StyleBuilder())->setCellAlignment('invalid_cell_alignment')->build();
+        (new Style())->setCellAlignment('invalid_cell_alignment');
     }
 }

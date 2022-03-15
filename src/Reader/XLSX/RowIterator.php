@@ -11,7 +11,6 @@ use OpenSpout\Reader\Exception\InvalidValueException;
 use OpenSpout\Reader\Exception\XMLProcessingException;
 use OpenSpout\Reader\IteratorInterface;
 use OpenSpout\Reader\Wrapper\XMLReader;
-use OpenSpout\Reader\XLSX\Creator\InternalEntityFactory;
 use OpenSpout\Reader\XLSX\Helper\CellHelper;
 use OpenSpout\Reader\XLSX\Helper\CellValueFormatter;
 
@@ -47,9 +46,6 @@ class RowIterator implements IteratorInterface
     /** @var \OpenSpout\Reader\Common\Manager\RowManager Manages rows */
     protected $rowManager;
 
-    /** @var \OpenSpout\Reader\XLSX\Creator\InternalEntityFactory Factory to create entities */
-    protected $entityFactory;
-
     /**
      * TODO: This variable can be deleted when row indices get preserved.
      *
@@ -82,14 +78,13 @@ class RowIterator implements IteratorInterface
     protected $lastColumnIndexProcessed = -1;
 
     /**
-     * @param string                $filePath                Path of the XLSX file being read
-     * @param string                $sheetDataXMLFilePath    Path of the sheet data XML file as in [Content_Types].xml
-     * @param bool                  $shouldPreserveEmptyRows Whether empty rows should be preserved
-     * @param XMLReader             $xmlReader               XML Reader
-     * @param XMLProcessor          $xmlProcessor            Helper to process XML files
-     * @param CellValueFormatter    $cellValueFormatter      Helper to format cell values
-     * @param RowManager            $rowManager              Manages rows
-     * @param InternalEntityFactory $entityFactory           Factory to create entities
+     * @param string             $filePath                Path of the XLSX file being read
+     * @param string             $sheetDataXMLFilePath    Path of the sheet data XML file as in [Content_Types].xml
+     * @param bool               $shouldPreserveEmptyRows Whether empty rows should be preserved
+     * @param XMLReader          $xmlReader               XML Reader
+     * @param XMLProcessor       $xmlProcessor            Helper to process XML files
+     * @param CellValueFormatter $cellValueFormatter      Helper to format cell values
+     * @param RowManager         $rowManager              Manages rows
      */
     public function __construct(
         $filePath,
@@ -98,8 +93,7 @@ class RowIterator implements IteratorInterface
         $xmlReader,
         XMLProcessor $xmlProcessor,
         CellValueFormatter $cellValueFormatter,
-        RowManager $rowManager,
-        InternalEntityFactory $entityFactory
+        RowManager $rowManager
     ) {
         $this->filePath = $filePath;
         $this->sheetDataXMLFilePath = $this->normalizeSheetDataXMLFilePath($sheetDataXMLFilePath);
@@ -107,7 +101,6 @@ class RowIterator implements IteratorInterface
         $this->xmlReader = $xmlReader;
         $this->cellValueFormatter = $cellValueFormatter;
         $this->rowManager = $rowManager;
-        $this->entityFactory = $entityFactory;
 
         // Register all callbacks to process different nodes when reading the XML file
         $this->xmlProcessor = $xmlProcessor;
@@ -193,7 +186,7 @@ class RowIterator implements IteratorInterface
             if ($this->lastRowIndexProcessed !== $this->nextRowIndexToBeProcessed) {
                 // return empty row if mismatch between last processed row
                 // and the row that needs to be returned
-                $rowToBeProcessed = $this->entityFactory->createRow();
+                $rowToBeProcessed = new Row([], null);
             }
         }
 
@@ -265,7 +258,7 @@ class RowIterator implements IteratorInterface
      */
     protected function readDataForNextRow()
     {
-        $this->currentlyProcessedRow = $this->entityFactory->createRow();
+        $this->currentlyProcessedRow = new Row([], null);
 
         try {
             $this->xmlProcessor->readUntilStopped();
@@ -313,7 +306,7 @@ class RowIterator implements IteratorInterface
             $numberOfColumnsForRow = (int) $numberOfColumnsForRow;
         }
 
-        $cells = array_fill(0, $numberOfColumnsForRow, $this->entityFactory->createCell(''));
+        $cells = array_fill(0, $numberOfColumnsForRow, new Cell(''));
         $this->currentlyProcessedRow->setCells($cells);
 
         return XMLProcessor::PROCESSING_CONTINUE;
@@ -418,9 +411,9 @@ class RowIterator implements IteratorInterface
     {
         try {
             $cellValue = $this->cellValueFormatter->extractAndFormatNodeValue($node);
-            $cell = $this->entityFactory->createCell($cellValue);
+            $cell = new Cell($cellValue);
         } catch (InvalidValueException $exception) {
-            $cell = $this->entityFactory->createCell($exception->getInvalidValue());
+            $cell = new Cell($exception->getInvalidValue());
             $cell->setType(Cell::TYPE_ERROR);
         }
 

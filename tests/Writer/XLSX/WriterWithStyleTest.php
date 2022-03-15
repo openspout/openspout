@@ -10,7 +10,6 @@ use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Reader\Wrapper\XMLReader;
 use OpenSpout\TestUsingResource;
 use OpenSpout\Writer\Common\Creator\Style\BorderBuilder;
-use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
 use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
@@ -31,7 +30,7 @@ final class WriterWithStyleTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->defaultStyle = (new StyleBuilder())->build();
+        $this->defaultStyle = (new Style());
     }
 
     public function testAddRowShouldThrowExceptionIfCallAddRowBeforeOpeningWriter()
@@ -54,18 +53,18 @@ final class WriterWithStyleTest extends TestCase
     {
         $fileName = 'test_add_row_should_list_all_used_fonts.xlsx';
 
-        $style = (new StyleBuilder())
+        $style = (new Style())
             ->setFontBold()
             ->setFontItalic()
             ->setFontUnderline()
             ->setFontStrikethrough()
-            ->build()
+
         ;
-        $style2 = (new StyleBuilder())
+        $style2 = (new Style())
             ->setFontSize(15)
             ->setFontColor(Color::RED)
             ->setFontName('Cambria')
-            ->build()
+
         ;
 
         $dataRows = [
@@ -114,8 +113,8 @@ final class WriterWithStyleTest extends TestCase
     {
         $fileName = 'test_add_row_should_apply_style_to_cells.xlsx';
 
-        $style = (new StyleBuilder())->setFontBold()->build();
-        $style2 = (new StyleBuilder())->setFontSize(15)->build();
+        $style = (new Style())->setFontBold();
+        $style2 = (new Style())->setFontSize(15);
 
         $dataRows = [
             $this->createStyledRowFromValues(['xlsx--11'], $style),
@@ -137,11 +136,11 @@ final class WriterWithStyleTest extends TestCase
     {
         $fileName = 'test_add_row_should_apply_style_to_empty_cells_if_needed.xlsx';
 
-        $styleWithFont = (new StyleBuilder())->setFontBold()->build();
-        $styleWithBackground = (new StyleBuilder())->setBackgroundColor(Color::BLUE)->build();
+        $styleWithFont = (new Style())->setFontBold();
+        $styleWithBackground = (new Style())->setBackgroundColor(Color::BLUE);
 
         $border = (new BorderBuilder())->setBorderBottom(Color::GREEN)->build();
-        $styleWithBorder = (new StyleBuilder())->setBorder($border)->build();
+        $styleWithBorder = (new Style())->setBorder($border);
 
         $dataRows = [
             $this->createRowFromValues(['xlsx--11', '', 'xlsx--13']),
@@ -182,7 +181,7 @@ final class WriterWithStyleTest extends TestCase
     {
         $fileName = 'test_add_row_should_reuse_duplicate_styles.xlsx';
 
-        $style = (new StyleBuilder())->setFontBold()->build();
+        $style = (new Style())->setFontBold();
         $dataRows = $this->createStyledRowsFromValues([
             ['xlsx--11'],
             ['xlsx--21'],
@@ -198,15 +197,15 @@ final class WriterWithStyleTest extends TestCase
     public function testAddRowWithNumFmtStyles()
     {
         $fileName = 'test_add_row_with_numfmt.xlsx';
-        $style = (new StyleBuilder())
+        $style = (new Style())
             ->setFontBold()
             ->setFormat('0.00')// Builtin format
-            ->build()
+
         ;
-        $style2 = (new StyleBuilder())
+        $style2 = (new Style())
             ->setFontBold()
             ->setFormat('0.000')
-            ->build()
+
         ;
 
         $dataRows = [
@@ -235,7 +234,7 @@ final class WriterWithStyleTest extends TestCase
     {
         $fileName = 'test_add_row_should_add_wrap_text_alignment.xlsx';
 
-        $style = (new StyleBuilder())->setShouldWrapText()->build();
+        $style = (new Style())->setShouldWrapText();
         $dataRows = $this->createStyledRowsFromValues([
             ['xlsx--11', 'xlsx--12'],
         ], $style);
@@ -269,7 +268,7 @@ final class WriterWithStyleTest extends TestCase
     {
         $fileName = 'test_add_row_should_apply_cell_alignment.xlsx';
 
-        $rightAlignedStyle = (new StyleBuilder())->setCellAlignment(CellAlignment::RIGHT)->build();
+        $rightAlignedStyle = (new Style())->setCellAlignment(CellAlignment::RIGHT);
         $dataRows = $this->createStyledRowsFromValues([['xlsx--11']], $rightAlignedStyle);
 
         $this->writeToXLSXFile($dataRows, $fileName);
@@ -284,7 +283,7 @@ final class WriterWithStyleTest extends TestCase
     {
         $fileName = 'test_add_row_should_apply_shrink_to_fit.xlsx';
 
-        $shrinkToFitStyle = (new StyleBuilder())->setShouldShrinkToFit()->build();
+        $shrinkToFitStyle = (new Style())->setShouldShrinkToFit();
         $dataRows = $this->createStyledRowsFromValues([['xlsx--11']], $shrinkToFitStyle);
 
         $this->writeToXLSXFile($dataRows, $fileName);
@@ -299,8 +298,8 @@ final class WriterWithStyleTest extends TestCase
     {
         $fileName = 'test_add_row_should_support_cell_styling.xlsx';
 
-        $boldStyle = (new StyleBuilder())->setFontBold()->build();
-        $underlineStyle = (new StyleBuilder())->setFontUnderline()->build();
+        $boldStyle = (new Style())->setFontBold();
+        $underlineStyle = (new Style())->setFontUnderline();
 
         $dataRow = WriterEntityFactory::createRow([
             WriterEntityFactory::createCell('xlsx--11', $boldStyle),
@@ -322,7 +321,7 @@ final class WriterWithStyleTest extends TestCase
     {
         $fileName = 'test_add_background_color.xlsx';
 
-        $style = (new StyleBuilder())->setBackgroundColor(Color::WHITE)->build();
+        $style = (new Style())->setBackgroundColor(Color::WHITE);
         $dataRows = $this->createStyledRowsFromValues([
             ['BgColor'],
         ], $style);
@@ -350,8 +349,8 @@ final class WriterWithStyleTest extends TestCase
     {
         $fileName = 'test_add_background_color_shared_definition.xlsx';
 
-        $style = (new StyleBuilder())->setBackgroundColor(Color::RED)->setFontBold()->build();
-        $style2 = (new StyleBuilder())->setBackgroundColor(Color::RED)->build();
+        $style = (new Style())->setBackgroundColor(Color::RED)->setFontBold();
+        $style2 = (new Style())->setBackgroundColor(Color::RED);
 
         $dataRows = [
             $this->createStyledRowFromValues(['row-bold-background-red'], $style),
@@ -396,9 +395,9 @@ final class WriterWithStyleTest extends TestCase
             ->setBorderTop(Color::RED, Border::WIDTH_THIN, Border::STYLE_DASHED)->build();
 
         $styles = [
-            (new StyleBuilder())->setBorder($borderBottomGreenThickSolid)->build(),
-            (new StyleBuilder())->build(),
-            (new StyleBuilder())->setBorder($borderTopRedThinDashed)->build(),
+            (new Style())->setBorder($borderBottomGreenThickSolid),
+            (new Style()),
+            (new Style())->setBorder($borderTopRedThinDashed),
         ];
 
         $dataRows = [
@@ -429,7 +428,7 @@ final class WriterWithStyleTest extends TestCase
             ->build()
         ;
 
-        $style = (new StyleBuilder())->setBorder($borders)->build();
+        $style = (new Style())->setBorder($borders);
 
         $dataRows = $this->createStyledRowsFromValues([
             ['I am a teapot'],
@@ -463,7 +462,7 @@ final class WriterWithStyleTest extends TestCase
         $dataRows = $this->createRowsFromValues([['xlsx--11']]);
 
         $defaultFontSize = 50;
-        $defaultStyle = (new StyleBuilder())->setFontSize($defaultFontSize)->build();
+        $defaultStyle = (new Style())->setFontSize($defaultFontSize);
 
         $this->writeToXLSXFileWithDefaultStyle($dataRows, $fileName, $defaultStyle);
 
@@ -480,13 +479,13 @@ final class WriterWithStyleTest extends TestCase
         $fileName = 'test_reuse_borders.xlsx';
 
         $borderLeft = (new BorderBuilder())->setBorderLeft()->build();
-        $borderLeftStyle = (new StyleBuilder())->setBorder($borderLeft)->build();
+        $borderLeftStyle = (new Style())->setBorder($borderLeft);
 
         $borderRight = (new BorderBuilder())->setBorderRight(Color::RED, Border::WIDTH_THICK)->build();
-        $borderRightStyle = (new StyleBuilder())->setBorder($borderRight)->build();
+        $borderRightStyle = (new Style())->setBorder($borderRight);
 
-        $fontStyle = (new StyleBuilder())->setFontBold()->build();
-        $emptyStyle = (new StyleBuilder())->build();
+        $fontStyle = (new Style())->setFontBold();
+        $emptyStyle = (new Style());
 
         $borderRightFontBoldStyle = (new StyleMerger())->merge($borderRightStyle, $fontStyle);
 

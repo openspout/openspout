@@ -4,7 +4,6 @@ namespace OpenSpout\Reader\XLSX\Manager;
 
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Reader\Wrapper\XMLReader;
-use OpenSpout\Reader\XLSX\Creator\InternalEntityFactory;
 
 /**
  * This class manages the workbook relationships defined in the associated XML file.
@@ -30,20 +29,15 @@ class WorkbookRelationshipsManager
     /** @var string Path of the XLSX file being read */
     private $filePath;
 
-    /** @var InternalEntityFactory Factory to create entities */
-    private $entityFactory;
-
     /** @var null|array Cache of the already read workbook relationships: [TYPE] => [FILE_NAME] */
     private $cachedWorkbookRelationships;
 
     /**
-     * @param string                $filePath      Path of the XLSX file being read
-     * @param InternalEntityFactory $entityFactory Factory to create entities
+     * @param string $filePath Path of the XLSX file being read
      */
-    public function __construct($filePath, $entityFactory)
+    public function __construct($filePath)
     {
         $this->filePath = $filePath;
-        $this->entityFactory = $entityFactory;
     }
 
     /**
@@ -117,7 +111,7 @@ class WorkbookRelationshipsManager
     private function getWorkbookRelationships()
     {
         if (!isset($this->cachedWorkbookRelationships)) {
-            $xmlReader = $this->entityFactory->createXMLReader();
+            $xmlReader = new XMLReader();
 
             if (false === $xmlReader->openFileInZip($this->filePath, self::WORKBOOK_RELS_XML_FILE_PATH)) {
                 throw new IOException('Could not open "'.self::WORKBOOK_RELS_XML_FILE_PATH.'".');
