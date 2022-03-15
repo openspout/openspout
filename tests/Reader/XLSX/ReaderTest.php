@@ -14,10 +14,7 @@ final class ReaderTest extends TestCase
 {
     use TestUsingResource;
 
-    /**
-     * @return array
-     */
-    public function dataProviderForTestReadShouldThrowException()
+    public function dataProviderForTestReadShouldThrowException(): array
     {
         return [
             ['/path/to/fake/file.xlsx'],
@@ -29,10 +26,8 @@ final class ReaderTest extends TestCase
 
     /**
      * @dataProvider dataProviderForTestReadShouldThrowException
-     *
-     * @param string $filePath
      */
-    public function testReadShouldThrowException($filePath)
+    public function testReadShouldThrowException(string $filePath)
     {
         $this->expectException(IOException::class);
 
@@ -40,10 +35,7 @@ final class ReaderTest extends TestCase
         @$this->getAllRowsForFile($filePath);
     }
 
-    /**
-     * @return array
-     */
-    public function dataProviderForTestReadForAllWorksheets()
+    public function dataProviderForTestReadForAllWorksheets(): array
     {
         return [
             ['one_sheet_with_shared_strings.xlsx', 5, 5],
@@ -55,12 +47,8 @@ final class ReaderTest extends TestCase
 
     /**
      * @dataProvider dataProviderForTestReadForAllWorksheets
-     *
-     * @param string $resourceName
-     * @param int    $expectedNumOfRows
-     * @param int    $expectedNumOfCellsPerRow
      */
-    public function testReadForAllWorksheets($resourceName, $expectedNumOfRows, $expectedNumOfCellsPerRow)
+    public function testReadForAllWorksheets(string $resourceName, int $expectedNumOfRows, int $expectedNumOfCellsPerRow)
     {
         $allRows = $this->getAllRowsForFile($resourceName);
 
@@ -643,13 +631,9 @@ final class ReaderTest extends TestCase
     }
 
     /**
-     * @param string $fileName
-     * @param bool   $shouldFormatDates
-     * @param bool   $shouldPreserveEmptyRows
-     *
      * @return array All the read rows the given file
      */
-    private function getAllRowsForFile($fileName, $shouldFormatDates = false, $shouldPreserveEmptyRows = false)
+    private function getAllRowsForFile(string $fileName, bool $shouldFormatDates = false, bool $shouldPreserveEmptyRows = false): array
     {
         $allRows = [];
         $resourcePath = $this->getResourcePath($fileName);

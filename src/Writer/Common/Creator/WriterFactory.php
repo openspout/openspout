@@ -26,10 +26,8 @@ class WriterFactory
      * @param string $path The path to the spreadsheet file. Supported extensions are .csv,.ods and .xlsx
      *
      * @throws \OpenSpout\Common\Exception\UnsupportedTypeException
-     *
-     * @return WriterInterface
      */
-    public static function createFromFile(string $path)
+    public static function createFromFile(string $path): WriterInterface
     {
         $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
 
@@ -42,10 +40,8 @@ class WriterFactory
      * @param string $writerType Type of the writer to instantiate
      *
      * @throws \OpenSpout\Common\Exception\UnsupportedTypeException
-     *
-     * @return WriterInterface
      */
-    public static function createFromType($writerType)
+    public static function createFromType(string $writerType): WriterInterface
     {
         switch ($writerType) {
             case Type::CSV: return self::createCSVWriter();
@@ -59,20 +55,14 @@ class WriterFactory
         }
     }
 
-    /**
-     * @return CSVWriter
-     */
-    private static function createCSVWriter()
+    private static function createCSVWriter(): CSVWriter
     {
         $optionsManager = new CSVOptionsManager();
 
         return new CSVWriter($optionsManager);
     }
 
-    /**
-     * @return XLSXWriter
-     */
-    private static function createXLSXWriter()
+    private static function createXLSXWriter(): XLSXWriter
     {
         $optionsManager = new XLSXOptionsManager();
         $managerFactory = new XLSXManagerFactory();
@@ -80,10 +70,7 @@ class WriterFactory
         return new XLSXWriter($optionsManager, $managerFactory);
     }
 
-    /**
-     * @return ODSWriter
-     */
-    private static function createODSWriter()
+    private static function createODSWriter(): ODSWriter
     {
         $optionsManager = new ODSOptionsManager();
         $managerFactory = new ODSManagerFactory();

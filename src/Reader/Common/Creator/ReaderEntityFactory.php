@@ -17,20 +17,16 @@ class ReaderEntityFactory
      * @param string $path The path to the spreadsheet file. Supported extensions are .csv, .ods and .xlsx
      *
      * @throws \OpenSpout\Common\Exception\UnsupportedTypeException
-     *
-     * @return ReaderInterface
      */
-    public static function createReaderFromFile(string $path)
+    public static function createReaderFromFile(string $path): ReaderInterface
     {
         return ReaderFactory::createFromFile($path);
     }
 
     /**
      * This creates an instance of a CSV reader.
-     *
-     * @return \OpenSpout\Reader\CSV\Reader
      */
-    public static function createCSVReader()
+    public static function createCSVReader(): \OpenSpout\Reader\CSV\Reader
     {
         try {
             return ReaderFactory::createFromType(Type::CSV);
@@ -42,10 +38,8 @@ class ReaderEntityFactory
 
     /**
      * This creates an instance of a XLSX reader.
-     *
-     * @return \OpenSpout\Reader\XLSX\Reader
      */
-    public static function createXLSXReader()
+    public static function createXLSXReader(): \OpenSpout\Reader\XLSX\Reader
     {
         try {
             return ReaderFactory::createFromType(Type::XLSX);
@@ -57,10 +51,8 @@ class ReaderEntityFactory
 
     /**
      * This creates an instance of a ODS reader.
-     *
-     * @return \OpenSpout\Reader\ODS\Reader
      */
-    public static function createODSReader()
+    public static function createODSReader(): \OpenSpout\Reader\ODS\Reader
     {
         try {
             return ReaderFactory::createFromType(Type::ODS);

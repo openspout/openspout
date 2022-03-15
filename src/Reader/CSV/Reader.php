@@ -16,13 +16,13 @@ class Reader extends ReaderAbstract
     protected $filePointer;
 
     /** @var SheetIterator To iterator over the CSV unique "sheet" */
-    protected $sheetIterator;
+    protected SheetIterator $sheetIterator;
 
     /** @var string Original value for the "auto_detect_line_endings" INI value */
-    protected $originalAutoDetectLineEndings;
+    protected string $originalAutoDetectLineEndings;
 
     /** @var bool Whether the code is running with PHP >= 8.1 */
-    private $isRunningAtLeastPhp81;
+    private bool $isRunningAtLeastPhp81;
 
     private EncodingHelper $encodingHelper;
 
@@ -40,10 +40,8 @@ class Reader extends ReaderAbstract
      * Needs to be called before opening the reader.
      *
      * @param string $fieldDelimiter Character that delimits fields
-     *
-     * @return Reader
      */
-    public function setFieldDelimiter($fieldDelimiter)
+    public function setFieldDelimiter(string $fieldDelimiter): self
     {
         $this->optionsManager->setOption(Options::FIELD_DELIMITER, $fieldDelimiter);
 
@@ -55,10 +53,8 @@ class Reader extends ReaderAbstract
      * Needs to be called before opening the reader.
      *
      * @param string $fieldEnclosure Character that enclose fields
-     *
-     * @return Reader
      */
-    public function setFieldEnclosure($fieldEnclosure)
+    public function setFieldEnclosure(string $fieldEnclosure): self
     {
         $this->optionsManager->setOption(Options::FIELD_ENCLOSURE, $fieldEnclosure);
 
@@ -70,10 +66,8 @@ class Reader extends ReaderAbstract
      * Needs to be called before opening the reader.
      *
      * @param string $encoding Encoding of the CSV file to be read
-     *
-     * @return Reader
      */
-    public function setEncoding($encoding)
+    public function setEncoding(string $encoding): self
     {
         $this->optionsManager->setOption(Options::ENCODING, $encoding);
 
@@ -82,10 +76,8 @@ class Reader extends ReaderAbstract
 
     /**
      * Returns whether stream wrappers are supported.
-     *
-     * @return bool
      */
-    protected function doesSupportStreamWrapper()
+    protected function doesSupportStreamWrapper(): bool
     {
         return true;
     }
@@ -98,7 +90,7 @@ class Reader extends ReaderAbstract
      *
      * @throws \OpenSpout\Common\Exception\IOException
      */
-    protected function openReader($filePath)
+    protected function openReader(string $filePath)
     {
         // "auto_detect_line_endings" is deprecated in PHP 8.1
         if (!$this->isRunningAtLeastPhp81) {
@@ -125,7 +117,7 @@ class Reader extends ReaderAbstract
      *
      * @return SheetIterator To iterate over sheets
      */
-    protected function getConcreteSheetIterator()
+    protected function getConcreteSheetIterator(): SheetIterator
     {
         return $this->sheetIterator;
     }

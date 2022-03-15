@@ -15,11 +15,9 @@ use OpenSpout\Writer\Exception\WriterNotOpenedException;
 
 abstract class WriterMultiSheetsAbstract extends WriterAbstract
 {
-    /** @var ManagerFactoryInterface */
-    private $managerFactory;
+    private ManagerFactoryInterface $managerFactory;
 
-    /** @var null|WorkbookManagerInterface */
-    private $workbookManager;
+    private ?WorkbookManagerInterface $workbookManager = null;
 
     public function __construct(
         OptionsManagerInterface $optionsManager,
@@ -36,10 +34,8 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
      * @param bool $shouldCreateNewSheetsAutomatically Whether new sheets should be automatically created when the max rows limit per sheet is reached
      *
      * @throws WriterAlreadyOpenedException If the writer was already opened
-     *
-     * @return WriterMultiSheetsAbstract
      */
-    public function setShouldCreateNewSheetsAutomatically($shouldCreateNewSheetsAutomatically)
+    public function setShouldCreateNewSheetsAutomatically(bool $shouldCreateNewSheetsAutomatically): void
     {
         $this->throwIfWriterAlreadyOpened('Writer must be configured before opening it.');
 
@@ -47,8 +43,6 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
             Options::SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY,
             $shouldCreateNewSheetsAutomatically
         );
-
-        return $this;
     }
 
     /**
@@ -58,7 +52,7 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
      *
      * @return Sheet[] All the workbook's sheets
      */
-    public function getSheets()
+    public function getSheets(): array
     {
         $this->throwIfWorkbookIsNotAvailable();
 
@@ -80,7 +74,7 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
      *
      * @return Sheet The created sheet
      */
-    public function addNewSheetAndMakeItCurrent()
+    public function addNewSheetAndMakeItCurrent(): Sheet
     {
         $this->throwIfWorkbookIsNotAvailable();
         $worksheet = $this->workbookManager->addNewSheetAndMakeItCurrent();
@@ -95,7 +89,7 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
      *
      * @return Sheet The current sheet
      */
-    public function getCurrentSheet()
+    public function getCurrentSheet(): Sheet
     {
         $this->throwIfWorkbookIsNotAvailable();
 
@@ -111,7 +105,7 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
      * @throws SheetNotFoundException   If the given sheet does not exist in the workbook
      * @throws WriterNotOpenedException If the writer has not been opened yet
      */
-    public function setCurrentSheet($sheet)
+    public function setCurrentSheet(Sheet $sheet): void
     {
         $this->throwIfWorkbookIsNotAvailable();
         $this->workbookManager->setCurrentSheet($sheet);
@@ -120,7 +114,7 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
     /**
      * @throws WriterAlreadyOpenedException
      */
-    public function setDefaultColumnWidth(float $width)
+    public function setDefaultColumnWidth(float $width): void
     {
         $this->throwIfWriterAlreadyOpened('Writer must be configured before opening it.');
         $this->optionsManager->setOption(
@@ -132,7 +126,7 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
     /**
      * @throws WriterAlreadyOpenedException
      */
-    public function setDefaultRowHeight(float $height)
+    public function setDefaultRowHeight(float $height): void
     {
         $this->throwIfWriterAlreadyOpened('Writer must be configured before opening it.');
         $this->optionsManager->setOption(
@@ -142,12 +136,11 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
     }
 
     /**
-     * @param null|float $width
-     * @param int        ...$columns One or more columns with this width
+     * @param int ...$columns One or more columns with this width
      *
      * @throws WriterNotOpenedException
      */
-    public function setColumnWidth($width, ...$columns)
+    public function setColumnWidth(?float $width, ...$columns): void
     {
         $this->throwIfWorkbookIsNotAvailable();
         $this->workbookManager->setColumnWidth($width, ...$columns);
@@ -160,7 +153,7 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
      *
      * @throws WriterNotOpenedException
      */
-    public function setColumnWidthForRange(float $width, int $start, int $end)
+    public function setColumnWidthForRange(float $width, int $start, int $end): void
     {
         $this->throwIfWorkbookIsNotAvailable();
         $this->workbookManager->setColumnWidthForRange($width, $start, $end);
@@ -169,7 +162,7 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
     /**
      * {@inheritdoc}
      */
-    protected function openWriter()
+    protected function openWriter(): void
     {
         if (null === $this->workbookManager) {
             $this->workbookManager = $this->managerFactory->createWorkbookManager($this->optionsManager);
@@ -182,7 +175,7 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
      *
      * @throws WriterNotOpenedException If the workbook is not created yet
      */
-    protected function throwIfWorkbookIsNotAvailable()
+    protected function throwIfWorkbookIsNotAvailable(): void
     {
         if (!$this->workbookManager->getWorkbook()) {
             throw new WriterNotOpenedException('The writer must be opened before performing this action.');
@@ -194,7 +187,7 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
      *
      * @throws Exception\WriterException
      */
-    protected function addRowToWriter(Row $row)
+    protected function addRowToWriter(Row $row): void
     {
         $this->throwIfWorkbookIsNotAvailable();
         $this->workbookManager->addRowToCurrentWorksheet($row);
@@ -203,7 +196,7 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
     /**
      * {@inheritdoc}
      */
-    protected function closeWriter()
+    protected function closeWriter(): void
     {
         if (null !== $this->workbookManager) {
             $this->workbookManager->close($this->filePointer);

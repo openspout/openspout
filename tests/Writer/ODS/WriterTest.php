@@ -288,10 +288,7 @@ final class WriterTest extends TestCase
         }
     }
 
-    /**
-     * @return array
-     */
-    public function dataProviderForTestAddRowShouldUseNumberColumnsRepeatedForRepeatedValues()
+    public function dataProviderForTestAddRowShouldUseNumberColumnsRepeatedForRepeatedValues(): array
     {
         return [
             [['ods--11', 'ods--11', 'ods--11'], 1, 3],
@@ -304,12 +301,8 @@ final class WriterTest extends TestCase
 
     /**
      * @dataProvider dataProviderForTestAddRowShouldUseNumberColumnsRepeatedForRepeatedValues
-     *
-     * @param array $dataRow
-     * @param int   $expectedNumTableCells
-     * @param int   $expectedNumColumnsRepeated
      */
-    public function testAddRowShouldUseNumberColumnsRepeatedForRepeatedValues($dataRow, $expectedNumTableCells, $expectedNumColumnsRepeated)
+    public function testAddRowShouldUseNumberColumnsRepeatedForRepeatedValues(array $dataRow, int $expectedNumTableCells, int $expectedNumColumnsRepeated)
     {
         $fileName = 'test_add_row_should_use_number_columns_repeated.ods';
         $this->writeToODSFile($this->createRowsFromValues([$dataRow]), $fileName);
@@ -479,13 +472,9 @@ final class WriterTest extends TestCase
     }
 
     /**
-     * @param Row[]  $allRows
-     * @param string $fileName
-     * @param bool   $shouldCreateSheetsAutomatically
-     *
-     * @return Writer
+     * @param Row[] $allRows
      */
-    private function writeToODSFile($allRows, $fileName, $shouldCreateSheetsAutomatically = true)
+    private function writeToODSFile(array $allRows, string $fileName, bool $shouldCreateSheetsAutomatically = true): Writer
     {
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
@@ -501,14 +490,9 @@ final class WriterTest extends TestCase
     }
 
     /**
-     * @param Row[]  $allRows
-     * @param int    $numSheets
-     * @param string $fileName
-     * @param bool   $shouldCreateSheetsAutomatically
-     *
-     * @return Writer
+     * @param Row[] $allRows
      */
-    private function writeToMultipleSheetsInODSFile($allRows, $numSheets, $fileName, $shouldCreateSheetsAutomatically = true)
+    private function writeToMultipleSheetsInODSFile(array $allRows, int $numSheets, string $fileName, bool $shouldCreateSheetsAutomatically = true): Writer
     {
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
@@ -529,12 +513,7 @@ final class WriterTest extends TestCase
         return $writer;
     }
 
-    /**
-     * @param string $fileName
-     * @param string $value
-     * @param string $message
-     */
-    private function assertValueWasWritten($fileName, $value, $message = '')
+    private function assertValueWasWritten(string $fileName, string $value, string $message = '')
     {
         $resourcePath = $this->getGeneratedResourcePath($fileName);
         $pathToContentFile = $resourcePath.'#content.xml';
@@ -544,12 +523,9 @@ final class WriterTest extends TestCase
     }
 
     /**
-     * @param string $fileName
-     * @param int    $sheetIndex
-     * @param mixed  $value
-     * @param string $message
+     * @param mixed $value
      */
-    private function assertValueWasWrittenToSheet($fileName, $sheetIndex, $value, $message = '')
+    private function assertValueWasWrittenToSheet(string $fileName, int $sheetIndex, $value, string $message = '')
     {
         $sheetXmlAsString = $this->getSheetXmlNodeAsString($fileName, $sheetIndex);
         $valueAsXmlString = "<text:p>{$value}</text:p>";
@@ -558,12 +534,9 @@ final class WriterTest extends TestCase
     }
 
     /**
-     * @param string $fileName
-     * @param int    $sheetIndex
-     * @param mixed  $value
-     * @param string $message
+     * @param mixed $value
      */
-    private function assertValueWasNotWrittenToSheet($fileName, $sheetIndex, $value, $message = '')
+    private function assertValueWasNotWrittenToSheet(string $fileName, int $sheetIndex, $value, string $message = '')
     {
         $sheetXmlAsString = $this->getSheetXmlNodeAsString($fileName, $sheetIndex);
         $valueAsXmlString = "<text:p>{$value}</text:p>";
@@ -571,39 +544,21 @@ final class WriterTest extends TestCase
         static::assertStringNotContainsString($valueAsXmlString, $sheetXmlAsString, $message);
     }
 
-    /**
-     * @param string $fileName
-     * @param int    $sheetIndex
-     *
-     * @return \DOMNode
-     */
-    private function getSheetXmlNode($fileName, $sheetIndex)
+    private function getSheetXmlNode(string $fileName, int $sheetIndex): \DOMNode
     {
         $xmlReader = $this->moveReaderToCorrectTableNode($fileName, $sheetIndex);
 
         return $xmlReader->expand();
     }
 
-    /**
-     * @param string $fileName
-     * @param int    $sheetIndex
-     *
-     * @return string
-     */
-    private function getSheetXmlNodeAsString($fileName, $sheetIndex)
+    private function getSheetXmlNodeAsString(string $fileName, int $sheetIndex): string
     {
         $xmlReader = $this->moveReaderToCorrectTableNode($fileName, $sheetIndex);
 
         return $xmlReader->readOuterXml();
     }
 
-    /**
-     * @param string $fileName
-     * @param int    $sheetIndex
-     *
-     * @return XMLReader
-     */
-    private function moveReaderToCorrectTableNode($fileName, $sheetIndex)
+    private function moveReaderToCorrectTableNode(string $fileName, int $sheetIndex): XMLReader
     {
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 

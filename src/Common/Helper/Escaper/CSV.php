@@ -16,7 +16,7 @@ class CSV implements EscaperInterface
      *
      * @return string The escaped string
      */
-    public function escape($string)
+    public function escape(string $string): string
     {
         return $string;
     }
@@ -30,7 +30,7 @@ class CSV implements EscaperInterface
      *
      * @return string The unescaped string
      */
-    public function unescape($string)
+    public function unescape(string $string): string
     {
         return $string;
     }

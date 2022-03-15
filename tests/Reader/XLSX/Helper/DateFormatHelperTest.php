@@ -9,10 +9,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class DateFormatHelperTest extends TestCase
 {
-    /**
-     * @return array
-     */
-    public function dataProviderForTestToPHPDateFormat()
+    public function dataProviderForTestToPHPDateFormat(): array
     {
         return [
             // Excel date format, expected PHP date format
@@ -36,11 +33,8 @@ final class DateFormatHelperTest extends TestCase
 
     /**
      * @dataProvider dataProviderForTestToPHPDateFormat
-     *
-     * @param string $excelDateFormat
-     * @param string $expectedPHPDateFormat
      */
-    public function testToPHPDateFormat($excelDateFormat, $expectedPHPDateFormat)
+    public function testToPHPDateFormat(string $excelDateFormat, string $expectedPHPDateFormat)
     {
         $phpDateFormat = DateFormatHelper::toPHPDateFormat($excelDateFormat);
         static::assertSame($expectedPHPDateFormat, $phpDateFormat);

@@ -7,10 +7,10 @@ abstract class OptionsManagerAbstract implements OptionsManagerInterface
     public const PREFIX_OPTION = 'OPTION_';
 
     /** @var string[] List of all supported option names */
-    private $supportedOptions = [];
+    private array $supportedOptions = [];
 
     /** @var array Associative array [OPTION_NAME => OPTION_VALUE] */
-    private $options = [];
+    private array $options = [];
 
     /**
      * OptionsManagerAbstract constructor.
@@ -24,10 +24,9 @@ abstract class OptionsManagerAbstract implements OptionsManagerInterface
     /**
      * Sets the given option, if this option is supported.
      *
-     * @param string $optionName
-     * @param mixed  $optionValue
+     * @param mixed $optionValue
      */
-    public function setOption($optionName, $optionValue)
+    public function setOption(string $optionName, $optionValue)
     {
         if (\in_array($optionName, $this->supportedOptions, true)) {
             $this->options[$optionName] = $optionValue;
@@ -54,11 +53,9 @@ abstract class OptionsManagerAbstract implements OptionsManagerInterface
     }
 
     /**
-     * @param string $optionName
-     *
      * @return null|mixed The set option or NULL if no option with given name found
      */
-    public function getOption($optionName)
+    public function getOption(string $optionName): mixed
     {
         $optionValue = null;
 
@@ -72,7 +69,7 @@ abstract class OptionsManagerAbstract implements OptionsManagerInterface
     /**
      * @return array List of supported options
      */
-    abstract protected function getSupportedOptions();
+    abstract protected function getSupportedOptions(): array;
 
     /**
      * Sets the default options.

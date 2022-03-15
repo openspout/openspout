@@ -18,7 +18,7 @@ interface FileSystemHelperInterface
      *
      * @return string Path of the created folder
      */
-    public function createFolder($parentFolderPath, $folderName);
+    public function createFolder(string $parentFolderPath, string $folderName): string;
 
     /**
      * Creates a file with the given name and content in the given folder.
@@ -32,7 +32,7 @@ interface FileSystemHelperInterface
      *
      * @return string Path of the created file
      */
-    public function createFileWithContents($parentFolderPath, $fileName, $fileContents);
+    public function createFileWithContents(string $parentFolderPath, string $fileName, string $fileContents): string;
 
     /**
      * Delete the file at the given path.
@@ -41,7 +41,7 @@ interface FileSystemHelperInterface
      *
      * @throws \OpenSpout\Common\Exception\IOException If the file path is not inside of the base folder
      */
-    public function deleteFile($filePath);
+    public function deleteFile(string $filePath);
 
     /**
      * Delete the folder at the given path as well as all its contents.
@@ -50,5 +50,5 @@ interface FileSystemHelperInterface
      *
      * @throws \OpenSpout\Common\Exception\IOException If the folder path is not inside of the base folder
      */
-    public function deleteFolderRecursively($folderPath);
+    public function deleteFolderRecursively(string $folderPath);
 }

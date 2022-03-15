@@ -37,11 +37,9 @@ final class SheetTest extends TestCase
     }
 
     /**
-     * @param string $fileName
-     *
      * @return SheetInterface[]
      */
-    private function openFileAndReturnSheets($fileName)
+    private function openFileAndReturnSheets(string $fileName): array
     {
         $resourcePath = $this->getResourcePath($fileName);
         $reader = ReaderEntityFactory::createXLSXReader();

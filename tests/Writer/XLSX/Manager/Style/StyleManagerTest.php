@@ -9,10 +9,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class StyleManagerTest extends TestCase
 {
-    /**
-     * @return array
-     */
-    public function dataProviderForTestShouldApplyStyleOnEmptyCell()
+    public function dataProviderForTestShouldApplyStyleOnEmptyCell(): array
     {
         return [
             // fillId, borderId, expected result
@@ -30,12 +27,8 @@ final class StyleManagerTest extends TestCase
 
     /**
      * @dataProvider dataProviderForTestShouldApplyStyleOnEmptyCell
-     *
-     * @param null|int $fillId
-     * @param null|int $borderId
-     * @param bool     $expectedResult
      */
-    public function testShouldApplyStyleOnEmptyCell($fillId, $borderId, $expectedResult)
+    public function testShouldApplyStyleOnEmptyCell(?int $fillId, ?int $borderId, bool $expectedResult)
     {
         $styleRegistryMock = $this->getMockBuilder(StyleRegistry::class)
             ->disableOriginalConstructor()

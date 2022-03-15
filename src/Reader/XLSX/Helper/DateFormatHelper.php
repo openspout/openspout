@@ -17,7 +17,7 @@ class DateFormatHelper
      *
      * @var array Mapping between Excel format characters and PHP format characters
      */
-    private static $excelDateFormatToPHPDateFormatMapping = [
+    private static array $excelDateFormatToPHPDateFormatMapping = [
         self::KEY_GENERAL => [
             // Time
             'am/pm' => 'A',  // Uppercase Ante meridiem and Post meridiem
@@ -57,7 +57,7 @@ class DateFormatHelper
      *
      * @return string PHP date format (as defined here: http://php.net/manual/en/function.date.php)
      */
-    public static function toPHPDateFormat($excelDateFormat)
+    public static function toPHPDateFormat(string $excelDateFormat): string
     {
         // Remove brackets potentially present at the beginning of the format string
         // and text portion of the format at the end of it (starting with ";")
@@ -115,7 +115,7 @@ class DateFormatHelper
      *
      * @return bool Whether the given date format has the 12-hour format marker
      */
-    private static function has12HourFormatMarker($excelDateFormat)
+    private static function has12HourFormatMarker(string $excelDateFormat): bool
     {
         return false !== stripos($excelDateFormat, 'am/pm');
     }

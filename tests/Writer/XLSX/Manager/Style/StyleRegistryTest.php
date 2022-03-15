@@ -88,10 +88,7 @@ final class StyleRegistryTest extends TestCase
         static::assertSame(0, $styleRegistry->getFormatIdForStyleId($styleNoFormat->getId()), 'Style with no format should have index 0');
     }
 
-    /**
-     * @return StyleRegistry
-     */
-    private function getStyleRegistry()
+    private function getStyleRegistry(): StyleRegistry
     {
         $defaultStyle = (new Style());
 

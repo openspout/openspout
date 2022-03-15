@@ -12,8 +12,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class SheetTest extends TestCase
 {
-    /** @var SheetManager */
-    private $sheetManager;
+    private SheetManager $sheetManager;
 
     protected function setUp(): void
     {
@@ -37,14 +36,9 @@ final class SheetTest extends TestCase
         static::assertSame($customSheetName, $sheet->getName(), "The sheet name should have been changed to '{$customSheetName}'");
     }
 
-    /**
-     * @return array
-     */
-    public function dataProviderForInvalidSheetNames()
+    public function dataProviderForInvalidSheetNames(): array
     {
         return [
-            [null],
-            [21],
             [''],
             ['this title exceeds the 31 characters limit'],
             ['Illegal \\'],
@@ -61,14 +55,12 @@ final class SheetTest extends TestCase
 
     /**
      * @dataProvider dataProviderForInvalidSheetNames
-     *
-     * @param string $customSheetName
      */
-    public function testSetSheetNameShouldThrowOnInvalidName($customSheetName)
+    public function testSetSheetNameShouldThrowOnInvalidName(string $customSheetName)
     {
-        $this->expectException(InvalidSheetNameException::class);
-
         $sheet = $this->createSheet(0, 'workbookId1');
+
+        $this->expectException(InvalidSheetNameException::class);
         $sheet->setName($customSheetName);
     }
 
@@ -109,13 +101,7 @@ final class SheetTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
-    /**
-     * @param int    $sheetIndex
-     * @param string $associatedWorkbookId
-     *
-     * @return Sheet
-     */
-    private function createSheet($sheetIndex, $associatedWorkbookId)
+    private function createSheet(int $sheetIndex, string $associatedWorkbookId): Sheet
     {
         return new Sheet($sheetIndex, $associatedWorkbookId, $this->sheetManager);
     }

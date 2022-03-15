@@ -8,17 +8,17 @@ use OpenSpout\Common\Manager\OptionsManagerInterface;
 use OpenSpout\Writer\Common\Entity\Options;
 use OpenSpout\Writer\Common\Entity\Worksheet;
 use OpenSpout\Writer\Common\Manager\ManagesCellSize;
+use OpenSpout\Writer\Common\Manager\Style\StyleManager as CommonStyleManager;
 use OpenSpout\Writer\ODS\Helper\BorderHelper;
 
 /**
  * Manages styles to be applied to a cell.
+ * 
+ * @property StyleRegistry $styleRegistry
  */
-class StyleManager extends \OpenSpout\Writer\Common\Manager\Style\StyleManager
+class StyleManager extends CommonStyleManager
 {
     use ManagesCellSize;
-
-    /** @var StyleRegistry */
-    protected $styleRegistry;
 
     public function __construct(StyleRegistry $styleRegistry, OptionsManagerInterface $optionsManager)
     {
@@ -32,10 +32,8 @@ class StyleManager extends \OpenSpout\Writer\Common\Manager\Style\StyleManager
      * Returns the content of the "styles.xml" file, given a list of styles.
      *
      * @param int $numWorksheets Number of worksheets created
-     *
-     * @return string
      */
-    public function getStylesXMLFileContent($numWorksheets)
+    public function getStylesXMLFileContent(int $numWorksheets): string
     {
         $content = <<<'EOD'
             <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -56,10 +54,8 @@ class StyleManager extends \OpenSpout\Writer\Common\Manager\Style\StyleManager
 
     /**
      * Returns the contents of the "<office:font-face-decls>" section, inside "content.xml" file.
-     *
-     * @return string
      */
-    public function getContentXmlFontFaceSectionContent()
+    public function getContentXmlFontFaceSectionContent(): string
     {
         $content = '<office:font-face-decls>';
         foreach ($this->styleRegistry->getUsedFonts() as $fontName) {
@@ -74,10 +70,8 @@ class StyleManager extends \OpenSpout\Writer\Common\Manager\Style\StyleManager
      * Returns the contents of the "<office:automatic-styles>" section, inside "content.xml" file.
      *
      * @param Worksheet[] $worksheets
-     *
-     * @return string
      */
-    public function getContentXmlAutomaticStylesSectionContent($worksheets)
+    public function getContentXmlAutomaticStylesSectionContent(array $worksheets): string
     {
         $content = '<office:automatic-styles>';
 
@@ -164,10 +158,8 @@ class StyleManager extends \OpenSpout\Writer\Common\Manager\Style\StyleManager
 
     /**
      * Returns the content of the "<office:font-face-decls>" section, inside "styles.xml" file.
-     *
-     * @return string
      */
-    protected function getFontFaceSectionContent()
+    protected function getFontFaceSectionContent(): string
     {
         $content = '<office:font-face-decls>';
         foreach ($this->styleRegistry->getUsedFonts() as $fontName) {
@@ -180,10 +172,8 @@ class StyleManager extends \OpenSpout\Writer\Common\Manager\Style\StyleManager
 
     /**
      * Returns the content of the "<office:styles>" section, inside "styles.xml" file.
-     *
-     * @return string
      */
-    protected function getStylesSectionContent()
+    protected function getStylesSectionContent(): string
     {
         $defaultStyle = $this->getDefaultStyle();
 
@@ -206,10 +196,8 @@ class StyleManager extends \OpenSpout\Writer\Common\Manager\Style\StyleManager
      * Returns the content of the "<office:automatic-styles>" section, inside "styles.xml" file.
      *
      * @param int $numWorksheets Number of worksheets created
-     *
-     * @return string
      */
-    protected function getAutomaticStylesSectionContent($numWorksheets)
+    protected function getAutomaticStylesSectionContent(int $numWorksheets): string
     {
         $content = '<office:automatic-styles>';
 
@@ -232,10 +220,8 @@ class StyleManager extends \OpenSpout\Writer\Common\Manager\Style\StyleManager
      * Returns the content of the "<office:master-styles>" section, inside "styles.xml" file.
      *
      * @param int $numWorksheets Number of worksheets created
-     *
-     * @return string
      */
-    protected function getMasterStylesSectionContent($numWorksheets)
+    protected function getMasterStylesSectionContent(int $numWorksheets): string
     {
         $content = '<office:master-styles>';
 
@@ -257,12 +243,8 @@ class StyleManager extends \OpenSpout\Writer\Common\Manager\Style\StyleManager
 
     /**
      * Returns the contents of the "<style:style>" section, inside "<office:automatic-styles>" section.
-     *
-     * @param \OpenSpout\Common\Entity\Style\Style $style
-     *
-     * @return string
      */
-    protected function getStyleSectionContent($style)
+    protected function getStyleSectionContent(\OpenSpout\Common\Entity\Style\Style $style): string
     {
         $styleIndex = $style->getId() + 1; // 1-based
 
@@ -279,12 +261,8 @@ class StyleManager extends \OpenSpout\Writer\Common\Manager\Style\StyleManager
 
     /**
      * Returns the contents of the "<style:text-properties>" section, inside "<style:style>" section.
-     *
-     * @param \OpenSpout\Common\Entity\Style\Style $style
-     *
-     * @return string
      */
-    private function getTextPropertiesSectionContent($style)
+    private function getTextPropertiesSectionContent(\OpenSpout\Common\Entity\Style\Style $style): string
     {
         if (!$style->shouldApplyFont()) {
             return '';
@@ -297,12 +275,8 @@ class StyleManager extends \OpenSpout\Writer\Common\Manager\Style\StyleManager
 
     /**
      * Returns the contents of the fonts definition section, inside "<style:text-properties>" section.
-     *
-     * @param \OpenSpout\Common\Entity\Style\Style $style
-     *
-     * @return string
      */
-    private function getFontSectionContent($style)
+    private function getFontSectionContent(\OpenSpout\Common\Entity\Style\Style $style): string
     {
         $defaultStyle = $this->getDefaultStyle();
         $content = '';
@@ -340,12 +314,8 @@ class StyleManager extends \OpenSpout\Writer\Common\Manager\Style\StyleManager
 
     /**
      * Returns the contents of the "<style:paragraph-properties>" section, inside "<style:style>" section.
-     *
-     * @param \OpenSpout\Common\Entity\Style\Style $style
-     *
-     * @return string
      */
-    private function getParagraphPropertiesSectionContent($style)
+    private function getParagraphPropertiesSectionContent(\OpenSpout\Common\Entity\Style\Style $style): string
     {
         if (!$style->shouldApplyCellAlignment()) {
             return '';
@@ -358,12 +328,8 @@ class StyleManager extends \OpenSpout\Writer\Common\Manager\Style\StyleManager
 
     /**
      * Returns the contents of the cell alignment definition for the "<style:paragraph-properties>" section.
-     *
-     * @param \OpenSpout\Common\Entity\Style\Style $style
-     *
-     * @return string
      */
-    private function getCellAlignmentSectionContent($style)
+    private function getCellAlignmentSectionContent(\OpenSpout\Common\Entity\Style\Style $style): string
     {
         return sprintf(
             ' fo:text-align="%s" ',
@@ -375,12 +341,8 @@ class StyleManager extends \OpenSpout\Writer\Common\Manager\Style\StyleManager
      * Even though "left" and "right" alignments are part of the spec, and interpreted
      * respectively as "start" and "end", using the recommended values increase compatibility
      * with software that will read the created ODS file.
-     *
-     * @param string $cellAlignment
-     *
-     * @return string
      */
-    private function transformCellAlignment($cellAlignment)
+    private function transformCellAlignment(string $cellAlignment): string
     {
         switch ($cellAlignment) {
             case CellAlignment::LEFT:
@@ -396,12 +358,8 @@ class StyleManager extends \OpenSpout\Writer\Common\Manager\Style\StyleManager
 
     /**
      * Returns the contents of the "<style:table-cell-properties>" section, inside "<style:style>" section.
-     *
-     * @param \OpenSpout\Common\Entity\Style\Style $style
-     *
-     * @return string
      */
-    private function getTableCellPropertiesSectionContent($style)
+    private function getTableCellPropertiesSectionContent(\OpenSpout\Common\Entity\Style\Style $style): string
     {
         $content = '<style:table-cell-properties ';
 
@@ -424,22 +382,16 @@ class StyleManager extends \OpenSpout\Writer\Common\Manager\Style\StyleManager
 
     /**
      * Returns the contents of the wrap text definition for the "<style:table-cell-properties>" section.
-     *
-     * @return string
      */
-    private function getWrapTextXMLContent()
+    private function getWrapTextXMLContent(): string
     {
         return ' fo:wrap-option="wrap" style:vertical-align="automatic" ';
     }
 
     /**
      * Returns the contents of the borders definition for the "<style:table-cell-properties>" section.
-     *
-     * @param \OpenSpout\Common\Entity\Style\Style $style
-     *
-     * @return string
      */
-    private function getBorderXMLContent($style)
+    private function getBorderXMLContent(\OpenSpout\Common\Entity\Style\Style $style): string
     {
         $borders = array_map(function (BorderPart $borderPart) {
             return BorderHelper::serializeBorderPart($borderPart);
@@ -450,12 +402,8 @@ class StyleManager extends \OpenSpout\Writer\Common\Manager\Style\StyleManager
 
     /**
      * Returns the contents of the background color definition for the "<style:table-cell-properties>" section.
-     *
-     * @param \OpenSpout\Common\Entity\Style\Style $style
-     *
-     * @return string
      */
-    private function getBackgroundColorXMLContent($style)
+    private function getBackgroundColorXMLContent(\OpenSpout\Common\Entity\Style\Style $style): string
     {
         return sprintf(' fo:background-color="#%s" ', $style->getBackgroundColor());
     }

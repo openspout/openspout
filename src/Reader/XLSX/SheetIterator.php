@@ -4,25 +4,26 @@ namespace OpenSpout\Reader\XLSX;
 
 use OpenSpout\Reader\Exception\NoSheetsFoundException;
 use OpenSpout\Reader\IteratorInterface;
+use OpenSpout\Reader\SheetIteratorInterface;
 use OpenSpout\Reader\XLSX\Manager\SheetManager;
 
 /**
  * Iterate over XLSX sheet.
  */
-class SheetIterator implements IteratorInterface
+class SheetIterator implements SheetIteratorInterface
 {
     /** @var \OpenSpout\Reader\XLSX\Sheet[] The list of sheet present in the file */
-    protected $sheets;
+    protected array $sheets;
 
     /** @var int The index of the sheet being read (zero-based) */
-    protected $currentSheetIndex;
+    protected int $currentSheetIndex;
 
     /**
      * @param SheetManager $sheetManager Manages sheets
      *
      * @throws \OpenSpout\Reader\Exception\NoSheetsFoundException If there are no sheets in the file
      */
-    public function __construct($sheetManager)
+    public function __construct(SheetManager $sheetManager)
     {
         // Fetch all available sheets
         $this->sheets = $sheetManager->getSheets();

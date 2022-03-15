@@ -24,19 +24,13 @@ class EncodingHelper
     public const BOM_UTF32_BE = "\x00\x00\xFE\xFF";
 
     /** @var array Map representing the encodings supporting BOMs (key) and their associated BOM (value) */
-    protected $supportedEncodingsWithBom;
+    protected array $supportedEncodingsWithBom;
 
-    /** @var bool */
-    private $canUseIconv;
+    private bool $canUseIconv;
 
-    /** @var bool */
-    private $canUseMbString;
+    private bool $canUseMbString;
 
-    /**
-     * @param bool $canUseIconv
-     * @param bool $canUseMbString
-     */
-    public function __construct($canUseIconv, $canUseMbString)
+    public function __construct(bool $canUseIconv, bool $canUseMbString)
     {
         $this->canUseIconv = $canUseIconv;
         $this->canUseMbString = $canUseMbString;
@@ -66,7 +60,7 @@ class EncodingHelper
      *
      * @return int Bytes offset to apply to skip the BOM (0 means no BOM)
      */
-    public function getBytesOffsetToSkipBOM($filePointer, $encoding)
+    public function getBytesOffsetToSkipBOM($filePointer, string $encoding): int
     {
         $byteOffsetToSkipBom = 0;
 
@@ -90,7 +84,7 @@ class EncodingHelper
      *
      * @return string The converted, UTF-8 string
      */
-    public function attemptConversionToUTF8($string, $sourceEncoding)
+    public function attemptConversionToUTF8(string $string, string $sourceEncoding): string
     {
         return $this->attemptConversion($string, $sourceEncoding, self::ENCODING_UTF8);
     }
@@ -105,7 +99,7 @@ class EncodingHelper
      *
      * @return string The converted string, encoded with the given encoding
      */
-    public function attemptConversionFromUTF8($string, $targetEncoding)
+    public function attemptConversionFromUTF8(string $string, string $targetEncoding): string
     {
         return $this->attemptConversion($string, self::ENCODING_UTF8, $targetEncoding);
     }
@@ -118,7 +112,7 @@ class EncodingHelper
      *
      * @return bool TRUE if the file has a BOM, FALSE otherwise
      */
-    protected function hasBOM($filePointer, $encoding)
+    protected function hasBOM($filePointer, string $encoding): bool
     {
         $hasBOM = false;
 
@@ -146,7 +140,7 @@ class EncodingHelper
      *
      * @return string The converted string, encoded with the given encoding
      */
-    protected function attemptConversion($string, $sourceEncoding, $targetEncoding)
+    protected function attemptConversion(string $string, string $sourceEncoding, string $targetEncoding): string
     {
         // if source and target encodings are the same, it's a no-op
         if ($sourceEncoding === $targetEncoding) {

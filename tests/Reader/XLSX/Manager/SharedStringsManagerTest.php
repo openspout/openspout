@@ -16,8 +16,7 @@ final class SharedStringsManagerTest extends TestCase
 {
     use TestUsingResource;
 
-    /** @var null|SharedStringsManager */
-    private $sharedStringsManager;
+    private ?SharedStringsManager $sharedStringsManager;
 
     protected function setUp(): void
     {
@@ -110,12 +109,7 @@ final class SharedStringsManagerTest extends TestCase
         ini_set('memory_limit', $originalMemoryLimit);
     }
 
-    /**
-     * @param string $resourceName
-     *
-     * @return SharedStringsManager
-     */
-    private function createSharedStringsManager($resourceName = 'one_sheet_with_shared_strings.xlsx')
+    private function createSharedStringsManager(string $resourceName = 'one_sheet_with_shared_strings.xlsx'): SharedStringsManager
     {
         $resourcePath = $this->getResourcePath($resourceName);
         $tempFolder = sys_get_temp_dir();

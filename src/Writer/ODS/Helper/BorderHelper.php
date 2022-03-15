@@ -21,10 +21,8 @@ class BorderHelper
 {
     /**
      * Width mappings.
-     *
-     * @var array
      */
-    protected static $widthMap = [
+    protected static array $widthMap = [
         Border::WIDTH_THIN => '0.75pt',
         Border::WIDTH_MEDIUM => '1.75pt',
         Border::WIDTH_THICK => '2.5pt',
@@ -32,20 +30,15 @@ class BorderHelper
 
     /**
      * Style mapping.
-     *
-     * @var array
      */
-    protected static $styleMap = [
+    protected static array $styleMap = [
         Border::STYLE_SOLID => 'solid',
         Border::STYLE_DASHED => 'dashed',
         Border::STYLE_DOTTED => 'dotted',
         Border::STYLE_DOUBLE => 'double',
     ];
 
-    /**
-     * @return string
-     */
-    public static function serializeBorderPart(BorderPart $borderPart)
+    public static function serializeBorderPart(BorderPart $borderPart): string
     {
         $definition = 'fo:border-%s="%s"';
 

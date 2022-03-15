@@ -54,12 +54,7 @@ final class WriterPerfTest extends TestCase
         static::assertTrue($memoryPeakUsage < $expectedMaxMemoryPeakUsage, 'Writing 1 million rows should require less than '.($expectedMaxMemoryPeakUsage / 1024 / 1024).' MB of memory (required '.round($memoryPeakUsage / 1024 / 1024, 2).' MB)');
     }
 
-    /**
-     * @param string $resourcePath
-     *
-     * @return int
-     */
-    private function getNumWrittenRows($resourcePath)
+    private function getNumWrittenRows(string $resourcePath): int
     {
         $lineCountResult = shell_exec("wc -l {$resourcePath}");
 

@@ -11,12 +11,13 @@ use OpenSpout\Reader\Exception\XMLProcessingException;
 use OpenSpout\Reader\IteratorInterface;
 use OpenSpout\Reader\ODS\Helper\CellValueFormatter;
 use OpenSpout\Reader\ODS\Helper\SettingsHelper;
+use OpenSpout\Reader\SheetIteratorInterface;
 use OpenSpout\Reader\Wrapper\XMLReader;
 
 /**
  * Iterate over ODS sheet.
  */
-class SheetIterator implements IteratorInterface
+class SheetIterator implements SheetIteratorInterface
 {
     public const CONTENT_XML_FILE_PATH = 'content.xml';
 
@@ -32,36 +33,35 @@ class SheetIterator implements IteratorInterface
     public const XML_ATTRIBUTE_TABLE_DISPLAY = 'table:display';
 
     /** @var string Path of the file to be read */
-    protected $filePath;
+    protected string $filePath;
 
     /** @var \OpenSpout\Common\Manager\OptionsManagerInterface Reader's options manager */
-    protected $optionsManager;
+    protected \OpenSpout\Common\Manager\OptionsManagerInterface $optionsManager;
 
     /** @var XMLReader The XMLReader object that will help read sheet's XML data */
-    protected $xmlReader;
+    protected XMLReader $xmlReader;
 
     /** @var \OpenSpout\Common\Helper\Escaper\ODS Used to unescape XML data */
-    protected $escaper;
+    protected \OpenSpout\Common\Helper\Escaper\ODS $escaper;
 
     /** @var bool Whether there are still at least a sheet to be read */
-    protected $hasFoundSheet;
+    protected bool $hasFoundSheet;
 
     /** @var int The index of the sheet being read (zero-based) */
-    protected $currentSheetIndex;
+    protected int $currentSheetIndex;
 
     /** @var string The name of the sheet that was defined as active */
-    protected $activeSheetName;
+    protected ?string $activeSheetName;
 
     /** @var array Associative array [STYLE_NAME] => [IS_SHEET_VISIBLE] */
-    protected $sheetsVisibility;
+    protected array $sheetsVisibility;
 
     /**
-     * @param string                                            $filePath       Path of the file to be read
-     * @param \OpenSpout\Common\Manager\OptionsManagerInterface $optionsManager
-     * @param \OpenSpout\Common\Helper\Escaper\ODS              $escaper        Used to unescape XML data
-     * @param SettingsHelper                                    $settingsHelper Helper to get data from "settings.xml"
+     * @param string                               $filePath       Path of the file to be read
+     * @param \OpenSpout\Common\Helper\Escaper\ODS $escaper        Used to unescape XML data
+     * @param SettingsHelper                       $settingsHelper Helper to get data from "settings.xml"
      */
-    public function __construct($filePath, $optionsManager, $escaper, $settingsHelper)
+    public function __construct(string $filePath, \OpenSpout\Common\Manager\OptionsManagerInterface $optionsManager, ODS $escaper, SettingsHelper $settingsHelper)
     {
         $this->filePath = $filePath;
         $this->optionsManager = $optionsManager;
@@ -186,7 +186,7 @@ class SheetIterator implements IteratorInterface
      *
      * @return array Associative array [STYLE_NAME] => [IS_SHEET_VISIBLE]
      */
-    private function readSheetsVisibility()
+    private function readSheetsVisibility(): array
     {
         $sheetsVisibility = [];
 
@@ -219,7 +219,7 @@ class SheetIterator implements IteratorInterface
      *
      * @return bool Whether the current sheet was defined as the active one
      */
-    private function isSheetActive($sheetName, $sheetIndex, $activeSheetName)
+    private function isSheetActive(string $sheetName, int $sheetIndex, ?string $activeSheetName): bool
     {
         // The given sheet is active if its name matches the defined active sheet's name
         // or if no information about the active sheet was found, it defaults to the first sheet.
@@ -236,7 +236,7 @@ class SheetIterator implements IteratorInterface
      *
      * @return bool Whether the current sheet is visible
      */
-    private function isSheetVisible($sheetStyleName)
+    private function isSheetVisible(string $sheetStyleName): bool
     {
         return $this->sheetsVisibility[$sheetStyleName] ??
             true;

@@ -35,10 +35,7 @@ class BorderHelper
         ],
     ];
 
-    /**
-     * @return string
-     */
-    public static function serializeBorderPart(BorderPart $borderPart)
+    public static function serializeBorderPart(BorderPart $borderPart): string
     {
         $borderStyle = self::getBorderStyle($borderPart);
 
@@ -56,10 +53,8 @@ class BorderHelper
 
     /**
      * Get the style definition from the style map.
-     *
-     * @return string
      */
-    protected static function getBorderStyle(BorderPart $borderPart)
+    protected static function getBorderStyle(BorderPart $borderPart): string
     {
         return self::$xlsxStyleMap[$borderPart->getStyle()][$borderPart->getWidth()];
     }

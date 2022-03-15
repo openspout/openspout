@@ -10,11 +10,9 @@ use PHPUnit\Framework\TestCase;
  */
 final class StyleRegistryTest extends TestCase
 {
-    /** @var Style */
-    private $defaultStyle;
+    private Style $defaultStyle;
 
-    /** @var StyleRegistry */
-    private $styleRegistry;
+    private StyleRegistry $styleRegistry;
 
     protected function setUp(): void
     {

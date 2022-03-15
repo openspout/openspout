@@ -3,18 +3,19 @@
 namespace OpenSpout\Writer\XLSX\Manager\Style;
 
 use OpenSpout\Common\Entity\Style\Style;
+use OpenSpout\Writer\Common\Manager\Style\StyleRegistry as CommonStyleRegistry;
 
 /**
  * Registry for all used styles.
  */
-class StyleRegistry extends \OpenSpout\Writer\Common\Manager\Style\StyleRegistry
+class StyleRegistry extends CommonStyleRegistry
 {
     /**
      * @see https://msdn.microsoft.com/en-us/library/ff529597(v=office.12).aspx
      *
      * @var array Mapping between built-in format and the associated numFmtId
      */
-    protected static $builtinNumFormatToIdMapping = [
+    protected static array $builtinNumFormatToIdMapping = [
         'General' => 0,
         '0' => 1,
         '0.00' => 2,
@@ -64,15 +65,12 @@ class StyleRegistry extends \OpenSpout\Writer\Common\Manager\Style\StyleRegistry
         't# ??/??' => 70,
     ];
 
-    /**
-     * @var array
-     */
-    protected $registeredFormats = [];
+    protected array $registeredFormats = [];
 
     /**
      * @var array [STYLE_ID] => [FORMAT_ID] maps a style to a format declaration
      */
-    protected $styleIdToFormatsMappingTable = [];
+    protected array $styleIdToFormatsMappingTable = [];
 
     /**
      * If the numFmtId is lower than 0xA4 (164 in decimal)
@@ -81,17 +79,14 @@ class StyleRegistry extends \OpenSpout\Writer\Common\Manager\Style\StyleRegistry
      *
      * @var int the fill index counter for custom fills
      */
-    protected $formatIndex = 164;
+    protected int $formatIndex = 164;
 
-    /**
-     * @var array
-     */
-    protected $registeredFills = [];
+    protected array $registeredFills = [];
 
     /**
      * @var array [STYLE_ID] => [FILL_ID] maps a style to a fill declaration
      */
-    protected $styleIdToFillMappingTable = [];
+    protected array $styleIdToFillMappingTable = [];
 
     /**
      * Excel preserves two default fills with index 0 and 1
@@ -99,24 +94,19 @@ class StyleRegistry extends \OpenSpout\Writer\Common\Manager\Style\StyleRegistry
      *
      * @var int the fill index counter for custom fills
      */
-    protected $fillIndex = 2;
+    protected int $fillIndex = 2;
 
-    /**
-     * @var array
-     */
-    protected $registeredBorders = [];
+    protected array $registeredBorders = [];
 
     /**
      * @var array [STYLE_ID] => [BORDER_ID] maps a style to a border declaration
      */
-    protected $styleIdToBorderMappingTable = [];
+    protected array $styleIdToBorderMappingTable = [];
 
     /**
      * XLSX specific operations on the registered styles.
-     *
-     * @return Style
      */
-    public function registerStyle(Style $style)
+    public function registerStyle(Style $style): Style
     {
         if ($style->isRegistered()) {
             return $style;
@@ -131,59 +121,40 @@ class StyleRegistry extends \OpenSpout\Writer\Common\Manager\Style\StyleRegistry
     }
 
     /**
-     * @param int $styleId
-     *
      * @return null|int Format ID associated to the given style ID
      */
-    public function getFormatIdForStyleId($styleId)
+    public function getFormatIdForStyleId(int $styleId): ?int
     {
         return $this->styleIdToFormatsMappingTable[$styleId] ?? null;
     }
 
     /**
-     * @param int $styleId
-     *
      * @return null|int Fill ID associated to the given style ID
      */
-    public function getFillIdForStyleId($styleId)
+    public function getFillIdForStyleId(int $styleId): ?int
     {
-        return (isset($this->styleIdToFillMappingTable[$styleId])) ?
-            $this->styleIdToFillMappingTable[$styleId] :
-            null;
+        return $this->styleIdToFillMappingTable[$styleId] ?? null;
     }
 
     /**
-     * @param int $styleId
-     *
      * @return null|int Fill ID associated to the given style ID
      */
-    public function getBorderIdForStyleId($styleId)
+    public function getBorderIdForStyleId(int $styleId): ?int
     {
-        return (isset($this->styleIdToBorderMappingTable[$styleId])) ?
-            $this->styleIdToBorderMappingTable[$styleId] :
-            null;
+        return $this->styleIdToBorderMappingTable[$styleId] ?? null;
     }
 
-    /**
-     * @return array
-     */
-    public function getRegisteredFills()
+    public function getRegisteredFills(): array
     {
         return $this->registeredFills;
     }
 
-    /**
-     * @return array
-     */
-    public function getRegisteredBorders()
+    public function getRegisteredBorders(): array
     {
         return $this->registeredBorders;
     }
 
-    /**
-     * @return array
-     */
-    public function getRegisteredFormats()
+    public function getRegisteredFormats(): array
     {
         return $this->registeredFormats;
     }

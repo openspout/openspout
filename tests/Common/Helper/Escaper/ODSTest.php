@@ -10,10 +10,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class ODSTest extends TestCase
 {
-    /**
-     * @return array
-     */
-    public function dataProviderForTestEscape()
+    public function dataProviderForTestEscape(): array
     {
         return [
             ['test', 'test'],
@@ -28,11 +25,8 @@ final class ODSTest extends TestCase
 
     /**
      * @dataProvider dataProviderForTestEscape
-     *
-     * @param string $stringToEscape
-     * @param string $expectedEscapedString
      */
-    public function testEscape($stringToEscape, $expectedEscapedString)
+    public function testEscape(string $stringToEscape, string $expectedEscapedString)
     {
         $escaper = new Escaper\ODS();
         $escapedString = $escaper->escape($stringToEscape);

@@ -11,8 +11,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class StyleMergerTest extends TestCase
 {
-    /** @var StyleMerger */
-    private $styleMerger;
+    private StyleMerger $styleMerger;
 
     protected function setUp(): void
     {

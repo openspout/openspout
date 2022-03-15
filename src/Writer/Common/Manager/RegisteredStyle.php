@@ -9,15 +9,9 @@ use OpenSpout\Common\Entity\Style\Style;
  */
 class RegisteredStyle
 {
-    /**
-     * @var Style
-     */
-    private $style;
+    private Style $style;
 
-    /**
-     * @var bool
-     */
-    private $isMatchingRowStyle;
+    private bool $isMatchingRowStyle;
 
     public function __construct(Style $style, bool $isMatchingRowStyle)
     {

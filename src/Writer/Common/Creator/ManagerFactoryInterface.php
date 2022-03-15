@@ -10,8 +10,5 @@ use OpenSpout\Writer\Common\Manager\WorkbookManagerInterface;
  */
 interface ManagerFactoryInterface
 {
-    /**
-     * @return WorkbookManagerInterface
-     */
-    public function createWorkbookManager(OptionsManagerInterface $optionsManager);
+    public function createWorkbookManager(OptionsManagerInterface $optionsManager): WorkbookManagerInterface;
 }

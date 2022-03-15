@@ -10,7 +10,7 @@ use OpenSpout\Reader\Exception\XMLProcessingException;
 trait XMLInternalErrorsHelper
 {
     /** @var bool Stores whether XML errors were initially stored internally - used to reset */
-    protected $initialUseInternalErrorsValue;
+    protected bool $initialUseInternalErrorsValue;
 
     /**
      * To avoid displaying lots of warning/error messages on screen,
@@ -49,7 +49,7 @@ trait XMLInternalErrorsHelper
      *
      * @return bool TRUE if an error occured, FALSE otherwise
      */
-    private function hasXMLErrorOccured()
+    private function hasXMLErrorOccured(): bool
     {
         return false !== libxml_get_last_error();
     }
@@ -61,7 +61,7 @@ trait XMLInternalErrorsHelper
      *
      * @return null|string Last XML error message or null if no error
      */
-    private function getLastXMLErrorMessage()
+    private function getLastXMLErrorMessage(): ?string
     {
         $errorMessage = null;
         $error = libxml_get_last_error();

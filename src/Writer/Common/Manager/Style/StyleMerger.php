@@ -19,7 +19,7 @@ class StyleMerger
      *
      * @return Style New style corresponding to the merge of the 2 styles
      */
-    public function merge(Style $style, Style $baseStyle)
+    public function merge(Style $style, Style $baseStyle): Style
     {
         $mergedStyle = clone $style;
 

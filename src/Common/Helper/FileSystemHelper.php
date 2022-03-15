@@ -11,7 +11,7 @@ use OpenSpout\Common\Exception\IOException;
 class FileSystemHelper implements FileSystemHelperInterface
 {
     /** @var string Real path of the base folder where all the I/O can occur */
-    protected $baseFolderRealPath;
+    protected string $baseFolderRealPath;
 
     /**
      * @param string $baseFolderPath The path of the base folder where all the I/O can occur
@@ -31,7 +31,7 @@ class FileSystemHelper implements FileSystemHelperInterface
      *
      * @return string Path of the created folder
      */
-    public function createFolder($parentFolderPath, $folderName)
+    public function createFolder(string $parentFolderPath, string $folderName): string
     {
         $this->throwIfOperationNotInBaseFolder($parentFolderPath);
 
@@ -57,7 +57,7 @@ class FileSystemHelper implements FileSystemHelperInterface
      *
      * @return string Path of the created file
      */
-    public function createFileWithContents($parentFolderPath, $fileName, $fileContents)
+    public function createFileWithContents(string $parentFolderPath, string $fileName, string $fileContents): string
     {
         $this->throwIfOperationNotInBaseFolder($parentFolderPath);
 
@@ -78,7 +78,7 @@ class FileSystemHelper implements FileSystemHelperInterface
      *
      * @throws \OpenSpout\Common\Exception\IOException If the file path is not inside of the base folder
      */
-    public function deleteFile($filePath)
+    public function deleteFile(string $filePath)
     {
         $this->throwIfOperationNotInBaseFolder($filePath);
 
@@ -94,7 +94,7 @@ class FileSystemHelper implements FileSystemHelperInterface
      *
      * @throws \OpenSpout\Common\Exception\IOException If the folder path is not inside of the base folder
      */
-    public function deleteFolderRecursively($folderPath)
+    public function deleteFolderRecursively(string $folderPath)
     {
         $this->throwIfOperationNotInBaseFolder($folderPath);
 

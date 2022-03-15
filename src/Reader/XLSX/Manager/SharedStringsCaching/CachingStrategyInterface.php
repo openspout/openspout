@@ -13,7 +13,7 @@ interface CachingStrategyInterface
      * @param string $sharedString      The string to be added to the cache
      * @param int    $sharedStringIndex Index of the shared string in the sharedStrings.xml file
      */
-    public function addStringForIndex($sharedString, $sharedStringIndex);
+    public function addStringForIndex(string $sharedString, int $sharedStringIndex);
 
     /**
      * Closes the cache after the last shared string was added.
@@ -30,7 +30,7 @@ interface CachingStrategyInterface
      *
      * @return string The shared string at the given index
      */
-    public function getStringAtIndex($sharedStringIndex);
+    public function getStringAtIndex(int $sharedStringIndex): string;
 
     /**
      * Destroys the cache, freeing memory and removing any created artifacts.

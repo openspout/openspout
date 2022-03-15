@@ -12,10 +12,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class RowManagerTest extends TestCase
 {
-    /**
-     * @return array
-     */
-    public function dataProviderForTestIsEmptyRow()
+    public function dataProviderForTestIsEmptyRow(): array
     {
         return [
             // cells, expected isEmpty
@@ -28,10 +25,8 @@ final class RowManagerTest extends TestCase
 
     /**
      * @dataProvider dataProviderForTestIsEmptyRow
-     *
-     * @param bool $expectedIsEmpty
      */
-    public function testIsEmptyRow(array $cells, $expectedIsEmpty)
+    public function testIsEmptyRow(array $cells, bool $expectedIsEmpty)
     {
         $rowManager = new RowManager();
 

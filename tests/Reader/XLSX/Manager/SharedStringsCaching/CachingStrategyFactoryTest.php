@@ -9,10 +9,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class CachingStrategyFactoryTest extends TestCase
 {
-    /**
-     * @return array
-     */
-    public function dataProviderForTestCreateBestCachingStrategy()
+    public function dataProviderForTestCreateBestCachingStrategy(): array
     {
         return [
             [null, -1, 'FileBasedStrategy'],
@@ -27,12 +24,8 @@ final class CachingStrategyFactoryTest extends TestCase
 
     /**
      * @dataProvider dataProviderForTestCreateBestCachingStrategy
-     *
-     * @param null|int $sharedStringsUniqueCount
-     * @param int      $memoryLimitInKB
-     * @param string   $expectedStrategyClassName
      */
-    public function testCreateBestCachingStrategy($sharedStringsUniqueCount, $memoryLimitInKB, $expectedStrategyClassName)
+    public function testCreateBestCachingStrategy(?int $sharedStringsUniqueCount, float $memoryLimitInKB, string $expectedStrategyClassName)
     {
         /** @var CachingStrategyFactory|\PHPUnit\Framework\MockObject\MockObject $factoryStub */
         $factoryStub = $this
@@ -53,10 +46,7 @@ final class CachingStrategyFactoryTest extends TestCase
         $strategy->clearCache();
     }
 
-    /**
-     * @return array
-     */
-    public function dataProviderForTestGetMemoryLimitInKB()
+    public function dataProviderForTestGetMemoryLimitInKB(): array
     {
         return [
             ['-1', -1],
@@ -75,11 +65,8 @@ final class CachingStrategyFactoryTest extends TestCase
 
     /**
      * @dataProvider dataProviderForTestGetMemoryLimitInKB
-     *
-     * @param string $memoryLimitFormatted
-     * @param float  $expectedMemoryLimitInKB
      */
-    public function testGetMemoryLimitInKB($memoryLimitFormatted, $expectedMemoryLimitInKB)
+    public function testGetMemoryLimitInKB(string $memoryLimitFormatted, float $expectedMemoryLimitInKB)
     {
         /** @var CachingStrategyFactory|\PHPUnit\Framework\MockObject\MockObject $factoryStub */
         $factoryStub = $this

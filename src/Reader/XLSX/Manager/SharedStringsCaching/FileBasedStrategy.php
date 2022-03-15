@@ -15,18 +15,18 @@ class FileBasedStrategy implements CachingStrategyInterface
     /** Value to use to escape the line feed character ("\n") */
     public const ESCAPED_LINE_FEED_CHARACTER = '_x000A_';
 
-    /** @var \OpenSpout\Common\Helper\FileSystemHelper Helper to perform file system operations */
-    protected $fileSystemHelper;
+    /** @var FileSystemHelper Helper to perform file system operations */
+    protected FileSystemHelper $fileSystemHelper;
 
     /** @var string Temporary folder where the temporary files will be created */
-    protected $tempFolder;
+    protected string $tempFolder;
 
     /**
      * @var int Maximum number of strings that can be stored in one temp file
      *
      * @see CachingStrategyFactory::MAX_NUM_STRINGS_PER_TEMP_FILE
      */
-    protected $maxNumStringsPerTempFile;
+    protected int $maxNumStringsPerTempFile;
 
     /** @var null|resource Pointer to the last temp file a shared string was written to */
     protected $tempFilePointer;
@@ -36,20 +36,20 @@ class FileBasedStrategy implements CachingStrategyInterface
      *
      * @see CachingStrategyFactory::MAX_NUM_STRINGS_PER_TEMP_FILE
      */
-    protected $inMemoryTempFilePath;
+    protected string $inMemoryTempFilePath = '';
 
     /**
      * @var array Contents of the temporary file that was last read
      *
      * @see CachingStrategyFactory::MAX_NUM_STRINGS_PER_TEMP_FILE
      */
-    protected $inMemoryTempFileContents;
+    protected array $inMemoryTempFileContents;
 
     /**
      * @param string $tempFolder               Temporary folder where the temporary files to store shared strings will be stored
      * @param int    $maxNumStringsPerTempFile Maximum number of strings that can be stored in one temp file
      */
-    public function __construct($tempFolder, $maxNumStringsPerTempFile)
+    public function __construct(string $tempFolder, int $maxNumStringsPerTempFile)
     {
         $this->fileSystemHelper = new FileSystemHelper($tempFolder);
         $this->tempFolder = $this->fileSystemHelper->createFolder($tempFolder, uniqid('sharedstrings'));
@@ -65,7 +65,7 @@ class FileBasedStrategy implements CachingStrategyInterface
      * @param string $sharedString      The string to be added to the cache
      * @param int    $sharedStringIndex Index of the shared string in the sharedStrings.xml file
      */
-    public function addStringForIndex($sharedString, $sharedStringIndex)
+    public function addStringForIndex(string $sharedString, int $sharedStringIndex)
     {
         $tempFilePath = $this->getSharedStringTempFilePath($sharedStringIndex);
 
@@ -104,7 +104,7 @@ class FileBasedStrategy implements CachingStrategyInterface
      *
      * @return string The shared string at the given index
      */
-    public function getStringAtIndex($sharedStringIndex)
+    public function getStringAtIndex(int $sharedStringIndex): string
     {
         $tempFilePath = $this->getSharedStringTempFilePath($sharedStringIndex);
         $indexInFile = $sharedStringIndex % $this->maxNumStringsPerTempFile;
@@ -150,7 +150,7 @@ class FileBasedStrategy implements CachingStrategyInterface
      *
      * @return string The temp file path for the given index
      */
-    protected function getSharedStringTempFilePath($sharedStringIndex)
+    protected function getSharedStringTempFilePath(int $sharedStringIndex): string
     {
         $numTempFile = (int) ($sharedStringIndex / $this->maxNumStringsPerTempFile);
 
@@ -165,7 +165,7 @@ class FileBasedStrategy implements CachingStrategyInterface
      *
      * @return string The file path using a real path
      */
-    private function convertToUseRealPath($filePath)
+    private function convertToUseRealPath(string $filePath): string
     {
         $realFilePath = $filePath;
 
@@ -184,24 +184,16 @@ class FileBasedStrategy implements CachingStrategyInterface
 
     /**
      * Escapes the line feed characters (\n).
-     *
-     * @param string $unescapedString
-     *
-     * @return string
      */
-    private function escapeLineFeed($unescapedString)
+    private function escapeLineFeed(string $unescapedString): string
     {
         return str_replace("\n", self::ESCAPED_LINE_FEED_CHARACTER, $unescapedString);
     }
 
     /**
      * Unescapes the line feed characters (\n).
-     *
-     * @param string $escapedString
-     *
-     * @return string
      */
-    private function unescapeLineFeed($escapedString)
+    private function unescapeLineFeed(string $escapedString): string
     {
         return str_replace(self::ESCAPED_LINE_FEED_CHARACTER, "\n", $escapedString);
     }

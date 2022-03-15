@@ -29,61 +29,52 @@ class FileSystemHelper extends \OpenSpout\Common\Helper\FileSystemHelper impleme
     public const STYLES_XML_FILE_NAME = 'styles.xml';
 
     /** @var ZipHelper Helper to perform tasks with Zip archive */
-    private $zipHelper;
+    private ZipHelper $zipHelper;
 
     /** @var \OpenSpout\Common\Helper\Escaper\XLSX Used to escape XML data */
-    private $escaper;
+    private \OpenSpout\Common\Helper\Escaper\XLSX $escaper;
 
     /** @var string Path to the root folder inside the temp folder where the files to create the XLSX will be stored */
-    private $rootFolder;
+    private string $rootFolder;
 
     /** @var string Path to the "_rels" folder inside the root folder */
-    private $relsFolder;
+    private string $relsFolder;
 
     /** @var string Path to the "docProps" folder inside the root folder */
-    private $docPropsFolder;
+    private string $docPropsFolder;
 
     /** @var string Path to the "xl" folder inside the root folder */
-    private $xlFolder;
+    private string $xlFolder;
 
     /** @var string Path to the "_rels" folder inside the "xl" folder */
-    private $xlRelsFolder;
+    private string $xlRelsFolder;
 
     /** @var string Path to the "worksheets" folder inside the "xl" folder */
-    private $xlWorksheetsFolder;
+    private string $xlWorksheetsFolder;
 
     /**
      * @param string                                $baseFolderPath The path of the base folder where all the I/O can occur
      * @param ZipHelper                             $zipHelper      Helper to perform tasks with Zip archive
      * @param \OpenSpout\Common\Helper\Escaper\XLSX $escaper        Used to escape XML data
      */
-    public function __construct($baseFolderPath, $zipHelper, $escaper)
+    public function __construct(string $baseFolderPath, ZipHelper $zipHelper, \OpenSpout\Common\Helper\Escaper\XLSX $escaper)
     {
         parent::__construct($baseFolderPath);
         $this->zipHelper = $zipHelper;
         $this->escaper = $escaper;
     }
 
-    /**
-     * @return string
-     */
-    public function getRootFolder()
+    public function getRootFolder(): string
     {
         return $this->rootFolder;
     }
 
-    /**
-     * @return string
-     */
-    public function getXlFolder()
+    public function getXlFolder(): string
     {
         return $this->xlFolder;
     }
 
-    /**
-     * @return string
-     */
-    public function getXlWorksheetsFolder()
+    public function getXlWorksheetsFolder(): string
     {
         return $this->xlWorksheetsFolder;
     }
@@ -107,10 +98,8 @@ class FileSystemHelper extends \OpenSpout\Common\Helper\FileSystemHelper impleme
      * Creates the "[Content_Types].xml" file under the root folder.
      *
      * @param Worksheet[] $worksheets
-     *
-     * @return FileSystemHelper
      */
-    public function createContentTypesFile($worksheets)
+    public function createContentTypesFile(array $worksheets): self
     {
         $contentTypesXmlFileContents = <<<'EOD'
             <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -142,10 +131,8 @@ class FileSystemHelper extends \OpenSpout\Common\Helper\FileSystemHelper impleme
      * Creates the "workbook.xml" file under the "xl" folder.
      *
      * @param Worksheet[] $worksheets
-     *
-     * @return FileSystemHelper
      */
-    public function createWorkbookFile($worksheets)
+    public function createWorkbookFile(array $worksheets): self
     {
         $workbookXmlFileContents = <<<'EOD'
             <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -175,10 +162,8 @@ class FileSystemHelper extends \OpenSpout\Common\Helper\FileSystemHelper impleme
      * Creates the "workbook.xml.res" file under the "xl/_res" folder.
      *
      * @param Worksheet[] $worksheets
-     *
-     * @return FileSystemHelper
      */
-    public function createWorkbookRelsFile($worksheets)
+    public function createWorkbookRelsFile(array $worksheets): self
     {
         $workbookRelsXmlFileContents = <<<'EOD'
             <?xml version="1.0" encoding="UTF-8"?>
@@ -202,12 +187,8 @@ class FileSystemHelper extends \OpenSpout\Common\Helper\FileSystemHelper impleme
 
     /**
      * Creates the "styles.xml" file under the "xl" folder.
-     *
-     * @param StyleManager $styleManager
-     *
-     * @return FileSystemHelper
      */
-    public function createStylesFile($styleManager)
+    public function createStylesFile(StyleManager $styleManager): self
     {
         $stylesXmlFileContents = $styleManager->getStylesXMLFileContent();
         $this->createFileWithContents($this->xlFolder, self::STYLES_XML_FILE_NAME, $stylesXmlFileContents);
@@ -244,10 +225,8 @@ class FileSystemHelper extends \OpenSpout\Common\Helper\FileSystemHelper impleme
      * Creates the folder that will be used as root.
      *
      * @throws \OpenSpout\Common\Exception\IOException If unable to create the folder
-     *
-     * @return FileSystemHelper
      */
-    private function createRootFolder()
+    private function createRootFolder(): self
     {
         $this->rootFolder = $this->createFolder($this->baseFolderRealPath, uniqid('xlsx', true));
 
@@ -258,10 +237,8 @@ class FileSystemHelper extends \OpenSpout\Common\Helper\FileSystemHelper impleme
      * Creates the "_rels" folder under the root folder as well as the ".rels" file in it.
      *
      * @throws \OpenSpout\Common\Exception\IOException If unable to create the folder or the ".rels" file
-     *
-     * @return FileSystemHelper
      */
-    private function createRelsFolderAndFile()
+    private function createRelsFolderAndFile(): self
     {
         $this->relsFolder = $this->createFolder($this->rootFolder, self::RELS_FOLDER_NAME);
 
@@ -274,10 +251,8 @@ class FileSystemHelper extends \OpenSpout\Common\Helper\FileSystemHelper impleme
      * Creates the ".rels" file under the "_rels" folder (under root).
      *
      * @throws \OpenSpout\Common\Exception\IOException If unable to create the file
-     *
-     * @return FileSystemHelper
      */
-    private function createRelsFile()
+    private function createRelsFile(): self
     {
         $relsFileContents = <<<'EOD'
             <?xml version="1.0" encoding="UTF-8"?>
@@ -297,10 +272,8 @@ class FileSystemHelper extends \OpenSpout\Common\Helper\FileSystemHelper impleme
      * Creates the "docProps" folder under the root folder as well as the "app.xml" and "core.xml" files in it.
      *
      * @throws \OpenSpout\Common\Exception\IOException If unable to create the folder or one of the files
-     *
-     * @return FileSystemHelper
      */
-    private function createDocPropsFolderAndFiles()
+    private function createDocPropsFolderAndFiles(): self
     {
         $this->docPropsFolder = $this->createFolder($this->rootFolder, self::DOC_PROPS_FOLDER_NAME);
 
@@ -314,10 +287,8 @@ class FileSystemHelper extends \OpenSpout\Common\Helper\FileSystemHelper impleme
      * Creates the "app.xml" file under the "docProps" folder.
      *
      * @throws \OpenSpout\Common\Exception\IOException If unable to create the file
-     *
-     * @return FileSystemHelper
      */
-    private function createAppXmlFile()
+    private function createAppXmlFile(): self
     {
         $appName = self::APP_NAME;
         $appXmlFileContents = <<<EOD
@@ -337,10 +308,8 @@ class FileSystemHelper extends \OpenSpout\Common\Helper\FileSystemHelper impleme
      * Creates the "core.xml" file under the "docProps" folder.
      *
      * @throws \OpenSpout\Common\Exception\IOException If unable to create the file
-     *
-     * @return FileSystemHelper
      */
-    private function createCoreXmlFile()
+    private function createCoreXmlFile(): self
     {
         $createdDate = (new \DateTime())->format(\DateTime::W3C);
         $coreXmlFileContents = <<<EOD
@@ -361,10 +330,8 @@ class FileSystemHelper extends \OpenSpout\Common\Helper\FileSystemHelper impleme
      * Creates the "xl" folder under the root folder as well as its subfolders.
      *
      * @throws \OpenSpout\Common\Exception\IOException If unable to create at least one of the folders
-     *
-     * @return FileSystemHelper
      */
-    private function createXlFolderAndSubFolders()
+    private function createXlFolderAndSubFolders(): self
     {
         $this->xlFolder = $this->createFolder($this->rootFolder, self::XL_FOLDER_NAME);
         $this->createXlRelsFolder();
@@ -377,10 +344,8 @@ class FileSystemHelper extends \OpenSpout\Common\Helper\FileSystemHelper impleme
      * Creates the "_rels" folder under the "xl" folder.
      *
      * @throws \OpenSpout\Common\Exception\IOException If unable to create the folder
-     *
-     * @return FileSystemHelper
      */
-    private function createXlRelsFolder()
+    private function createXlRelsFolder(): self
     {
         $this->xlRelsFolder = $this->createFolder($this->xlFolder, self::RELS_FOLDER_NAME);
 
@@ -391,10 +356,8 @@ class FileSystemHelper extends \OpenSpout\Common\Helper\FileSystemHelper impleme
      * Creates the "worksheets" folder under the "xl" folder.
      *
      * @throws \OpenSpout\Common\Exception\IOException If unable to create the folder
-     *
-     * @return FileSystemHelper
      */
-    private function createXlWorksheetsFolder()
+    private function createXlWorksheetsFolder(): self
     {
         $this->xlWorksheetsFolder = $this->createFolder($this->xlFolder, self::WORKSHEETS_FOLDER_NAME);
 

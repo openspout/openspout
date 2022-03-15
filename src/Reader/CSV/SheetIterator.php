@@ -10,15 +10,15 @@ use OpenSpout\Reader\SheetIteratorInterface;
 class SheetIterator implements SheetIteratorInterface
 {
     /** @var Sheet The CSV unique "sheet" */
-    protected $sheet;
+    protected Sheet $sheet;
 
     /** @var bool Whether the unique "sheet" has already been read */
-    protected $hasReadUniqueSheet = false;
+    protected bool $hasReadUniqueSheet = false;
 
     /**
      * @param Sheet $sheet Corresponding unique sheet
      */
-    public function __construct($sheet)
+    public function __construct(Sheet $sheet)
     {
         $this->sheet = $sheet;
     }

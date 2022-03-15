@@ -11,15 +11,9 @@ use OpenSpout\Writer\Common\Entity\Worksheet;
  */
 interface WorksheetManagerInterface
 {
-    /**
-     * @param null|float $width
-     */
-    public function setDefaultColumnWidth($width);
+    public function setDefaultColumnWidth(?float $width);
 
-    /**
-     * @param null|float $height
-     */
-    public function setDefaultRowHeight($height);
+    public function setDefaultRowHeight(?float $height);
 
     /**
      * @param int ...$columns One or more columns with this width

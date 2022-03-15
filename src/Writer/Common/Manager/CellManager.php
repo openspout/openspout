@@ -8,10 +8,7 @@ use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
 
 class CellManager
 {
-    /**
-     * @var StyleMerger
-     */
-    protected $styleMerger;
+    protected StyleMerger $styleMerger;
 
     public function __construct(StyleMerger $styleMerger)
     {

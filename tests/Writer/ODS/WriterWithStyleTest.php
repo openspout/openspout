@@ -23,8 +23,7 @@ final class WriterWithStyleTest extends TestCase
     use RowCreationHelper;
     use TestUsingResource;
 
-    /** @var Style */
-    private $defaultStyle;
+    private Style $defaultStyle;
 
     protected function setUp(): void
     {
@@ -319,12 +318,9 @@ final class WriterWithStyleTest extends TestCase
     }
 
     /**
-     * @param Row[]  $allRows
-     * @param string $fileName
-     *
-     * @return Writer
+     * @param Row[] $allRows
      */
-    private function writeToODSFile($allRows, $fileName)
+    private function writeToODSFile(array $allRows, string $fileName): Writer
     {
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
@@ -339,13 +335,9 @@ final class WriterWithStyleTest extends TestCase
     }
 
     /**
-     * @param Row[]  $allRows
-     * @param string $fileName
-     * @param Style  $defaultStyle
-     *
-     * @return Writer
+     * @param Row[] $allRows
      */
-    private function writeToODSFileWithDefaultStyle($allRows, $fileName, $defaultStyle)
+    private function writeToODSFileWithDefaultStyle(array $allRows, string $fileName, Style $defaultStyle): Writer
     {
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
@@ -361,11 +353,9 @@ final class WriterWithStyleTest extends TestCase
     }
 
     /**
-     * @param string $fileName
-     *
      * @return \DOMElement[]
      */
-    private function getCellElementsFromContentXmlFile($fileName)
+    private function getCellElementsFromContentXmlFile(string $fileName): array
     {
         $cellElements = [];
 
@@ -388,11 +378,9 @@ final class WriterWithStyleTest extends TestCase
     }
 
     /**
-     * @param string $fileName
-     *
      * @return \DOMElement[]
      */
-    private function getCellStyleElementsFromContentXmlFile($fileName)
+    private function getCellStyleElementsFromContentXmlFile(string $fileName): array
     {
         $cellStyleElements = [];
 
@@ -414,13 +402,7 @@ final class WriterWithStyleTest extends TestCase
         return $cellStyleElements;
     }
 
-    /**
-     * @param string $fileName
-     * @param string $section
-     *
-     * @return \DOMElement
-     */
-    private function getXmlSectionFromStylesXmlFile($fileName, $section)
+    private function getXmlSectionFromStylesXmlFile(string $fileName, string $section): \DOMElement
     {
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
@@ -434,13 +416,7 @@ final class WriterWithStyleTest extends TestCase
         return $element;
     }
 
-    /**
-     * @param string      $expectedValue
-     * @param \DOMElement $parentElement
-     * @param string      $childTagName
-     * @param string      $attributeName
-     */
-    private function assertFirstChildHasAttributeEquals($expectedValue, $parentElement, $childTagName, $attributeName)
+    private function assertFirstChildHasAttributeEquals(string $expectedValue, \DOMElement $parentElement, string $childTagName, string $attributeName)
     {
         static::assertSame($expectedValue, $parentElement->getElementsByTagName($childTagName)->item(0)->getAttribute($attributeName));
     }

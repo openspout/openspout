@@ -21,25 +21,23 @@ use OpenSpout\Writer\Exception\SheetNotFoundException;
 abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
 {
     /** @var null|Workbook The workbook to manage */
-    protected $workbook;
+    protected ?Workbook $workbook;
 
-    /** @var OptionsManagerInterface */
-    protected $optionsManager;
+    protected OptionsManagerInterface $optionsManager;
 
-    /** @var WorksheetManagerInterface */
-    protected $worksheetManager;
+    protected WorksheetManagerInterface $worksheetManager;
 
     /** @var StyleManagerInterface Manages styles */
-    protected $styleManager;
+    protected StyleManagerInterface $styleManager;
 
     /** @var StyleMerger Helper to merge styles */
-    protected $styleMerger;
+    protected StyleMerger $styleMerger;
 
     /** @var FileSystemWithRootFolderHelperInterface Helper to perform file system operations */
-    protected $fileSystemHelper;
+    protected FileSystemWithRootFolderHelperInterface $fileSystemHelper;
 
     /** @var Worksheet The worksheet where data will be written to */
-    protected $currentWorksheet;
+    protected Worksheet $currentWorksheet;
 
     public function __construct(
         Workbook $workbook,
@@ -57,10 +55,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
         $this->fileSystemHelper = $fileSystemHelper;
     }
 
-    /**
-     * @return null|Workbook
-     */
-    public function getWorkbook()
+    public function getWorkbook(): ?Workbook
     {
         return $this->workbook;
     }
@@ -71,7 +66,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
      *
      * @return Worksheet The created sheet
      */
-    public function addNewSheetAndMakeItCurrent()
+    public function addNewSheetAndMakeItCurrent(): Worksheet
     {
         $worksheet = $this->addNewSheet();
         $this->setCurrentWorksheet($worksheet);
@@ -82,7 +77,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
     /**
      * @return Worksheet[] All the workbook's sheets
      */
-    public function getWorksheets()
+    public function getWorksheets(): array
     {
         return $this->workbook->getWorksheets();
     }
@@ -92,7 +87,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
      *
      * @return Worksheet The current sheet
      */
-    public function getCurrentWorksheet()
+    public function getCurrentWorksheet(): Worksheet
     {
         return $this->currentWorksheet;
     }
@@ -200,12 +195,12 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
     /**
      * @return int Maximum number of rows/columns a sheet can contain
      */
-    abstract protected function getMaxRowsPerWorksheet();
+    abstract protected function getMaxRowsPerWorksheet(): int;
 
     /**
      * @return string The file path where the data for the given sheet will be stored
      */
-    abstract protected function getWorksheetFilePath(Sheet $sheet);
+    abstract protected function getWorksheetFilePath(Sheet $sheet): string;
 
     /**
      * Closes custom objects that are still opened.
@@ -238,7 +233,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
      *
      * @return Worksheet The created sheet
      */
-    private function addNewSheet()
+    private function addNewSheet(): Worksheet
     {
         $worksheets = $this->getWorksheets();
 
@@ -257,10 +252,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
         return $worksheet;
     }
 
-    /**
-     * @param Worksheet $worksheet
-     */
-    private function setCurrentWorksheet($worksheet)
+    private function setCurrentWorksheet(Worksheet $worksheet)
     {
         $this->currentWorksheet = $worksheet;
     }
@@ -268,11 +260,9 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
     /**
      * Returns the worksheet associated to the given external sheet.
      *
-     * @param Sheet $sheet
-     *
      * @return null|Worksheet the worksheet associated to the given external sheet or null if not found
      */
-    private function getWorksheetFromExternalSheet($sheet)
+    private function getWorksheetFromExternalSheet(Sheet $sheet): ?Worksheet
     {
         $worksheetFound = null;
 
@@ -290,7 +280,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
     /**
      * @return bool whether the current worksheet has reached the maximum number of rows per sheet
      */
-    private function hasCurrentWorksheetReachedMaxRows()
+    private function hasCurrentWorksheetReachedMaxRows(): bool
     {
         $currentWorksheet = $this->getCurrentWorksheet();
 

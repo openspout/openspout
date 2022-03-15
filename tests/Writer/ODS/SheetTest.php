@@ -88,11 +88,7 @@ final class SheetTest extends TestCase
         return $writer;
     }
 
-    /**
-     * @param string $fileName
-     * @param string $sheetName
-     */
-    private function writeDataAndReturnSheetWithCustomName($fileName, $sheetName)
+    private function writeDataAndReturnSheetWithCustomName(string $fileName, string $sheetName)
     {
         $writer = $this->writerForFile($fileName);
 
@@ -104,11 +100,9 @@ final class SheetTest extends TestCase
     }
 
     /**
-     * @param string $fileName
-     *
      * @return Sheet[]
      */
-    private function writeDataToMulitpleSheetsAndReturnSheets($fileName)
+    private function writeDataToMulitpleSheetsAndReturnSheets(string $fileName): array
     {
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
@@ -125,10 +119,7 @@ final class SheetTest extends TestCase
         return $writer->getSheets();
     }
 
-    /**
-     * @param string $fileName
-     */
-    private function writeDataToHiddenSheet($fileName)
+    private function writeDataToHiddenSheet(string $fileName)
     {
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
@@ -143,12 +134,7 @@ final class SheetTest extends TestCase
         $writer->close();
     }
 
-    /**
-     * @param string $expectedName
-     * @param string $fileName
-     * @param string $message
-     */
-    private function assertSheetNameEquals($expectedName, $fileName, $message = '')
+    private function assertSheetNameEquals(string $expectedName, string $fileName, string $message = '')
     {
         $resourcePath = $this->getGeneratedResourcePath($fileName);
         $pathToWorkbookFile = $resourcePath.'#content.xml';

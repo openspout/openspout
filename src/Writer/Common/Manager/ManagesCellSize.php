@@ -5,26 +5,20 @@ namespace OpenSpout\Writer\Common\Manager;
 trait ManagesCellSize
 {
     /** @var null|float The default column width to use */
-    private $defaultColumnWidth;
+    private ?float $defaultColumnWidth;
 
     /** @var null|float The default row height to use */
-    private $defaultRowHeight;
+    private ?float $defaultRowHeight;
 
     /** @var array Array of min-max-width arrays */
-    private $columnWidths = [];
+    private array $columnWidths = [];
 
-    /**
-     * @param null|float $width
-     */
-    public function setDefaultColumnWidth($width)
+    public function setDefaultColumnWidth(?float $width)
     {
         $this->defaultColumnWidth = $width;
     }
 
-    /**
-     * @param null|float $height
-     */
-    public function setDefaultRowHeight($height)
+    public function setDefaultRowHeight(?float $height)
     {
         $this->defaultRowHeight = $height;
     }

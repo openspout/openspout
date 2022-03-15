@@ -23,28 +23,28 @@ class RowIterator implements RowIteratorInterface
     protected $filePointer;
 
     /** @var int Number of read rows */
-    protected $numReadRows = 0;
+    protected int $numReadRows = 0;
 
     /** @var null|Row Buffer used to store the current row, while checking if there are more rows to read */
-    protected $rowBuffer;
+    protected ?Row $rowBuffer;
 
     /** @var bool Indicates whether all rows have been read */
-    protected $hasReachedEndOfFile = false;
+    protected bool $hasReachedEndOfFile = false;
 
     /** @var string Defines the character used to delimit fields (one character only) */
-    protected $fieldDelimiter;
+    protected string $fieldDelimiter;
 
     /** @var string Defines the character used to enclose fields (one character only) */
-    protected $fieldEnclosure;
+    protected string $fieldEnclosure;
 
     /** @var string Encoding of the CSV file to be read */
-    protected $encoding;
+    protected string $encoding;
 
     /** @var bool Whether empty rows should be returned or skipped */
-    protected $shouldPreserveEmptyRows;
+    protected bool $shouldPreserveEmptyRows;
 
     /** @var \OpenSpout\Common\Helper\EncodingHelper Helper to work with different encodings */
-    protected $encodingHelper;
+    protected \OpenSpout\Common\Helper\EncodingHelper $encodingHelper;
 
     /**
      * @param resource $filePointer Pointer to the CSV file to read
@@ -177,7 +177,7 @@ class RowIterator implements RowIteratorInterface
      *
      * @return bool Whether the data for the current row can be returned or if we need to keep reading
      */
-    protected function shouldReadNextRow($currentRowData)
+    protected function shouldReadNextRow($currentRowData): bool
     {
         $hasSuccessfullyFetchedRowData = (false !== $currentRowData);
         $hasNowReachedEndOfFile = feof($this->filePointer);
@@ -222,7 +222,7 @@ class RowIterator implements RowIteratorInterface
                     break;
             }
 
-            $encodedRowData[$cellIndex] = $this->encodingHelper->attemptConversionToUTF8($cellValue, $this->encoding);
+            $encodedRowData[$cellIndex] = $this->encodingHelper->attemptConversionToUTF8((string) $cellValue, $this->encoding);
         }
 
         return $encodedRowData;
@@ -233,7 +233,7 @@ class RowIterator implements RowIteratorInterface
      *
      * @return bool Whether the given line is empty
      */
-    protected function isEmptyLine($lineData)
+    protected function isEmptyLine($lineData): bool
     {
         return \is_array($lineData) && 1 === \count($lineData) && null === $lineData[0];
     }
