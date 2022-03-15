@@ -3,7 +3,6 @@
 namespace OpenSpout\Writer\Common\Manager\Style;
 
 use OpenSpout\Common\Entity\Style\Style;
-use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -19,16 +18,16 @@ final class StyleRegistryTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->defaultStyle = (new StyleBuilder())->build();
+        $this->defaultStyle = (new Style());
         $this->styleRegistry = new StyleRegistry($this->defaultStyle);
     }
 
     public function testSerializeShouldNotTakeIntoAccountId()
     {
-        $style1 = (new StyleBuilder())->setFontBold()->build();
+        $style1 = (new Style())->setFontBold();
         $style1->setId(1);
 
-        $style2 = (new StyleBuilder())->setFontBold()->build();
+        $style2 = (new Style())->setFontBold();
         $style2->setId(2);
 
         static::assertSame($this->styleRegistry->serialize($style1), $this->styleRegistry->serialize($style2));
@@ -36,8 +35,8 @@ final class StyleRegistryTest extends TestCase
 
     public function testRegisterStyleShouldUpdateId()
     {
-        $style1 = (new StyleBuilder())->setFontBold()->build();
-        $style2 = (new StyleBuilder())->setFontUnderline()->build();
+        $style1 = (new Style())->setFontBold();
+        $style2 = (new Style())->setFontUnderline();
 
         static::assertSame(0, $this->defaultStyle->getId(), 'Default style ID should be 0');
         static::assertNull($style1->getId());
@@ -52,7 +51,7 @@ final class StyleRegistryTest extends TestCase
 
     public function testRegisterStyleShouldReuseAlreadyRegisteredStyles()
     {
-        $style = (new StyleBuilder())->setFontBold()->build();
+        $style = (new Style())->setFontBold();
 
         $registeredStyle1 = $this->styleRegistry->registerStyle($style);
         $registeredStyle2 = $this->styleRegistry->registerStyle($style);

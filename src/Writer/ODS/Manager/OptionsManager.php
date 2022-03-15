@@ -2,8 +2,8 @@
 
 namespace OpenSpout\Writer\ODS\Manager;
 
+use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Common\Manager\OptionsManagerAbstract;
-use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
 use OpenSpout\Writer\Common\Entity\Options;
 
 /**
@@ -11,18 +11,6 @@ use OpenSpout\Writer\Common\Entity\Options;
  */
 class OptionsManager extends OptionsManagerAbstract
 {
-    /** @var StyleBuilder Style builder */
-    protected $styleBuilder;
-
-    /**
-     * OptionsManager constructor.
-     */
-    public function __construct(StyleBuilder $styleBuilder)
-    {
-        $this->styleBuilder = $styleBuilder;
-        parent::__construct();
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -44,7 +32,7 @@ class OptionsManager extends OptionsManagerAbstract
     protected function setDefaultOptions()
     {
         $this->setOption(Options::TEMP_FOLDER, sys_get_temp_dir());
-        $this->setOption(Options::DEFAULT_ROW_STYLE, $this->styleBuilder->build());
+        $this->setOption(Options::DEFAULT_ROW_STYLE, new Style());
         $this->setOption(Options::SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY, true);
     }
 }

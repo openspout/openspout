@@ -10,7 +10,6 @@ use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Reader\Wrapper\XMLReader;
 use OpenSpout\TestUsingResource;
 use OpenSpout\Writer\Common\Creator\Style\BorderBuilder;
-use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
 use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
 use OpenSpout\Writer\RowCreationHelper;
@@ -29,7 +28,7 @@ final class WriterWithStyleTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->defaultStyle = (new StyleBuilder())->build();
+        $this->defaultStyle = (new Style());
     }
 
     public function testAddRowShouldThrowExceptionIfCallAddRowBeforeOpeningWriter()
@@ -52,19 +51,19 @@ final class WriterWithStyleTest extends TestCase
     {
         $fileName = 'test_add_row_should_list_all_used_fonts.ods';
 
-        $style = (new StyleBuilder())
+        $style = (new Style())
             ->setFontBold()
             ->setFontItalic()
             ->setFontUnderline()
             ->setFontStrikethrough()
-            ->build()
+
         ;
-        $style2 = (new StyleBuilder())
+        $style2 = (new Style())
             ->setFontSize(15)
             ->setFontColor(Color::RED)
             ->setFontName('Cambria')
             ->setBackgroundColor(Color::GREEN)
-            ->build()
+
         ;
 
         $dataRows = [
@@ -111,8 +110,8 @@ final class WriterWithStyleTest extends TestCase
     {
         $fileName = 'test_add_row_should_apply_style_to_cells.ods';
 
-        $style = (new StyleBuilder())->setFontBold()->build();
-        $style2 = (new StyleBuilder())->setFontSize(15)->build();
+        $style = (new Style())->setFontBold();
+        $style2 = (new Style())->setFontSize(15);
         $dataRows = [
             $this->createStyledRowFromValues(['ods--11'], $style),
             $this->createStyledRowFromValues(['ods--21'], $style2),
@@ -133,7 +132,7 @@ final class WriterWithStyleTest extends TestCase
     {
         $fileName = 'test_add_row_should_reuse_duplicate_styles.ods';
 
-        $style = (new StyleBuilder())->setFontBold()->build();
+        $style = (new Style())->setFontBold();
         $dataRows = $this->createStyledRowsFromValues([
             ['ods--11'],
             ['ods--21'],
@@ -152,7 +151,7 @@ final class WriterWithStyleTest extends TestCase
     {
         $fileName = 'test_add_row_should_add_wrap_text_alignment.ods';
 
-        $style = (new StyleBuilder())->setShouldWrapText()->build();
+        $style = (new Style())->setShouldWrapText();
         $dataRows = $this->createStyledRowsFromValues([
             ['ods--11', 'ods--12'],
         ], $style);
@@ -186,7 +185,7 @@ final class WriterWithStyleTest extends TestCase
     {
         $fileName = 'test_add_row_should_apply_cell_alignment.xlsx';
 
-        $rightAlignedStyle = (new StyleBuilder())->setCellAlignment(CellAlignment::RIGHT)->build();
+        $rightAlignedStyle = (new Style())->setCellAlignment(CellAlignment::RIGHT);
         $dataRows = $this->createStyledRowsFromValues([['ods--11']], $rightAlignedStyle);
 
         $this->writeToODSFile($dataRows, $fileName);
@@ -202,8 +201,8 @@ final class WriterWithStyleTest extends TestCase
     {
         $fileName = 'test_add_row_should_support_cell_styling.ods';
 
-        $boldStyle = (new StyleBuilder())->setFontBold()->build();
-        $underlineStyle = (new StyleBuilder())->setFontUnderline()->build();
+        $boldStyle = (new Style())->setFontBold();
+        $underlineStyle = (new Style())->setFontUnderline();
 
         $dataRow = WriterEntityFactory::createRow([
             WriterEntityFactory::createCell('ods--11', $boldStyle),
@@ -225,7 +224,7 @@ final class WriterWithStyleTest extends TestCase
     {
         $fileName = 'test_default_background_style.ods';
 
-        $style = (new StyleBuilder())->setBackgroundColor(Color::WHITE)->build();
+        $style = (new Style())->setBackgroundColor(Color::WHITE);
         $dataRows = $this->createStyledRowsFromValues([
             ['defaultBgColor'],
         ], $style);
@@ -250,9 +249,9 @@ final class WriterWithStyleTest extends TestCase
             ->setBorderTop(Color::RED, Border::WIDTH_THIN, Border::STYLE_DASHED)->build();
 
         $styles = [
-            (new StyleBuilder())->setBorder($borderBottomGreenThickSolid)->build(),
-            (new StyleBuilder())->build(),
-            (new StyleBuilder())->setBorder($borderTopRedThinDashed)->build(),
+            (new Style())->setBorder($borderBottomGreenThickSolid),
+            (new Style()),
+            (new Style())->setBorder($borderTopRedThinDashed),
         ];
 
         $dataRows = [
@@ -311,7 +310,7 @@ final class WriterWithStyleTest extends TestCase
         ]);
 
         $defaultFontSize = 50;
-        $defaultStyle = (new StyleBuilder())->setFontSize($defaultFontSize)->build();
+        $defaultStyle = (new Style())->setFontSize($defaultFontSize);
 
         $this->writeToODSFileWithDefaultStyle($dataRows, $fileName, $defaultStyle);
 

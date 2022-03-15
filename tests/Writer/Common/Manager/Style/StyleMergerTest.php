@@ -4,7 +4,6 @@ namespace OpenSpout\Writer\Common\Manager\Style;
 
 use OpenSpout\Common\Entity\Style\Color;
 use OpenSpout\Common\Entity\Style\Style;
-use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -22,8 +21,8 @@ final class StyleMergerTest extends TestCase
 
     public function testMergeWithShouldReturnACopy()
     {
-        $baseStyle = (new StyleBuilder())->build();
-        $currentStyle = (new StyleBuilder())->build();
+        $baseStyle = (new Style());
+        $currentStyle = (new Style());
         $mergedStyle = $this->styleMerger->merge($currentStyle, $baseStyle);
 
         static::assertNotSame($mergedStyle, $currentStyle);
@@ -31,15 +30,14 @@ final class StyleMergerTest extends TestCase
 
     public function testMergeWithShouldMergeSetProperties()
     {
-        $baseStyle = (new StyleBuilder())
+        $baseStyle = (new Style())
             ->setFontSize(99)
             ->setFontBold()
             ->setFontColor(Color::YELLOW)
             ->setBackgroundColor(Color::BLUE)
             ->setFormat('0.00')
-            ->build()
         ;
-        $currentStyle = (new StyleBuilder())->setFontName('Font')->setFontUnderline()->build();
+        $currentStyle = (new Style())->setFontName('Font')->setFontUnderline();
         $mergedStyle = $this->styleMerger->merge($currentStyle, $baseStyle);
 
         static::assertNotSame(99, $currentStyle->getFontSize());
@@ -58,8 +56,8 @@ final class StyleMergerTest extends TestCase
 
     public function testMergeWithShouldPreferCurrentStylePropertyIfSetOnCurrentAndOnBase()
     {
-        $baseStyle = (new StyleBuilder())->setFontSize(10)->build();
-        $currentStyle = (new StyleBuilder())->setFontSize(99)->build();
+        $baseStyle = (new Style())->setFontSize(10);
+        $currentStyle = (new Style())->setFontSize(99);
         $mergedStyle = $this->styleMerger->merge($currentStyle, $baseStyle);
 
         static::assertSame(99, $mergedStyle->getFontSize());
@@ -67,11 +65,10 @@ final class StyleMergerTest extends TestCase
 
     public function testMergeWithShouldPreferCurrentStylePropertyIfSetOnCurrentButNotOnBase()
     {
-        $baseStyle = (new StyleBuilder())->build();
-        $currentStyle = (new StyleBuilder())
+        $baseStyle = (new Style());
+        $currentStyle = (new Style())
             ->setFontItalic()
             ->setFontStrikethrough()
-            ->build()
         ;
 
         $mergedStyle = $this->styleMerger->merge($currentStyle, $baseStyle);
@@ -85,14 +82,13 @@ final class StyleMergerTest extends TestCase
 
     public function testMergeWithShouldPreferBaseStylePropertyIfSetOnBaseButNotOnCurrent()
     {
-        $baseStyle = (new StyleBuilder())
+        $baseStyle = (new Style())
             ->setFontItalic()
             ->setFontUnderline()
             ->setFontStrikethrough()
             ->setShouldWrapText()
-            ->build()
         ;
-        $currentStyle = (new StyleBuilder())->build();
+        $currentStyle = (new Style());
         $mergedStyle = $this->styleMerger->merge($currentStyle, $baseStyle);
 
         static::assertFalse($currentStyle->isFontUnderline());
@@ -104,8 +100,8 @@ final class StyleMergerTest extends TestCase
 
     public function testMergeWithShouldDoNothingIfStylePropertyNotSetOnBaseNorCurrent()
     {
-        $baseStyle = (new StyleBuilder())->build();
-        $currentStyle = (new StyleBuilder())->build();
+        $baseStyle = (new Style());
+        $currentStyle = (new Style());
         $mergedStyle = $this->styleMerger->merge($currentStyle, $baseStyle);
 
         $this->assertSameStyles($baseStyle, $currentStyle);
@@ -114,12 +110,11 @@ final class StyleMergerTest extends TestCase
 
     public function testMergeWithShouldDoNothingIfStylePropertyNotSetOnCurrentAndIsDefaultValueOnBase()
     {
-        $baseStyle = (new StyleBuilder())
+        $baseStyle = (new Style())
             ->setFontName(Style::DEFAULT_FONT_NAME)
             ->setFontSize(Style::DEFAULT_FONT_SIZE)
-            ->build()
         ;
-        $currentStyle = (new StyleBuilder())->build();
+        $currentStyle = (new Style());
         $mergedStyle = $this->styleMerger->merge($currentStyle, $baseStyle);
 
         $this->assertSameStyles($currentStyle, $mergedStyle);
@@ -127,7 +122,7 @@ final class StyleMergerTest extends TestCase
 
     private function assertSameStyles(Style $style1, Style $style2)
     {
-        $fakeStyle = (new StyleBuilder())->build();
+        $fakeStyle = (new Style());
         $styleRegistry = new StyleRegistry($fakeStyle);
 
         static::assertSame($styleRegistry->serialize($style1), $styleRegistry->serialize($style2));

@@ -4,7 +4,6 @@ namespace OpenSpout\Writer\Common\Creator;
 
 use OpenSpout\Common\Exception\UnsupportedTypeException;
 use OpenSpout\Common\Type;
-use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
 use OpenSpout\Writer\CSV\Manager\OptionsManager as CSVOptionsManager;
 use OpenSpout\Writer\CSV\Writer as CSVWriter;
 use OpenSpout\Writer\ODS\Creator\ManagerFactory as ODSManagerFactory;
@@ -75,8 +74,7 @@ class WriterFactory
      */
     private static function createXLSXWriter()
     {
-        $styleBuilder = new StyleBuilder();
-        $optionsManager = new XLSXOptionsManager($styleBuilder);
+        $optionsManager = new XLSXOptionsManager();
         $managerFactory = new XLSXManagerFactory();
 
         return new XLSXWriter($optionsManager, $managerFactory);
@@ -87,8 +85,7 @@ class WriterFactory
      */
     private static function createODSWriter()
     {
-        $styleBuilder = new StyleBuilder();
-        $optionsManager = new ODSOptionsManager($styleBuilder);
+        $optionsManager = new ODSOptionsManager();
         $managerFactory = new ODSManagerFactory();
 
         return new ODSWriter($optionsManager, $managerFactory);

@@ -2,7 +2,7 @@
 
 namespace OpenSpout\Writer\ODS\Manager\Style;
 
-use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
+use OpenSpout\Common\Entity\Style\Style;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -16,10 +16,10 @@ final class StyleRegistryTest extends TestCase
 
         static::assertCount(1, $styleRegistry->getUsedFonts(), 'There should only be the default font name');
 
-        $style1 = (new StyleBuilder())->setFontName('MyFont1')->build();
+        $style1 = (new Style())->setFontName('MyFont1');
         $styleRegistry->registerStyle($style1);
 
-        $style2 = (new StyleBuilder())->setFontName('MyFont2')->build();
+        $style2 = (new Style())->setFontName('MyFont2');
         $styleRegistry->registerStyle($style2);
 
         static::assertCount(3, $styleRegistry->getUsedFonts(), 'There should be 3 fonts registered');
@@ -30,7 +30,7 @@ final class StyleRegistryTest extends TestCase
      */
     private function getStyleRegistry()
     {
-        $defaultStyle = (new StyleBuilder())->build();
+        $defaultStyle = (new Style());
 
         return new StyleRegistry($defaultStyle);
     }

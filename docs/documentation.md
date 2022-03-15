@@ -157,14 +157,14 @@ $writer = WriterEntityFactory::createXLSXWriter();
 $writer->openToFile($filePath);
 
 /** Create a style with the StyleBuilder */
-$style = (new StyleBuilder())
-           ->setFontBold()
-           ->setFontSize(15)
-           ->setFontColor(Color::BLUE)
-           ->setShouldWrapText()
-           ->setCellAlignment(CellAlignment::RIGHT)
-           ->setBackgroundColor(Color::YELLOW)
-           ->build();
+$style = (new Style())
+    ->setFontBold()
+    ->setFontSize(15)
+    ->setFontColor(Color::BLUE)
+    ->setShouldWrapText()
+    ->setCellAlignment(CellAlignment::RIGHT)
+    ->setBackgroundColor(Color::YELLOW)
+;
 
 /** Create a row with cells and apply the style to all cells */
 $row = WriterEntityFactory::createRowFromArray(['Carl', 'is', 'great'], $style);
@@ -187,9 +187,9 @@ $border = (new BorderBuilder())
     ->setBorderBottom(Color::GREEN, Border::WIDTH_THIN, Border::STYLE_DASHED)
     ->build();
 
-$style = (new StyleBuilder())
+$style = (new Style())
     ->setBorder($border)
-    ->build();
+;
 
 $writer = WriterEntityFactory::createXLSXWriter();
 $writer->openToFile($filePath);
@@ -217,34 +217,34 @@ use OpenSpout\Common\Entity\Style\Color;
 use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
 use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 
-$defaultStyle = (new StyleBuilder())
+$defaultStyle = (new Style())
     ->setFontSize(8)
-    ->build();
+;
 
 $writer = WriterEntityFactory::createXLSXWriter();
 $writer->setDefaultRowStyle($defaultStyle)
     ->openToFile($filePath);
 
-$zebraBlackStyle = (new StyleBuilder())
+$zebraBlackStyle = (new Style())
     ->setBackgroundColor(Color::BLACK)
     ->setFontColor(Color::WHITE)
     ->setFontSize(10)
-    ->build();
+;
 
-$zebraWhiteStyle = (new StyleBuilder())
+$zebraWhiteStyle = (new Style())
     ->setBackgroundColor(Color::WHITE)
     ->setFontColor(Color::BLACK)
     ->setFontItalic()
-    ->build();  
+;  
 
 $cells = [
     WriterEntityFactory::createCell('Ze', $zebraBlackStyle),
     WriterEntityFactory::createCell('bra', $zebraWhiteStyle)
 ];
 
-$rowStyle = (new StyleBuilder())
+$rowStyle = (new Style())
     ->setFontBold()
-    ->build();
+;
 
 $row = WriterEntityFactory::createRow($cells, $rowStyle);
 
@@ -257,10 +257,10 @@ $writer->close();
 OpenSpout will use a default style for all created rows. This style can be overridden this way:
 
 ```php
-$defaultStyle = (new StyleBuilder())
-                ->setFontName('Arial')
-                ->setFontSize(11)
-                ->build();
+$defaultStyle = (new Style())
+    ->setFontName('Arial')
+    ->setFontSize(11)
+;
 
 $writer = WriterEntityFactory::createXLSXWriter();
 $writer->setDefaultRowStyle($defaultStyle)

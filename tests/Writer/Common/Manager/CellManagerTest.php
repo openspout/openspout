@@ -3,7 +3,7 @@
 namespace Spout\Writer\Common\Manager;
 
 use OpenSpout\Common\Entity\Cell;
-use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
+use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Writer\Common\Manager\CellManager;
 use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
 use PHPUnit\Framework\TestCase;
@@ -20,7 +20,7 @@ final class CellManagerTest extends TestCase
 
         static::assertFalse($cell->getStyle()->isFontBold());
 
-        $style = (new StyleBuilder())->setFontBold()->build();
+        $style = (new Style())->setFontBold();
         $cellManager->applyStyle($cell, $style);
 
         static::assertTrue($cell->getStyle()->isFontBold());
