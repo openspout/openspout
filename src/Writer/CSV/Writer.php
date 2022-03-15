@@ -71,7 +71,7 @@ class Writer extends WriterAbstract
     {
         if ($this->optionsManager->getOption(Options::SHOULD_ADD_BOM)) {
             // Adds UTF-8 BOM for Unicode compatibility
-            $this->globalFunctionsHelper->fputs($this->filePointer, EncodingHelper::BOM_UTF8);
+            fwrite($this->filePointer, EncodingHelper::BOM_UTF8);
         }
     }
 
@@ -87,14 +87,14 @@ class Writer extends WriterAbstract
         $fieldDelimiter = $this->optionsManager->getOption(Options::FIELD_DELIMITER);
         $fieldEnclosure = $this->optionsManager->getOption(Options::FIELD_ENCLOSURE);
 
-        $wasWriteSuccessful = $this->globalFunctionsHelper->fputcsv($this->filePointer, $row->getCells(), $fieldDelimiter, $fieldEnclosure);
+        $wasWriteSuccessful = fputcsv($this->filePointer, $row->getCells(), $fieldDelimiter, $fieldEnclosure, '');
         if (false === $wasWriteSuccessful) {
             throw new IOException('Unable to write data');
         }
 
         ++$this->lastWrittenRowIndex;
         if (0 === $this->lastWrittenRowIndex % self::FLUSH_THRESHOLD) {
-            $this->globalFunctionsHelper->fflush($this->filePointer);
+            fflush($this->filePointer);
         }
     }
 

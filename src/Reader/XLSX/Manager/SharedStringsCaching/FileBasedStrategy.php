@@ -15,9 +15,6 @@ class FileBasedStrategy implements CachingStrategyInterface
     /** Value to use to escape the line feed character ("\n") */
     public const ESCAPED_LINE_FEED_CHARACTER = '_x000A_';
 
-    /** @var \OpenSpout\Common\Helper\GlobalFunctionsHelper Helper to work with global functions */
-    protected $globalFunctionsHelper;
-
     /** @var \OpenSpout\Common\Helper\FileSystemHelper Helper to perform file system operations */
     protected $fileSystemHelper;
 
@@ -60,7 +57,6 @@ class FileBasedStrategy implements CachingStrategyInterface
 
         $this->maxNumStringsPerTempFile = $maxNumStringsPerTempFile;
 
-        $this->globalFunctionsHelper = $helperFactory->createGlobalFunctionsHelper();
         $this->tempFilePointer = null;
     }
 
@@ -74,18 +70,18 @@ class FileBasedStrategy implements CachingStrategyInterface
     {
         $tempFilePath = $this->getSharedStringTempFilePath($sharedStringIndex);
 
-        if (!$this->globalFunctionsHelper->file_exists($tempFilePath)) {
+        if (!file_exists($tempFilePath)) {
             if ($this->tempFilePointer) {
-                $this->globalFunctionsHelper->fclose($this->tempFilePointer);
+                fclose($this->tempFilePointer);
             }
-            $this->tempFilePointer = $this->globalFunctionsHelper->fopen($tempFilePath, 'w');
+            $this->tempFilePointer = fopen($tempFilePath, 'w');
         }
 
         // The shared string retrieval logic expects each cell data to be on one line only
         // Encoding the line feed character allows to preserve this assumption
         $lineFeedEncodedSharedString = $this->escapeLineFeed($sharedString);
 
-        $this->globalFunctionsHelper->fwrite($this->tempFilePointer, $lineFeedEncodedSharedString.PHP_EOL);
+        fwrite($this->tempFilePointer, $lineFeedEncodedSharedString.PHP_EOL);
     }
 
     /**
@@ -96,7 +92,7 @@ class FileBasedStrategy implements CachingStrategyInterface
     {
         // close pointer to the last temp file that was written
         if ($this->tempFilePointer) {
-            $this->globalFunctionsHelper->fclose($this->tempFilePointer);
+            fclose($this->tempFilePointer);
         }
     }
 
@@ -114,12 +110,12 @@ class FileBasedStrategy implements CachingStrategyInterface
         $tempFilePath = $this->getSharedStringTempFilePath($sharedStringIndex);
         $indexInFile = $sharedStringIndex % $this->maxNumStringsPerTempFile;
 
-        if (!$this->globalFunctionsHelper->file_exists($tempFilePath)) {
+        if (!file_exists($tempFilePath)) {
             throw new SharedStringNotFoundException("Shared string temp file not found: {$tempFilePath} ; for index: {$sharedStringIndex}");
         }
 
         if ($this->inMemoryTempFilePath !== $tempFilePath) {
-            $this->inMemoryTempFileContents = explode(PHP_EOL, $this->globalFunctionsHelper->file_get_contents($tempFilePath));
+            $this->inMemoryTempFileContents = explode(PHP_EOL, file_get_contents($this->convertToUseRealPath($tempFilePath)));
             $this->inMemoryTempFilePath = $tempFilePath;
         }
 
@@ -160,6 +156,31 @@ class FileBasedStrategy implements CachingStrategyInterface
         $numTempFile = (int) ($sharedStringIndex / $this->maxNumStringsPerTempFile);
 
         return $this->tempFolder.'/sharedstrings'.$numTempFile;
+    }
+
+    /**
+     * Updates the given file path to use a real path.
+     * This is to avoid issues on some Windows setup.
+     *
+     * @param string $filePath File path
+     *
+     * @return string The file path using a real path
+     */
+    private function convertToUseRealPath($filePath)
+    {
+        $realFilePath = $filePath;
+
+        if (0 === strpos($filePath, 'zip://')) {
+            if (preg_match('/zip:\/\/(.*)#(.*)/', $filePath, $matches)) {
+                $documentPath = $matches[1];
+                $documentInsideZipPath = $matches[2];
+                $realFilePath = 'zip://'.realpath($documentPath).'#'.$documentInsideZipPath;
+            }
+        } else {
+            $realFilePath = realpath($filePath);
+        }
+
+        return $realFilePath;
     }
 
     /**

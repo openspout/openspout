@@ -23,18 +23,22 @@ class EncodingHelper
     public const BOM_UTF32_LE = "\xFF\xFE\x00\x00";
     public const BOM_UTF32_BE = "\x00\x00\xFE\xFF";
 
-    /** @var \OpenSpout\Common\Helper\GlobalFunctionsHelper Helper to work with global functions */
-    protected $globalFunctionsHelper;
-
     /** @var array Map representing the encodings supporting BOMs (key) and their associated BOM (value) */
     protected $supportedEncodingsWithBom;
 
+    /** @var bool */
+    private $canUseIconv;
+    /** @var bool */
+    private $canUseMbString;
+
     /**
-     * @param \OpenSpout\Common\Helper\GlobalFunctionsHelper $globalFunctionsHelper
+     * @param bool $canUseIconv
+     * @param bool $canUseMbString
      */
-    public function __construct($globalFunctionsHelper)
+    public function __construct($canUseIconv, $canUseMbString)
     {
-        $this->globalFunctionsHelper = $globalFunctionsHelper;
+        $this->canUseIconv = $canUseIconv;
+        $this->canUseMbString = $canUseMbString;
 
         $this->supportedEncodingsWithBom = [
             self::ENCODING_UTF8 => self::BOM_UTF8,
@@ -43,6 +47,14 @@ class EncodingHelper
             self::ENCODING_UTF32_LE => self::BOM_UTF32_LE,
             self::ENCODING_UTF32_BE => self::BOM_UTF32_BE,
         ];
+    }
+
+    public static function factory(): self
+    {
+        return new self(
+            \function_exists('iconv'),
+            \function_exists('mb_convert_encoding'),
+        );
     }
 
     /**
@@ -109,13 +121,13 @@ class EncodingHelper
     {
         $hasBOM = false;
 
-        $this->globalFunctionsHelper->rewind($filePointer);
+        rewind($filePointer);
 
         if (\array_key_exists($encoding, $this->supportedEncodingsWithBom)) {
             $potentialBom = $this->supportedEncodingsWithBom[$encoding];
             $numBytesInBom = \strlen($potentialBom);
 
-            $hasBOM = ($this->globalFunctionsHelper->fgets($filePointer, $numBytesInBom + 1) === $potentialBom);
+            $hasBOM = (fgets($filePointer, $numBytesInBom + 1) === $potentialBom);
         }
 
         return $hasBOM;
@@ -142,10 +154,32 @@ class EncodingHelper
 
         $convertedString = null;
 
-        if ($this->canUseIconv()) {
-            $convertedString = $this->globalFunctionsHelper->iconv($string, $sourceEncoding, $targetEncoding);
-        } elseif ($this->canUseMbString()) {
-            $convertedString = $this->globalFunctionsHelper->mb_convert_encoding($string, $sourceEncoding, $targetEncoding);
+        if ($this->canUseIconv) {
+            set_error_handler(static function (): bool {
+                return true;
+            });
+
+            $convertedString = iconv($sourceEncoding, $targetEncoding, $string);
+
+            restore_error_handler();
+        } elseif ($this->canUseMbString) {
+            $errorMessage = null;
+            set_error_handler(static function ($nr, $message) use (&$errorMessage): bool {
+                $errorMessage = $message; // @codeCoverageIgnore
+
+                return true; // @codeCoverageIgnore
+            });
+
+            try {
+                $convertedString = mb_convert_encoding($string, $targetEncoding, $sourceEncoding);
+            } catch (\Error $error) {
+                $errorMessage = $error->getMessage();
+            }
+
+            restore_error_handler();
+            if (null !== $errorMessage) {
+                $convertedString = false;
+            }
         } else {
             throw new EncodingConversionException("The conversion from {$sourceEncoding} to {$targetEncoding} is not supported. Please install \"iconv\" or \"PHP Intl\".");
         }
@@ -155,26 +189,5 @@ class EncodingHelper
         }
 
         return $convertedString;
-    }
-
-    /**
-     * Returns whether "iconv" can be used.
-     *
-     * @return bool TRUE if "iconv" is available and can be used, FALSE otherwise
-     */
-    protected function canUseIconv()
-    {
-        return $this->globalFunctionsHelper->function_exists('iconv');
-    }
-
-    /**
-     * Returns whether "mb_string" functions can be used.
-     * These functions come with the PHP Intl package.
-     *
-     * @return bool TRUE if "mb_string" functions are available and can be used, FALSE otherwise
-     */
-    protected function canUseMbString()
-    {
-        return $this->globalFunctionsHelper->function_exists('mb_convert_encoding');
     }
 }

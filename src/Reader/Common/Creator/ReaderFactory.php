@@ -2,8 +2,8 @@
 
 namespace OpenSpout\Reader\Common\Creator;
 
-use OpenSpout\Common\Creator\HelperFactory;
 use OpenSpout\Common\Exception\UnsupportedTypeException;
+use OpenSpout\Common\Helper\EncodingHelper;
 use OpenSpout\Common\Type;
 use OpenSpout\Reader\CSV\Creator\InternalEntityFactory as CSVInternalEntityFactory;
 use OpenSpout\Reader\CSV\Manager\OptionsManager as CSVOptionsManager;
@@ -72,11 +72,9 @@ class ReaderFactory
     private static function createCSVReader()
     {
         $optionsManager = new CSVOptionsManager();
-        $helperFactory = new HelperFactory();
-        $entityFactory = new CSVInternalEntityFactory($helperFactory);
-        $globalFunctionsHelper = $helperFactory->createGlobalFunctionsHelper();
+        $entityFactory = new CSVInternalEntityFactory(EncodingHelper::factory());
 
-        return new CSVReader($optionsManager, $globalFunctionsHelper, $entityFactory);
+        return new CSVReader($optionsManager, $entityFactory);
     }
 
     /**
@@ -88,9 +86,8 @@ class ReaderFactory
         $helperFactory = new XLSXHelperFactory();
         $managerFactory = new XLSXManagerFactory($helperFactory, new CachingStrategyFactory());
         $entityFactory = new XLSXInternalEntityFactory($managerFactory, $helperFactory);
-        $globalFunctionsHelper = $helperFactory->createGlobalFunctionsHelper();
 
-        return new XLSXReader($optionsManager, $globalFunctionsHelper, $entityFactory, $managerFactory);
+        return new XLSXReader($optionsManager, $entityFactory, $managerFactory);
     }
 
     /**
@@ -102,8 +99,7 @@ class ReaderFactory
         $helperFactory = new ODSHelperFactory();
         $managerFactory = new ODSManagerFactory();
         $entityFactory = new ODSInternalEntityFactory($helperFactory, $managerFactory);
-        $globalFunctionsHelper = $helperFactory->createGlobalFunctionsHelper();
 
-        return new ODSReader($optionsManager, $globalFunctionsHelper, $entityFactory);
+        return new ODSReader($optionsManager, $entityFactory);
     }
 }

@@ -39,7 +39,7 @@ final class EncodingHelperTest extends TestCase
         $resourcePath = $this->getResourcePath($fileName);
         $filePointer = fopen($resourcePath, 'r');
 
-        $encodingHelper = new EncodingHelper(new GlobalFunctionsHelper());
+        $encodingHelper = new EncodingHelper(false, false);
         $bytesOffset = $encodingHelper->getBytesOffsetToSkipBOM($filePointer, $encoding);
 
         static::assertSame($expectedBytesOffset, $bytesOffset);
@@ -51,8 +51,8 @@ final class EncodingHelperTest extends TestCase
     public function dataProviderForIconvOrMbstringUsage()
     {
         return [
-            [$shouldUseIconv = true],
-            [$shouldNotUseIconv = false],
+            'with-iconv' => [true],
+            'with-mbstring' => [false],
         ];
     }
 
@@ -63,41 +63,20 @@ final class EncodingHelperTest extends TestCase
      */
     public function testAttemptConversionToUTF8ShouldThrowIfConversionFailed($shouldUseIconv)
     {
+        $encodingHelper = new EncodingHelper($shouldUseIconv, !$shouldUseIconv);
+
         $this->expectException(EncodingConversionException::class);
 
-        $helperStub = $this->getMockBuilder('\OpenSpout\Common\Helper\GlobalFunctionsHelper')
-            ->onlyMethods(['iconv', 'mb_convert_encoding'])
-            ->getMock()
-        ;
-        $helperStub->method('iconv')->willReturn(false);
-        $helperStub->method('mb_convert_encoding')->willReturn(false);
-
-        /** @var EncodingHelper|\PHPUnit\Framework\MockObject\MockObject|\PHPUnit\Framework\MockObject\MockObject $encodingHelperStub */
-        $encodingHelperStub = $this->getMockBuilder('\OpenSpout\Common\Helper\EncodingHelper')
-            ->setConstructorArgs([$helperStub])
-            ->onlyMethods(['canUseIconv', 'canUseMbString'])
-            ->getMock()
-        ;
-        $encodingHelperStub->method('canUseIconv')->willReturn($shouldUseIconv);
-        $encodingHelperStub->method('canUseMbString')->willReturn(true);
-
-        $encodingHelperStub->attemptConversionToUTF8('input', EncodingHelper::ENCODING_UTF16_LE);
+        $encodingHelper->attemptConversionToUTF8('input', uniqid('not_a_charset'));
     }
 
     public function testAttemptConversionToUTF8ShouldThrowIfConversionNotSupported()
     {
+        $encodingHelper = new EncodingHelper(false, false);
+
         $this->expectException(EncodingConversionException::class);
 
-        /** @var EncodingHelper|\PHPUnit\Framework\MockObject\MockObject|\PHPUnit\Framework\MockObject\MockObject $encodingHelperStub */
-        $encodingHelperStub = $this->getMockBuilder('\OpenSpout\Common\Helper\EncodingHelper')
-            ->disableOriginalConstructor()
-            ->onlyMethods(['canUseIconv', 'canUseMbString'])
-            ->getMock()
-        ;
-        $encodingHelperStub->method('canUseIconv')->willReturn(false);
-        $encodingHelperStub->method('canUseMbString')->willReturn(false);
-
-        $encodingHelperStub->attemptConversionToUTF8('input', EncodingHelper::ENCODING_UTF16_LE);
+        $encodingHelper->attemptConversionToUTF8('input', EncodingHelper::ENCODING_UTF16_LE);
     }
 
     /**
@@ -107,33 +86,19 @@ final class EncodingHelperTest extends TestCase
      */
     public function testAttemptConversionToUTF8ShouldReturnReencodedString($shouldUseIconv)
     {
-        /** @var EncodingHelper|\PHPUnit\Framework\MockObject\MockObject $encodingHelperStub */
-        $encodingHelperStub = $this->getMockBuilder('\OpenSpout\Common\Helper\EncodingHelper')
-            ->setConstructorArgs([new GlobalFunctionsHelper()])
-            ->onlyMethods(['canUseIconv', 'canUseMbString'])
-            ->getMock()
-        ;
-        $encodingHelperStub->method('canUseIconv')->willReturn($shouldUseIconv);
-        $encodingHelperStub->method('canUseMbString')->willReturn(true);
+        $encodingHelper = new EncodingHelper($shouldUseIconv, !$shouldUseIconv);
 
         $encodedString = iconv(EncodingHelper::ENCODING_UTF8, EncodingHelper::ENCODING_UTF16_LE, 'input');
-        $decodedString = $encodingHelperStub->attemptConversionToUTF8($encodedString, EncodingHelper::ENCODING_UTF16_LE);
+        $decodedString = $encodingHelper->attemptConversionToUTF8($encodedString, EncodingHelper::ENCODING_UTF16_LE);
 
         static::assertSame('input', $decodedString);
     }
 
     public function testAttemptConversionToUTF8ShouldBeNoopWhenTargetIsUTF8()
     {
-        /** @var EncodingHelper|\PHPUnit\Framework\MockObject\MockObject|\PHPUnit\Framework\MockObject\MockObject $encodingHelperStub */
-        $encodingHelperStub = $this->getMockBuilder('\OpenSpout\Common\Helper\EncodingHelper')
-            ->disableOriginalConstructor()
-            ->onlyMethods(['canUseIconv'])
-            ->getMock()
-        ;
-        $encodingHelperStub->expects(static::never())->method('canUseIconv');
+        $encodingHelper = new EncodingHelper(false, false);
 
-        $decodedString = $encodingHelperStub->attemptConversionToUTF8('input', EncodingHelper::ENCODING_UTF8);
-        static::assertSame('input', $decodedString);
+        static::assertSame('input', $encodingHelper->attemptConversionToUTF8('input', EncodingHelper::ENCODING_UTF8));
     }
 
     /**
@@ -143,41 +108,20 @@ final class EncodingHelperTest extends TestCase
      */
     public function testAttemptConversionFromUTF8ShouldThrowIfConversionFailed($shouldUseIconv)
     {
+        $encodingHelper = new EncodingHelper($shouldUseIconv, !$shouldUseIconv);
+
         $this->expectException(EncodingConversionException::class);
 
-        $helperStub = $this->getMockBuilder('\OpenSpout\Common\Helper\GlobalFunctionsHelper')
-            ->onlyMethods(['iconv', 'mb_convert_encoding'])
-            ->getMock()
-        ;
-        $helperStub->method('iconv')->willReturn(false);
-        $helperStub->method('mb_convert_encoding')->willReturn(false);
-
-        /** @var EncodingHelper|\PHPUnit\Framework\MockObject\MockObject|\PHPUnit\Framework\MockObject\MockObject $encodingHelperStub */
-        $encodingHelperStub = $this->getMockBuilder('\OpenSpout\Common\Helper\EncodingHelper')
-            ->setConstructorArgs([$helperStub])
-            ->onlyMethods(['canUseIconv', 'canUseMbString'])
-            ->getMock()
-        ;
-        $encodingHelperStub->method('canUseIconv')->willReturn($shouldUseIconv);
-        $encodingHelperStub->method('canUseMbString')->willReturn(true);
-
-        $encodingHelperStub->attemptConversionFromUTF8('input', EncodingHelper::ENCODING_UTF16_LE);
+        $encodingHelper->attemptConversionFromUTF8('input', uniqid('not_a_charset'));
     }
 
     public function testAttemptConversionFromUTF8ShouldThrowIfConversionNotSupported()
     {
+        $encodingHelper = new EncodingHelper(false, false);
+
         $this->expectException(EncodingConversionException::class);
 
-        /** @var EncodingHelper|\PHPUnit\Framework\MockObject\MockObject|\PHPUnit\Framework\MockObject\MockObject $encodingHelperStub */
-        $encodingHelperStub = $this->getMockBuilder('\OpenSpout\Common\Helper\EncodingHelper')
-            ->disableOriginalConstructor()
-            ->onlyMethods(['canUseIconv', 'canUseMbString'])
-            ->getMock()
-        ;
-        $encodingHelperStub->method('canUseIconv')->willReturn(false);
-        $encodingHelperStub->method('canUseMbString')->willReturn(false);
-
-        $encodingHelperStub->attemptConversionFromUTF8('input', EncodingHelper::ENCODING_UTF16_LE);
+        $encodingHelper->attemptConversionFromUTF8('input', EncodingHelper::ENCODING_UTF16_LE);
     }
 
     /**
@@ -187,16 +131,9 @@ final class EncodingHelperTest extends TestCase
      */
     public function testAttemptConversionFromUTF8ShouldReturnReencodedString($shouldUseIconv)
     {
-        /** @var EncodingHelper|\PHPUnit\Framework\MockObject\MockObject $encodingHelperStub */
-        $encodingHelperStub = $this->getMockBuilder('\OpenSpout\Common\Helper\EncodingHelper')
-            ->setConstructorArgs([new GlobalFunctionsHelper()])
-            ->onlyMethods(['canUseIconv', 'canUseMbString'])
-            ->getMock()
-        ;
-        $encodingHelperStub->method('canUseIconv')->willReturn($shouldUseIconv);
-        $encodingHelperStub->method('canUseMbString')->willReturn(true);
+        $encodingHelper = new EncodingHelper($shouldUseIconv, !$shouldUseIconv);
 
-        $encodedString = $encodingHelperStub->attemptConversionFromUTF8('input', EncodingHelper::ENCODING_UTF16_LE);
+        $encodedString = $encodingHelper->attemptConversionFromUTF8('input', EncodingHelper::ENCODING_UTF16_LE);
         $encodedStringWithIconv = iconv(EncodingHelper::ENCODING_UTF8, EncodingHelper::ENCODING_UTF16_LE, 'input');
 
         static::assertSame($encodedStringWithIconv, $encodedString);
@@ -204,15 +141,8 @@ final class EncodingHelperTest extends TestCase
 
     public function testAttemptConversionFromUTF8ShouldBeNoopWhenTargetIsUTF8()
     {
-        /** @var EncodingHelper|\PHPUnit\Framework\MockObject\MockObject $encodingHelperStub */
-        $encodingHelperStub = $this->getMockBuilder('\OpenSpout\Common\Helper\EncodingHelper')
-            ->disableOriginalConstructor()
-            ->onlyMethods(['canUseIconv'])
-            ->getMock()
-        ;
-        $encodingHelperStub->expects(static::never())->method('canUseIconv');
+        $encodingHelper = new EncodingHelper(false, false);
 
-        $encodedString = $encodingHelperStub->attemptConversionFromUTF8('input', EncodingHelper::ENCODING_UTF8);
-        static::assertSame('input', $encodedString);
+        static::assertSame('input', $encodingHelper->attemptConversionFromUTF8('input', EncodingHelper::ENCODING_UTF8));
     }
 }

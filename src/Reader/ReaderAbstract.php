@@ -3,10 +3,10 @@
 namespace OpenSpout\Reader;
 
 use OpenSpout\Common\Exception\IOException;
-use OpenSpout\Common\Helper\GlobalFunctionsHelper;
 use OpenSpout\Common\Manager\OptionsManagerInterface;
 use OpenSpout\Reader\Common\Creator\InternalEntityFactoryInterface;
 use OpenSpout\Reader\Common\Entity\Options;
+use OpenSpout\Reader\Exception\ReaderException;
 use OpenSpout\Reader\Exception\ReaderNotOpenedException;
 
 abstract class ReaderAbstract implements ReaderInterface
@@ -17,19 +17,14 @@ abstract class ReaderAbstract implements ReaderInterface
     /** @var InternalEntityFactoryInterface Factory to create entities */
     protected $entityFactory;
 
-    /** @var \OpenSpout\Common\Helper\GlobalFunctionsHelper Helper to work with global functions */
-    protected $globalFunctionsHelper;
-
     /** @var OptionsManagerInterface Writer options manager */
     protected $optionsManager;
 
     public function __construct(
         OptionsManagerInterface $optionsManager,
-        GlobalFunctionsHelper $globalFunctionsHelper,
         InternalEntityFactoryInterface $entityFactory
     ) {
         $this->optionsManager = $optionsManager;
-        $this->globalFunctionsHelper = $globalFunctionsHelper;
         $this->entityFactory = $entityFactory;
     }
 
@@ -77,10 +72,10 @@ abstract class ReaderAbstract implements ReaderInterface
 
         if (!$this->isPhpStream($filePath)) {
             // we skip the checks if the provided file path points to a PHP stream
-            if (!$this->globalFunctionsHelper->file_exists($filePath)) {
+            if (!file_exists($filePath)) {
                 throw new IOException("Could not open {$filePath} for reading! File does not exist.");
             }
-            if (!$this->globalFunctionsHelper->is_readable($filePath)) {
+            if (!is_readable($filePath)) {
                 throw new IOException("Could not open {$filePath} for reading! File is not readable.");
             }
         }
@@ -89,8 +84,12 @@ abstract class ReaderAbstract implements ReaderInterface
             $fileRealPath = $this->getFileRealPath($filePath);
             $this->openReader($fileRealPath);
             $this->isStreamOpened = true;
-        } catch (\Exception $exception) {
-            throw new IOException("Could not open {$filePath} for reading! ({$exception->getMessage()})");
+        } catch (ReaderException $exception) {
+            throw new IOException(
+                "Could not open {$filePath} for reading!",
+                0,
+                $exception
+            );
         }
     }
 
@@ -216,7 +215,7 @@ abstract class ReaderAbstract implements ReaderInterface
         $streamScheme = $this->getStreamWrapperScheme($filePath);
 
         return (null !== $streamScheme) ?
-            \in_array($streamScheme, $this->globalFunctionsHelper->stream_get_wrappers(), true) :
+            \in_array($streamScheme, stream_get_wrappers(), true) :
             true;
     }
 

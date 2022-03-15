@@ -2,10 +2,8 @@
 
 namespace OpenSpout\Reader\CSV;
 
-use OpenSpout\Common\Creator\HelperFactory;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\EncodingHelper;
-use OpenSpout\Common\Helper\GlobalFunctionsHelper;
 use OpenSpout\Reader\CSV\Creator\InternalEntityFactory;
 use OpenSpout\Reader\CSV\Manager\OptionsManager;
 use OpenSpout\Reader\Exception\ReaderNotOpenedException;
@@ -24,48 +22,27 @@ final class ReaderTest extends TestCase
     {
         $this->expectException(IOException::class);
 
-        $this->createCSVReader()->open('/path/to/fake/file.csv');
+        $this->createCSVReader(null)->open('/path/to/fake/file.csv');
     }
 
     public function testOpenShouldThrowExceptionIfTryingToReadBeforeOpeningReader()
     {
         $this->expectException(ReaderNotOpenedException::class);
 
-        $this->createCSVReader()->getSheetIterator();
+        $this->createCSVReader(null)->getSheetIterator();
     }
 
     public function testOpenShouldThrowExceptionIfFileNotReadable()
     {
-        $this->expectException(IOException::class);
-
-        /** @var \OpenSpout\Common\Helper\GlobalFunctionsHelper|\PHPUnit\Framework\MockObject\MockObject $helperStub */
-        $helperStub = $this->getMockBuilder('\OpenSpout\Common\Helper\GlobalFunctionsHelper')
-            ->onlyMethods(['is_readable'])
-            ->getMock()
-        ;
-        $helperStub->method('is_readable')->willReturn(false);
-
         $resourcePath = $this->getResourcePath('csv_standard.csv');
+        $testPath = $this->generatedResourcesPath.\DIRECTORY_SEPARATOR.uniqid().basename($resourcePath);
 
-        $reader = $this->createCSVReader(null, $helperStub);
-        $reader->open($resourcePath);
-    }
+        static::assertTrue(copy($resourcePath, $testPath));
+        static::assertTrue(chmod($testPath, 0));
+        $reader = $this->createCSVReader(null);
 
-    public function testOpenShouldThrowExceptionIfCannotOpenFile()
-    {
         $this->expectException(IOException::class);
-
-        /** @var \OpenSpout\Common\Helper\GlobalFunctionsHelper|\PHPUnit\Framework\MockObject\MockObject $helperStub */
-        $helperStub = $this->getMockBuilder('\OpenSpout\Common\Helper\GlobalFunctionsHelper')
-            ->onlyMethods(['fopen'])
-            ->getMock()
-        ;
-        $helperStub->method('fopen')->willReturn(false);
-
-        $resourcePath = $this->getResourcePath('csv_standard.csv');
-
-        $reader = $this->createCSVReader(null, $helperStub);
-        $reader->open($resourcePath);
+        $reader->open($testPath);
     }
 
     public function testReadStandardCSV()
@@ -261,20 +238,8 @@ final class ReaderTest extends TestCase
         $allRows = [];
         $resourcePath = $this->getResourcePath($fileName);
 
-        /** @var \OpenSpout\Common\Helper\GlobalFunctionsHelper|\PHPUnit\Framework\MockObject\MockObject $helperStub */
-        $helperStub = $this->getMockBuilder('\OpenSpout\Common\Helper\GlobalFunctionsHelper')
-            ->onlyMethods(['function_exists'])
-            ->getMock()
-        ;
-
-        $returnValueMap = [
-            ['iconv', $shouldUseIconv],
-            ['mb_convert_encoding', true],
-        ];
-        $helperStub->method('function_exists')->willReturnMap($returnValueMap);
-
         /** @var \OpenSpout\Reader\CSV\Reader $reader */
-        $reader = $this->createCSVReader(null, $helperStub);
+        $reader = $this->createCSVReader(null, new EncodingHelper($shouldUseIconv, !$shouldUseIconv));
         $reader
             ->setEncoding($fileEncoding)
             ->open($resourcePath)
@@ -301,7 +266,7 @@ final class ReaderTest extends TestCase
         $allRows = [];
         $resourcePath = $this->getResourcePath('csv_standard.csv');
 
-        $reader = $this->createCSVReader();
+        $reader = $this->createCSVReader(null);
         $reader->open($resourcePath);
 
         foreach ($reader->getSheetIterator() as $sheet);
@@ -395,7 +360,7 @@ final class ReaderTest extends TestCase
         stream_wrapper_register('spout', SpoutTestStream::CLASS_NAME);
 
         /** @var \OpenSpout\Reader\CSV\Reader $reader */
-        $reader = $this->createCSVReader();
+        $reader = $this->createCSVReader(null);
         $reader->open($resourcePath);
 
         foreach ($reader->getSheetIterator() as $sheet) {
@@ -422,23 +387,23 @@ final class ReaderTest extends TestCase
         $this->expectException(IOException::class);
 
         /** @var \OpenSpout\Reader\CSV\Reader $reader */
-        $reader = $this->createCSVReader();
+        $reader = $this->createCSVReader(null);
         $reader->open('unsupported://foobar');
     }
 
     /**
-     * @param null|\OpenSpout\Common\Helper\GlobalFunctionsHelper    $optionsManager
-     * @param null|\OpenSpout\Common\Manager\OptionsManagerInterface $globalFunctionsHelper
+     * @param null|\OpenSpout\Common\Manager\OptionsManagerInterface $optionsManager
      *
      * @return ReaderInterface
      */
-    private function createCSVReader($optionsManager = null, $globalFunctionsHelper = null)
+    private function createCSVReader($optionsManager, ?EncodingHelper $encodingHelper = null)
     {
-        $optionsManager = $optionsManager ?: new OptionsManager();
-        $globalFunctionsHelper = $globalFunctionsHelper ?: new GlobalFunctionsHelper();
-        $entityFactory = new InternalEntityFactory(new HelperFactory());
+        $optionsManager = $optionsManager ?? new OptionsManager();
+        $entityFactory = new InternalEntityFactory(
+            $encodingHelper ?? EncodingHelper::factory()
+        );
 
-        return new Reader($optionsManager, $globalFunctionsHelper, $entityFactory);
+        return new Reader($optionsManager, $entityFactory);
     }
 
     /**
@@ -461,7 +426,7 @@ final class ReaderTest extends TestCase
         $resourcePath = $this->getResourcePath($fileName);
 
         /** @var \OpenSpout\Reader\CSV\Reader $reader */
-        $reader = $this->createCSVReader();
+        $reader = $this->createCSVReader(null);
         $reader
             ->setFieldDelimiter($fieldDelimiter)
             ->setFieldEnclosure($fieldEnclosure)

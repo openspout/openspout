@@ -3,7 +3,6 @@
 namespace OpenSpout\Reader\XLSX;
 
 use OpenSpout\Common\Exception\IOException;
-use OpenSpout\Common\Helper\GlobalFunctionsHelper;
 use OpenSpout\Common\Manager\OptionsManagerInterface;
 use OpenSpout\Reader\Common\Creator\InternalEntityFactoryInterface;
 use OpenSpout\Reader\Common\Entity\Options;
@@ -30,11 +29,10 @@ class Reader extends ReaderAbstract
 
     public function __construct(
         OptionsManagerInterface $optionsManager,
-        GlobalFunctionsHelper $globalFunctionsHelper,
         InternalEntityFactoryInterface $entityFactory,
         ManagerFactory $managerFactory
     ) {
-        parent::__construct($optionsManager, $globalFunctionsHelper, $entityFactory);
+        parent::__construct($optionsManager, $entityFactory);
         $this->managerFactory = $managerFactory;
     }
 
