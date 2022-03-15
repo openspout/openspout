@@ -50,7 +50,7 @@ abstract class ReaderAbstract implements ReaderInterface
      *
      * @throws \OpenSpout\Common\Exception\IOException If the file at the given path does not exist, is not readable or is corrupted
      */
-    public function open(string $filePath)
+    public function open(string $filePath): void
     {
         if ($this->isStreamWrapper($filePath) && (!$this->doesSupportStreamWrapper() || !$this->isSupportedStreamWrapper($filePath))) {
             throw new IOException("Could not open {$filePath} for reading! Stream wrapper used is not supported for this type of file.");
@@ -98,7 +98,7 @@ abstract class ReaderAbstract implements ReaderInterface
     /**
      * Closes the reader, preventing any additional reading.
      */
-    public function close()
+    public function close(): void
     {
         if ($this->isStreamOpened) {
             $this->closeReader();
@@ -122,7 +122,7 @@ abstract class ReaderAbstract implements ReaderInterface
      *
      * @param string $filePath Path of the file to be read
      */
-    abstract protected function openReader(string $filePath);
+    abstract protected function openReader(string $filePath): void;
 
     /**
      * Returns an iterator to iterate over sheets.
@@ -134,7 +134,7 @@ abstract class ReaderAbstract implements ReaderInterface
     /**
      * Closes the reader. To be used after reading the file.
      */
-    abstract protected function closeReader();
+    abstract protected function closeReader(): void;
 
     /**
      * Returns the real path of the given path.

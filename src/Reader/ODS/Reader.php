@@ -33,15 +33,15 @@ class Reader extends ReaderAbstract
      * @throws \OpenSpout\Common\Exception\IOException            If the file at the given path or its content cannot be read
      * @throws \OpenSpout\Reader\Exception\NoSheetsFoundException If there are no sheets in the file
      */
-    protected function openReader(string $filePath)
+    protected function openReader(string $filePath): void
     {
         $this->zip = new \ZipArchive();
 
-        if (true === $this->zip->open($filePath)) {
-            $this->sheetIterator = new SheetIterator($filePath, $this->optionsManager, new ODS(), new SettingsHelper());
-        } else {
+        if (true !== $this->zip->open($filePath)) {
             throw new IOException("Could not open {$filePath} for reading.");
         }
+
+        $this->sheetIterator = new SheetIterator($filePath, $this->optionsManager, new ODS(), new SettingsHelper());
     }
 
     /**
@@ -57,7 +57,7 @@ class Reader extends ReaderAbstract
     /**
      * Closes the reader. To be used after reading the file.
      */
-    protected function closeReader()
+    protected function closeReader(): void
     {
         if (null !== $this->zip) {
             $this->zip->close();

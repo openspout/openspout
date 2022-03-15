@@ -15,7 +15,7 @@ interface FileSystemWithRootFolderHelperInterface extends FileSystemHelperInterf
      *
      * @throws \OpenSpout\Common\Exception\IOException If unable to create at least one of the base folders
      */
-    public function createBaseFilesAndFolders();
+    public function createBaseFilesAndFolders(): void;
 
     public function getRootFolder(): string;
 }

@@ -35,7 +35,7 @@ class OptionsManager extends OptionsManagerAbstract
     /**
      * {@inheritdoc}
      */
-    protected function setDefaultOptions()
+    protected function setDefaultOptions(): void
     {
         $defaultRowStyle = (new Style())
             ->setFontSize(self::DEFAULT_FONT_SIZE)

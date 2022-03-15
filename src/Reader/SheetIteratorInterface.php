@@ -9,15 +9,7 @@ namespace OpenSpout\Reader;
  */
 interface SheetIteratorInterface extends IteratorInterface
 {
-    /**
-     * Cleans up what was created to iterate over the object.
-     */
-    #[\ReturnTypeWillChange]
-    public function end();
+    public function end(): void;
 
-    /**
-     * @return null|SheetInterface
-     */
-    #[\ReturnTypeWillChange]
-    public function current();
+    public function current(): ?SheetInterface;
 }

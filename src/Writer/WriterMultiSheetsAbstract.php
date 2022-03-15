@@ -140,7 +140,7 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
      *
      * @throws WriterNotOpenedException
      */
-    public function setColumnWidth(?float $width, ...$columns): void
+    public function setColumnWidth(?float $width, int ...$columns): void
     {
         $this->throwIfWorkbookIsNotAvailable();
         $this->workbookManager->setColumnWidth($width, ...$columns);

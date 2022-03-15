@@ -37,8 +37,7 @@ class SheetIterator implements SheetIteratorInterface
      *
      * @see http://php.net/manual/en/iterator.rewind.php
      */
-    #[\ReturnTypeWillChange]
-    public function rewind()
+    public function rewind(): void
     {
         $this->currentSheetIndex = 0;
     }
@@ -47,11 +46,8 @@ class SheetIterator implements SheetIteratorInterface
      * Checks if current position is valid.
      *
      * @see http://php.net/manual/en/iterator.valid.php
-     *
-     * @return bool
      */
-    #[\ReturnTypeWillChange]
-    public function valid()
+    public function valid(): bool
     {
         return $this->currentSheetIndex < \count($this->sheets);
     }
@@ -61,8 +57,7 @@ class SheetIterator implements SheetIteratorInterface
      *
      * @see http://php.net/manual/en/iterator.next.php
      */
-    #[\ReturnTypeWillChange]
-    public function next()
+    public function next(): void
     {
         // Using isset here because it is way faster than array_key_exists...
         if (isset($this->sheets[$this->currentSheetIndex])) {
@@ -77,11 +72,8 @@ class SheetIterator implements SheetIteratorInterface
      * Return the current element.
      *
      * @see http://php.net/manual/en/iterator.current.php
-     *
-     * @return \OpenSpout\Reader\XLSX\Sheet
      */
-    #[\ReturnTypeWillChange]
-    public function current()
+    public function current(): Sheet
     {
         return $this->sheets[$this->currentSheetIndex];
     }
@@ -90,11 +82,8 @@ class SheetIterator implements SheetIteratorInterface
      * Return the key of the current element.
      *
      * @see http://php.net/manual/en/iterator.key.php
-     *
-     * @return int
      */
-    #[\ReturnTypeWillChange]
-    public function key()
+    public function key(): int
     {
         return $this->currentSheetIndex + 1;
     }
@@ -103,7 +92,7 @@ class SheetIterator implements SheetIteratorInterface
      * Cleans up what was created to iterate over the object.
      */
     #[\ReturnTypeWillChange]
-    public function end()
+    public function end(): void
     {
         // make sure we are not leaking memory in case the iteration stopped before the end
         foreach ($this->sheets as $sheet) {

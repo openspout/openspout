@@ -23,7 +23,7 @@ final class OptionsManagerTest extends TestCase
                 ];
             }
 
-            protected function setDefaultOptions()
+            protected function setDefaultOptions(): void
             {
                 $this->setOption('foo', 'foo-val');
                 $this->setOption('bar', false);

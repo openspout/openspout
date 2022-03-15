@@ -98,7 +98,7 @@ class WorksheetManager implements WorksheetManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function startSheet(Worksheet $worksheet)
+    public function startSheet(Worksheet $worksheet): void
     {
         $sheetFilePointer = fopen($worksheet->getFilePath(), 'w');
         $this->throwIfSheetFilePointerIsNotAvailable($sheetFilePointer);
@@ -111,7 +111,7 @@ class WorksheetManager implements WorksheetManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function addRow(Worksheet $worksheet, Row $row)
+    public function addRow(Worksheet $worksheet, Row $row): void
     {
         if (!$this->rowManager->isEmpty($row)) {
             $this->addNonEmptyRow($worksheet, $row);
@@ -156,7 +156,7 @@ class WorksheetManager implements WorksheetManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function close(Worksheet $worksheet)
+    public function close(Worksheet $worksheet): void
     {
         $worksheetFilePointer = $worksheet->getFilePointer();
 
@@ -170,7 +170,7 @@ class WorksheetManager implements WorksheetManagerInterface
         if ($this->optionsManager->getOption(Options::MERGE_CELLS)) {
             $mergeCellString = '<mergeCells count="'.\count($this->optionsManager->getOption(Options::MERGE_CELLS)).'">';
             foreach ($this->optionsManager->getOption(Options::MERGE_CELLS) as $values) {
-                $output = array_map(function ($value) {
+                $output = array_map(static function ($value): string {
                     return CellHelper::getColumnLettersFromColumnIndex($value[0]).$value[1];
                 }, $values);
                 $mergeCellString .= '<mergeCell ref="'.implode(':', $output).'"/>';
@@ -188,19 +188,21 @@ class WorksheetManager implements WorksheetManagerInterface
      *
      * @param Worksheet $worksheet The worksheet to add the row to
      */
-    private function ensureSheetDataStated(Worksheet $worksheet)
+    private function ensureSheetDataStated(Worksheet $worksheet): void
     {
-        if (!$worksheet->getSheetDataStarted()) {
-            $worksheetFilePointer = $worksheet->getFilePointer();
-            $sheet = $worksheet->getExternalSheet();
-            if ($sheet->hasSheetView()) {
-                fwrite($worksheetFilePointer, '<sheetViews>'.$sheet->getSheetView()->getXml().'</sheetViews>');
-            }
-            fwrite($worksheetFilePointer, $this->getXMLFragmentForDefaultCellSizing());
-            fwrite($worksheetFilePointer, $this->getXMLFragmentForColumnWidths());
-            fwrite($worksheetFilePointer, '<sheetData>');
-            $worksheet->setSheetDataStarted(true);
+        if ($worksheet->getSheetDataStarted()) {
+            return;
         }
+
+        $worksheetFilePointer = $worksheet->getFilePointer();
+        $sheet = $worksheet->getExternalSheet();
+        if ($sheet->hasSheetView()) {
+            fwrite($worksheetFilePointer, '<sheetViews>'.$sheet->getSheetView()->getXml().'</sheetViews>');
+        }
+        fwrite($worksheetFilePointer, $this->getXMLFragmentForDefaultCellSizing());
+        fwrite($worksheetFilePointer, $this->getXMLFragmentForColumnWidths());
+        fwrite($worksheetFilePointer, '<sheetData>');
+        $worksheet->setSheetDataStarted(true);
     }
 
     /**
@@ -210,7 +212,7 @@ class WorksheetManager implements WorksheetManagerInterface
      *
      * @throws IOException If the sheet data file cannot be opened for writing
      */
-    private function throwIfSheetFilePointerIsNotAvailable($sheetFilePointer)
+    private function throwIfSheetFilePointerIsNotAvailable($sheetFilePointer): void
     {
         if (!$sheetFilePointer) {
             throw new IOException('Unable to open sheet for writing.');
@@ -226,7 +228,7 @@ class WorksheetManager implements WorksheetManagerInterface
      * @throws InvalidArgumentException If a cell value's type is not supported
      * @throws IOException              If the data cannot be written
      */
-    private function addNonEmptyRow(Worksheet $worksheet, Row $row)
+    private function addNonEmptyRow(Worksheet $worksheet, Row $row): void
     {
         $this->ensureSheetDataStated($worksheet);
         $sheetFilePointer = $worksheet->getFilePointer();

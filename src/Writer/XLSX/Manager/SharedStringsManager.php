@@ -68,7 +68,7 @@ class SharedStringsManager
     /**
      * Finishes writing the data in the sharedStrings.xml file and closes the file.
      */
-    public function close()
+    public function close(): void
     {
         if (!\is_resource($this->sharedStringsFilePointer)) {
             return;
@@ -92,7 +92,7 @@ class SharedStringsManager
      *
      * @throws \OpenSpout\Common\Exception\IOException If the sheet data file cannot be opened for writing
      */
-    protected function throwIfSharedStringsFilePointerIsNotAvailable()
+    protected function throwIfSharedStringsFilePointerIsNotAvailable(): void
     {
         if (!\is_resource($this->sharedStringsFilePointer)) {
             throw new IOException('Unable to open shared strings file for writing.');

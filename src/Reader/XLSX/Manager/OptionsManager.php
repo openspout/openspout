@@ -26,7 +26,7 @@ class OptionsManager extends OptionsManagerAbstract
     /**
      * {@inheritdoc}
      */
-    protected function setDefaultOptions()
+    protected function setDefaultOptions(): void
     {
         $this->setOption(Options::TEMP_FOLDER, sys_get_temp_dir());
         $this->setOption(Options::SHOULD_FORMAT_DATES, false);

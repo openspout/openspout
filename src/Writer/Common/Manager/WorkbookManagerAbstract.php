@@ -97,7 +97,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
      *
      * @throws IOException
      */
-    public function startCurrentSheet()
+    public function startCurrentSheet(): void
     {
         $this->worksheetManager->startSheet($this->getCurrentWorksheet());
     }
@@ -110,7 +110,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
      *
      * @throws SheetNotFoundException If the given sheet does not exist in the workbook
      */
-    public function setCurrentSheet(Sheet $sheet)
+    public function setCurrentSheet(Sheet $sheet): void
     {
         $worksheet = $this->getWorksheetFromExternalSheet($sheet);
         if (null !== $worksheet) {
@@ -130,7 +130,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
      * @throws IOException                                          If trying to create a new sheet and unable to open the sheet for writing
      * @throws \OpenSpout\Common\Exception\InvalidArgumentException
      */
-    public function addRowToCurrentWorksheet(Row $row)
+    public function addRowToCurrentWorksheet(Row $row): void
     {
         $currentWorksheet = $this->getCurrentWorksheet();
         $hasReachedMaxRows = $this->hasCurrentWorksheetReachedMaxRows();
@@ -149,12 +149,12 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
         }
     }
 
-    public function setDefaultColumnWidth(float $width)
+    public function setDefaultColumnWidth(float $width): void
     {
         $this->worksheetManager->setDefaultColumnWidth($width);
     }
 
-    public function setDefaultRowHeight(float $height)
+    public function setDefaultRowHeight(float $height): void
     {
         $this->worksheetManager->setDefaultRowHeight($height);
     }
@@ -162,7 +162,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
     /**
      * @param int ...$columns One or more columns with this width
      */
-    public function setColumnWidth(float $width, ...$columns)
+    public function setColumnWidth(float $width, int ...$columns): void
     {
         $this->worksheetManager->setColumnWidth($width, ...$columns);
     }
@@ -172,7 +172,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
      * @param int   $start First column index of the range
      * @param int   $end   Last column index of the range
      */
-    public function setColumnWidthForRange(float $width, int $start, int $end)
+    public function setColumnWidthForRange(float $width, int $start, int $end): void
     {
         $this->worksheetManager->setColumnWidthForRange($width, $start, $end);
     }
@@ -184,7 +184,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
      *
      * @param resource $finalFilePointer Pointer to the spreadsheet that will be created
      */
-    public function close($finalFilePointer)
+    public function close($finalFilePointer): void
     {
         $this->closeAllWorksheets();
         $this->closeRemainingObjects();
@@ -205,7 +205,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
     /**
      * Closes custom objects that are still opened.
      */
-    protected function closeRemainingObjects()
+    protected function closeRemainingObjects(): void
     {
         // do nothing by default
     }
@@ -215,7 +215,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
      *
      * @param resource $finalFilePointer Pointer to the spreadsheet that will be created
      */
-    abstract protected function writeAllFilesToDiskAndZipThem($finalFilePointer);
+    abstract protected function writeAllFilesToDiskAndZipThem($finalFilePointer): void;
 
     /**
      * Deletes the root folder created in the temp folder and all its contents.

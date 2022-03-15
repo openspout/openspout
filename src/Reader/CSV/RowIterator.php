@@ -160,7 +160,7 @@ class RowIterator implements RowIteratorInterface
 
         if (false !== $rowData) {
             // array_map will replace NULL values by empty strings
-            $rowDataBufferAsArray = array_map(function ($value) { return (string) $value; }, $rowData);
+            $rowDataBufferAsArray = array_map('\\strval', $rowData);
             $this->rowBuffer = new Row(array_map(function ($cellValue) {
                 return new Cell($cellValue);
             }, $rowDataBufferAsArray), null);

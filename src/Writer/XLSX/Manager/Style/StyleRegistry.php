@@ -162,7 +162,7 @@ class StyleRegistry extends CommonStyleRegistry
     /**
      * Register a format definition.
      */
-    protected function registerFormat(Style $style)
+    protected function registerFormat(Style $style): void
     {
         $styleId = $style->getId();
 
@@ -191,7 +191,7 @@ class StyleRegistry extends CommonStyleRegistry
     /**
      * Register a fill definition.
      */
-    private function registerFill(Style $style)
+    private function registerFill(Style $style): void
     {
         $styleId = $style->getId();
 
@@ -221,7 +221,7 @@ class StyleRegistry extends CommonStyleRegistry
     /**
      * Register a border definition.
      */
-    private function registerBorder(Style $style)
+    private function registerBorder(Style $style): void
     {
         $styleId = $style->getId();
 

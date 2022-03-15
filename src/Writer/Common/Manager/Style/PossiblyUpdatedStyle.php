@@ -10,8 +10,8 @@ use OpenSpout\Common\Entity\Style\Style;
  */
 class PossiblyUpdatedStyle
 {
-    private $style;
-    private $isUpdated;
+    private Style $style;
+    private bool $isUpdated;
 
     public function __construct(Style $style, bool $isUpdated)
     {

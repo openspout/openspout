@@ -90,7 +90,7 @@ class Reader extends ReaderAbstract
      *
      * @throws \OpenSpout\Common\Exception\IOException
      */
-    protected function openReader(string $filePath)
+    protected function openReader(string $filePath): void
     {
         // "auto_detect_line_endings" is deprecated in PHP 8.1
         if (!$this->isRunningAtLeastPhp81) {
@@ -125,7 +125,7 @@ class Reader extends ReaderAbstract
     /**
      * Closes the reader. To be used after reading the file.
      */
-    protected function closeReader()
+    protected function closeReader(): void
     {
         if (\is_resource($this->filePointer)) {
             fclose($this->filePointer);

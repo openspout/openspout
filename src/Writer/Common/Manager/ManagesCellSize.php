@@ -13,12 +13,12 @@ trait ManagesCellSize
     /** @var array Array of min-max-width arrays */
     private array $columnWidths = [];
 
-    public function setDefaultColumnWidth(?float $width)
+    public function setDefaultColumnWidth(?float $width): void
     {
         $this->defaultColumnWidth = $width;
     }
 
-    public function setDefaultRowHeight(?float $height)
+    public function setDefaultRowHeight(?float $height): void
     {
         $this->defaultRowHeight = $height;
     }
@@ -26,7 +26,7 @@ trait ManagesCellSize
     /**
      * @param int ...$columns One or more columns with this width
      */
-    public function setColumnWidth(float $width, ...$columns)
+    public function setColumnWidth(float $width, int ...$columns): void
     {
         // Gather sequences
         $sequence = [];
@@ -49,7 +49,7 @@ trait ManagesCellSize
      * @param int   $start First column index of the range
      * @param int   $end   Last column index of the range
      */
-    public function setColumnWidthForRange(float $width, int $start, int $end)
+    public function setColumnWidthForRange(float $width, int $start, int $end): void
     {
         $this->columnWidths[] = [$start, $end, $width];
     }

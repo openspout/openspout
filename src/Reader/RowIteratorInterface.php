@@ -8,15 +8,7 @@ use OpenSpout\Common\Entity\Row;
 
 interface RowIteratorInterface extends IteratorInterface
 {
-    /**
-     * Cleans up what was created to iterate over the object.
-     */
-    #[\ReturnTypeWillChange]
-    public function end();
+    public function end(): void;
 
-    /**
-     * @return null|Row
-     */
-    #[\ReturnTypeWillChange]
-    public function current();
+    public function current(): ?Row;
 }

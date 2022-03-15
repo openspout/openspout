@@ -25,7 +25,7 @@ class OptionsManager extends OptionsManagerAbstract
     /**
      * {@inheritdoc}
      */
-    protected function setDefaultOptions()
+    protected function setDefaultOptions(): void
     {
         $this->setOption(Options::FIELD_DELIMITER, ',');
         $this->setOption(Options::FIELD_ENCLOSURE, '"');

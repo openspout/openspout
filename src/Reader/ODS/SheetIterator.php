@@ -76,8 +76,7 @@ class SheetIterator implements SheetIteratorInterface
      *
      * @throws \OpenSpout\Common\Exception\IOException If unable to open the XML file containing sheets' data
      */
-    #[\ReturnTypeWillChange]
-    public function rewind()
+    public function rewind(): void
     {
         $this->xmlReader->close();
 
@@ -101,11 +100,8 @@ class SheetIterator implements SheetIteratorInterface
      * Checks if current position is valid.
      *
      * @see http://php.net/manual/en/iterator.valid.php
-     *
-     * @return bool
      */
-    #[\ReturnTypeWillChange]
-    public function valid()
+    public function valid(): bool
     {
         return $this->hasFoundSheet;
     }
@@ -115,8 +111,7 @@ class SheetIterator implements SheetIteratorInterface
      *
      * @see http://php.net/manual/en/iterator.next.php
      */
-    #[\ReturnTypeWillChange]
-    public function next()
+    public function next(): void
     {
         $this->hasFoundSheet = $this->xmlReader->readUntilNodeFound(self::XML_NODE_TABLE);
 
@@ -129,11 +124,8 @@ class SheetIterator implements SheetIteratorInterface
      * Return the current element.
      *
      * @see http://php.net/manual/en/iterator.current.php
-     *
-     * @return \OpenSpout\Reader\ODS\Sheet
      */
-    #[\ReturnTypeWillChange]
-    public function current()
+    public function current(): Sheet
     {
         $escapedSheetName = $this->xmlReader->getAttribute(self::XML_ATTRIBUTE_TABLE_NAME);
         $sheetName = $this->escaper->unescape($escapedSheetName);
@@ -162,11 +154,8 @@ class SheetIterator implements SheetIteratorInterface
      * Return the key of the current element.
      *
      * @see http://php.net/manual/en/iterator.key.php
-     *
-     * @return int
      */
-    #[\ReturnTypeWillChange]
-    public function key()
+    public function key(): int
     {
         return $this->currentSheetIndex + 1;
     }
@@ -174,8 +163,7 @@ class SheetIterator implements SheetIteratorInterface
     /**
      * Cleans up what was created to iterate over the object.
      */
-    #[\ReturnTypeWillChange]
-    public function end()
+    public function end(): void
     {
         $this->xmlReader->close();
     }

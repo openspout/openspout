@@ -67,7 +67,7 @@ class WorkbookManager extends WorkbookManagerAbstract
      *
      * @param resource $finalFilePointer Pointer to the spreadsheet that will be created
      */
-    protected function writeAllFilesToDiskAndZipThem($finalFilePointer)
+    protected function writeAllFilesToDiskAndZipThem($finalFilePointer): void
     {
         $worksheets = $this->getWorksheets();
         $numWorksheets = \count($worksheets);
