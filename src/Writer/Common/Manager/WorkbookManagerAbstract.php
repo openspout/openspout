@@ -4,9 +4,8 @@ namespace OpenSpout\Writer\Common\Manager;
 
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Common\Helper\StringHelper;
 use OpenSpout\Common\Manager\OptionsManagerInterface;
-use OpenSpout\Writer\Common\Creator\InternalEntityFactory;
-use OpenSpout\Writer\Common\Creator\ManagerFactoryInterface;
 use OpenSpout\Writer\Common\Entity\Options;
 use OpenSpout\Writer\Common\Entity\Sheet;
 use OpenSpout\Writer\Common\Entity\Workbook;
@@ -39,12 +38,6 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
     /** @var FileSystemWithRootFolderHelperInterface Helper to perform file system operations */
     protected $fileSystemHelper;
 
-    /** @var InternalEntityFactory Factory to create entities */
-    protected $entityFactory;
-
-    /** @var ManagerFactoryInterface Factory to create managers */
-    protected $managerFactory;
-
     /** @var Worksheet The worksheet where data will be written to */
     protected $currentWorksheet;
 
@@ -54,9 +47,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
         WorksheetManagerInterface $worksheetManager,
         StyleManagerInterface $styleManager,
         StyleMerger $styleMerger,
-        FileSystemWithRootFolderHelperInterface $fileSystemHelper,
-        InternalEntityFactory $entityFactory,
-        ManagerFactoryInterface $managerFactory
+        FileSystemWithRootFolderHelperInterface $fileSystemHelper
     ) {
         $this->workbook = $workbook;
         $this->optionsManager = $optionsManager;
@@ -64,8 +55,6 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
         $this->styleManager = $styleManager;
         $this->styleMerger = $styleMerger;
         $this->fileSystemHelper = $fileSystemHelper;
-        $this->entityFactory = $entityFactory;
-        $this->managerFactory = $managerFactory;
     }
 
     /**
@@ -254,11 +243,11 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
         $worksheets = $this->getWorksheets();
 
         $newSheetIndex = \count($worksheets);
-        $sheetManager = $this->managerFactory->createSheetManager();
-        $sheet = $this->entityFactory->createSheet($newSheetIndex, $this->workbook->getInternalId(), $sheetManager);
+        $sheetManager = new SheetManager(new StringHelper());
+        $sheet = new Sheet($newSheetIndex, $this->workbook->getInternalId(), $sheetManager);
 
         $worksheetFilePath = $this->getWorksheetFilePath($sheet);
-        $worksheet = $this->entityFactory->createWorksheet($worksheetFilePath, $sheet);
+        $worksheet = new Worksheet($worksheetFilePath, $sheet);
 
         $this->worksheetManager->startSheet($worksheet);
 

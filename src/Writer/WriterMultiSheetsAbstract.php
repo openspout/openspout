@@ -2,7 +2,6 @@
 
 namespace OpenSpout\Writer;
 
-use OpenSpout\Common\Creator\HelperFactory;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Manager\OptionsManagerInterface;
@@ -24,10 +23,9 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
 
     public function __construct(
         OptionsManagerInterface $optionsManager,
-        HelperFactory $helperFactory,
         ManagerFactoryInterface $managerFactory
     ) {
-        parent::__construct($optionsManager, $helperFactory);
+        parent::__construct($optionsManager);
         $this->managerFactory = $managerFactory;
     }
 

@@ -2,9 +2,13 @@
 
 namespace OpenSpout\Reader\XLSX\Manager;
 
+use OpenSpout\Common\Helper\Escaper\XLSX;
 use OpenSpout\Reader\Common\Entity\Options;
+use OpenSpout\Reader\Common\Manager\RowManager;
 use OpenSpout\Reader\Common\XMLProcessor;
-use OpenSpout\Reader\XLSX\Creator\InternalEntityFactory;
+use OpenSpout\Reader\Wrapper\XMLReader;
+use OpenSpout\Reader\XLSX\Helper\CellValueFormatter;
+use OpenSpout\Reader\XLSX\RowIterator;
 use OpenSpout\Reader\XLSX\Sheet;
 
 /**
@@ -44,9 +48,6 @@ class SheetManager
     /** @var \OpenSpout\Reader\XLSX\Manager\SharedStringsManager Manages shared strings */
     protected $sharedStringsManager;
 
-    /** @var InternalEntityFactory Factory to create entities */
-    protected $entityFactory;
-
     /** @var \OpenSpout\Common\Helper\Escaper\XLSX Used to unescape XML data */
     protected $escaper;
 
@@ -64,16 +65,14 @@ class SheetManager
      * @param \OpenSpout\Common\Manager\OptionsManagerInterface   $optionsManager       Reader's options manager
      * @param \OpenSpout\Reader\XLSX\Manager\SharedStringsManager $sharedStringsManager Manages shared strings
      * @param \OpenSpout\Common\Helper\Escaper\XLSX               $escaper              Used to unescape XML data
-     * @param InternalEntityFactory                               $entityFactory        Factory to create entities
      * @param mixed                                               $sharedStringsManager
      */
-    public function __construct($filePath, $optionsManager, $sharedStringsManager, $escaper, $entityFactory)
+    public function __construct($filePath, $optionsManager, $sharedStringsManager, $escaper)
     {
         $this->filePath = $filePath;
         $this->optionsManager = $optionsManager;
         $this->sharedStringsManager = $sharedStringsManager;
         $this->escaper = $escaper;
-        $this->entityFactory = $entityFactory;
     }
 
     /**
@@ -88,8 +87,8 @@ class SheetManager
         $this->currentSheetIndex = 0;
         $this->activeSheetIndex = 0; // By default, the first sheet is active
 
-        $xmlReader = $this->entityFactory->createXMLReader();
-        $xmlProcessor = $this->entityFactory->createXMLProcessor($xmlReader);
+        $xmlReader = new XMLReader();
+        $xmlProcessor = new XMLProcessor($xmlReader);
 
         $xmlProcessor->registerCallback(self::XML_NODE_WORKBOOK_PROPERTIES, XMLProcessor::NODE_TYPE_START, [$this, 'processWorkbookPropertiesStartingNode']);
         $xmlProcessor->registerCallback(self::XML_NODE_WORKBOOK_VIEW, XMLProcessor::NODE_TYPE_START, [$this, 'processWorkbookViewStartingNode']);
@@ -178,15 +177,12 @@ class SheetManager
 
         $sheetDataXMLFilePath = $this->getSheetDataXMLFilePathForSheetId($sheetId);
 
-        return $this->entityFactory->createSheet(
-            $this->filePath,
-            $sheetDataXMLFilePath,
+        return new Sheet(
+            $this->createRowIterator($this->filePath, $sheetDataXMLFilePath, $this->optionsManager, $this->sharedStringsManager),
             $sheetIndexZeroBased,
             $sheetName,
             $isSheetActive,
-            $isSheetVisible,
-            $this->optionsManager,
-            $this->sharedStringsManager
+            $isSheetVisible
         );
     }
 
@@ -200,7 +196,7 @@ class SheetManager
         $sheetDataXMLFilePath = '';
 
         // find the file path of the sheet, by looking at the "workbook.xml.res" file
-        $xmlReader = $this->entityFactory->createXMLReader();
+        $xmlReader = new XMLReader();
         if ($xmlReader->openFileInZip($this->filePath, self::WORKBOOK_XML_RELS_FILE_PATH)) {
             while ($xmlReader->read()) {
                 if ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_RELATIONSHIP)) {
@@ -225,5 +221,44 @@ class SheetManager
         }
 
         return $sheetDataXMLFilePath;
+    }
+
+    /**
+     * @param string                                            $filePath             Path of the XLSX file being read
+     * @param string                                            $sheetDataXMLFilePath Path of the sheet data XML file as in [Content_Types].xml
+     * @param \OpenSpout\Common\Manager\OptionsManagerInterface $optionsManager       Reader's options manager
+     * @param SharedStringsManager                              $sharedStringsManager Manages shared strings
+     *
+     * @return RowIterator
+     */
+    private function createRowIterator($filePath, $sheetDataXMLFilePath, $optionsManager, $sharedStringsManager)
+    {
+        $xmlReader = new XMLReader();
+        $xmlProcessor = new XMLProcessor($xmlReader);
+
+        $styleManager = new StyleManager($filePath, new WorkbookRelationshipsManager($filePath));
+        $rowManager = new RowManager();
+        $shouldFormatDates = $optionsManager->getOption(Options::SHOULD_FORMAT_DATES);
+        $shouldUse1904Dates = $optionsManager->getOption(Options::SHOULD_USE_1904_DATES);
+
+        $cellValueFormatter = new CellValueFormatter(
+            $sharedStringsManager,
+            $styleManager,
+            $shouldFormatDates,
+            $shouldUse1904Dates,
+            new XLSX()
+        );
+
+        $shouldPreserveEmptyRows = $optionsManager->getOption(Options::SHOULD_PRESERVE_EMPTY_ROWS);
+
+        return new RowIterator(
+            $filePath,
+            $sheetDataXMLFilePath,
+            $shouldPreserveEmptyRows,
+            $xmlReader,
+            $xmlProcessor,
+            $cellValueFormatter,
+            $rowManager
+        );
     }
 }

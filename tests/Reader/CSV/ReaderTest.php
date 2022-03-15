@@ -4,7 +4,6 @@ namespace OpenSpout\Reader\CSV;
 
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\EncodingHelper;
-use OpenSpout\Reader\CSV\Creator\InternalEntityFactory;
 use OpenSpout\Reader\CSV\Manager\OptionsManager;
 use OpenSpout\Reader\Exception\ReaderNotOpenedException;
 use OpenSpout\Reader\ReaderInterface;
@@ -22,14 +21,14 @@ final class ReaderTest extends TestCase
     {
         $this->expectException(IOException::class);
 
-        $this->createCSVReader(null)->open('/path/to/fake/file.csv');
+        $this->createCSVReader(null, null)->open('/path/to/fake/file.csv');
     }
 
     public function testOpenShouldThrowExceptionIfTryingToReadBeforeOpeningReader()
     {
         $this->expectException(ReaderNotOpenedException::class);
 
-        $this->createCSVReader(null)->getSheetIterator();
+        $this->createCSVReader(null, null)->getSheetIterator();
     }
 
     /**
@@ -44,7 +43,7 @@ final class ReaderTest extends TestCase
 
         static::assertTrue(copy($resourcePath, $testPath));
         static::assertTrue(chmod($testPath, 0));
-        $reader = $this->createCSVReader(null);
+        $reader = $this->createCSVReader(null, null);
 
         $this->expectException(IOException::class);
         $reader->open($testPath);
@@ -271,7 +270,7 @@ final class ReaderTest extends TestCase
         $allRows = [];
         $resourcePath = $this->getResourcePath('csv_standard.csv');
 
-        $reader = $this->createCSVReader(null);
+        $reader = $this->createCSVReader(null, null);
         $reader->open($resourcePath);
 
         foreach ($reader->getSheetIterator() as $sheet);
@@ -365,7 +364,7 @@ final class ReaderTest extends TestCase
         stream_wrapper_register('spout', SpoutTestStream::CLASS_NAME);
 
         /** @var \OpenSpout\Reader\CSV\Reader $reader */
-        $reader = $this->createCSVReader(null);
+        $reader = $this->createCSVReader(null, null);
         $reader->open($resourcePath);
 
         foreach ($reader->getSheetIterator() as $sheet) {
@@ -392,23 +391,19 @@ final class ReaderTest extends TestCase
         $this->expectException(IOException::class);
 
         /** @var \OpenSpout\Reader\CSV\Reader $reader */
-        $reader = $this->createCSVReader(null);
+        $reader = $this->createCSVReader(null, null);
         $reader->open('unsupported://foobar');
     }
 
     /**
-     * @param null|\OpenSpout\Common\Manager\OptionsManagerInterface $optionsManager
-     *
      * @return ReaderInterface
      */
-    private function createCSVReader($optionsManager, ?EncodingHelper $encodingHelper = null)
+    private function createCSVReader(?OptionsManager $optionsManager, ?EncodingHelper $encodingHelper)
     {
-        $optionsManager ??= new OptionsManager();
-        $entityFactory = new InternalEntityFactory(
+        return new Reader(
+            $optionsManager ?? new OptionsManager(),
             $encodingHelper ?? EncodingHelper::factory()
         );
-
-        return new Reader($optionsManager, $entityFactory);
     }
 
     /**
@@ -431,7 +426,7 @@ final class ReaderTest extends TestCase
         $resourcePath = $this->getResourcePath($fileName);
 
         /** @var \OpenSpout\Reader\CSV\Reader $reader */
-        $reader = $this->createCSVReader(null);
+        $reader = $this->createCSVReader(null, null);
         $reader
             ->setFieldDelimiter($fieldDelimiter)
             ->setFieldEnclosure($fieldEnclosure)

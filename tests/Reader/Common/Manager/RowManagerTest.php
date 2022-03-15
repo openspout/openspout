@@ -4,9 +4,6 @@ namespace OpenSpout\Reader\Common\Manager;
 
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
-use OpenSpout\Reader\XLSX\Creator\HelperFactory;
-use OpenSpout\Reader\XLSX\Creator\InternalEntityFactory;
-use OpenSpout\Reader\XLSX\Creator\ManagerFactory;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -36,7 +33,7 @@ final class RowManagerTest extends TestCase
      */
     public function testFillMissingIndexesWithEmptyCells($rowCells, $expectedFilledCells)
     {
-        $rowManager = $this->createRowManager();
+        $rowManager = new RowManager();
 
         $rowToFill = new Row([], null);
         foreach ($rowCells as $cellIndex => $cell) {
@@ -68,22 +65,9 @@ final class RowManagerTest extends TestCase
      */
     public function testIsEmptyRow(array $cells, $expectedIsEmpty)
     {
-        $rowManager = $this->createRowManager();
+        $rowManager = new RowManager();
         $row = new Row($cells, null);
 
         static::assertSame($expectedIsEmpty, $rowManager->isEmpty($row));
-    }
-
-    /**
-     * @return RowManager
-     */
-    private function createRowManager()
-    {
-        $entityFactory = new InternalEntityFactory(
-            $this->createMock(ManagerFactory::class),
-            $this->createMock(HelperFactory::class)
-        );
-
-        return new RowManager($entityFactory);
     }
 }

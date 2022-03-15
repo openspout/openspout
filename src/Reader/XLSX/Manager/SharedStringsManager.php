@@ -5,8 +5,6 @@ namespace OpenSpout\Reader\XLSX\Manager;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Reader\Exception\XMLProcessingException;
 use OpenSpout\Reader\Wrapper\XMLReader;
-use OpenSpout\Reader\XLSX\Creator\HelperFactory;
-use OpenSpout\Reader\XLSX\Creator\InternalEntityFactory;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyInterface;
 
@@ -36,12 +34,6 @@ class SharedStringsManager
     /** @var WorkbookRelationshipsManager Helps retrieving workbook relationships */
     protected $workbookRelationshipsManager;
 
-    /** @var InternalEntityFactory Factory to create entities */
-    protected $entityFactory;
-
-    /** @var HelperFactory Factory to create helpers */
-    protected $helperFactory;
-
     /** @var CachingStrategyFactory Factory to create shared strings caching strategies */
     protected $cachingStrategyFactory;
 
@@ -52,23 +44,17 @@ class SharedStringsManager
      * @param string                       $filePath                     Path of the XLSX file being read
      * @param string                       $tempFolder                   Temporary folder where the temporary files to store shared strings will be stored
      * @param WorkbookRelationshipsManager $workbookRelationshipsManager Helps retrieving workbook relationships
-     * @param InternalEntityFactory        $entityFactory                Factory to create entities
-     * @param HelperFactory                $helperFactory                Factory to create helpers
      * @param CachingStrategyFactory       $cachingStrategyFactory       Factory to create shared strings caching strategies
      */
     public function __construct(
         $filePath,
         $tempFolder,
         $workbookRelationshipsManager,
-        $entityFactory,
-        $helperFactory,
         $cachingStrategyFactory
     ) {
         $this->filePath = $filePath;
         $this->tempFolder = $tempFolder;
         $this->workbookRelationshipsManager = $workbookRelationshipsManager;
-        $this->entityFactory = $entityFactory;
-        $this->helperFactory = $helperFactory;
         $this->cachingStrategyFactory = $cachingStrategyFactory;
     }
 
@@ -97,7 +83,7 @@ class SharedStringsManager
     public function extractSharedStrings()
     {
         $sharedStringsXMLFilePath = $this->workbookRelationshipsManager->getSharedStringsXMLFilePath();
-        $xmlReader = $this->entityFactory->createXMLReader();
+        $xmlReader = new XMLReader();
         $sharedStringIndex = 0;
 
         if (false === $xmlReader->openFileInZip($this->filePath, $sharedStringsXMLFilePath)) {
@@ -189,7 +175,7 @@ class SharedStringsManager
     protected function getBestSharedStringsCachingStrategy($sharedStringsUniqueCount)
     {
         return $this->cachingStrategyFactory
-            ->createBestCachingStrategy($sharedStringsUniqueCount, $this->tempFolder, $this->helperFactory)
+            ->createBestCachingStrategy($sharedStringsUniqueCount, $this->tempFolder)
         ;
     }
 

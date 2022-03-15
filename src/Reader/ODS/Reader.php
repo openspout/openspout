@@ -3,7 +3,8 @@
 namespace OpenSpout\Reader\ODS;
 
 use OpenSpout\Common\Exception\IOException;
-use OpenSpout\Reader\ODS\Creator\InternalEntityFactory;
+use OpenSpout\Common\Helper\Escaper\ODS;
+use OpenSpout\Reader\ODS\Helper\SettingsHelper;
 use OpenSpout\Reader\ReaderAbstract;
 
 /**
@@ -37,15 +38,10 @@ class Reader extends ReaderAbstract
      */
     protected function openReader($filePath)
     {
-        /** @var InternalEntityFactory $entityFactory */
-        $entityFactory = $this->entityFactory;
-
-        $this->zip = $entityFactory->createZipArchive();
+        $this->zip = new \ZipArchive();
 
         if (true === $this->zip->open($filePath)) {
-            /** @var InternalEntityFactory $entityFactory */
-            $entityFactory = $this->entityFactory;
-            $this->sheetIterator = $entityFactory->createSheetIterator($filePath, $this->optionsManager);
+            $this->sheetIterator = new SheetIterator($filePath, $this->optionsManager, new ODS(), new SettingsHelper());
         } else {
             throw new IOException("Could not open {$filePath} for reading.");
         }

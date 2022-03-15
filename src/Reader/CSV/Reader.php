@@ -2,10 +2,9 @@
 
 namespace OpenSpout\Reader\CSV;
 
+use OpenSpout\Common\Helper\EncodingHelper;
 use OpenSpout\Common\Manager\OptionsManagerInterface;
-use OpenSpout\Reader\Common\Creator\InternalEntityFactoryInterface;
 use OpenSpout\Reader\Common\Entity\Options;
-use OpenSpout\Reader\CSV\Creator\InternalEntityFactory;
 use OpenSpout\Reader\ReaderAbstract;
 
 /**
@@ -25,12 +24,15 @@ class Reader extends ReaderAbstract
     /** @var bool Whether the code is running with PHP >= 8.1 */
     private $isRunningAtLeastPhp81;
 
+    private EncodingHelper $encodingHelper;
+
     public function __construct(
         OptionsManagerInterface $optionsManager,
-        InternalEntityFactoryInterface $entityFactory
+        EncodingHelper $encodingHelper
     ) {
-        parent::__construct($optionsManager, $entityFactory);
+        parent::__construct($optionsManager);
         $this->isRunningAtLeastPhp81 = version_compare(PHP_VERSION, '8.1.0') >= 0;
+        $this->encodingHelper = $encodingHelper;
     }
 
     /**
@@ -107,12 +109,14 @@ class Reader extends ReaderAbstract
         $this->filePointer = fopen($filePath, 'r');
         \assert(false !== $this->filePointer);
 
-        /** @var InternalEntityFactory $entityFactory */
-        $entityFactory = $this->entityFactory;
-
-        $this->sheetIterator = $entityFactory->createSheetIterator(
-            $this->filePointer,
-            $this->optionsManager
+        $this->sheetIterator = new SheetIterator(
+            new Sheet(
+                new RowIterator(
+                    $this->filePointer,
+                    $this->optionsManager,
+                    $this->encodingHelper
+                )
+            )
         );
     }
 

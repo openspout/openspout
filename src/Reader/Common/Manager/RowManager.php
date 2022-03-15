@@ -2,22 +2,11 @@
 
 namespace OpenSpout\Reader\Common\Manager;
 
+use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
-use OpenSpout\Reader\Common\Creator\InternalEntityFactoryInterface;
 
 class RowManager
 {
-    /** @var InternalEntityFactoryInterface Factory to create entities */
-    private $entityFactory;
-
-    /**
-     * @param InternalEntityFactoryInterface $entityFactory Factory to create entities
-     */
-    public function __construct(InternalEntityFactoryInterface $entityFactory)
-    {
-        $this->entityFactory = $entityFactory;
-    }
-
     /**
      * Detect whether a row is considered empty.
      * An empty row has all of its cells empty.
@@ -62,7 +51,7 @@ class RowManager
 
         for ($cellIndex = 0; $cellIndex < $maxCellIndex; ++$cellIndex) {
             if (!isset($rowCells[$cellIndex])) {
-                $row->setCellAtIndex($this->entityFactory->createCell(''), $cellIndex);
+                $row->setCellAtIndex(new Cell(''), $cellIndex);
                 $needsSorting = true;
             }
         }

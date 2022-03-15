@@ -2,18 +2,15 @@
 
 namespace OpenSpout\Writer\Common\Creator;
 
-use OpenSpout\Common\Creator\HelperFactory;
 use OpenSpout\Common\Exception\UnsupportedTypeException;
 use OpenSpout\Common\Type;
 use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
 use OpenSpout\Writer\CSV\Manager\OptionsManager as CSVOptionsManager;
 use OpenSpout\Writer\CSV\Writer as CSVWriter;
-use OpenSpout\Writer\ODS\Creator\HelperFactory as ODSHelperFactory;
 use OpenSpout\Writer\ODS\Creator\ManagerFactory as ODSManagerFactory;
 use OpenSpout\Writer\ODS\Manager\OptionsManager as ODSOptionsManager;
 use OpenSpout\Writer\ODS\Writer as ODSWriter;
 use OpenSpout\Writer\WriterInterface;
-use OpenSpout\Writer\XLSX\Creator\HelperFactory as XLSXHelperFactory;
 use OpenSpout\Writer\XLSX\Creator\ManagerFactory as XLSXManagerFactory;
 use OpenSpout\Writer\XLSX\Manager\OptionsManager as XLSXOptionsManager;
 use OpenSpout\Writer\XLSX\Writer as XLSXWriter;
@@ -70,9 +67,7 @@ class WriterFactory
     {
         $optionsManager = new CSVOptionsManager();
 
-        $helperFactory = new HelperFactory();
-
-        return new CSVWriter($optionsManager, $helperFactory);
+        return new CSVWriter($optionsManager);
     }
 
     /**
@@ -82,11 +77,9 @@ class WriterFactory
     {
         $styleBuilder = new StyleBuilder();
         $optionsManager = new XLSXOptionsManager($styleBuilder);
+        $managerFactory = new XLSXManagerFactory();
 
-        $helperFactory = new XLSXHelperFactory();
-        $managerFactory = new XLSXManagerFactory(new InternalEntityFactory(), $helperFactory);
-
-        return new XLSXWriter($optionsManager, $helperFactory, $managerFactory);
+        return new XLSXWriter($optionsManager, $managerFactory);
     }
 
     /**
@@ -96,10 +89,8 @@ class WriterFactory
     {
         $styleBuilder = new StyleBuilder();
         $optionsManager = new ODSOptionsManager($styleBuilder);
+        $managerFactory = new ODSManagerFactory();
 
-        $helperFactory = new ODSHelperFactory();
-        $managerFactory = new ODSManagerFactory(new InternalEntityFactory(), $helperFactory);
-
-        return new ODSWriter($optionsManager, $helperFactory, $managerFactory);
+        return new ODSWriter($optionsManager, $managerFactory);
     }
 }

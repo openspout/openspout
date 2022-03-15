@@ -3,7 +3,7 @@
 namespace OpenSpout\Reader\ODS\Helper;
 
 use OpenSpout\Reader\Exception\XMLProcessingException;
-use OpenSpout\Reader\ODS\Creator\InternalEntityFactory;
+use OpenSpout\Reader\Wrapper\XMLReader;
 
 /**
  * This class provides helper functions to extract data from the "settings.xml" file.
@@ -17,17 +17,6 @@ class SettingsHelper
     public const XML_ATTRIBUTE_CONFIG_NAME = 'config:name';
     public const XML_ATTRIBUTE_VALUE_ACTIVE_TABLE = 'ActiveTable';
 
-    /** @var InternalEntityFactory Factory to create entities */
-    private $entityFactory;
-
-    /**
-     * @param InternalEntityFactory $entityFactory Factory to create entities
-     */
-    public function __construct($entityFactory)
-    {
-        $this->entityFactory = $entityFactory;
-    }
-
     /**
      * @param string $filePath Path of the file to be read
      *
@@ -35,7 +24,7 @@ class SettingsHelper
      */
     public function getActiveSheetName($filePath)
     {
-        $xmlReader = $this->entityFactory->createXMLReader();
+        $xmlReader = new XMLReader();
         if (false === $xmlReader->openFileInZip($filePath, self::SETTINGS_XML_FILE_PATH)) {
             return null;
         }

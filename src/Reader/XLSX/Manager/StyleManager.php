@@ -2,7 +2,7 @@
 
 namespace OpenSpout\Reader\XLSX\Manager;
 
-use OpenSpout\Reader\XLSX\Creator\InternalEntityFactory;
+use OpenSpout\Reader\Wrapper\XMLReader;
 
 /**
  * This class manages XLSX styles.
@@ -54,9 +54,6 @@ class StyleManager
     /** @var null|string Path of the styles XML file */
     protected $stylesXMLFilePath;
 
-    /** @var InternalEntityFactory Factory to create entities */
-    protected $entityFactory;
-
     /** @var array Array containing the IDs of built-in number formats indicating a date */
     protected $builtinNumFmtIdIndicatingDates;
 
@@ -72,12 +69,10 @@ class StyleManager
     /**
      * @param string                       $filePath                     Path of the XLSX file being read
      * @param WorkbookRelationshipsManager $workbookRelationshipsManager Helps retrieving workbook relationships
-     * @param InternalEntityFactory        $entityFactory                Factory to create entities
      */
-    public function __construct($filePath, $workbookRelationshipsManager, $entityFactory)
+    public function __construct($filePath, $workbookRelationshipsManager)
     {
         $this->filePath = $filePath;
-        $this->entityFactory = $entityFactory;
         $this->builtinNumFmtIdIndicatingDates = array_keys(self::$builtinNumFmtIdToNumFormatMapping);
         $this->hasStylesXMLFile = $workbookRelationshipsManager->hasStylesXMLFile();
         if ($this->hasStylesXMLFile) {
@@ -145,7 +140,7 @@ class StyleManager
         $this->customNumberFormats = [];
         $this->stylesAttributes = [];
 
-        $xmlReader = $this->entityFactory->createXMLReader();
+        $xmlReader = new XMLReader();
 
         if ($xmlReader->openFileInZip($this->filePath, $this->stylesXMLFilePath)) {
             while ($xmlReader->read()) {

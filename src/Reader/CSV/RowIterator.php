@@ -2,11 +2,11 @@
 
 namespace OpenSpout\Reader\CSV;
 
+use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Helper\EncodingHelper;
 use OpenSpout\Common\Manager\OptionsManagerInterface;
 use OpenSpout\Reader\Common\Entity\Options;
-use OpenSpout\Reader\CSV\Creator\InternalEntityFactory;
 use OpenSpout\Reader\RowIteratorInterface;
 
 /**
@@ -46,17 +46,13 @@ class RowIterator implements RowIteratorInterface
     /** @var \OpenSpout\Common\Helper\EncodingHelper Helper to work with different encodings */
     protected $encodingHelper;
 
-    /** @var \OpenSpout\Reader\CSV\Creator\InternalEntityFactory Factory to create entities */
-    protected $entityFactory;
-
     /**
      * @param resource $filePointer Pointer to the CSV file to read
      */
     public function __construct(
         $filePointer,
         OptionsManagerInterface $optionsManager,
-        EncodingHelper $encodingHelper,
-        InternalEntityFactory $entityFactory
+        EncodingHelper $encodingHelper
     ) {
         $this->filePointer = $filePointer;
         $this->fieldDelimiter = $optionsManager->getOption(Options::FIELD_DELIMITER);
@@ -64,7 +60,6 @@ class RowIterator implements RowIteratorInterface
         $this->encoding = $optionsManager->getOption(Options::ENCODING);
         $this->shouldPreserveEmptyRows = $optionsManager->getOption(Options::SHOULD_PRESERVE_EMPTY_ROWS);
         $this->encodingHelper = $encodingHelper;
-        $this->entityFactory = $entityFactory;
     }
 
     /**
@@ -166,7 +161,9 @@ class RowIterator implements RowIteratorInterface
         if (false !== $rowData) {
             // array_map will replace NULL values by empty strings
             $rowDataBufferAsArray = array_map(function ($value) { return (string) $value; }, $rowData);
-            $this->rowBuffer = $this->entityFactory->createRowFromArray($rowDataBufferAsArray);
+            $this->rowBuffer = new Row(array_map(function ($cellValue) {
+                return new Cell($cellValue);
+            }, $rowDataBufferAsArray), null);
             ++$this->numReadRows;
         } else {
             // If we reach this point, it means end of file was reached.
