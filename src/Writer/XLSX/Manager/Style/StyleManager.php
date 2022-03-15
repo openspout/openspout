@@ -79,7 +79,7 @@ class StyleManager extends \OpenSpout\Writer\Common\Manager\Style\StyleManager
         foreach ($registeredFormats as $styleId) {
             $numFmtId = $this->styleRegistry->getFormatIdForStyleId($styleId);
 
-            //Built-in formats do not need to be declared, skip them
+            // Built-in formats do not need to be declared, skip them
             if ($numFmtId < 164) {
                 continue;
             }

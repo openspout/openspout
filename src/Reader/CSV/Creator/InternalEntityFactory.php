@@ -2,10 +2,9 @@
 
 namespace OpenSpout\Reader\CSV\Creator;
 
-use OpenSpout\Common\Creator\HelperFactory;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
-use OpenSpout\Common\Helper\GlobalFunctionsHelper;
+use OpenSpout\Common\Helper\EncodingHelper;
 use OpenSpout\Common\Manager\OptionsManagerInterface;
 use OpenSpout\Reader\Common\Creator\InternalEntityFactoryInterface;
 use OpenSpout\Reader\CSV\RowIterator;
@@ -17,24 +16,25 @@ use OpenSpout\Reader\CSV\SheetIterator;
  */
 class InternalEntityFactory implements InternalEntityFactoryInterface
 {
-    /** @var HelperFactory */
-    private $helperFactory;
+    /**
+     * @var EncodingHelper
+     */
+    private $encodingHelper;
 
-    public function __construct(HelperFactory $helperFactory)
+    public function __construct(EncodingHelper $encodingHelper)
     {
-        $this->helperFactory = $helperFactory;
+        $this->encodingHelper = $encodingHelper;
     }
 
     /**
-     * @param resource                $filePointer           Pointer to the CSV file to read
+     * @param resource                $filePointer    Pointer to the CSV file to read
      * @param OptionsManagerInterface $optionsManager
-     * @param GlobalFunctionsHelper   $globalFunctionsHelper
      *
      * @return SheetIterator
      */
-    public function createSheetIterator($filePointer, $optionsManager, $globalFunctionsHelper)
+    public function createSheetIterator($filePointer, $optionsManager)
     {
-        $rowIterator = $this->createRowIterator($filePointer, $optionsManager, $globalFunctionsHelper);
+        $rowIterator = $this->createRowIterator($filePointer, $optionsManager);
         $sheet = $this->createSheet($rowIterator);
 
         return new SheetIterator($sheet);
@@ -83,16 +83,13 @@ class InternalEntityFactory implements InternalEntityFactoryInterface
     }
 
     /**
-     * @param resource                $filePointer           Pointer to the CSV file to read
+     * @param resource                $filePointer    Pointer to the CSV file to read
      * @param OptionsManagerInterface $optionsManager
-     * @param GlobalFunctionsHelper   $globalFunctionsHelper
      *
      * @return RowIterator
      */
-    private function createRowIterator($filePointer, $optionsManager, $globalFunctionsHelper)
+    private function createRowIterator($filePointer, $optionsManager)
     {
-        $encodingHelper = $this->helperFactory->createEncodingHelper($globalFunctionsHelper);
-
-        return new RowIterator($filePointer, $optionsManager, $encodingHelper, $this, $globalFunctionsHelper);
+        return new RowIterator($filePointer, $optionsManager, $this->encodingHelper, $this);
     }
 }

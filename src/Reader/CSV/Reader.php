@@ -2,8 +2,6 @@
 
 namespace OpenSpout\Reader\CSV;
 
-use OpenSpout\Common\Exception\IOException;
-use OpenSpout\Common\Helper\GlobalFunctionsHelper;
 use OpenSpout\Common\Manager\OptionsManagerInterface;
 use OpenSpout\Reader\Common\Creator\InternalEntityFactoryInterface;
 use OpenSpout\Reader\Common\Entity\Options;
@@ -29,10 +27,9 @@ class Reader extends ReaderAbstract
 
     public function __construct(
         OptionsManagerInterface $optionsManager,
-        GlobalFunctionsHelper $globalFunctionsHelper,
         InternalEntityFactoryInterface $entityFactory
     ) {
-        parent::__construct($optionsManager, $globalFunctionsHelper, $entityFactory);
+        parent::__construct($optionsManager, $entityFactory);
         $this->isRunningAtLeastPhp81 = version_compare(PHP_VERSION, '8.1.0') >= 0;
     }
 
@@ -103,22 +100,19 @@ class Reader extends ReaderAbstract
     {
         // "auto_detect_line_endings" is deprecated in PHP 8.1
         if (!$this->isRunningAtLeastPhp81) {
-            $this->originalAutoDetectLineEndings = ini_get('auto_detect_line_endings');
+            $this->originalAutoDetectLineEndings = \ini_get('auto_detect_line_endings');
             ini_set('auto_detect_line_endings', '1');
         }
 
-        $this->filePointer = $this->globalFunctionsHelper->fopen($filePath, 'r');
-        if (!$this->filePointer) {
-            throw new IOException("Could not open file {$filePath} for reading.");
-        }
+        $this->filePointer = fopen($filePath, 'r');
+        \assert(false !== $this->filePointer);
 
         /** @var InternalEntityFactory $entityFactory */
         $entityFactory = $this->entityFactory;
 
         $this->sheetIterator = $entityFactory->createSheetIterator(
             $this->filePointer,
-            $this->optionsManager,
-            $this->globalFunctionsHelper
+            $this->optionsManager
         );
     }
 
@@ -138,7 +132,7 @@ class Reader extends ReaderAbstract
     protected function closeReader()
     {
         if (\is_resource($this->filePointer)) {
-            $this->globalFunctionsHelper->fclose($this->filePointer);
+            fclose($this->filePointer);
         }
 
         // "auto_detect_line_endings" is deprecated in PHP 8.1

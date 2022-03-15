@@ -44,9 +44,6 @@ class SheetManager
     /** @var \OpenSpout\Reader\XLSX\Manager\SharedStringsManager Manages shared strings */
     protected $sharedStringsManager;
 
-    /** @var \OpenSpout\Common\Helper\GlobalFunctionsHelper Helper to work with global functions */
-    protected $globalFunctionsHelper;
-
     /** @var InternalEntityFactory Factory to create entities */
     protected $entityFactory;
 

@@ -136,6 +136,6 @@ class CachingStrategyFactory
      */
     protected function getMemoryLimitFromIni()
     {
-        return ini_get('memory_limit');
+        return \ini_get('memory_limit');
     }
 }

@@ -55,7 +55,7 @@ final class SharedStringsManagerTest extends TestCase
         static::assertSame('s1--E5', $sharedString);
 
         $usedCachingStrategy = \ReflectionHelper::getValueOnObject($sharedStringsManager, 'cachingStrategy');
-        static::assertTrue($usedCachingStrategy instanceof InMemoryStrategy);
+        static::assertInstanceOf(InMemoryStrategy::class, $usedCachingStrategy);
     }
 
     public function testGetStringAtIndexShouldWorkWithMultilineStrings()
@@ -94,7 +94,7 @@ final class SharedStringsManagerTest extends TestCase
     public function testGetStringAtIndexWithFileBasedStrategy()
     {
         // force the file-based strategy by setting no memory limit
-        $originalMemoryLimit = ini_get('memory_limit');
+        $originalMemoryLimit = \ini_get('memory_limit');
         ini_set('memory_limit', '-1');
 
         $sharedStringsManager = $this->createSharedStringsManager('sheet_with_lots_of_shared_strings.xlsx');
@@ -108,7 +108,7 @@ final class SharedStringsManagerTest extends TestCase
         static::assertSame('str', $sharedString);
 
         $usedCachingStrategy = \ReflectionHelper::getValueOnObject($sharedStringsManager, 'cachingStrategy');
-        static::assertTrue($usedCachingStrategy instanceof FileBasedStrategy);
+        static::assertInstanceOf(FileBasedStrategy::class, $usedCachingStrategy);
 
         ini_set('memory_limit', $originalMemoryLimit);
     }

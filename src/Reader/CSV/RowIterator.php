@@ -4,7 +4,6 @@ namespace OpenSpout\Reader\CSV;
 
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Helper\EncodingHelper;
-use OpenSpout\Common\Helper\GlobalFunctionsHelper;
 use OpenSpout\Common\Manager\OptionsManagerInterface;
 use OpenSpout\Reader\Common\Entity\Options;
 use OpenSpout\Reader\CSV\Creator\InternalEntityFactory;
@@ -50,9 +49,6 @@ class RowIterator implements RowIteratorInterface
     /** @var \OpenSpout\Reader\CSV\Creator\InternalEntityFactory Factory to create entities */
     protected $entityFactory;
 
-    /** @var \OpenSpout\Common\Helper\GlobalFunctionsHelper Helper to work with global functions */
-    protected $globalFunctionsHelper;
-
     /**
      * @param resource $filePointer Pointer to the CSV file to read
      */
@@ -60,8 +56,7 @@ class RowIterator implements RowIteratorInterface
         $filePointer,
         OptionsManagerInterface $optionsManager,
         EncodingHelper $encodingHelper,
-        InternalEntityFactory $entityFactory,
-        GlobalFunctionsHelper $globalFunctionsHelper
+        InternalEntityFactory $entityFactory
     ) {
         $this->filePointer = $filePointer;
         $this->fieldDelimiter = $optionsManager->getOption(Options::FIELD_DELIMITER);
@@ -70,7 +65,6 @@ class RowIterator implements RowIteratorInterface
         $this->shouldPreserveEmptyRows = $optionsManager->getOption(Options::SHOULD_PRESERVE_EMPTY_ROWS);
         $this->encodingHelper = $encodingHelper;
         $this->entityFactory = $entityFactory;
-        $this->globalFunctionsHelper = $globalFunctionsHelper;
     }
 
     /**
@@ -110,7 +104,7 @@ class RowIterator implements RowIteratorInterface
     #[\ReturnTypeWillChange]
     public function next(): void
     {
-        $this->hasReachedEndOfFile = $this->globalFunctionsHelper->feof($this->filePointer);
+        $this->hasReachedEndOfFile = feof($this->filePointer);
 
         if (!$this->hasReachedEndOfFile) {
             $this->readDataForNextRow();
@@ -157,7 +151,7 @@ class RowIterator implements RowIteratorInterface
         $byteOffsetToSkipBom = $this->encodingHelper->getBytesOffsetToSkipBOM($this->filePointer, $this->encoding);
 
         // sets the cursor after the BOM (0 means no BOM, so rewind it)
-        $this->globalFunctionsHelper->fseek($this->filePointer, $byteOffsetToSkipBom);
+        fseek($this->filePointer, $byteOffsetToSkipBom);
     }
 
     /**
@@ -189,7 +183,7 @@ class RowIterator implements RowIteratorInterface
     protected function shouldReadNextRow($currentRowData)
     {
         $hasSuccessfullyFetchedRowData = (false !== $currentRowData);
-        $hasNowReachedEndOfFile = $this->globalFunctionsHelper->feof($this->filePointer);
+        $hasNowReachedEndOfFile = feof($this->filePointer);
         $isEmptyLine = $this->isEmptyLine($currentRowData);
 
         return
@@ -209,7 +203,7 @@ class RowIterator implements RowIteratorInterface
      */
     protected function getNextUTF8EncodedRow()
     {
-        $encodedRowData = $this->globalFunctionsHelper->fgetcsv($this->filePointer, self::MAX_READ_BYTES_PER_LINE, $this->fieldDelimiter, $this->fieldEnclosure);
+        $encodedRowData = fgetcsv($this->filePointer, self::MAX_READ_BYTES_PER_LINE, $this->fieldDelimiter, $this->fieldEnclosure, '');
         if (false === $encodedRowData) {
             return false;
         }

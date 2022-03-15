@@ -4,7 +4,6 @@ namespace OpenSpout\Writer\Common\Creator;
 
 use OpenSpout\Common\Creator\HelperFactory;
 use OpenSpout\Common\Exception\UnsupportedTypeException;
-use OpenSpout\Common\Helper\GlobalFunctionsHelper;
 use OpenSpout\Common\Type;
 use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
 use OpenSpout\Writer\CSV\Manager\OptionsManager as CSVOptionsManager;
@@ -70,11 +69,10 @@ class WriterFactory
     private static function createCSVWriter()
     {
         $optionsManager = new CSVOptionsManager();
-        $globalFunctionsHelper = new GlobalFunctionsHelper();
 
         $helperFactory = new HelperFactory();
 
-        return new CSVWriter($optionsManager, $globalFunctionsHelper, $helperFactory);
+        return new CSVWriter($optionsManager, $helperFactory);
     }
 
     /**
@@ -84,12 +82,11 @@ class WriterFactory
     {
         $styleBuilder = new StyleBuilder();
         $optionsManager = new XLSXOptionsManager($styleBuilder);
-        $globalFunctionsHelper = new GlobalFunctionsHelper();
 
         $helperFactory = new XLSXHelperFactory();
         $managerFactory = new XLSXManagerFactory(new InternalEntityFactory(), $helperFactory);
 
-        return new XLSXWriter($optionsManager, $globalFunctionsHelper, $helperFactory, $managerFactory);
+        return new XLSXWriter($optionsManager, $helperFactory, $managerFactory);
     }
 
     /**
@@ -99,11 +96,10 @@ class WriterFactory
     {
         $styleBuilder = new StyleBuilder();
         $optionsManager = new ODSOptionsManager($styleBuilder);
-        $globalFunctionsHelper = new GlobalFunctionsHelper();
 
         $helperFactory = new ODSHelperFactory();
         $managerFactory = new ODSManagerFactory(new InternalEntityFactory(), $helperFactory);
 
-        return new ODSWriter($optionsManager, $globalFunctionsHelper, $helperFactory, $managerFactory);
+        return new ODSWriter($optionsManager, $helperFactory, $managerFactory);
     }
 }

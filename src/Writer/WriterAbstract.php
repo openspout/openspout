@@ -8,7 +8,6 @@ use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Common\Exception\InvalidArgumentException;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Exception\SpoutException;
-use OpenSpout\Common\Helper\GlobalFunctionsHelper;
 use OpenSpout\Common\Manager\OptionsManagerInterface;
 use OpenSpout\Writer\Common\Entity\Options;
 use OpenSpout\Writer\Exception\WriterAlreadyOpenedException;
@@ -25,9 +24,6 @@ abstract class WriterAbstract implements WriterInterface
     /** @var bool Indicates whether the writer has been opened or not */
     protected $isWriterOpened = false;
 
-    /** @var GlobalFunctionsHelper Helper to work with global functions */
-    protected $globalFunctionsHelper;
-
     /** @var HelperFactory */
     protected $helperFactory;
 
@@ -39,11 +35,9 @@ abstract class WriterAbstract implements WriterInterface
 
     public function __construct(
         OptionsManagerInterface $optionsManager,
-        GlobalFunctionsHelper $globalFunctionsHelper,
         HelperFactory $helperFactory
     ) {
         $this->optionsManager = $optionsManager;
-        $this->globalFunctionsHelper = $globalFunctionsHelper;
         $this->helperFactory = $helperFactory;
     }
 
@@ -64,7 +58,7 @@ abstract class WriterAbstract implements WriterInterface
     {
         $this->outputFilePath = $outputFilePath;
 
-        $this->filePointer = $this->globalFunctionsHelper->fopen($this->outputFilePath, 'wb+');
+        $this->filePointer = fopen($this->outputFilePath, 'wb+');
         $this->throwIfFilePointerIsNotAvailable();
 
         $this->openWriter();
@@ -79,14 +73,16 @@ abstract class WriterAbstract implements WriterInterface
      */
     public function openToBrowser($outputFileName)
     {
-        $this->outputFilePath = $this->globalFunctionsHelper->basename($outputFileName);
+        $this->outputFilePath = basename($outputFileName);
 
-        $this->filePointer = $this->globalFunctionsHelper->fopen('php://output', 'w');
+        $this->filePointer = fopen('php://output', 'w');
         $this->throwIfFilePointerIsNotAvailable();
 
         // Clear any previous output (otherwise the generated file will be corrupted)
         // @see https://github.com/box/spout/issues/241
-        $this->globalFunctionsHelper->ob_end_clean();
+        if (ob_get_length() > 0) {
+            ob_end_clean();
+        }
 
         /*
          * Set headers
@@ -102,8 +98,8 @@ abstract class WriterAbstract implements WriterInterface
          * @see https://tools.ietf.org/html/rfc6266
          * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition
          */
-        $this->globalFunctionsHelper->header('Content-Type: '.static::$headerContentType);
-        $this->globalFunctionsHelper->header(
+        header('Content-Type: '.static::$headerContentType);
+        header(
             'Content-Disposition: attachment; '.
             'filename="'.rawurldecode($this->outputFilePath).'"; '.
             'filename*=UTF-8\'\''.rawurldecode($this->outputFilePath)
@@ -116,8 +112,8 @@ abstract class WriterAbstract implements WriterInterface
          * @see http://support.microsoft.com/KB/323308
          * @see https://github.com/liuggio/ExcelBundle/issues/45
          */
-        $this->globalFunctionsHelper->header('Cache-Control: max-age=0');
-        $this->globalFunctionsHelper->header('Pragma: public');
+        header('Cache-Control: max-age=0');
+        header('Pragma: public');
 
         $this->openWriter();
         $this->isWriterOpened = true;
@@ -178,7 +174,7 @@ abstract class WriterAbstract implements WriterInterface
         $this->closeWriter();
 
         if (\is_resource($this->filePointer)) {
-            $this->globalFunctionsHelper->fclose($this->filePointer);
+            fclose($this->filePointer);
         }
 
         $this->isWriterOpened = false;
@@ -244,7 +240,7 @@ abstract class WriterAbstract implements WriterInterface
         $this->close();
 
         // remove output file if it was created
-        if ($this->globalFunctionsHelper->file_exists($this->outputFilePath)) {
+        if (file_exists($this->outputFilePath)) {
             $outputFolderPath = \dirname($this->outputFilePath);
             $fileSystemHelper = $this->helperFactory->createFileSystemHelper($outputFolderPath);
             $fileSystemHelper->deleteFile($this->outputFilePath);
