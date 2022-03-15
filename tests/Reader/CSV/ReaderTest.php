@@ -35,7 +35,9 @@ final class ReaderTest extends TestCase
     public function testOpenShouldThrowExceptionIfFileNotReadable()
     {
         $resourcePath = $this->getResourcePath('csv_standard.csv');
-        $testPath = $this->generatedResourcesPath.\DIRECTORY_SEPARATOR.uniqid().basename($resourcePath);
+        $testFilename = uniqid().basename($resourcePath);
+        $this->createGeneratedFolderIfNeeded($testFilename);
+        $testPath = $this->getGeneratedResourcePath($testFilename);
 
         static::assertTrue(copy($resourcePath, $testPath));
         static::assertTrue(chmod($testPath, 0));
