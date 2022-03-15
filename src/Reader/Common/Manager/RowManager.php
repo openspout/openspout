@@ -10,10 +10,8 @@ class RowManager
     /**
      * Detect whether a row is considered empty.
      * An empty row has all of its cells empty.
-     *
-     * @return bool
      */
-    public function isEmpty(Row $row)
+    public function isEmpty(Row $row): bool
     {
         foreach ($row->getCells() as $cell) {
             if (!$cell->isEmpty()) {
@@ -26,10 +24,8 @@ class RowManager
 
     /**
      * Fills the missing indexes of a row with empty cells.
-     *
-     * @return Row
      */
-    public function fillMissingIndexesWithEmptyCells(Row $row)
+    public function fillMissingIndexesWithEmptyCells(Row $row): Row
     {
         $numCells = $row->getNumCells();
 

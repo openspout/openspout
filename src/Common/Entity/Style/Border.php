@@ -20,7 +20,7 @@ class Border
     public const WIDTH_THICK = 'thick';
 
     /** @var array A list of BorderPart objects for this border. */
-    private $parts = [];
+    private array $parts = [];
 
     public function __construct(array $borderParts = [])
     {
@@ -29,38 +29,29 @@ class Border
 
     /**
      * @param string $name The name of the border part
-     *
-     * @return null|BorderPart
      */
-    public function getPart($name)
+    public function getPart(string $name): ?BorderPart
     {
         return $this->hasPart($name) ? $this->parts[$name] : null;
     }
 
     /**
      * @param string $name The name of the border part
-     *
-     * @return bool
      */
-    public function hasPart($name)
+    public function hasPart(string $name): bool
     {
         return isset($this->parts[$name]);
     }
 
-    /**
-     * @return array
-     */
-    public function getParts()
+    public function getParts(): array
     {
         return $this->parts;
     }
 
     /**
      * Set BorderParts.
-     *
-     * @param array $parts
      */
-    public function setParts($parts)
+    public function setParts(array $parts)
     {
         $this->parts = [];
         foreach ($parts as $part) {
@@ -68,10 +59,7 @@ class Border
         }
     }
 
-    /**
-     * @return Border
-     */
-    public function addPart(BorderPart $borderPart)
+    public function addPart(BorderPart $borderPart): self
     {
         $this->parts[$borderPart->getName()] = $borderPart;
 

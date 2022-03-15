@@ -11,7 +11,7 @@ use OpenSpout\Writer\WriterMultiSheetsAbstract;
 class Writer extends WriterMultiSheetsAbstract
 {
     /** @var string Content-Type value for the header */
-    protected static $headerContentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    protected static string $headerContentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 
     /**
      * Sets a custom temporary folder for creating intermediate files/folders.
@@ -20,16 +20,12 @@ class Writer extends WriterMultiSheetsAbstract
      * @param string $tempFolder Temporary folder where the files to create the XLSX will be stored
      *
      * @throws \OpenSpout\Writer\Exception\WriterAlreadyOpenedException If the writer was already opened
-     *
-     * @return Writer
      */
-    public function setTempFolder($tempFolder)
+    public function setTempFolder(string $tempFolder): void
     {
         $this->throwIfWriterAlreadyOpened('Writer must be configured before opening it.');
 
         $this->optionsManager->setOption(Options::TEMP_FOLDER, $tempFolder);
-
-        return $this;
     }
 
     /**
@@ -39,16 +35,12 @@ class Writer extends WriterMultiSheetsAbstract
      * @param bool $shouldUseInlineStrings Whether inline or shared strings should be used
      *
      * @throws \OpenSpout\Writer\Exception\WriterAlreadyOpenedException If the writer was already opened
-     *
-     * @return Writer
      */
-    public function setShouldUseInlineStrings($shouldUseInlineStrings)
+    public function setShouldUseInlineStrings(bool $shouldUseInlineStrings): void
     {
         $this->throwIfWriterAlreadyOpened('Writer must be configured before opening it.');
 
         $this->optionsManager->setOption(Options::SHOULD_USE_INLINE_STRINGS, $shouldUseInlineStrings);
-
-        return $this;
     }
 
     /**
@@ -60,13 +52,9 @@ class Writer extends WriterMultiSheetsAbstract
      *
      * @param int[] $range1 - top left cell's coordinate [column, row]
      * @param int[] $range2 - bottom right cell's coordinate [column, row]
-     *
-     * @return $this
      */
-    public function mergeCells(array $range1, array $range2)
+    public function mergeCells(array $range1, array $range2): void
     {
         $this->optionsManager->addOption(Options::MERGE_CELLS, [$range1, $range2]);
-
-        return $this;
     }
 }

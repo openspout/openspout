@@ -54,7 +54,7 @@ class CachingStrategyFactory
      *
      * @return CachingStrategyInterface The best caching strategy
      */
-    public function createBestCachingStrategy($sharedStringsUniqueCount, $tempFolder)
+    public function createBestCachingStrategy(?int $sharedStringsUniqueCount, string $tempFolder): CachingStrategyInterface
     {
         if ($this->isInMemoryStrategyUsageSafe($sharedStringsUniqueCount)) {
             return new InMemoryStrategy($sharedStringsUniqueCount);
@@ -68,10 +68,8 @@ class CachingStrategyFactory
      * and the amount of memory available.
      *
      * @param null|int $sharedStringsUniqueCount Number of unique shared strings (NULL if unknown)
-     *
-     * @return bool
      */
-    protected function isInMemoryStrategyUsageSafe($sharedStringsUniqueCount)
+    protected function isInMemoryStrategyUsageSafe(?int $sharedStringsUniqueCount): bool
     {
         // if the number of shared strings in unknown, do not use "in memory" strategy
         if (null === $sharedStringsUniqueCount) {
@@ -93,10 +91,8 @@ class CachingStrategyFactory
 
     /**
      * Returns the PHP "memory_limit" in Kilobytes.
-     *
-     * @return float
      */
-    protected function getMemoryLimitInKB()
+    protected function getMemoryLimitInKB(): float
     {
         $memoryLimitFormatted = $this->getMemoryLimitFromIni();
         $memoryLimitFormatted = strtolower(trim($memoryLimitFormatted));
@@ -128,10 +124,8 @@ class CachingStrategyFactory
 
     /**
      * Returns the formatted "memory_limit" value.
-     *
-     * @return string
      */
-    protected function getMemoryLimitFromIni()
+    protected function getMemoryLimitFromIni(): string
     {
         return \ini_get('memory_limit');
     }

@@ -10,25 +10,25 @@ interface SheetInterface
     /**
      * @return IteratorInterface iterator to iterate over the sheet's rows
      */
-    public function getRowIterator();
+    public function getRowIterator(): IteratorInterface;
 
     /**
      * @return int Index of the sheet
      */
-    public function getIndex();
+    public function getIndex(): int;
 
     /**
      * @return string Name of the sheet
      */
-    public function getName();
+    public function getName(): string;
 
     /**
      * @return bool Whether the sheet was defined as active
      */
-    public function isActive();
+    public function isActive(): bool;
 
     /**
      * @return bool Whether the sheet is visible
      */
-    public function isVisible();
+    public function isVisible(): bool;
 }

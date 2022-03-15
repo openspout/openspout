@@ -114,10 +114,7 @@ final class ReaderTest extends TestCase
         static::assertSame($expectedRows, $allRows);
     }
 
-    /**
-     * @return array
-     */
-    public function dataProviderForTestReadShouldReadEmptyFile()
+    public function dataProviderForTestReadShouldReadEmptyFile(): array
     {
         return [
             ['csv_empty.csv'],
@@ -127,10 +124,8 @@ final class ReaderTest extends TestCase
 
     /**
      * @dataProvider dataProviderForTestReadShouldReadEmptyFile
-     *
-     * @param string $fileName
      */
-    public function testReadShouldReadEmptyFile($fileName)
+    public function testReadShouldReadEmptyFile(string $fileName)
     {
         $allRows = $this->getAllRowsForFile($fileName);
         static::assertSame([], $allRows);
@@ -182,10 +177,7 @@ final class ReaderTest extends TestCase
         static::assertSame("This is,{$newLine}a comma", $allRows[0][0]);
     }
 
-    /**
-     * @return array
-     */
-    public function dataProviderForTestReadShouldSkipBom()
+    public function dataProviderForTestReadShouldSkipBom(): array
     {
         return [
             ['csv_with_utf8_bom.csv', EncodingHelper::ENCODING_UTF8],
@@ -198,11 +190,8 @@ final class ReaderTest extends TestCase
 
     /**
      * @dataProvider dataProviderForTestReadShouldSkipBom
-     *
-     * @param string $fileName
-     * @param string $fileEncoding
      */
-    public function testReadShouldSkipBom($fileName, $fileEncoding)
+    public function testReadShouldSkipBom(string $fileName, string $fileEncoding)
     {
         $allRows = $this->getAllRowsForFile($fileName, ',', '"', $fileEncoding);
 
@@ -214,10 +203,7 @@ final class ReaderTest extends TestCase
         static::assertSame($expectedRows, $allRows);
     }
 
-    /**
-     * @return array
-     */
-    public function dataProviderForTestReadShouldSupportNonUTF8FilesWithoutBOMs()
+    public function dataProviderForTestReadShouldSupportNonUTF8FilesWithoutBOMs(): array
     {
         $shouldUseIconv = true;
         $shouldNotUseIconv = false;
@@ -232,12 +218,8 @@ final class ReaderTest extends TestCase
 
     /**
      * @dataProvider dataProviderForTestReadShouldSupportNonUTF8FilesWithoutBOMs
-     *
-     * @param string $fileName
-     * @param string $fileEncoding
-     * @param bool   $shouldUseIconv
      */
-    public function testReadShouldSupportNonUTF8FilesWithoutBOMs($fileName, $fileEncoding, $shouldUseIconv)
+    public function testReadShouldSupportNonUTF8FilesWithoutBOMs(string $fileName, string $fileEncoding, bool $shouldUseIconv)
     {
         $allRows = [];
         $resourcePath = $this->getResourcePath($fileName);
@@ -395,10 +377,7 @@ final class ReaderTest extends TestCase
         $reader->open('unsupported://foobar');
     }
 
-    /**
-     * @return ReaderInterface
-     */
-    private function createCSVReader(?OptionsManager $optionsManager, ?EncodingHelper $encodingHelper)
+    private function createCSVReader(?OptionsManager $optionsManager, ?EncodingHelper $encodingHelper): ReaderInterface
     {
         return new Reader(
             $optionsManager ?? new OptionsManager(),
@@ -407,21 +386,15 @@ final class ReaderTest extends TestCase
     }
 
     /**
-     * @param string $fileName
-     * @param string $fieldDelimiter
-     * @param string $fieldEnclosure
-     * @param string $encoding
-     * @param bool   $shouldPreserveEmptyRows
-     *
      * @return array All the read rows the given file
      */
     private function getAllRowsForFile(
-        $fileName,
-        $fieldDelimiter = ',',
-        $fieldEnclosure = '"',
-        $encoding = EncodingHelper::ENCODING_UTF8,
-        $shouldPreserveEmptyRows = false
-    ) {
+        string $fileName,
+        string $fieldDelimiter = ',',
+        string $fieldEnclosure = '"',
+        string $encoding = EncodingHelper::ENCODING_UTF8,
+        bool $shouldPreserveEmptyRows = false
+    ): array {
         $allRows = [];
         $resourcePath = $this->getResourcePath($fileName);
 

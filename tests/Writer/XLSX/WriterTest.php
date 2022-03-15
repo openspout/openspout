@@ -2,6 +2,7 @@
 
 namespace OpenSpout\Writer\XLSX;
 
+use DateTimeImmutable;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\InvalidArgumentException;
@@ -315,7 +316,7 @@ final class WriterTest extends TestCase
                 0,
                 10.2,
                 null,
-                new \DateTimeImmutable('2020-03-04 06:00:00', new \DateTimeZone('UTC')),
+                new DateTimeImmutable('2020-03-04 06:00:00', new \DateTimeZone('UTC')),
             ],
         ]);
 
@@ -565,14 +566,9 @@ final class WriterTest extends TestCase
     }
 
     /**
-     * @param Row[]  $allRows
-     * @param string $fileName
-     * @param bool   $shouldUseInlineStrings
-     * @param bool   $shouldCreateSheetsAutomatically
-     *
-     * @return Writer
+     * @param Row[] $allRows
      */
-    private function writeToXLSXFile($allRows, $fileName, $shouldUseInlineStrings = true, $shouldCreateSheetsAutomatically = true)
+    private function writeToXLSXFile(array $allRows, string $fileName, bool $shouldUseInlineStrings = true, bool $shouldCreateSheetsAutomatically = true): Writer
     {
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
@@ -589,15 +585,9 @@ final class WriterTest extends TestCase
     }
 
     /**
-     * @param Row[]  $allRows
-     * @param int    $numSheets
-     * @param string $fileName
-     * @param bool   $shouldUseInlineStrings
-     * @param bool   $shouldCreateSheetsAutomatically
-     *
-     * @return Writer
+     * @param Row[] $allRows
      */
-    private function writeToMultipleSheetsInXLSXFile($allRows, $numSheets, $fileName, $shouldUseInlineStrings = true, $shouldCreateSheetsAutomatically = true)
+    private function writeToMultipleSheetsInXLSXFile(array $allRows, int $numSheets, string $fileName, bool $shouldUseInlineStrings = true, bool $shouldCreateSheetsAutomatically = true): Writer
     {
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
@@ -620,12 +610,9 @@ final class WriterTest extends TestCase
     }
 
     /**
-     * @param string $fileName
-     * @param int    $sheetIndex
-     * @param mixed  $inlineData
-     * @param string $message
+     * @param mixed $inlineData
      */
-    private function assertInlineDataWasWrittenToSheet($fileName, $sheetIndex, $inlineData, $message = '')
+    private function assertInlineDataWasWrittenToSheet(string $fileName, int $sheetIndex, $inlineData, string $message = '')
     {
         $resourcePath = $this->getGeneratedResourcePath($fileName);
         $pathToSheetFile = $resourcePath.'#xl/worksheets/sheet'.$sheetIndex.'.xml';
@@ -635,12 +622,9 @@ final class WriterTest extends TestCase
     }
 
     /**
-     * @param string $fileName
-     * @param int    $sheetIndex
-     * @param mixed  $inlineData
-     * @param string $message
+     * @param mixed $inlineData
      */
-    private function assertInlineDataWasNotWrittenToSheet($fileName, $sheetIndex, $inlineData, $message = '')
+    private function assertInlineDataWasNotWrittenToSheet(string $fileName, int $sheetIndex, $inlineData, string $message = '')
     {
         $resourcePath = $this->getGeneratedResourcePath($fileName);
         $pathToSheetFile = $resourcePath.'#xl/worksheets/sheet'.$sheetIndex.'.xml';
@@ -649,12 +633,7 @@ final class WriterTest extends TestCase
         static::assertStringNotContainsString((string) $inlineData, $xmlContents, $message);
     }
 
-    /**
-     * @param string $fileName
-     * @param string $sharedString
-     * @param string $message
-     */
-    private function assertSharedStringWasWritten($fileName, $sharedString, $message = '')
+    private function assertSharedStringWasWritten(string $fileName, string $sharedString, string $message = '')
     {
         $resourcePath = $this->getGeneratedResourcePath($fileName);
         $pathToSharedStringsFile = $resourcePath.'#xl/sharedStrings.xml';
@@ -664,12 +643,9 @@ final class WriterTest extends TestCase
     }
 
     /**
-     * @param string $fileName
      * @param string $sheetIndex - 1 based
-     *
-     * @return XMLReader
      */
-    private function getXmlReaderForSheetFromXmlFile($fileName, $sheetIndex)
+    private function getXmlReaderForSheetFromXmlFile(string $fileName, string $sheetIndex): XMLReader
     {
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 

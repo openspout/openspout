@@ -8,17 +8,14 @@ namespace OpenSpout\Common\Manager;
 interface OptionsManagerInterface
 {
     /**
-     * @param string $optionName
-     * @param mixed  $optionValue
+     * @param mixed $optionValue
      */
-    public function setOption($optionName, $optionValue);
+    public function setOption(string $optionName, $optionValue);
 
     /**
-     * @param string $optionName
-     *
      * @return null|mixed The set option or NULL if no option with given name found
      */
-    public function getOption($optionName);
+    public function getOption(string $optionName): mixed;
 
     /**
      * Add an option to the internal list of options

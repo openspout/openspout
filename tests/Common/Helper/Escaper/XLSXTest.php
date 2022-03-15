@@ -10,10 +10,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class XLSXTest extends TestCase
 {
-    /**
-     * @return array
-     */
-    public function dataProviderForTestEscape()
+    public function dataProviderForTestEscape(): array
     {
         return [
             ['test', 'test'],
@@ -32,11 +29,8 @@ final class XLSXTest extends TestCase
 
     /**
      * @dataProvider dataProviderForTestEscape
-     *
-     * @param string $stringToEscape
-     * @param string $expectedEscapedString
      */
-    public function testEscape($stringToEscape, $expectedEscapedString)
+    public function testEscape(string $stringToEscape, string $expectedEscapedString)
     {
         $escaper = new Escaper\XLSX();
         $escapedString = $escaper->escape($stringToEscape);
@@ -44,10 +38,7 @@ final class XLSXTest extends TestCase
         static::assertSame($expectedEscapedString, $escapedString, 'Incorrect escaped string');
     }
 
-    /**
-     * @return array
-     */
-    public function dataProviderForTestUnescape()
+    public function dataProviderForTestUnescape(): array
     {
         return [
             ['test', 'test'],
@@ -66,11 +57,8 @@ final class XLSXTest extends TestCase
 
     /**
      * @dataProvider dataProviderForTestUnescape
-     *
-     * @param string $stringToUnescape
-     * @param string $expectedUnescapedString
      */
-    public function testUnescape($stringToUnescape, $expectedUnescapedString)
+    public function testUnescape(string $stringToUnescape, string $expectedUnescapedString)
     {
         $escaper = new Escaper\XLSX();
         $unescapedString = $escaper->unescape($stringToUnescape);

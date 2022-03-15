@@ -52,17 +52,13 @@ class Cell
 
     /**
      * The cell type.
-     *
-     * @var null|int
      */
-    protected $type;
+    protected ?int $type;
 
     /**
      * The cell style.
-     *
-     * @var Style
      */
-    protected $style;
+    protected Style $style;
 
     /**
      * @param null|mixed $value
@@ -73,10 +69,7 @@ class Cell
         $this->setStyle($style);
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return (string) $this->getValue();
     }
@@ -93,103 +86,67 @@ class Cell
     /**
      * @return null|mixed
      */
-    public function getValue()
+    public function getValue(): mixed
     {
         return !$this->isError() ? $this->value : null;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getValueEvenIfError()
+    public function getValueEvenIfError(): mixed
     {
         return $this->value;
     }
 
-    /**
-     * @param null|Style $style
-     */
-    public function setStyle($style)
+    public function setStyle(?Style $style)
     {
         $this->style = $style ?: new Style();
     }
 
-    /**
-     * @return Style
-     */
-    public function getStyle()
+    public function getStyle(): Style
     {
         return $this->style;
     }
 
-    /**
-     * @return null|int
-     */
-    public function getType()
+    public function getType(): ?int
     {
         return $this->type;
     }
 
-    /**
-     * @param int $type
-     */
-    public function setType($type)
+    public function setType(int $type)
     {
         $this->type = $type;
     }
 
-    /**
-     * @return bool
-     */
-    public function isBoolean()
+    public function isBoolean(): bool
     {
         return self::TYPE_BOOLEAN === $this->type;
     }
 
-    /**
-     * @return bool
-     */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return self::TYPE_EMPTY === $this->type;
     }
 
-    /**
-     * @return bool
-     */
-    public function isNumeric()
+    public function isNumeric(): bool
     {
         return self::TYPE_NUMERIC === $this->type;
     }
 
-    /**
-     * @return bool
-     */
-    public function isString()
+    public function isString(): bool
     {
         return self::TYPE_STRING === $this->type;
     }
 
-    /**
-     * @return bool
-     */
-    public function isDate()
+    public function isDate(): bool
     {
         return self::TYPE_DATE === $this->type;
     }
 
-    /**
-     * @return bool
-     */
-    public function isFormula()
+    public function isFormula(): bool
     {
         return self::TYPE_FORMULA === $this->type;
     }
 
-    /**
-     * @return bool
-     */
-    public function isError()
+    public function isError(): bool
     {
         return self::TYPE_ERROR === $this->type;
     }
@@ -198,10 +155,8 @@ class Cell
      * Get the current value type.
      *
      * @param null|mixed $value
-     *
-     * @return int
      */
-    protected function detectType($value)
+    protected function detectType($value): int
     {
         if (CellTypeHelper::isBoolean($value)) {
             return self::TYPE_BOOLEAN;

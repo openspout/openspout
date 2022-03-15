@@ -11,27 +11,27 @@ class BorderPart
     /**
      * @var string the style of this border part
      */
-    protected $style;
+    protected string $style;
 
     /**
      * @var string the name of this border part
      */
-    protected $name;
+    protected string $name;
 
     /**
      * @var string the color of this border part
      */
-    protected $color;
+    protected string $color;
 
     /**
      * @var string the width of this border part
      */
-    protected $width;
+    protected string $width;
 
     /**
      * @var array allowed style constants for parts
      */
-    protected static $allowedStyles = [
+    protected static array $allowedStyles = [
         'none',
         'solid',
         'dashed',
@@ -42,7 +42,7 @@ class BorderPart
     /**
      * @var array allowed names constants for border parts
      */
-    protected static $allowedNames = [
+    protected static array $allowedNames = [
         'left',
         'right',
         'top',
@@ -52,7 +52,7 @@ class BorderPart
     /**
      * @var array allowed width constants for border parts
      */
-    protected static $allowedWidths = [
+    protected static array $allowedWidths = [
         'thin',
         'medium',
         'thick',
@@ -68,7 +68,7 @@ class BorderPart
      * @throws InvalidStyleException
      * @throws InvalidWidthException
      */
-    public function __construct($name, $color = Color::BLACK, $width = Border::WIDTH_MEDIUM, $style = Border::STYLE_SOLID)
+    public function __construct(string $name, string $color = Color::BLACK, string $width = Border::WIDTH_MEDIUM, string $style = Border::STYLE_SOLID)
     {
         $this->setName($name);
         $this->setColor($color);
@@ -76,10 +76,7 @@ class BorderPart
         $this->setStyle($style);
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -89,7 +86,7 @@ class BorderPart
      *
      * @throws InvalidNameException
      */
-    public function setName($name)
+    public function setName(string $name)
     {
         if (!\in_array($name, self::$allowedNames, true)) {
             throw new InvalidNameException($name);
@@ -97,10 +94,7 @@ class BorderPart
         $this->name = $name;
     }
 
-    /**
-     * @return string
-     */
-    public function getStyle()
+    public function getStyle(): string
     {
         return $this->style;
     }
@@ -110,7 +104,7 @@ class BorderPart
      *
      * @throws InvalidStyleException
      */
-    public function setStyle($style)
+    public function setStyle(string $style)
     {
         if (!\in_array($style, self::$allowedStyles, true)) {
             throw new InvalidStyleException($style);
@@ -118,10 +112,7 @@ class BorderPart
         $this->style = $style;
     }
 
-    /**
-     * @return string
-     */
-    public function getColor()
+    public function getColor(): string
     {
         return $this->color;
     }
@@ -129,15 +120,12 @@ class BorderPart
     /**
      * @param string $color The color of the border part @see Color::rgb()
      */
-    public function setColor($color)
+    public function setColor(string $color)
     {
         $this->color = $color;
     }
 
-    /**
-     * @return string
-     */
-    public function getWidth()
+    public function getWidth(): string
     {
         return $this->width;
     }
@@ -147,7 +135,7 @@ class BorderPart
      *
      * @throws InvalidWidthException
      */
-    public function setWidth($width)
+    public function setWidth(string $width)
     {
         if (!\in_array($width, self::$allowedWidths, true)) {
             throw new InvalidWidthException($width);
@@ -155,26 +143,17 @@ class BorderPart
         $this->width = $width;
     }
 
-    /**
-     * @return array
-     */
-    public static function getAllowedStyles()
+    public static function getAllowedStyles(): array
     {
         return self::$allowedStyles;
     }
 
-    /**
-     * @return array
-     */
-    public static function getAllowedNames()
+    public static function getAllowedNames(): array
     {
         return self::$allowedNames;
     }
 
-    /**
-     * @return array
-     */
-    public static function getAllowedWidths()
+    public static function getAllowedWidths(): array
     {
         return self::$allowedWidths;
     }

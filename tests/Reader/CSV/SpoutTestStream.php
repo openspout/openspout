@@ -13,34 +13,19 @@ class SpoutTestStream
     public const PATH_TO_CSV_RESOURCES = 'tests/resources/csv/';
     public const CSV_EXTENSION = '.csv';
 
-    /** @var int */
-    private $position;
+    private int $position;
 
     /** @var resource */
     private $fileHandle;
 
-    /**
-     * @param string $path
-     * @param int    $flag
-     *
-     * @return array
-     */
-    public function url_stat($path, $flag)
+    public function url_stat(string $path, int $flag): array
     {
         $filePath = $this->getFilePathFromStreamPath($path);
 
         return stat($filePath);
     }
 
-    /**
-     * @param string $path
-     * @param string $mode
-     * @param int    $options
-     * @param string $opened_path
-     *
-     * @return bool
-     */
-    public function stream_open($path, $mode, $options, &$opened_path)
+    public function stream_open(string $path, string $mode, int $options, ?string &$opened_path): bool
     {
         $this->position = 0;
 
@@ -51,33 +36,19 @@ class SpoutTestStream
         return true;
     }
 
-    /**
-     * @param int $numBytes
-     *
-     * @return string
-     */
-    public function stream_read($numBytes)
+    public function stream_read(int $numBytes): string
     {
         $this->position += $numBytes;
 
         return fread($this->fileHandle, $numBytes);
     }
 
-    /**
-     * @return int
-     */
-    public function stream_tell()
+    public function stream_tell(): int
     {
         return $this->position;
     }
 
-    /**
-     * @param int $offset
-     * @param int $whence
-     *
-     * @return bool
-     */
-    public function stream_seek($offset, $whence = SEEK_SET)
+    public function stream_seek(int $offset, int $whence = SEEK_SET): bool
     {
         $result = fseek($this->fileHandle, $offset, $whence);
         if (-1 === $result) {
@@ -94,28 +65,17 @@ class SpoutTestStream
         return true;
     }
 
-    /**
-     * @return bool
-     */
-    public function stream_close()
+    public function stream_close(): bool
     {
         return fclose($this->fileHandle);
     }
 
-    /**
-     * @return bool
-     */
-    public function stream_eof()
+    public function stream_eof(): bool
     {
         return feof($this->fileHandle);
     }
 
-    /**
-     * @param string $streamPath
-     *
-     * @return string
-     */
-    private function getFilePathFromStreamPath($streamPath)
+    private function getFilePathFromStreamPath(string $streamPath): string
     {
         $fileName = parse_url($streamPath, PHP_URL_HOST);
 

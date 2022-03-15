@@ -2,13 +2,20 @@
 
 namespace OpenSpout\Writer\ODS\Manager;
 
+use OpenSpout\Common\Manager\OptionsManagerInterface;
 use OpenSpout\Writer\Common\Entity\Sheet;
+use OpenSpout\Writer\Common\Entity\Workbook;
+use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
 use OpenSpout\Writer\Common\Manager\WorkbookManagerAbstract;
 use OpenSpout\Writer\ODS\Helper\FileSystemHelper;
 use OpenSpout\Writer\ODS\Manager\Style\StyleManager;
 
 /**
  * ODS workbook manager, providing the interfaces to work with workbook.
+ *
+ * @property WorksheetManager $worksheetManager
+ * @property FileSystemHelper $fileSystemHelper
+ * @property StyleManager     $styleManager
  */
 class WorkbookManager extends WorkbookManagerAbstract
 {
@@ -19,19 +26,28 @@ class WorkbookManager extends WorkbookManagerAbstract
      */
     protected static $maxRowsPerWorksheet = 1048576;
 
-    /** @var WorksheetManager Object used to manage worksheets */
-    protected $worksheetManager;
-
-    /** @var FileSystemHelper Helper to perform file system operations */
-    protected $fileSystemHelper;
-
-    /** @var StyleManager Manages styles */
-    protected $styleManager;
+    public function __construct(
+        Workbook $workbook,
+        OptionsManagerInterface $optionsManager,
+        WorksheetManager $worksheetManager,
+        StyleManager $styleManager,
+        StyleMerger $styleMerger,
+        FileSystemHelper $fileSystemHelper
+    ) {
+        parent::__construct(
+            $workbook,
+            $optionsManager,
+            $worksheetManager,
+            $styleManager,
+            $styleMerger,
+            $fileSystemHelper
+        );
+    }
 
     /**
      * @return string The file path where the data for the given sheet will be stored
      */
-    public function getWorksheetFilePath(Sheet $sheet)
+    public function getWorksheetFilePath(Sheet $sheet): string
     {
         $sheetsContentTempFolder = $this->fileSystemHelper->getSheetsContentTempFolder();
 
@@ -41,7 +57,7 @@ class WorkbookManager extends WorkbookManagerAbstract
     /**
      * @return int Maximum number of rows/columns a sheet can contain
      */
-    protected function getMaxRowsPerWorksheet()
+    protected function getMaxRowsPerWorksheet(): int
     {
         return self::$maxRowsPerWorksheet;
     }

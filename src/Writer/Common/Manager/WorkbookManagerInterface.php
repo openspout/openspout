@@ -16,10 +16,7 @@ use OpenSpout\Writer\Exception\WriterException;
  */
 interface WorkbookManagerInterface
 {
-    /**
-     * @return null|Workbook
-     */
-    public function getWorkbook();
+    public function getWorkbook(): ?Workbook;
 
     /**
      * Creates a new sheet in the workbook and make it the current sheet.
@@ -29,19 +26,19 @@ interface WorkbookManagerInterface
      *
      * @return Worksheet The created sheet
      */
-    public function addNewSheetAndMakeItCurrent();
+    public function addNewSheetAndMakeItCurrent(): Worksheet;
 
     /**
      * @return Worksheet[] All the workbook's sheets
      */
-    public function getWorksheets();
+    public function getWorksheets(): array;
 
     /**
      * Returns the current sheet.
      *
      * @return Worksheet The current sheet
      */
-    public function getCurrentWorksheet();
+    public function getCurrentWorksheet(): Worksheet;
 
     /**
      * Starts the current sheet and opens its file pointer.

@@ -2,6 +2,7 @@
 
 namespace OpenSpout\Reader\XLSX\Helper;
 
+use DateTimeImmutable;
 use OpenSpout\Common\Helper\Escaper;
 use OpenSpout\Reader\Exception\InvalidValueException;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsManager;
@@ -13,10 +14,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class CellValueFormatterTest extends TestCase
 {
-    /**
-     * @return array
-     */
-    public function dataProviderForTestExcelDate()
+    public function dataProviderForTestExcelDate(): array
     {
         return [
             // use 1904 dates, node value, expected date as string
@@ -58,11 +56,9 @@ final class CellValueFormatterTest extends TestCase
     /**
      * @dataProvider dataProviderForTestExcelDate
      *
-     * @param bool             $shouldUse1904Dates
      * @param float|int|string $nodeValue
-     * @param null|string      $expectedDateAsString
      */
-    public function testExcelDate($shouldUse1904Dates, $nodeValue, $expectedDateAsString)
+    public function testExcelDate(bool $shouldUse1904Dates, $nodeValue, ?string $expectedDateAsString)
     {
         $nodeListMock = $this->createMock(\DOMNodeList::class);
 
@@ -109,7 +105,7 @@ final class CellValueFormatterTest extends TestCase
             if (null === $expectedDateAsString) {
                 static::fail('An exception should have been thrown');
             } else {
-                static::assertInstanceOf(\DateTime::class, $result);
+                static::assertInstanceOf(DateTimeImmutable::class, $result);
                 static::assertSame($expectedDateAsString, $result->format('Y-m-d H:i:s'));
             }
         } catch (InvalidValueException $exception) {
@@ -117,10 +113,7 @@ final class CellValueFormatterTest extends TestCase
         }
     }
 
-    /**
-     * @return array
-     */
-    public function dataProviderForTestFormatNumericCellValueWithNumbers()
+    public function dataProviderForTestFormatNumericCellValueWithNumbers(): array
     {
         // Some test values exceed PHP_INT_MAX on 32-bit PHP. They are
         // therefore converted to as doubles automatically by PHP.
@@ -148,9 +141,8 @@ final class CellValueFormatterTest extends TestCase
      *
      * @param float|int|string $value
      * @param float|int        $expectedFormattedValue
-     * @param string           $expectedType
      */
-    public function testFormatNumericCellValueWithNumbers($value, $expectedFormattedValue, $expectedType)
+    public function testFormatNumericCellValueWithNumbers($value, $expectedFormattedValue, string $expectedType)
     {
         /** @var \PHPUnit\Framework\MockObject\MockObject|StyleManager $styleManagerMock */
         $styleManagerMock = $this->createMock(StyleManager::class);
@@ -167,10 +159,7 @@ final class CellValueFormatterTest extends TestCase
         static::assertSame($expectedType, \gettype($formattedValue));
     }
 
-    /**
-     * @return array
-     */
-    public function dataProviderForTestFormatStringCellValue()
+    public function dataProviderForTestFormatStringCellValue(): array
     {
         return [
             ['A', 'A'],
@@ -182,11 +171,8 @@ final class CellValueFormatterTest extends TestCase
 
     /**
      * @dataProvider dataProviderForTestFormatStringCellValue
-     *
-     * @param string $value
-     * @param string $expectedFormattedValue
      */
-    public function testFormatInlineStringCellValue($value, $expectedFormattedValue)
+    public function testFormatInlineStringCellValue(string $value, string $expectedFormattedValue)
     {
         $nodeListMock = $this->createMock(\DOMNodeList::class);
         $nodeListMock

@@ -43,28 +43,27 @@ class WorksheetManager implements WorksheetManagerInterface
         EOD;
 
     /** @var bool Whether inline or shared strings should be used */
-    protected $shouldUseInlineStrings;
+    protected bool $shouldUseInlineStrings;
 
-    /** @var OptionsManagerInterface */
-    private $optionsManager;
+    private OptionsManagerInterface $optionsManager;
 
     /** @var RowManager Manages rows */
-    private $rowManager;
+    private RowManager $rowManager;
 
     /** @var StyleManager Manages styles */
-    private $styleManager;
+    private StyleManager $styleManager;
 
     /** @var StyleMerger Helper to merge styles together */
-    private $styleMerger;
+    private StyleMerger $styleMerger;
 
     /** @var SharedStringsManager Helper to write shared strings */
-    private $sharedStringsManager;
+    private SharedStringsManager $sharedStringsManager;
 
     /** @var XLSXEscaper Strings escaper */
-    private $stringsEscaper;
+    private XLSXEscaper $stringsEscaper;
 
     /** @var StringHelper String helper */
-    private $stringHelper;
+    private StringHelper $stringHelper;
 
     /**
      * WorksheetManager constructor.
@@ -91,10 +90,7 @@ class WorksheetManager implements WorksheetManagerInterface
         $this->stringHelper = $stringHelper;
     }
 
-    /**
-     * @return SharedStringsManager
-     */
-    public function getSharedStringsManager()
+    public function getSharedStringsManager(): SharedStringsManager
     {
         return $this->sharedStringsManager;
     }
@@ -126,10 +122,8 @@ class WorksheetManager implements WorksheetManagerInterface
 
     /**
      * Construct column width references xml to inject into worksheet xml file.
-     *
-     * @return string
      */
-    public function getXMLFragmentForColumnWidths()
+    public function getXMLFragmentForColumnWidths(): string
     {
         if (empty($this->columnWidths)) {
             return '';
@@ -145,10 +139,8 @@ class WorksheetManager implements WorksheetManagerInterface
 
     /**
      * Constructs default row height and width xml to inject into worksheet xml file.
-     *
-     * @return string
      */
-    public function getXMLFragmentForDefaultCellSizing()
+    public function getXMLFragmentForDefaultCellSizing(): string
     {
         $rowHeightXml = empty($this->defaultRowHeight) ? '' : " defaultRowHeight=\"{$this->defaultRowHeight}\"";
         $colWidthXml = empty($this->defaultColumnWidth) ? '' : " defaultColWidth=\"{$this->defaultColumnWidth}\"";
@@ -302,15 +294,9 @@ class WorksheetManager implements WorksheetManagerInterface
     /**
      * Builds and returns xml for a single cell.
      *
-     * @param int $rowIndexOneBased
-     * @param int $columnIndexZeroBased
-     * @param int $styleId
-     *
      * @throws InvalidArgumentException If the given value cannot be processed
-     *
-     * @return string
      */
-    private function getCellXML($rowIndexOneBased, $columnIndexZeroBased, Cell $cell, $styleId)
+    private function getCellXML(int $rowIndexOneBased, int $columnIndexZeroBased, Cell $cell, ?int $styleId): string
     {
         $columnLetters = CellHelper::getColumnLettersFromColumnIndex($columnIndexZeroBased);
         $cellXML = '<c r="'.$columnLetters.$rowIndexOneBased.'"';
@@ -358,7 +344,7 @@ class WorksheetManager implements WorksheetManagerInterface
      *
      * @return string The XML fragment representing the cell
      */
-    private function getCellXMLFragmentForNonEmptyString($cellValue)
+    private function getCellXMLFragmentForNonEmptyString(string $cellValue): string
     {
         if ($this->stringHelper->getStringLength($cellValue) > self::MAX_CHARACTERS_PER_CELL) {
             throw new InvalidArgumentException('Trying to add a value that exceeds the maximum number of characters allowed in a cell (32,767)');

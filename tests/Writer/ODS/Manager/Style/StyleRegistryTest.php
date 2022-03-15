@@ -25,10 +25,7 @@ final class StyleRegistryTest extends TestCase
         static::assertCount(3, $styleRegistry->getUsedFonts(), 'There should be 3 fonts registered');
     }
 
-    /**
-     * @return StyleRegistry
-     */
-    private function getStyleRegistry()
+    private function getStyleRegistry(): StyleRegistry
     {
         $defaultStyle = (new Style());
 

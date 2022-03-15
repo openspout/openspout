@@ -8,7 +8,7 @@ namespace OpenSpout\Writer\Common\Helper;
 class CellHelper
 {
     /** @var array Cache containing the mapping column index => column letters */
-    private static $columnIndexToColumnLettersCache = [];
+    private static array $columnIndexToColumnLettersCache = [];
 
     /**
      * Returns the column letters (base 26) associated to the base 10 column index.
@@ -20,7 +20,7 @@ class CellHelper
      *
      * @return string The associated cell index ('A', 'BC', ...)
      */
-    public static function getColumnLettersFromColumnIndex($columnIndexZeroBased)
+    public static function getColumnLettersFromColumnIndex(int $columnIndexZeroBased): string
     {
         $originalColumnIndex = $columnIndexZeroBased;
 

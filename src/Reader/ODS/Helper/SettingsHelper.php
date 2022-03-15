@@ -22,7 +22,7 @@ class SettingsHelper
      *
      * @return null|string Name of the sheet that was defined as active or NULL if none found
      */
-    public function getActiveSheetName($filePath)
+    public function getActiveSheetName(string $filePath): ?string
     {
         $xmlReader = new XMLReader();
         if (false === $xmlReader->openFileInZip($filePath, self::SETTINGS_XML_FILE_PATH)) {

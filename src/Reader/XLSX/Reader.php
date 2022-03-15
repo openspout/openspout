@@ -17,14 +17,13 @@ use OpenSpout\Reader\XLSX\Manager\WorkbookRelationshipsManager;
  */
 class Reader extends ReaderAbstract
 {
-    /** @var \ZipArchive */
-    protected $zip;
+    protected \ZipArchive $zip;
 
     /** @var \OpenSpout\Reader\XLSX\Manager\SharedStringsManager Manages shared strings */
-    protected $sharedStringsManager;
+    protected \OpenSpout\Reader\XLSX\Manager\SharedStringsManager $sharedStringsManager;
 
     /** @var SheetIterator To iterator over the XLSX sheets */
-    protected $sheetIterator;
+    protected SheetIterator $sheetIterator;
 
     private CachingStrategyFactory $cachingStrategyFactory;
 
@@ -38,10 +37,8 @@ class Reader extends ReaderAbstract
 
     /**
      * @param string $tempFolder Temporary folder where the temporary files will be created
-     *
-     * @return Reader
      */
-    public function setTempFolder($tempFolder)
+    public function setTempFolder(string $tempFolder): self
     {
         $this->optionsManager->setOption(Options::TEMP_FOLDER, $tempFolder);
 
@@ -50,10 +47,8 @@ class Reader extends ReaderAbstract
 
     /**
      * Returns whether stream wrappers are supported.
-     *
-     * @return bool
      */
-    protected function doesSupportStreamWrapper()
+    protected function doesSupportStreamWrapper(): bool
     {
         return false;
     }
@@ -68,7 +63,7 @@ class Reader extends ReaderAbstract
      * @throws \OpenSpout\Common\Exception\IOException            If the file at the given path or its content cannot be read
      * @throws \OpenSpout\Reader\Exception\NoSheetsFoundException If there are no sheets in the file
      */
-    protected function openReader($filePath)
+    protected function openReader(string $filePath)
     {
         $this->zip = new \ZipArchive();
 
@@ -104,7 +99,7 @@ class Reader extends ReaderAbstract
      *
      * @return SheetIterator To iterate over sheets
      */
-    protected function getConcreteSheetIterator()
+    protected function getConcreteSheetIterator(): SheetIterator
     {
         return $this->sheetIterator;
     }

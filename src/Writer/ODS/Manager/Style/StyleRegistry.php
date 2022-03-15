@@ -3,14 +3,15 @@
 namespace OpenSpout\Writer\ODS\Manager\Style;
 
 use OpenSpout\Common\Entity\Style\Style;
+use OpenSpout\Writer\Common\Manager\Style\StyleRegistry as CommonStyleRegistry;
 
 /**
  * Registry for all used styles.
  */
-class StyleRegistry extends \OpenSpout\Writer\Common\Manager\Style\StyleRegistry
+class StyleRegistry extends CommonStyleRegistry
 {
     /** @var array [FONT_NAME] => [] Map whose keys contain all the fonts used */
-    protected $usedFontsSet = [];
+    protected array $usedFontsSet = [];
 
     /**
      * Registers the given style as a used style.
@@ -20,7 +21,7 @@ class StyleRegistry extends \OpenSpout\Writer\Common\Manager\Style\StyleRegistry
      *
      * @return Style the registered style, updated with an internal ID
      */
-    public function registerStyle(Style $style)
+    public function registerStyle(Style $style): Style
     {
         if ($style->isRegistered()) {
             return $style;
@@ -35,7 +36,7 @@ class StyleRegistry extends \OpenSpout\Writer\Common\Manager\Style\StyleRegistry
     /**
      * @return string[] List of used fonts name
      */
-    public function getUsedFonts()
+    public function getUsedFonts(): array
     {
         return array_keys($this->usedFontsSet);
     }

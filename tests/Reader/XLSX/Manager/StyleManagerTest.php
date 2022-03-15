@@ -80,10 +80,7 @@ final class StyleManagerTest extends TestCase
         static::assertFalse($shouldFormatAsDate);
     }
 
-    /**
-     * @return array
-     */
-    public function dataProviderForCustomDateFormats()
+    public function dataProviderForCustomDateFormats(): array
     {
         return [
             // number format, expectedResult
@@ -116,11 +113,8 @@ final class StyleManagerTest extends TestCase
 
     /**
      * @dataProvider dataProviderForCustomDateFormats
-     *
-     * @param string $numberFormat
-     * @param bool   $expectedResult
      */
-    public function testShouldFormatNumericValueAsDateWithCustomDateFormats($numberFormat, $expectedResult)
+    public function testShouldFormatNumericValueAsDateWithCustomDateFormats(string $numberFormat, bool $expectedResult)
     {
         $numFmtId = 165;
         $styleManager = $this->getStyleManagerMock([[], ['applyNumberFormat' => true, 'numFmtId' => $numFmtId]], [$numFmtId => $numberFormat]);
@@ -129,13 +123,7 @@ final class StyleManagerTest extends TestCase
         static::assertSame($expectedResult, $shouldFormatAsDate);
     }
 
-    /**
-     * @param array $styleAttributes
-     * @param array $customNumberFormats
-     *
-     * @return StyleManager
-     */
-    private function getStyleManagerMock($styleAttributes = [], $customNumberFormats = [])
+    private function getStyleManagerMock(array $styleAttributes = [], array $customNumberFormats = []): StyleManager
     {
         $workbookRelationshipsManager = $this->createMock(WorkbookRelationshipsManager::class);
         $workbookRelationshipsManager->method('hasStylesXMLFile')->willReturn(true);

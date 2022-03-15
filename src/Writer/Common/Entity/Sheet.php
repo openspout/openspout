@@ -13,29 +13,28 @@ class Sheet
     public const DEFAULT_SHEET_NAME_PREFIX = 'Sheet';
 
     /** @var int Index of the sheet, based on order in the workbook (zero-based) */
-    private $index;
+    private int $index;
 
     /** @var string ID of the sheet's associated workbook. Used to restrict sheet name uniqueness enforcement to a single workbook */
-    private $associatedWorkbookId;
+    private string $associatedWorkbookId;
 
     /** @var string Name of the sheet */
-    private $name;
+    private string $name;
 
     /** @var bool Visibility of the sheet */
-    private $isVisible;
+    private bool $isVisible;
 
     /** @var SheetManager Sheet manager */
-    private $sheetManager;
+    private SheetManager $sheetManager;
 
-    /** @var SheetView */
-    private $sheetView;
+    private ?SheetView $sheetView = null;
 
     /**
      * @param int          $sheetIndex           Index of the sheet, based on order in the workbook (zero-based)
      * @param string       $associatedWorkbookId ID of the sheet's associated workbook
      * @param SheetManager $sheetManager         To manage sheets
      */
-    public function __construct($sheetIndex, $associatedWorkbookId, SheetManager $sheetManager)
+    public function __construct(int $sheetIndex, string $associatedWorkbookId, SheetManager $sheetManager)
     {
         $this->index = $sheetIndex;
         $this->associatedWorkbookId = $associatedWorkbookId;
@@ -50,15 +49,12 @@ class Sheet
     /**
      * @return int Index of the sheet, based on order in the workbook (zero-based)
      */
-    public function getIndex()
+    public function getIndex(): int
     {
         return $this->index;
     }
 
-    /**
-     * @return string
-     */
-    public function getAssociatedWorkbookId()
+    public function getAssociatedWorkbookId(): string
     {
         return $this->associatedWorkbookId;
     }
@@ -66,7 +62,7 @@ class Sheet
     /**
      * @return string Name of the sheet
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -81,10 +77,8 @@ class Sheet
      * @param string $name Name of the sheet
      *
      * @throws \OpenSpout\Writer\Exception\InvalidSheetNameException if the sheet's name is invalid
-     *
-     * @return Sheet
      */
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->sheetManager->throwIfNameIsInvalid($name, $this);
 
@@ -98,17 +92,15 @@ class Sheet
     /**
      * @return bool isVisible Visibility of the sheet
      */
-    public function isVisible()
+    public function isVisible(): bool
     {
         return $this->isVisible;
     }
 
     /**
      * @param bool $isVisible Visibility of the sheet
-     *
-     * @return Sheet
      */
-    public function setIsVisible($isVisible)
+    public function setIsVisible(bool $isVisible): self
     {
         $this->isVisible = $isVisible;
 

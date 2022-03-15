@@ -17,57 +17,42 @@ class Writer extends WriterAbstract
     public const FLUSH_THRESHOLD = 500;
 
     /** @var string Content-Type value for the header */
-    protected static $headerContentType = 'text/csv; charset=UTF-8';
+    protected static string $headerContentType = 'text/csv; charset=UTF-8';
 
-    /** @var int */
-    protected $lastWrittenRowIndex = 0;
+    protected int $lastWrittenRowIndex = 0;
 
     /**
      * Sets the field delimiter for the CSV.
      *
      * @param string $fieldDelimiter Character that delimits fields
-     *
-     * @return Writer
      */
-    public function setFieldDelimiter($fieldDelimiter)
+    public function setFieldDelimiter(string $fieldDelimiter): void
     {
         $this->optionsManager->setOption(Options::FIELD_DELIMITER, $fieldDelimiter);
-
-        return $this;
     }
 
     /**
      * Sets the field enclosure for the CSV.
      *
      * @param string $fieldEnclosure Character that enclose fields
-     *
-     * @return Writer
      */
-    public function setFieldEnclosure($fieldEnclosure)
+    public function setFieldEnclosure(string $fieldEnclosure): void
     {
         $this->optionsManager->setOption(Options::FIELD_ENCLOSURE, $fieldEnclosure);
-
-        return $this;
     }
 
     /**
      * Set if a BOM has to be added to the file.
-     *
-     * @param bool $shouldAddBOM
-     *
-     * @return Writer
      */
-    public function setShouldAddBOM($shouldAddBOM)
+    public function setShouldAddBOM(bool $shouldAddBOM): void
     {
-        $this->optionsManager->setOption(Options::SHOULD_ADD_BOM, (bool) $shouldAddBOM);
-
-        return $this;
+        $this->optionsManager->setOption(Options::SHOULD_ADD_BOM, $shouldAddBOM);
     }
 
     /**
      * Opens the CSV streamer and makes it ready to accept data.
      */
-    protected function openWriter()
+    protected function openWriter(): void
     {
         if ($this->optionsManager->getOption(Options::SHOULD_ADD_BOM)) {
             // Adds UTF-8 BOM for Unicode compatibility
@@ -82,7 +67,7 @@ class Writer extends WriterAbstract
      *
      * @throws IOException If unable to write data
      */
-    protected function addRowToWriter(Row $row)
+    protected function addRowToWriter(Row $row): void
     {
         $fieldDelimiter = $this->optionsManager->getOption(Options::FIELD_DELIMITER);
         $fieldEnclosure = $this->optionsManager->getOption(Options::FIELD_ENCLOSURE);
@@ -102,7 +87,7 @@ class Writer extends WriterAbstract
      * Closes the CSV streamer, preventing any additional writing.
      * If set, sets the headers and redirects output to the browser.
      */
-    protected function closeWriter()
+    protected function closeWriter(): void
     {
         $this->lastWrittenRowIndex = 0;
     }

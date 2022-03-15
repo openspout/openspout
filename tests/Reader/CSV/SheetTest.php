@@ -23,12 +23,7 @@ final class SheetTest extends TestCase
         static::assertTrue($sheet->isActive());
     }
 
-    /**
-     * @param string $fileName
-     *
-     * @return SheetInterface
-     */
-    private function openFileAndReturnSheet($fileName)
+    private function openFileAndReturnSheet(string $fileName): SheetInterface
     {
         $resourcePath = $this->getResourcePath($fileName);
         $reader = ReaderEntityFactory::createCSVReader();

@@ -82,10 +82,7 @@ final class XMLReaderTest extends TestCase
         }
     }
 
-    /**
-     * @return array
-     */
-    public function dataProviderForTestFileExistsWithinZip()
+    public function dataProviderForTestFileExistsWithinZip(): array
     {
         return [
             ['[Content_Types].xml', true],
@@ -98,11 +95,8 @@ final class XMLReaderTest extends TestCase
 
     /**
      * @dataProvider dataProviderForTestFileExistsWithinZip
-     *
-     * @param string $innerFilePath
-     * @param bool   $expectedResult
      */
-    public function testFileExistsWithinZip($innerFilePath, $expectedResult)
+    public function testFileExistsWithinZip(string $innerFilePath, bool $expectedResult)
     {
         $resourcePath = $this->getResourcePath('one_sheet_with_inline_strings.xlsx');
         $zipStreamURI = 'zip://'.$resourcePath.'#'.$innerFilePath;
@@ -113,10 +107,7 @@ final class XMLReaderTest extends TestCase
         static::assertSame($expectedResult, $isZipStream);
     }
 
-    /**
-     * @return array
-     */
-    public function dataProviderForTestGetRealPathURIForFileInZip()
+    public function dataProviderForTestGetRealPathURIForFileInZip(): array
     {
         $tempFolder = realpath(sys_get_temp_dir());
         $tempFolderName = basename($tempFolder);
@@ -130,13 +121,8 @@ final class XMLReaderTest extends TestCase
 
     /**
      * @dataProvider dataProviderForTestGetRealPathURIForFileInZip
-     *
-     * @param string $tempFolder
-     * @param string $zipFilePath
-     * @param string $fileInsideZipPath
-     * @param string $expectedRealPathURI
      */
-    public function testGetRealPathURIForFileInZip($tempFolder, $zipFilePath, $fileInsideZipPath, $expectedRealPathURI)
+    public function testGetRealPathURIForFileInZip(string $tempFolder, string $zipFilePath, string $fileInsideZipPath, string $expectedRealPathURI)
     {
         touch($tempFolder.'/test.xlsx');
 
@@ -152,10 +138,7 @@ final class XMLReaderTest extends TestCase
         unlink($tempFolder.'/test.xlsx');
     }
 
-    /**
-     * @return array
-     */
-    public function dataProviderForTestIsPositionedOnStartingAndEndingNode()
+    public function dataProviderForTestIsPositionedOnStartingAndEndingNode(): array
     {
         return [
             ['<test></test>'], // not prefixed
@@ -165,10 +148,8 @@ final class XMLReaderTest extends TestCase
 
     /**
      * @dataProvider dataProviderForTestIsPositionedOnStartingAndEndingNode
-     *
-     * @param string $testXML
      */
-    public function testIsPositionedOnStartingAndEndingNode($testXML)
+    public function testIsPositionedOnStartingAndEndingNode(string $testXML)
     {
         $xmlReader = new XMLReader();
         $xmlReader->XML($testXML);
@@ -189,7 +170,7 @@ final class XMLReaderTest extends TestCase
     /**
      * @return bool TRUE if running on HHVM, FALSE otherwise
      */
-    private function isRunningHHVM()
+    private function isRunningHHVM(): bool
     {
         return \defined('HHVM_VERSION');
     }

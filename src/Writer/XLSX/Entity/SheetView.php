@@ -7,56 +7,39 @@ use OpenSpout\Reader\XLSX\Helper\CellHelper;
 
 class SheetView
 {
-    /** @var bool */
-    protected $showFormulas = false;
+    protected bool $showFormulas = false;
 
-    /** @var bool */
-    protected $showGridLines = true;
+    protected bool $showGridLines = true;
 
-    /** @var bool */
-    protected $showRowColHeaders = true;
+    protected bool $showRowColHeaders = true;
 
-    /** @var bool */
-    protected $showZeroes = true;
+    protected bool $showZeroes = true;
 
-    /** @var bool */
-    protected $rightToLeft = false;
+    protected bool $rightToLeft = false;
 
-    /** @var bool */
-    protected $tabSelected = false;
+    protected bool $tabSelected = false;
 
-    /** @var bool */
-    protected $showOutlineSymbols = true;
+    protected bool $showOutlineSymbols = true;
 
-    /** @var bool */
-    protected $defaultGridColor = true;
+    protected bool $defaultGridColor = true;
 
-    /** @var string */
-    protected $view = 'normal';
+    protected string $view = 'normal';
 
-    /** @var string */
-    protected $topLeftCell = 'A1';
+    protected string $topLeftCell = 'A1';
 
-    /** @var int */
-    protected $colorId = 64;
+    protected int $colorId = 64;
 
-    /** @var int */
-    protected $zoomScale = 100;
+    protected int $zoomScale = 100;
 
-    /** @var int */
-    protected $zoomScaleNormal = 100;
+    protected int $zoomScaleNormal = 100;
 
-    /** @var int */
-    protected $zoomScalePageLayoutView = 100;
+    protected int $zoomScalePageLayoutView = 100;
 
-    /** @var int */
-    protected $workbookViewId = 0;
+    protected int $workbookViewId = 0;
 
-    /** @var int */
-    protected $freezeRow = 0;
+    protected int $freezeRow = 0;
 
-    /** @var string */
-    protected $freezeColumn = 'A';
+    protected string $freezeColumn = 'A';
 
     /**
      * @return $this

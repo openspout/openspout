@@ -14,7 +14,7 @@ class OptionsManager extends OptionsManagerAbstract
     /**
      * {@inheritdoc}
      */
-    protected function getSupportedOptions()
+    protected function getSupportedOptions(): array
     {
         return [
             Options::SHOULD_FORMAT_DATES,

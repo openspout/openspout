@@ -26,19 +26,19 @@ class SharedStringsManager
     public const XML_ATTRIBUTE_VALUE_PRESERVE = 'preserve';
 
     /** @var string Path of the XLSX file being read */
-    protected $filePath;
+    protected string $filePath;
 
     /** @var string Temporary folder where the temporary files to store shared strings will be stored */
-    protected $tempFolder;
+    protected string $tempFolder;
 
     /** @var WorkbookRelationshipsManager Helps retrieving workbook relationships */
-    protected $workbookRelationshipsManager;
+    protected WorkbookRelationshipsManager $workbookRelationshipsManager;
 
     /** @var CachingStrategyFactory Factory to create shared strings caching strategies */
-    protected $cachingStrategyFactory;
+    protected CachingStrategyFactory $cachingStrategyFactory;
 
-    /** @var CachingStrategyInterface The best caching strategy for storing shared strings */
-    protected $cachingStrategy;
+    /** @var null|CachingStrategyInterface The best caching strategy for storing shared strings */
+    protected ?CachingStrategyInterface $cachingStrategy = null;
 
     /**
      * @param string                       $filePath                     Path of the XLSX file being read
@@ -47,10 +47,10 @@ class SharedStringsManager
      * @param CachingStrategyFactory       $cachingStrategyFactory       Factory to create shared strings caching strategies
      */
     public function __construct(
-        $filePath,
-        $tempFolder,
-        $workbookRelationshipsManager,
-        $cachingStrategyFactory
+        string $filePath,
+        string $tempFolder,
+        WorkbookRelationshipsManager $workbookRelationshipsManager,
+        CachingStrategyFactory $cachingStrategyFactory
     ) {
         $this->filePath = $filePath;
         $this->tempFolder = $tempFolder;
@@ -60,10 +60,8 @@ class SharedStringsManager
 
     /**
      * Returns whether the XLSX file contains a shared strings XML file.
-     *
-     * @return bool
      */
-    public function hasSharedStrings()
+    public function hasSharedStrings(): bool
     {
         return $this->workbookRelationshipsManager->hasSharedStringsXMLFile();
     }
@@ -121,7 +119,7 @@ class SharedStringsManager
      *
      * @return string The shared string at the given index
      */
-    public function getStringAtIndex($sharedStringIndex)
+    public function getStringAtIndex(int $sharedStringIndex): string
     {
         return $this->cachingStrategy->getStringAtIndex($sharedStringIndex);
     }
@@ -145,7 +143,7 @@ class SharedStringsManager
      *
      * @return null|int Number of unique shared strings in the sharedStrings.xml file
      */
-    protected function getSharedStringsUniqueCount($xmlReader)
+    protected function getSharedStringsUniqueCount(XMLReader $xmlReader): ?int
     {
         $xmlReader->next(self::XML_NODE_SST);
 
@@ -169,10 +167,8 @@ class SharedStringsManager
      * Returns the best shared strings caching strategy.
      *
      * @param null|int $sharedStringsUniqueCount Number of unique shared strings (NULL if unknown)
-     *
-     * @return CachingStrategyInterface
      */
-    protected function getBestSharedStringsCachingStrategy($sharedStringsUniqueCount)
+    protected function getBestSharedStringsCachingStrategy(?int $sharedStringsUniqueCount): CachingStrategyInterface
     {
         return $this->cachingStrategyFactory
             ->createBestCachingStrategy($sharedStringsUniqueCount, $this->tempFolder)
@@ -185,7 +181,7 @@ class SharedStringsManager
      * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader         XML Reader positioned on a "<si>" node
      * @param int                                 $sharedStringIndex Index of the processed shared strings item
      */
-    protected function processSharedStringsItem($xmlReader, $sharedStringIndex)
+    protected function processSharedStringsItem(XMLReader $xmlReader, int $sharedStringIndex)
     {
         $sharedStringValue = '';
 
@@ -215,7 +211,7 @@ class SharedStringsManager
      *
      * @return bool Whether the given text node's value must be extracted
      */
-    protected function shouldExtractTextNodeValue($textNode)
+    protected function shouldExtractTextNodeValue(\DOMElement $textNode): bool
     {
         $parentTagName = $textNode->parentNode->localName;
 
@@ -229,7 +225,7 @@ class SharedStringsManager
      *
      * @return bool Whether whitespace should be preserved
      */
-    protected function shouldPreserveWhitespace($textNode)
+    protected function shouldPreserveWhitespace(\DOMElement $textNode): bool
     {
         $spaceValue = $textNode->getAttribute(self::XML_ATTRIBUTE_XML_SPACE);
 

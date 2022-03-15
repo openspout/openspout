@@ -15,10 +15,7 @@ final class WriterPerfTest extends TestCase
 {
     use TestUsingResource;
 
-    /**
-     * @return array
-     */
-    public function dataProviderForTestPerfWhenWritingOneMillionRowsXLSX()
+    public function dataProviderForTestPerfWhenWritingOneMillionRowsXLSX(): array
     {
         return [
             [$shouldUseInlineStrings = true, $expectedMaxExecutionTime = 330], // 5.5 minutes in seconds
@@ -34,11 +31,8 @@ final class WriterPerfTest extends TestCase
      *
      * @dataProvider dataProviderForTestPerfWhenWritingOneMillionRowsXLSX
      * @group perf-tests
-     *
-     * @param bool $shouldUseInlineStrings
-     * @param int  $expectedMaxExecutionTime
      */
-    public function testPerfWhenWritingOneMillionRowsXLSX($shouldUseInlineStrings, $expectedMaxExecutionTime)
+    public function testPerfWhenWritingOneMillionRowsXLSX(bool $shouldUseInlineStrings, int $expectedMaxExecutionTime)
     {
         // getting current memory peak to avoid taking into account the memory used by PHPUnit
         $beforeMemoryPeakUsage = memory_get_peak_usage(true);
@@ -77,37 +71,21 @@ final class WriterPerfTest extends TestCase
         static::assertTrue($memoryPeakUsage < $expectedMaxMemoryPeakUsage, 'Writing 1 million rows should require less than '.($expectedMaxMemoryPeakUsage / 1024 / 1024).' MB of memory (required '.($memoryPeakUsage / 1024 / 1024).' MB)');
     }
 
-    /**
-     * @param string $resourcePath
-     * @param int    $numSheets
-     *
-     * @return int
-     */
-    private function getNumWrittenRowsUsingInlineStrings($resourcePath, $numSheets)
+    private function getNumWrittenRowsUsingInlineStrings(string $resourcePath, int $numSheets): int
     {
         $pathToLastSheetFile = 'zip://'.$resourcePath.'#xl/worksheets/sheet'.$numSheets.'.xml';
 
         return $this->getLasRowNumberForFile($pathToLastSheetFile);
     }
 
-    /**
-     * @param string $resourcePath
-     *
-     * @return int
-     */
-    private function getNumWrittenRowsUsingSharedStrings($resourcePath)
+    private function getNumWrittenRowsUsingSharedStrings(string $resourcePath): int
     {
         $pathToSharedStringsFile = 'zip://'.$resourcePath.'#xl/sharedStrings.xml';
 
         return $this->getLasRowNumberForFile($pathToSharedStringsFile);
     }
 
-    /**
-     * @param string $filePath
-     *
-     * @return int
-     */
-    private function getLasRowNumberForFile($filePath)
+    private function getLasRowNumberForFile(string $filePath): int
     {
         $lastRowNumber = 0;
 
@@ -126,13 +104,7 @@ final class WriterPerfTest extends TestCase
         return $lastRowNumber;
     }
 
-    /**
-     * @param string $filePath
-     * @param int    $numCharacters
-     *
-     * @return string
-     */
-    private function getLastCharactersOfFile($filePath, $numCharacters)
+    private function getLastCharactersOfFile(string $filePath, int $numCharacters): string
     {
         // since we cannot execute "tail" on a file inside a zip, we need to copy it outside first
         $tmpFile = sys_get_temp_dir().'/getLastCharacters.xml';

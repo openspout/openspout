@@ -9,15 +9,12 @@ use PHPUnit\Framework\TestCase;
  */
 final class OptionsManagerTest extends TestCase
 {
-    /**
-     * @var OptionsManagerAbstract
-     */
-    protected $optionsManager;
+    protected OptionsManagerAbstract $optionsManager;
 
     protected function setUp(): void
     {
         $this->optionsManager = new class() extends OptionsManagerAbstract {
-            protected function getSupportedOptions()
+            protected function getSupportedOptions(): array
             {
                 return [
                     'foo',

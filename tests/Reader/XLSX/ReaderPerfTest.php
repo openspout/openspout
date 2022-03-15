@@ -15,10 +15,7 @@ final class ReaderPerfTest extends TestCase
 {
     use TestUsingResource;
 
-    /**
-     * @return array
-     */
-    public function dataProviderForTestPerfWhenReading300kRowsXLSX()
+    public function dataProviderForTestPerfWhenReading300kRowsXLSX(): array
     {
         return [
             [$shouldUseInlineStrings = true, $expectedMaxExecutionTime = 390], // 6.5 minutes in seconds
@@ -34,11 +31,8 @@ final class ReaderPerfTest extends TestCase
      *
      * @dataProvider dataProviderForTestPerfWhenReading300kRowsXLSX
      * @group perf-tests
-     *
-     * @param bool $shouldUseInlineStrings
-     * @param int  $expectedMaxExecutionTime
      */
-    public function testPerfWhenReading300kRowsXLSX($shouldUseInlineStrings, $expectedMaxExecutionTime)
+    public function testPerfWhenReading300kRowsXLSX(bool $shouldUseInlineStrings, int $expectedMaxExecutionTime)
     {
         // getting current memory peak to avoid taking into account the memory used by PHPUnit
         $beforeMemoryPeakUsage = memory_get_peak_usage(true);

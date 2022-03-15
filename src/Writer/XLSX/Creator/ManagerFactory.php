@@ -23,10 +23,7 @@ use OpenSpout\Writer\XLSX\Manager\WorksheetManager;
  */
 final class ManagerFactory implements ManagerFactoryInterface
 {
-    /**
-     * @return WorkbookManager
-     */
-    public function createWorkbookManager(OptionsManagerInterface $optionsManager)
+    public function createWorkbookManager(OptionsManagerInterface $optionsManager): WorkbookManager
     {
         $workbook = new Workbook();
 

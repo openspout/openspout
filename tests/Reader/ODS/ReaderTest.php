@@ -2,6 +2,7 @@
 
 namespace OpenSpout\Reader\ODS;
 
+use DateTimeImmutable;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Reader\Common\Creator\ReaderEntityFactory;
 use OpenSpout\Reader\Exception\IteratorNotRewindableException;
@@ -15,10 +16,7 @@ final class ReaderTest extends TestCase
 {
     use TestUsingResource;
 
-    /**
-     * @return array
-     */
-    public function dataProviderForTestReadShouldThrowException()
+    public function dataProviderForTestReadShouldThrowException(): array
     {
         return [
             ['/path/to/fake/file.ods'],
@@ -28,10 +26,8 @@ final class ReaderTest extends TestCase
 
     /**
      * @dataProvider dataProviderForTestReadShouldThrowException
-     *
-     * @param string $filePath
      */
-    public function testReadShouldThrowException($filePath)
+    public function testReadShouldThrowException(string $filePath)
     {
         $this->expectException(IOException::class);
 
@@ -39,10 +35,7 @@ final class ReaderTest extends TestCase
         @$this->getAllRowsForFile($filePath);
     }
 
-    /**
-     * @return array
-     */
-    public function dataProviderForTestReadForAllWorksheets()
+    public function dataProviderForTestReadForAllWorksheets(): array
     {
         return [
             ['one_sheet_with_strings.ods', 2, 3],
@@ -52,12 +45,8 @@ final class ReaderTest extends TestCase
 
     /**
      * @dataProvider dataProviderForTestReadForAllWorksheets
-     *
-     * @param string $resourceName
-     * @param int    $expectedNumOfRows
-     * @param int    $expectedNumOfCellsPerRow
      */
-    public function testReadForAllWorksheets($resourceName, $expectedNumOfRows, $expectedNumOfCellsPerRow)
+    public function testReadForAllWorksheets(string $resourceName, int $expectedNumOfRows, int $expectedNumOfCellsPerRow)
     {
         $allRows = $this->getAllRowsForFile($resourceName);
 
@@ -97,10 +86,7 @@ final class ReaderTest extends TestCase
         static::assertSame($expectedRows, $allRows);
     }
 
-    /**
-     * @return array
-     */
-    public function dataProviderForTestReadWithFilesGeneratedByExternalSoftwares()
+    public function dataProviderForTestReadWithFilesGeneratedByExternalSoftwares(): array
     {
         return [
             ['file_generated_by_libre_office.ods', true],
@@ -113,11 +99,8 @@ final class ReaderTest extends TestCase
      * @dataProvider dataProviderForTestReadWithFilesGeneratedByExternalSoftwares
      * The files contain styles, different value types, gaps between cells,
      * repeated values, empty row, different number of cells per row.
-     *
-     * @param bool   $skipLastEmptyValues
-     * @param string $fileName
      */
-    public function testReadWithFilesGeneratedByExternalSoftwares($fileName, $skipLastEmptyValues)
+    public function testReadWithFilesGeneratedByExternalSoftwares(string $fileName, bool $skipLastEmptyValues)
     {
         $allRows = $this->getAllRowsForFile($fileName);
 
@@ -150,8 +133,8 @@ final class ReaderTest extends TestCase
                 'ods--11', 'ods--12',
                 true, false,
                 0, 10.43,
-                new \DateTime('1987-11-29T00:00:00', $utcTz), new \DateTime('1987-11-29T13:37:00', $utcTz),
-                new \DateTime('1987-11-29T13:37:00', $utcTz), new \DateTime('1987-11-29T13:37:00', $honoluluTz),
+                new DateTimeImmutable('1987-11-29T00:00:00', $utcTz), new DateTimeImmutable('1987-11-29T13:37:00', $utcTz),
+                new DateTimeImmutable('1987-11-29T13:37:00', $utcTz), new DateTimeImmutable('1987-11-29T13:37:00', $honoluluTz),
                 new \DateInterval('PT13H37M00S'),
                 0, 0.42,
                 '42 USD', '9.99 EUR',
@@ -468,13 +451,9 @@ final class ReaderTest extends TestCase
     }
 
     /**
-     * @param string $fileName
-     * @param bool   $shouldFormatDates
-     * @param bool   $shouldPreserveEmptyRows
-     *
      * @return array All the read rows the given file
      */
-    private function getAllRowsForFile($fileName, $shouldFormatDates = false, $shouldPreserveEmptyRows = false)
+    private function getAllRowsForFile(string $fileName, bool $shouldFormatDates = false, bool $shouldPreserveEmptyRows = false): array
     {
         $allRows = [];
         $resourcePath = $this->getResourcePath($fileName);

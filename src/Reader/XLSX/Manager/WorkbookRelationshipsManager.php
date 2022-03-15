@@ -27,15 +27,15 @@ class WorkbookRelationshipsManager
     public const XML_ATTRIBUTE_TARGET = 'Target';
 
     /** @var string Path of the XLSX file being read */
-    private $filePath;
+    private string $filePath;
 
     /** @var null|array Cache of the already read workbook relationships: [TYPE] => [FILE_NAME] */
-    private $cachedWorkbookRelationships;
+    private ?array $cachedWorkbookRelationships;
 
     /**
      * @param string $filePath Path of the XLSX file being read
      */
-    public function __construct($filePath)
+    public function __construct(string $filePath)
     {
         $this->filePath = $filePath;
     }
@@ -43,7 +43,7 @@ class WorkbookRelationshipsManager
     /**
      * @return string The path of the shared string XML file
      */
-    public function getSharedStringsXMLFilePath()
+    public function getSharedStringsXMLFilePath(): string
     {
         $workbookRelationships = $this->getWorkbookRelationships();
         $sharedStringsXMLFilePath = $workbookRelationships[self::RELATIONSHIP_TYPE_SHARED_STRINGS]
@@ -62,7 +62,7 @@ class WorkbookRelationshipsManager
     /**
      * @return bool Whether the XLSX file contains a shared string XML file
      */
-    public function hasSharedStringsXMLFile()
+    public function hasSharedStringsXMLFile(): bool
     {
         $workbookRelationships = $this->getWorkbookRelationships();
 
@@ -73,7 +73,7 @@ class WorkbookRelationshipsManager
     /**
      * @return bool Whether the XLSX file contains a styles XML file
      */
-    public function hasStylesXMLFile()
+    public function hasStylesXMLFile(): bool
     {
         $workbookRelationships = $this->getWorkbookRelationships();
 
@@ -84,7 +84,7 @@ class WorkbookRelationshipsManager
     /**
      * @return string The path of the styles XML file
      */
-    public function getStylesXMLFilePath()
+    public function getStylesXMLFilePath(): string
     {
         $workbookRelationships = $this->getWorkbookRelationships();
         $stylesXMLFilePath = $workbookRelationships[self::RELATIONSHIP_TYPE_STYLES]
@@ -105,10 +105,8 @@ class WorkbookRelationshipsManager
      * It caches the result so that the file is read only once.
      *
      * @throws \OpenSpout\Common\Exception\IOException If workbook.xml.rels can't be read
-     *
-     * @return array
      */
-    private function getWorkbookRelationships()
+    private function getWorkbookRelationships(): array
     {
         if (!isset($this->cachedWorkbookRelationships)) {
             $xmlReader = new XMLReader();
@@ -129,10 +127,8 @@ class WorkbookRelationshipsManager
 
     /**
      * Extracts and store the data of the current workbook relationship.
-     *
-     * @param XMLReader $xmlReader
      */
-    private function processWorkbookRelationship($xmlReader)
+    private function processWorkbookRelationship(XMLReader $xmlReader)
     {
         $type = $xmlReader->getAttribute(self::XML_ATTRIBUTE_TYPE);
         $target = $xmlReader->getAttribute(self::XML_ATTRIBUTE_TARGET);

@@ -56,12 +56,7 @@ final class WriterPerfTest extends TestCase
         static::assertTrue($memoryPeakUsage < $expectedMaxMemoryPeakUsage, 'Writing 1 million rows should require less than '.($expectedMaxMemoryPeakUsage / 1024 / 1024).' MB of memory (required '.($memoryPeakUsage / 1024 / 1024).' MB)');
     }
 
-    /**
-     * @param string $resourcePath
-     *
-     * @return int
-     */
-    private function getNumWrittenRows($resourcePath)
+    private function getNumWrittenRows(string $resourcePath): int
     {
         $numWrittenRows = 0;
         // to avoid executing the regex of the entire file to get the last row number, we only retrieve the last 10 lines
@@ -75,12 +70,7 @@ final class WriterPerfTest extends TestCase
         return $numWrittenRows;
     }
 
-    /**
-     * @param string $resourcePath
-     *
-     * @return string
-     */
-    private function getLastCharactersOfContentXmlFile($resourcePath)
+    private function getLastCharactersOfContentXmlFile(string $resourcePath): string
     {
         $pathToContentXmlFile = 'zip://'.$resourcePath.'#content.xml';
 

@@ -10,10 +10,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class CellHelperTest extends TestCase
 {
-    /**
-     * @return array
-     */
-    public function dataProviderForTestGetColumnIndexFromCellIndex()
+    public function dataProviderForTestGetColumnIndexFromCellIndex(): array
     {
         return [
             ['A1', 0],
@@ -27,11 +24,8 @@ final class CellHelperTest extends TestCase
 
     /**
      * @dataProvider dataProviderForTestGetColumnIndexFromCellIndex
-     *
-     * @param string $cellIndex
-     * @param int    $expectedColumnIndex
      */
-    public function testGetColumnIndexFromCellIndex($cellIndex, $expectedColumnIndex)
+    public function testGetColumnIndexFromCellIndex(string $cellIndex, int $expectedColumnIndex)
     {
         static::assertSame($expectedColumnIndex, CellHelper::getColumnIndexFromCellIndex($cellIndex));
     }

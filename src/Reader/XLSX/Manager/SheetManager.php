@@ -3,6 +3,7 @@
 namespace OpenSpout\Reader\XLSX\Manager;
 
 use OpenSpout\Common\Helper\Escaper\XLSX;
+use OpenSpout\Common\Manager\OptionsManagerInterface;
 use OpenSpout\Reader\Common\Entity\Options;
 use OpenSpout\Reader\Common\Manager\RowManager;
 use OpenSpout\Reader\Common\XMLProcessor;
@@ -40,35 +41,32 @@ class SheetManager
     public const SHEET_STATE_HIDDEN = 'hidden';
 
     /** @var string Path of the XLSX file being read */
-    protected $filePath;
+    protected string $filePath;
 
-    /** @var \OpenSpout\Common\Manager\OptionsManagerInterface Reader's options manager */
-    protected $optionsManager;
+    /** @var OptionsManagerInterface Reader's options manager */
+    protected OptionsManagerInterface $optionsManager;
 
     /** @var \OpenSpout\Reader\XLSX\Manager\SharedStringsManager Manages shared strings */
-    protected $sharedStringsManager;
+    protected \OpenSpout\Reader\XLSX\Manager\SharedStringsManager $sharedStringsManager;
 
     /** @var \OpenSpout\Common\Helper\Escaper\XLSX Used to unescape XML data */
-    protected $escaper;
+    protected \OpenSpout\Common\Helper\Escaper\XLSX $escaper;
 
     /** @var array List of sheets */
-    protected $sheets;
+    protected array $sheets;
 
     /** @var int Index of the sheet currently read */
-    protected $currentSheetIndex;
+    protected int $currentSheetIndex;
 
     /** @var int Index of the active sheet (0 by default) */
-    protected $activeSheetIndex;
+    protected int $activeSheetIndex;
 
-    /**
-     * @param string                                              $filePath             Path of the XLSX file being read
-     * @param \OpenSpout\Common\Manager\OptionsManagerInterface   $optionsManager       Reader's options manager
-     * @param \OpenSpout\Reader\XLSX\Manager\SharedStringsManager $sharedStringsManager Manages shared strings
-     * @param \OpenSpout\Common\Helper\Escaper\XLSX               $escaper              Used to unescape XML data
-     * @param mixed                                               $sharedStringsManager
-     */
-    public function __construct($filePath, $optionsManager, $sharedStringsManager, $escaper)
-    {
+    public function __construct(
+        string $filePath,
+        OptionsManagerInterface $optionsManager,
+        SharedStringsManager $sharedStringsManager,
+        XLSX $escaper
+    ) {
         $this->filePath = $filePath;
         $this->optionsManager = $optionsManager;
         $this->sharedStringsManager = $sharedStringsManager;
@@ -81,7 +79,7 @@ class SheetManager
      *
      * @return Sheet[] Sheets within the XLSX file
      */
-    public function getSheets()
+    public function getSheets(): array
     {
         $this->sheets = [];
         $this->currentSheetIndex = 0;
@@ -108,7 +106,7 @@ class SheetManager
      *
      * @return int A return code that indicates what action should the processor take next
      */
-    protected function processWorkbookPropertiesStartingNode($xmlReader)
+    protected function processWorkbookPropertiesStartingNode(XMLReader $xmlReader): int
     {
         // Using "filter_var($x, FILTER_VALIDATE_BOOLEAN)" here because the value of the "date1904" attribute
         // may be the string "false", that is not mapped to the boolean "false" by default...
@@ -123,7 +121,7 @@ class SheetManager
      *
      * @return int A return code that indicates what action should the processor take next
      */
-    protected function processWorkbookViewStartingNode($xmlReader)
+    protected function processWorkbookViewStartingNode(XMLReader $xmlReader): int
     {
         // The "workbookView" node is located before "sheet" nodes, ensuring that
         // the active sheet is known before parsing sheets data.
@@ -137,7 +135,7 @@ class SheetManager
      *
      * @return int A return code that indicates what action should the processor take next
      */
-    protected function processSheetStartingNode($xmlReader)
+    protected function processSheetStartingNode(XMLReader $xmlReader): int
     {
         $isSheetActive = ($this->currentSheetIndex === $this->activeSheetIndex);
         $this->sheets[] = $this->getSheetFromSheetXMLNode($xmlReader, $this->currentSheetIndex, $isSheetActive);
@@ -149,7 +147,7 @@ class SheetManager
     /**
      * @return int A return code that indicates what action should the processor take next
      */
-    protected function processSheetsEndingNode()
+    protected function processSheetsEndingNode(): int
     {
         return XMLProcessor::PROCESSING_STOP;
     }
@@ -165,7 +163,7 @@ class SheetManager
      *
      * @return \OpenSpout\Reader\XLSX\Sheet Sheet instance
      */
-    protected function getSheetFromSheetXMLNode($xmlReaderOnSheetNode, $sheetIndexZeroBased, $isSheetActive)
+    protected function getSheetFromSheetXMLNode(XMLReader $xmlReaderOnSheetNode, int $sheetIndexZeroBased, bool $isSheetActive): Sheet
     {
         $sheetId = $xmlReaderOnSheetNode->getAttribute(self::XML_ATTRIBUTE_R_ID);
 
@@ -191,7 +189,7 @@ class SheetManager
      *
      * @return string The XML file path describing the sheet inside "workbook.xml.res", for the given sheet ID
      */
-    protected function getSheetDataXMLFilePathForSheetId($sheetId)
+    protected function getSheetDataXMLFilePathForSheetId(string $sheetId): string
     {
         $sheetDataXMLFilePath = '';
 
@@ -224,14 +222,12 @@ class SheetManager
     }
 
     /**
-     * @param string                                            $filePath             Path of the XLSX file being read
-     * @param string                                            $sheetDataXMLFilePath Path of the sheet data XML file as in [Content_Types].xml
-     * @param \OpenSpout\Common\Manager\OptionsManagerInterface $optionsManager       Reader's options manager
-     * @param SharedStringsManager                              $sharedStringsManager Manages shared strings
-     *
-     * @return RowIterator
+     * @param string                  $filePath             Path of the XLSX file being read
+     * @param string                  $sheetDataXMLFilePath Path of the sheet data XML file as in [Content_Types].xml
+     * @param OptionsManagerInterface $optionsManager       Reader's options manager
+     * @param SharedStringsManager    $sharedStringsManager Manages shared strings
      */
-    private function createRowIterator($filePath, $sheetDataXMLFilePath, $optionsManager, $sharedStringsManager)
+    private function createRowIterator(string $filePath, string $sheetDataXMLFilePath, OptionsManagerInterface $optionsManager, SharedStringsManager $sharedStringsManager): RowIterator
     {
         $xmlReader = new XMLReader();
         $xmlProcessor = new XMLProcessor($xmlReader);

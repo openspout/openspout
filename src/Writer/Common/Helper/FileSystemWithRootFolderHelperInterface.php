@@ -17,8 +17,5 @@ interface FileSystemWithRootFolderHelperInterface extends FileSystemHelperInterf
      */
     public function createBaseFilesAndFolders();
 
-    /**
-     * @return string
-     */
-    public function getRootFolder();
+    public function getRootFolder(): string;
 }

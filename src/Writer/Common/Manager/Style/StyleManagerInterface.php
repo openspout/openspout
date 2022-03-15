@@ -18,7 +18,7 @@ interface StyleManagerInterface
      *
      * @return Style the registered style, updated with an internal ID
      */
-    public function registerStyle($style);
+    public function registerStyle(Style $style): Style;
 
     /**
      * Apply additional styles if the given row needs it.

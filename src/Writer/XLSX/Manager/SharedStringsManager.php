@@ -27,16 +27,16 @@ class SharedStringsManager
     protected $sharedStringsFilePointer;
 
     /** @var int Number of shared strings already written */
-    protected $numSharedStrings = 0;
+    protected int $numSharedStrings = 0;
 
     /** @var Escaper\XLSX Strings escaper */
-    protected $stringsEscaper;
+    protected Escaper\XLSX $stringsEscaper;
 
     /**
      * @param string       $xlFolder       Path to the "xl" folder
      * @param Escaper\XLSX $stringsEscaper Strings escaper
      */
-    public function __construct($xlFolder, $stringsEscaper)
+    public function __construct(string $xlFolder, Escaper\XLSX $stringsEscaper)
     {
         $sharedStringsFilePath = $xlFolder.'/'.self::SHARED_STRINGS_FILE_NAME;
         $this->sharedStringsFilePointer = fopen($sharedStringsFilePath, 'w');
@@ -54,11 +54,9 @@ class SharedStringsManager
      * Writes the given string into the sharedStrings.xml file.
      * Starting and ending whitespaces are preserved.
      *
-     * @param string $string
-     *
      * @return int ID of the written shared string
      */
-    public function writeString($string)
+    public function writeString(string $string): int
     {
         fwrite($this->sharedStringsFilePointer, '<si><t xml:space="preserve">'.$this->stringsEscaper->escape($string).'</t></si>');
         ++$this->numSharedStrings;

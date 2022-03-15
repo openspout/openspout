@@ -10,20 +10,15 @@ class InvalidValueException extends ReaderException
     private $invalidValue;
 
     /**
-     * @param mixed  $invalidValue
-     * @param string $message
-     * @param int    $code
+     * @param mixed $invalidValue
      */
-    public function __construct($invalidValue, $message = '', $code = 0, Throwable $previous = null)
+    public function __construct($invalidValue, string $message = '', int $code = 0, Throwable $previous = null)
     {
         $this->invalidValue = $invalidValue;
         parent::__construct($message, $code, $previous);
     }
 
-    /**
-     * @return mixed
-     */
-    public function getInvalidValue()
+    public function getInvalidValue(): mixed
     {
         return $this->invalidValue;
     }

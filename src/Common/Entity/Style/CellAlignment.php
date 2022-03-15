@@ -20,11 +20,9 @@ abstract class CellAlignment
     ];
 
     /**
-     * @param string $cellAlignment
-     *
      * @return bool Whether the given cell alignment is valid
      */
-    public static function isValid($cellAlignment)
+    public static function isValid(string $cellAlignment): bool
     {
         return isset(self::$VALID_ALIGNMENTS[$cellAlignment]);
     }

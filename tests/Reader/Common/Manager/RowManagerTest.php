@@ -11,10 +11,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class RowManagerTest extends TestCase
 {
-    /**
-     * @return array
-     */
-    public function dataProviderForTestFillMissingIndexesWithEmptyCells()
+    public function dataProviderForTestFillMissingIndexesWithEmptyCells(): array
     {
         $cell1 = new Cell(1);
         $cell3 = new Cell(3);
@@ -31,7 +28,7 @@ final class RowManagerTest extends TestCase
      * @param null|Cell[] $rowCells
      * @param Cell[]      $expectedFilledCells
      */
-    public function testFillMissingIndexesWithEmptyCells($rowCells, $expectedFilledCells)
+    public function testFillMissingIndexesWithEmptyCells(?array $rowCells, array $expectedFilledCells)
     {
         $rowManager = new RowManager();
 
@@ -44,10 +41,7 @@ final class RowManagerTest extends TestCase
         static::assertEquals($expectedFilledCells, $filledRow->getCells());
     }
 
-    /**
-     * @return array
-     */
-    public function dataProviderForTestIsEmptyRow()
+    public function dataProviderForTestIsEmptyRow(): array
     {
         return [
             // cells, expected isEmpty
@@ -60,10 +54,8 @@ final class RowManagerTest extends TestCase
 
     /**
      * @dataProvider dataProviderForTestIsEmptyRow
-     *
-     * @param bool $expectedIsEmpty
      */
-    public function testIsEmptyRow(array $cells, $expectedIsEmpty)
+    public function testIsEmptyRow(array $cells, bool $expectedIsEmpty)
     {
         $rowManager = new RowManager();
         $row = new Row($cells, null);

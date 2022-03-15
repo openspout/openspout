@@ -159,15 +159,9 @@ final class WriterTest extends TestCase
     }
 
     /**
-     * @param Row[]  $allRows
-     * @param string $fileName
-     * @param string $fieldDelimiter
-     * @param string $fieldEnclosure
-     * @param bool   $shouldAddBOM
-     *
-     * @return string
+     * @param Row[] $allRows
      */
-    private function writeToCsvFileAndReturnWrittenContent($allRows, $fileName, $fieldDelimiter = ',', $fieldEnclosure = '"', $shouldAddBOM = true)
+    private function writeToCsvFileAndReturnWrittenContent(array $allRows, string $fileName, string $fieldDelimiter = ',', string $fieldEnclosure = '"', bool $shouldAddBOM = true): string
     {
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
@@ -184,12 +178,7 @@ final class WriterTest extends TestCase
         return file_get_contents($resourcePath);
     }
 
-    /**
-     * @param string $writtenContent
-     *
-     * @return string
-     */
-    private function trimWrittenContent($writtenContent)
+    private function trimWrittenContent(string $writtenContent): string
     {
         // remove line feeds and UTF-8 BOM
         return trim($writtenContent, PHP_EOL.EncodingHelper::BOM_UTF8);

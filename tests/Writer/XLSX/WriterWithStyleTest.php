@@ -25,8 +25,7 @@ final class WriterWithStyleTest extends TestCase
     use RowCreationHelper;
     use TestUsingResource;
 
-    /** @var \OpenSpout\Common\Entity\Style\Style */
-    private $defaultStyle;
+    private \OpenSpout\Common\Entity\Style\Style $defaultStyle;
 
     protected function setUp(): void
     {
@@ -535,12 +534,9 @@ final class WriterWithStyleTest extends TestCase
     }
 
     /**
-     * @param Row[]  $allRows
-     * @param string $fileName
-     *
-     * @return Writer
+     * @param Row[] $allRows
      */
-    private function writeToXLSXFile($allRows, $fileName)
+    private function writeToXLSXFile(array $allRows, string $fileName): Writer
     {
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
@@ -556,13 +552,9 @@ final class WriterWithStyleTest extends TestCase
     }
 
     /**
-     * @param Row[]                                     $allRows
-     * @param string                                    $fileName
-     * @param null|\OpenSpout\Common\Entity\Style\Style $defaultStyle
-     *
-     * @return Writer
+     * @param Row[] $allRows
      */
-    private function writeToXLSXFileWithDefaultStyle($allRows, $fileName, $defaultStyle)
+    private function writeToXLSXFileWithDefaultStyle(array $allRows, string $fileName, ?Style $defaultStyle): Writer
     {
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
@@ -578,13 +570,7 @@ final class WriterWithStyleTest extends TestCase
         return $writer;
     }
 
-    /**
-     * @param string $fileName
-     * @param string $section
-     *
-     * @return \DOMElement
-     */
-    private function getXmlSectionFromStylesXmlFile($fileName, $section)
+    private function getXmlSectionFromStylesXmlFile(string $fileName, string $section): \DOMElement
     {
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
@@ -601,11 +587,9 @@ final class WriterWithStyleTest extends TestCase
     }
 
     /**
-     * @param string $fileName
-     *
      * @return \DOMElement[]
      */
-    private function getCellElementsFromSheetXmlFile($fileName)
+    private function getCellElementsFromSheetXmlFile(string $fileName): array
     {
         $cellElements = [];
 
@@ -627,32 +611,17 @@ final class WriterWithStyleTest extends TestCase
         return $cellElements;
     }
 
-    /**
-     * @param string      $expectedValue
-     * @param \DOMElement $parentElement
-     * @param string      $childTagName
-     * @param string      $attributeName
-     */
-    private function assertFirstChildHasAttributeEquals($expectedValue, $parentElement, $childTagName, $attributeName)
+    private function assertFirstChildHasAttributeEquals(string $expectedValue, \DOMElement $parentElement, string $childTagName, string $attributeName)
     {
         static::assertSame($expectedValue, $parentElement->getElementsByTagName($childTagName)->item(0)->getAttribute($attributeName));
     }
 
-    /**
-     * @param int         $expectedNumber
-     * @param \DOMElement $parentElement
-     * @param string      $message
-     */
-    private function assertChildrenNumEquals($expectedNumber, $parentElement, $message)
+    private function assertChildrenNumEquals(int $expectedNumber, \DOMElement $parentElement, string $message)
     {
         static::assertSame($expectedNumber, $parentElement->getElementsByTagName('*')->length, $message);
     }
 
-    /**
-     * @param \DOMElement $parentElement
-     * @param string      $childTagName
-     */
-    private function assertChildExists($parentElement, $childTagName)
+    private function assertChildExists(\DOMElement $parentElement, string $childTagName)
     {
         static::assertSame(1, $parentElement->getElementsByTagName($childTagName)->length);
     }

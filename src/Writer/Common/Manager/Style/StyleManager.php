@@ -11,7 +11,7 @@ use OpenSpout\Common\Entity\Style\Style;
 class StyleManager implements StyleManagerInterface
 {
     /** @var StyleRegistry Registry for all used styles */
-    protected $styleRegistry;
+    protected StyleRegistry $styleRegistry;
 
     public function __construct(StyleRegistry $styleRegistry)
     {
@@ -26,7 +26,7 @@ class StyleManager implements StyleManagerInterface
      *
      * @return Style the registered style, updated with an internal ID
      */
-    public function registerStyle($style)
+    public function registerStyle(Style $style): Style
     {
         return $this->styleRegistry->registerStyle($style);
     }
@@ -47,7 +47,7 @@ class StyleManager implements StyleManagerInterface
      *
      * @return Style Default style
      */
-    protected function getDefaultStyle()
+    protected function getDefaultStyle(): Style
     {
         // By construction, the default style has ID 0
         return $this->styleRegistry->getRegisteredStyles()[0];

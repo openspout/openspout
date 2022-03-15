@@ -26,10 +26,8 @@ class CellHelper
      * @param string $cellIndex The Excel cell index ('A1', 'BC13', ...)
      *
      * @throws \OpenSpout\Common\Exception\InvalidArgumentException When the given cell index is invalid
-     *
-     * @return int
      */
-    public static function getColumnIndexFromCellIndex($cellIndex)
+    public static function getColumnIndexFromCellIndex(string $cellIndex): int
     {
         if (!self::isValidCellIndex($cellIndex)) {
             throw new InvalidArgumentException('Cannot get column index from an invalid cell index.');
@@ -77,10 +75,8 @@ class CellHelper
      * There can only be 3 letters, as there can only be 16,384 rows, which is equivalent to 'XFE'.
      *
      * @param string $cellIndex The Excel cell index ('A1', 'BC13', ...)
-     *
-     * @return bool
      */
-    protected static function isValidCellIndex($cellIndex)
+    protected static function isValidCellIndex(string $cellIndex): bool
     {
         return 1 === preg_match('/^[A-Z]{1,3}\d+$/', $cellIndex);
     }

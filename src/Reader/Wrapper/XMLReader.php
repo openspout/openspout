@@ -21,7 +21,7 @@ class XMLReader extends \XMLReader
      *
      * @return bool TRUE on success or FALSE on failure
      */
-    public function openFileInZip($zipFilePath, $fileInsideZipPath)
+    public function openFileInZip(string $zipFilePath, string $fileInsideZipPath): bool
     {
         $wasOpenSuccessful = false;
         $realPathURI = $this->getRealPathURIForFileInZip($zipFilePath, $fileInsideZipPath);
@@ -45,7 +45,7 @@ class XMLReader extends \XMLReader
      *
      * @return string The real path URI
      */
-    public function getRealPathURIForFileInZip($zipFilePath, $fileInsideZipPath)
+    public function getRealPathURIForFileInZip(string $zipFilePath, string $fileInsideZipPath): string
     {
         // The file path should not start with a '/', otherwise it won't be found
         $fileInsideZipPathWithoutLeadingSlash = ltrim($fileInsideZipPath, '/');
@@ -83,7 +83,7 @@ class XMLReader extends \XMLReader
      *
      * @return bool TRUE on success or FALSE on failure
      */
-    public function readUntilNodeFound($nodeName)
+    public function readUntilNodeFound(string $nodeName): bool
     {
         do {
             $wasReadSuccessful = $this->read();
@@ -117,21 +117,17 @@ class XMLReader extends \XMLReader
     }
 
     /**
-     * @param string $nodeName
-     *
      * @return bool Whether the XML Reader is currently positioned on the starting node with given name
      */
-    public function isPositionedOnStartingNode($nodeName)
+    public function isPositionedOnStartingNode(string $nodeName): bool
     {
         return $this->isPositionedOnNode($nodeName, self::ELEMENT);
     }
 
     /**
-     * @param string $nodeName
-     *
      * @return bool Whether the XML Reader is currently positioned on the ending node with given name
      */
-    public function isPositionedOnEndingNode($nodeName)
+    public function isPositionedOnEndingNode(string $nodeName): bool
     {
         return $this->isPositionedOnNode($nodeName, self::END_ELEMENT);
     }
@@ -139,7 +135,7 @@ class XMLReader extends \XMLReader
     /**
      * @return string The name of the current node, un-prefixed
      */
-    public function getCurrentNodeName()
+    public function getCurrentNodeName(): string
     {
         return $this->localName;
     }
@@ -151,7 +147,7 @@ class XMLReader extends \XMLReader
      *
      * @return bool TRUE if the file exists, FALSE otherwise
      */
-    protected function fileExistsWithinZip($zipStreamURI)
+    protected function fileExistsWithinZip(string $zipStreamURI): bool
     {
         $doesFileExists = false;
 
@@ -171,12 +167,9 @@ class XMLReader extends \XMLReader
     }
 
     /**
-     * @param string $nodeName
-     * @param int    $nodeType
-     *
      * @return bool Whether the XML Reader is currently positioned on the node with given name and type
      */
-    private function isPositionedOnNode($nodeName, $nodeType)
+    private function isPositionedOnNode(string $nodeName, int $nodeType): bool
     {
         /**
          * In some cases, the node has a prefix (for instance, "<sheet>" can also be "<x:sheet>").

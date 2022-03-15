@@ -21,16 +21,16 @@ use OpenSpout\Writer\ODS\Manager\Style\StyleManager;
 class WorksheetManager implements WorksheetManagerInterface
 {
     /** @var \OpenSpout\Common\Helper\Escaper\ODS Strings escaper */
-    private $stringsEscaper;
+    private \OpenSpout\Common\Helper\Escaper\ODS $stringsEscaper;
 
     /** @var StringHelper String helper */
-    private $stringHelper;
+    private StringHelper $stringHelper;
 
     /** @var StyleManager Manages styles */
-    private $styleManager;
+    private StyleManager $styleManager;
 
     /** @var StyleMerger Helper to merge styles together */
-    private $styleMerger;
+    private StyleMerger $styleMerger;
 
     /**
      * WorksheetManager constructor.
@@ -67,7 +67,7 @@ class WorksheetManager implements WorksheetManagerInterface
      *
      * @return string "<table>" node as string
      */
-    public function getTableElementStartAsString(Worksheet $worksheet)
+    public function getTableElementStartAsString(Worksheet $worksheet): string
     {
         $externalSheet = $worksheet->getExternalSheet();
         $escapedSheetName = $this->stringsEscaper->escape($externalSheet->getName());
@@ -145,18 +145,12 @@ class WorksheetManager implements WorksheetManagerInterface
         fclose($worksheetFilePointer);
     }
 
-    /**
-     * @param null|float $width
-     */
-    public function setDefaultColumnWidth($width)
+    public function setDefaultColumnWidth(?float $width)
     {
         $this->styleManager->setDefaultColumnWidth($width);
     }
 
-    /**
-     * @param null|float $height
-     */
-    public function setDefaultRowHeight($height)
+    public function setDefaultRowHeight(?float $height)
     {
         $this->styleManager->setDefaultRowHeight($height);
     }
@@ -249,7 +243,7 @@ class WorksheetManager implements WorksheetManagerInterface
      *
      * @return string The cell XML content
      */
-    private function getCellXML(Cell $cell, $styleIndex, $numTimesValueRepeated)
+    private function getCellXML(Cell $cell, int $styleIndex, int $numTimesValueRepeated): string
     {
         $data = '<table:table-cell table:style-name="ce'.$styleIndex.'"';
 

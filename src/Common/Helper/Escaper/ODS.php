@@ -14,7 +14,7 @@ class ODS implements EscaperInterface
      *
      * @return string The escaped string
      */
-    public function escape($string)
+    public function escape(string $string): string
     {
         // @NOTE: Using ENT_QUOTES as XML entities ('<', '>', '&') as well as
         //        single/double quotes (for XML attributes) need to be encoded.
@@ -50,7 +50,7 @@ class ODS implements EscaperInterface
      *
      * @return string The unescaped string
      */
-    public function unescape($string)
+    public function unescape(string $string): string
     {
         // ==============
         // =   WARNING  =
