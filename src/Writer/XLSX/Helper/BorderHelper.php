@@ -5,7 +5,7 @@ namespace OpenSpout\Writer\XLSX\Helper;
 use OpenSpout\Common\Entity\Style\Border;
 use OpenSpout\Common\Entity\Style\BorderPart;
 
-class BorderHelper
+final class BorderHelper
 {
     public static $xlsxStyleMap = [
         Border::STYLE_SOLID => [
@@ -54,7 +54,7 @@ class BorderHelper
     /**
      * Get the style definition from the style map.
      */
-    protected static function getBorderStyle(BorderPart $borderPart): string
+    private static function getBorderStyle(BorderPart $borderPart): string
     {
         return self::$xlsxStyleMap[$borderPart->getStyle()][$borderPart->getWidth()];
     }

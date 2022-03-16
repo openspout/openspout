@@ -8,13 +8,13 @@ use OpenSpout\Reader\Exception\SharedStringNotFoundException;
  * This class implements the in-memory caching strategy for shared strings.
  * This strategy is used when the number of unique strings is low, compared to the memory available.
  */
-class InMemoryStrategy implements CachingStrategyInterface
+final class InMemoryStrategy implements CachingStrategyInterface
 {
     /** @var \SplFixedArray Array used to cache the shared strings */
-    protected \SplFixedArray $inMemoryCache;
+    private \SplFixedArray $inMemoryCache;
 
     /** @var bool Whether the cache has been closed */
-    protected bool $isCacheClosed;
+    private bool $isCacheClosed;
 
     /**
      * @param int $sharedStringsUniqueCount Number of unique shared strings

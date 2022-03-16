@@ -125,12 +125,9 @@ final class StyleManagerTest extends TestCase
 
     private function getStyleManagerMock(array $styleAttributes = [], array $customNumberFormats = []): StyleManager
     {
-        $workbookRelationshipsManager = $this->createMock(WorkbookRelationshipsManager::class);
-        $workbookRelationshipsManager->method('hasStylesXMLFile')->willReturn(true);
-
         /** @var \PHPUnit\Framework\MockObject\MockObject|StyleManager $styleManager */
-        $styleManager = $this->getMockBuilder('\OpenSpout\Reader\XLSX\Manager\StyleManager')
-            ->setConstructorArgs(['/path/to/file.xlsx', $workbookRelationshipsManager])
+        $styleManager = $this->getMockBuilder(StyleManager::class)
+            ->setConstructorArgs(['/path/to/file.xlsx', uniqid()])
             ->onlyMethods(['getCustomNumberFormats', 'getStylesAttributes'])
             ->getMock()
         ;

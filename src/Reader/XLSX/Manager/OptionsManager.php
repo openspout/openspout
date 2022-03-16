@@ -8,7 +8,7 @@ use OpenSpout\Reader\Common\Entity\Options;
 /**
  * XLSX Reader options manager.
  */
-class OptionsManager extends OptionsManagerAbstract
+final class OptionsManager extends OptionsManagerAbstract
 {
     /**
      * {@inheritdoc}

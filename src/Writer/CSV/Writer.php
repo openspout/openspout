@@ -11,7 +11,7 @@ use OpenSpout\Writer\WriterAbstract;
 /**
  * This class provides support to write data to CSV files.
  */
-class Writer extends WriterAbstract
+final class Writer extends WriterAbstract
 {
     /** Number of rows to write before flushing */
     public const FLUSH_THRESHOLD = 500;

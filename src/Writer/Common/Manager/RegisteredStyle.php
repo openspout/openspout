@@ -7,7 +7,7 @@ use OpenSpout\Common\Entity\Style\Style;
 /**
  * Allow to know if this style must replace actual row style.
  */
-class RegisteredStyle
+final class RegisteredStyle
 {
     private Style $style;
 

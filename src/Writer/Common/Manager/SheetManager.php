@@ -9,7 +9,7 @@ use OpenSpout\Writer\Exception\InvalidSheetNameException;
 /**
  * Sheet manager.
  */
-class SheetManager
+final class SheetManager
 {
     /** Sheet name should not exceed 31 characters */
     public const MAX_LENGTH_SHEET_NAME = 31;

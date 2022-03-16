@@ -7,7 +7,7 @@ use OpenSpout\Reader\Wrapper\XMLReader;
 /**
  * Helps process XML files.
  */
-class XMLProcessor
+final class XMLProcessor
 {
     // Node types
     public const NODE_TYPE_START = XMLReader::ELEMENT;
@@ -22,7 +22,7 @@ class XMLProcessor
     public const PROCESSING_STOP = 2;
 
     /** @var XMLReader The XMLReader object that will help read sheet's XML data */
-    protected XMLReader $xmlReader;
+    private XMLReader $xmlReader;
 
     /** @var array Registered callbacks */
     private array $callbacks = [];

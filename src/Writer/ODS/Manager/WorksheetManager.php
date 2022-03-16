@@ -18,7 +18,7 @@ use OpenSpout\Writer\ODS\Manager\Style\StyleManager;
 /**
  * ODS worksheet manager, providing the interfaces to work with ODS worksheets.
  */
-class WorksheetManager implements WorksheetManagerInterface
+final class WorksheetManager implements WorksheetManagerInterface
 {
     /** @var \OpenSpout\Common\Helper\Escaper\ODS Strings escaper */
     private \OpenSpout\Common\Helper\Escaper\ODS $stringsEscaper;

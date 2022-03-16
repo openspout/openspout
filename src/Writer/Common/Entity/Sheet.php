@@ -8,7 +8,7 @@ use OpenSpout\Writer\XLSX\Entity\SheetView;
 /**
  * External representation of a worksheet.
  */
-class Sheet
+final class Sheet
 {
     public const DEFAULT_SHEET_NAME_PREFIX = 'Sheet';
 

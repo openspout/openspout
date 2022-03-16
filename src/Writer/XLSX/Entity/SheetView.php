@@ -5,41 +5,25 @@ namespace OpenSpout\Writer\XLSX\Entity;
 use OpenSpout\Common\Exception\InvalidArgumentException;
 use OpenSpout\Reader\XLSX\Helper\CellHelper;
 
-class SheetView
+final class SheetView
 {
-    protected bool $showFormulas = false;
-
-    protected bool $showGridLines = true;
-
-    protected bool $showRowColHeaders = true;
-
-    protected bool $showZeroes = true;
-
-    protected bool $rightToLeft = false;
-
-    protected bool $tabSelected = false;
-
-    protected bool $showOutlineSymbols = true;
-
-    protected bool $defaultGridColor = true;
-
-    protected string $view = 'normal';
-
-    protected string $topLeftCell = 'A1';
-
-    protected int $colorId = 64;
-
-    protected int $zoomScale = 100;
-
-    protected int $zoomScaleNormal = 100;
-
-    protected int $zoomScalePageLayoutView = 100;
-
-    protected int $workbookViewId = 0;
-
-    protected int $freezeRow = 0;
-
-    protected string $freezeColumn = 'A';
+    private bool $showFormulas = false;
+    private bool $showGridLines = true;
+    private bool $showRowColHeaders = true;
+    private bool $showZeroes = true;
+    private bool $rightToLeft = false;
+    private bool $tabSelected = false;
+    private bool $showOutlineSymbols = true;
+    private bool $defaultGridColor = true;
+    private string $view = 'normal';
+    private string $topLeftCell = 'A1';
+    private int $colorId = 64;
+    private int $zoomScale = 100;
+    private int $zoomScaleNormal = 100;
+    private int $zoomScalePageLayoutView = 100;
+    private int $workbookViewId = 0;
+    private int $freezeRow = 0;
+    private string $freezeColumn = 'A';
 
     /**
      * @return $this
@@ -226,16 +210,28 @@ class SheetView
         '</sheetView>';
     }
 
-    protected function getSheetViewAttributes(): string
+    private function getSheetViewAttributes(): string
     {
-        // Get class properties
-        $propertyValues = get_object_vars($this);
-        unset($propertyValues['freezeRow'], $propertyValues['freezeColumn']);
-
-        return $this->generateAttributes($propertyValues);
+        return $this->generateAttributes([
+            'showFormulas' => $this->showFormulas,
+            'showGridLines' => $this->showGridLines,
+            'showRowColHeaders' => $this->showRowColHeaders,
+            'showZeroes' => $this->showZeroes,
+            'rightToLeft' => $this->rightToLeft,
+            'tabSelected' => $this->tabSelected,
+            'showOutlineSymbols' => $this->showOutlineSymbols,
+            'defaultGridColor' => $this->defaultGridColor,
+            'view' => $this->view,
+            'topLeftCell' => $this->topLeftCell,
+            'colorId' => $this->colorId,
+            'zoomScale' => $this->zoomScale,
+            'zoomScaleNormal' => $this->zoomScaleNormal,
+            'zoomScalePageLayoutView' => $this->zoomScalePageLayoutView,
+            'workbookViewId' => $this->workbookViewId,
+        ]);
     }
 
-    protected function getFreezeCellPaneXml(): string
+    private function getFreezeCellPaneXml(): string
     {
         if ($this->freezeRow < 2 && 'A' === $this->freezeColumn) {
             return '';
@@ -255,10 +251,10 @@ class SheetView
     /**
      * @param array $data with key containing the attribute name and value containing the attribute value
      */
-    protected function generateAttributes(array $data): string
+    private function generateAttributes(array $data): string
     {
         // Create attribute for each key
-        $attributes = array_map(function ($key, $value) {
+        $attributes = array_map(static function ($key, $value): string {
             if (\is_bool($value)) {
                 $value = $value ? 'true' : 'false';
             }

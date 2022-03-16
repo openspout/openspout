@@ -13,7 +13,7 @@ use OpenSpout\Writer\XLSX\Helper\BorderHelper;
  *
  * @property StyleRegistry $styleRegistry
  */
-class StyleManager extends CommonStyleManager
+final class StyleManager extends CommonStyleManager
 {
     public function __construct(StyleRegistry $styleRegistry)
     {

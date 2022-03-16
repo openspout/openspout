@@ -5,7 +5,7 @@ namespace OpenSpout\Common\Helper\Escaper;
 /**
  * Provides functions to escape and unescape data for XLSX files.
  */
-class XLSX implements EscaperInterface
+final class XLSX implements EscaperInterface
 {
     /** @var bool Whether the escaper has already been initialized */
     private bool $isAlreadyInitialized = false;
@@ -59,7 +59,7 @@ class XLSX implements EscaperInterface
     /**
      * Initializes the control characters if not already done.
      */
-    protected function initIfNeeded()
+    private function initIfNeeded()
     {
         if (!$this->isAlreadyInitialized) {
             $this->escapableControlCharactersPattern = $this->getEscapableControlCharactersPattern();
@@ -73,7 +73,7 @@ class XLSX implements EscaperInterface
     /**
      * @return string Regex pattern containing all escapable control characters
      */
-    protected function getEscapableControlCharactersPattern(): string
+    private function getEscapableControlCharactersPattern(): string
     {
         // control characters values are from 0 to 1F (hex values) in the ASCII table
         // some characters should not be escaped though: "\t", "\r" and "\n".
@@ -95,7 +95,7 @@ class XLSX implements EscaperInterface
      *
      * @return string[]
      */
-    protected function getControlCharactersEscapingMap(): array
+    private function getControlCharactersEscapingMap(): array
     {
         $controlCharactersEscapingMap = [];
 
@@ -125,7 +125,7 @@ class XLSX implements EscaperInterface
      *
      * @param string $string String to escape
      */
-    protected function escapeControlCharacters(string $string): string
+    private function escapeControlCharacters(string $string): string
     {
         $escapedString = $this->escapeEscapeCharacter($string);
 
@@ -146,7 +146,7 @@ class XLSX implements EscaperInterface
      *
      * @return string The escaped string
      */
-    protected function escapeEscapeCharacter(string $string): string
+    private function escapeEscapeCharacter(string $string): string
     {
         return preg_replace('/_(x[\dA-F]{4})_/', '_x005F_$1_', $string);
     }
@@ -164,7 +164,7 @@ class XLSX implements EscaperInterface
      *
      * @param string $string String to unescape
      */
-    protected function unescapeControlCharacters(string $string): string
+    private function unescapeControlCharacters(string $string): string
     {
         $unescapedString = $string;
 
@@ -183,7 +183,7 @@ class XLSX implements EscaperInterface
      *
      * @return string The unescaped string
      */
-    protected function unescapeEscapeCharacter(string $string): string
+    private function unescapeEscapeCharacter(string $string): string
     {
         return preg_replace('/_x005F(_x[\dA-F]{4}_)/', '$1', $string);
     }

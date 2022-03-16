@@ -6,6 +6,7 @@ use OpenSpout\Reader\Exception\SharedStringNotFoundException;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\FileBasedStrategy;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\InMemoryStrategy;
+use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\MemoryLimit;
 use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
@@ -113,7 +114,7 @@ final class SharedStringsManagerTest extends TestCase
     {
         $resourcePath = $this->getResourcePath($resourceName);
         $tempFolder = sys_get_temp_dir();
-        $cachingStrategyFactory = new CachingStrategyFactory();
+        $cachingStrategyFactory = new CachingStrategyFactory(new MemoryLimit('1'));
         $workbookRelationshipsManager = new WorkbookRelationshipsManager($resourcePath);
 
         $this->sharedStringsManager = new SharedStringsManager(

@@ -13,7 +13,7 @@ use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
  * This class provides helper functions to help with the file system operations
  * like files/folders creation & deletion for XLSX files.
  */
-class FileSystemHelper extends CommonFileSystemHelper implements FileSystemWithRootFolderHelperInterface
+final class FileSystemHelper extends CommonFileSystemHelper implements FileSystemWithRootFolderHelperInterface
 {
     public const APP_NAME = 'Spout';
 

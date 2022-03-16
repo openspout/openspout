@@ -7,22 +7,22 @@ use OpenSpout\Reader\SheetInterface;
 /**
  * Represents a sheet within a XLSX file.
  */
-class Sheet implements SheetInterface
+final class Sheet implements SheetInterface
 {
     /** @var \OpenSpout\Reader\XLSX\RowIterator To iterate over sheet's rows */
-    protected \OpenSpout\Reader\XLSX\RowIterator $rowIterator;
+    private \OpenSpout\Reader\XLSX\RowIterator $rowIterator;
 
     /** @var int Index of the sheet, based on order in the workbook (zero-based) */
-    protected int $index;
+    private int $index;
 
     /** @var string Name of the sheet */
-    protected string $name;
+    private string $name;
 
     /** @var bool Whether the sheet was the active one */
-    protected bool $isActive;
+    private bool $isActive;
 
     /** @var bool Whether the sheet is visible */
-    protected bool $isVisible;
+    private bool $isVisible;
 
     /**
      * @param RowIterator $rowIterator    The corresponding row iterator

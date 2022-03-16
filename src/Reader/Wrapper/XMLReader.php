@@ -7,7 +7,7 @@ namespace OpenSpout\Reader\Wrapper;
  *
  * @see \XMLReader
  */
-class XMLReader extends \XMLReader
+final class XMLReader extends \XMLReader
 {
     use XMLInternalErrorsHelper;
 

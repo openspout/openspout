@@ -10,7 +10,7 @@ use OpenSpout\Reader\ReaderAbstract;
 /**
  * This class provides support to read data from a ODS file.
  */
-class Reader extends ReaderAbstract
+final class Reader extends ReaderAbstract
 {
     protected \ZipArchive $zip;
 

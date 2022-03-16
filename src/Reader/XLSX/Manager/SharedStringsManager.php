@@ -11,7 +11,7 @@ use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyInterface;
 /**
  * This class manages the shared strings defined in the associated XML file.
  */
-class SharedStringsManager
+final class SharedStringsManager
 {
     /** Definition of XML nodes names used to parse data */
     public const XML_NODE_SST = 'sst';
@@ -26,19 +26,19 @@ class SharedStringsManager
     public const XML_ATTRIBUTE_VALUE_PRESERVE = 'preserve';
 
     /** @var string Path of the XLSX file being read */
-    protected string $filePath;
+    private string $filePath;
 
     /** @var string Temporary folder where the temporary files to store shared strings will be stored */
-    protected string $tempFolder;
+    private string $tempFolder;
 
     /** @var WorkbookRelationshipsManager Helps retrieving workbook relationships */
-    protected WorkbookRelationshipsManager $workbookRelationshipsManager;
+    private WorkbookRelationshipsManager $workbookRelationshipsManager;
 
     /** @var CachingStrategyFactory Factory to create shared strings caching strategies */
-    protected CachingStrategyFactory $cachingStrategyFactory;
+    private CachingStrategyFactory $cachingStrategyFactory;
 
     /** @var null|CachingStrategyInterface The best caching strategy for storing shared strings */
-    protected ?CachingStrategyInterface $cachingStrategy = null;
+    private ?CachingStrategyInterface $cachingStrategy = null;
 
     /**
      * @param string                       $filePath                     Path of the XLSX file being read
@@ -143,7 +143,7 @@ class SharedStringsManager
      *
      * @return null|int Number of unique shared strings in the sharedStrings.xml file
      */
-    protected function getSharedStringsUniqueCount(XMLReader $xmlReader): ?int
+    private function getSharedStringsUniqueCount(XMLReader $xmlReader): ?int
     {
         $xmlReader->next(self::XML_NODE_SST);
 
@@ -168,7 +168,7 @@ class SharedStringsManager
      *
      * @param null|int $sharedStringsUniqueCount Number of unique shared strings (NULL if unknown)
      */
-    protected function getBestSharedStringsCachingStrategy(?int $sharedStringsUniqueCount): CachingStrategyInterface
+    private function getBestSharedStringsCachingStrategy(?int $sharedStringsUniqueCount): CachingStrategyInterface
     {
         return $this->cachingStrategyFactory
             ->createBestCachingStrategy($sharedStringsUniqueCount, $this->tempFolder)
@@ -181,7 +181,7 @@ class SharedStringsManager
      * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader         XML Reader positioned on a "<si>" node
      * @param int                                 $sharedStringIndex Index of the processed shared strings item
      */
-    protected function processSharedStringsItem(XMLReader $xmlReader, int $sharedStringIndex)
+    private function processSharedStringsItem(XMLReader $xmlReader, int $sharedStringIndex)
     {
         $sharedStringValue = '';
 
@@ -211,7 +211,7 @@ class SharedStringsManager
      *
      * @return bool Whether the given text node's value must be extracted
      */
-    protected function shouldExtractTextNodeValue(\DOMElement $textNode): bool
+    private function shouldExtractTextNodeValue(\DOMElement $textNode): bool
     {
         $parentTagName = $textNode->parentNode->localName;
 
@@ -225,7 +225,7 @@ class SharedStringsManager
      *
      * @return bool Whether whitespace should be preserved
      */
-    protected function shouldPreserveWhitespace(\DOMElement $textNode): bool
+    private function shouldPreserveWhitespace(\DOMElement $textNode): bool
     {
         $spaceValue = $textNode->getAttribute(self::XML_ATTRIBUTE_XML_SPACE);
 

@@ -17,12 +17,12 @@ use OpenSpout\Common\Entity\Style\BorderPart;
  * style:diagonal-tl-br="none" fo:border-left="none" fo:border-right="none"
  * style:rotation-align="none" fo:border-top="none"/>
  */
-class BorderHelper
+final class BorderHelper
 {
     /**
      * Width mappings.
      */
-    protected static array $widthMap = [
+    private static array $widthMap = [
         Border::WIDTH_THIN => '0.75pt',
         Border::WIDTH_MEDIUM => '1.75pt',
         Border::WIDTH_THICK => '2.5pt',
@@ -31,7 +31,7 @@ class BorderHelper
     /**
      * Style mapping.
      */
-    protected static array $styleMap = [
+    private static array $styleMap = [
         Border::STYLE_SOLID => 'solid',
         Border::STYLE_DASHED => 'dashed',
         Border::STYLE_DOTTED => 'dotted',

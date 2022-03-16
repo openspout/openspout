@@ -16,7 +16,7 @@ use OpenSpout\Reader\IteratorInterface;
 use OpenSpout\Reader\ODS\Helper\CellValueFormatter;
 use OpenSpout\Reader\Wrapper\XMLReader;
 
-class RowIterator implements IteratorInterface
+final class RowIterator implements IteratorInterface
 {
     /** Definition of XML nodes names used to parse data */
     public const XML_NODE_TABLE = 'table:table';
@@ -29,49 +29,49 @@ class RowIterator implements IteratorInterface
     public const XML_ATTRIBUTE_NUM_COLUMNS_REPEATED = 'table:number-columns-repeated';
 
     /** @var \OpenSpout\Reader\Wrapper\XMLReader The XMLReader object that will help read sheet's XML data */
-    protected \OpenSpout\Reader\Wrapper\XMLReader $xmlReader;
+    private \OpenSpout\Reader\Wrapper\XMLReader $xmlReader;
 
     /** @var \OpenSpout\Reader\Common\XMLProcessor Helper Object to process XML nodes */
-    protected \OpenSpout\Reader\Common\XMLProcessor $xmlProcessor;
+    private \OpenSpout\Reader\Common\XMLProcessor $xmlProcessor;
 
     /** @var bool Whether empty rows should be returned or skipped */
-    protected bool $shouldPreserveEmptyRows;
+    private bool $shouldPreserveEmptyRows;
 
     /** @var Helper\CellValueFormatter Helper to format cell values */
-    protected Helper\CellValueFormatter $cellValueFormatter;
+    private Helper\CellValueFormatter $cellValueFormatter;
 
     /** @var RowManager Manages rows */
-    protected RowManager $rowManager;
+    private RowManager $rowManager;
 
     /** @var bool Whether the iterator has already been rewound once */
-    protected bool $hasAlreadyBeenRewound = false;
+    private bool $hasAlreadyBeenRewound = false;
 
     /** @var Row The currently processed row */
-    protected Row $currentlyProcessedRow;
+    private Row $currentlyProcessedRow;
 
     /** @var null|Row Buffer used to store the current row, while checking if there are more rows to read */
-    protected ?Row $rowBuffer;
+    private ?Row $rowBuffer;
 
     /** @var bool Indicates whether all rows have been read */
-    protected bool $hasReachedEndOfFile = false;
+    private bool $hasReachedEndOfFile = false;
 
     /** @var int Last row index processed (one-based) */
-    protected int $lastRowIndexProcessed = 0;
+    private int $lastRowIndexProcessed = 0;
 
     /** @var int Row index to be processed next (one-based) */
-    protected int $nextRowIndexToBeProcessed = 1;
+    private int $nextRowIndexToBeProcessed = 1;
 
     /** @var null|Cell Last processed cell (because when reading cell at column N+1, cell N is processed) */
-    protected ?Cell $lastProcessedCell;
+    private ?Cell $lastProcessedCell;
 
     /** @var int Number of times the last processed row should be repeated */
-    protected int $numRowsRepeated = 1;
+    private int $numRowsRepeated = 1;
 
     /** @var int Number of times the last cell value should be copied to the cells on its right */
-    protected int $numColumnsRepeated = 1;
+    private int $numColumnsRepeated = 1;
 
     /** @var bool Whether at least one cell has been read for the row currently being processed */
-    protected bool $hasAlreadyReadOneCellInCurrentRow = false;
+    private bool $hasAlreadyReadOneCellInCurrentRow = false;
 
     /**
      * @param XMLReader               $xmlReader          XML Reader, positioned on the "<table:table>" element
@@ -190,7 +190,7 @@ class RowIterator implements IteratorInterface
      *
      * @return bool whether we need data for the next row to be processed
      */
-    protected function doesNeedDataForNextRowToBeProcessed(): bool
+    private function doesNeedDataForNextRowToBeProcessed(): bool
     {
         $hasReadAtLeastOneRow = (0 !== $this->lastRowIndexProcessed);
 
@@ -204,7 +204,7 @@ class RowIterator implements IteratorInterface
      * @throws \OpenSpout\Reader\Exception\SharedStringNotFoundException If a shared string was not found
      * @throws \OpenSpout\Common\Exception\IOException                   If unable to read the sheet data XML
      */
-    protected function readDataForNextRow()
+    private function readDataForNextRow()
     {
         $this->currentlyProcessedRow = new Row([], null);
 
@@ -222,7 +222,7 @@ class RowIterator implements IteratorInterface
      *
      * @return int A return code that indicates what action should the processor take next
      */
-    protected function processRowStartingNode(XMLReader $xmlReader): int
+    private function processRowStartingNode(XMLReader $xmlReader): int
     {
         // Reset data from current row
         $this->hasAlreadyReadOneCellInCurrentRow = false;
@@ -238,7 +238,7 @@ class RowIterator implements IteratorInterface
      *
      * @return int A return code that indicates what action should the processor take next
      */
-    protected function processCellStartingNode(XMLReader $xmlReader): int
+    private function processCellStartingNode(XMLReader $xmlReader): int
     {
         $currentNumColumnsRepeated = $this->getNumColumnsRepeatedForCurrentNode($xmlReader);
 
@@ -264,7 +264,7 @@ class RowIterator implements IteratorInterface
     /**
      * @return int A return code that indicates what action should the processor take next
      */
-    protected function processRowEndingNode(): int
+    private function processRowEndingNode(): int
     {
         $isEmptyRow = $this->isEmptyRow($this->currentlyProcessedRow, $this->lastProcessedCell);
 
@@ -302,7 +302,7 @@ class RowIterator implements IteratorInterface
     /**
      * @return int A return code that indicates what action should the processor take next
      */
-    protected function processTableEndingNode(): int
+    private function processTableEndingNode(): int
     {
         // The closing "</table:table>" marks the end of the file
         $this->hasReachedEndOfFile = true;
@@ -315,7 +315,7 @@ class RowIterator implements IteratorInterface
      *
      * @return int The value of "table:number-rows-repeated" attribute of the current node, or 1 if attribute missing
      */
-    protected function getNumRowsRepeatedForCurrentNode(XMLReader $xmlReader): int
+    private function getNumRowsRepeatedForCurrentNode(XMLReader $xmlReader): int
     {
         $numRowsRepeated = $xmlReader->getAttribute(self::XML_ATTRIBUTE_NUM_ROWS_REPEATED);
 
@@ -327,7 +327,7 @@ class RowIterator implements IteratorInterface
      *
      * @return int The value of "table:number-columns-repeated" attribute of the current node, or 1 if attribute missing
      */
-    protected function getNumColumnsRepeatedForCurrentNode(XMLReader $xmlReader): int
+    private function getNumColumnsRepeatedForCurrentNode(XMLReader $xmlReader): int
     {
         $numColumnsRepeated = $xmlReader->getAttribute(self::XML_ATTRIBUTE_NUM_COLUMNS_REPEATED);
 
@@ -339,7 +339,7 @@ class RowIterator implements IteratorInterface
      *
      * @return Cell The cell set with the associated with the cell
      */
-    protected function getCell(\DOMElement $node): Cell
+    private function getCell(\DOMElement $node): Cell
     {
         try {
             $cellValue = $this->cellValueFormatter->extractAndFormatNodeValue($node);
@@ -362,7 +362,7 @@ class RowIterator implements IteratorInterface
      *
      * @return bool Whether the row is empty
      */
-    protected function isEmptyRow(Row $currentRow, ?Cell $lastReadCell): bool
+    private function isEmptyRow(Row $currentRow, ?Cell $lastReadCell): bool
     {
         return
             $this->rowManager->isEmpty($currentRow)

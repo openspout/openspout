@@ -12,36 +12,26 @@ final class CachingStrategyFactoryTest extends TestCase
     public function dataProviderForTestCreateBestCachingStrategy(): array
     {
         return [
-            [null, -1, 'FileBasedStrategy'],
-            [CachingStrategyFactory::MAX_NUM_STRINGS_PER_TEMP_FILE, -1, 'FileBasedStrategy'],
-            [CachingStrategyFactory::MAX_NUM_STRINGS_PER_TEMP_FILE + 10, -1, 'FileBasedStrategy'],
-            [CachingStrategyFactory::MAX_NUM_STRINGS_PER_TEMP_FILE - 10, -1, 'InMemoryStrategy'],
-            [10, CachingStrategyFactory::AMOUNT_MEMORY_NEEDED_PER_STRING_IN_KB * 10, 'FileBasedStrategy'],
-            [15, CachingStrategyFactory::AMOUNT_MEMORY_NEEDED_PER_STRING_IN_KB * 10, 'FileBasedStrategy'],
-            [5, CachingStrategyFactory::AMOUNT_MEMORY_NEEDED_PER_STRING_IN_KB * 10, 'InMemoryStrategy'],
+            [null, '-1', FileBasedStrategy::class],
+            [CachingStrategyFactory::MAX_NUM_STRINGS_PER_TEMP_FILE, '-1', FileBasedStrategy::class],
+            [CachingStrategyFactory::MAX_NUM_STRINGS_PER_TEMP_FILE + 10, '-1', FileBasedStrategy::class],
+            [CachingStrategyFactory::MAX_NUM_STRINGS_PER_TEMP_FILE - 10, '-1', InMemoryStrategy::class],
+            [10, (CachingStrategyFactory::AMOUNT_MEMORY_NEEDED_PER_STRING_IN_KB * 10).'KB', FileBasedStrategy::class],
+            [15, (CachingStrategyFactory::AMOUNT_MEMORY_NEEDED_PER_STRING_IN_KB * 10).'KB', FileBasedStrategy::class],
+            [5, (CachingStrategyFactory::AMOUNT_MEMORY_NEEDED_PER_STRING_IN_KB * 10).'KB', InMemoryStrategy::class],
         ];
     }
 
     /**
      * @dataProvider dataProviderForTestCreateBestCachingStrategy
      */
-    public function testCreateBestCachingStrategy(?int $sharedStringsUniqueCount, float $memoryLimitInKB, string $expectedStrategyClassName)
+    public function testCreateBestCachingStrategy(?int $sharedStringsUniqueCount, string $memoryLimitInKB, string $expectedStrategyClassName)
     {
-        /** @var CachingStrategyFactory|\PHPUnit\Framework\MockObject\MockObject $factoryStub */
-        $factoryStub = $this
-            ->getMockBuilder('\OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory')
-            ->disableOriginalConstructor()
-            ->onlyMethods(['getMemoryLimitInKB'])
-            ->getMock()
+        $strategy = (new CachingStrategyFactory(new MemoryLimit($memoryLimitInKB)))
+            ->createBestCachingStrategy($sharedStringsUniqueCount, sys_get_temp_dir())
         ;
 
-        $factoryStub->method('getMemoryLimitInKB')->willReturn($memoryLimitInKB);
-
-        $tempFolder = sys_get_temp_dir();
-        $strategy = $factoryStub->createBestCachingStrategy($sharedStringsUniqueCount, $tempFolder);
-
-        $fullExpectedStrategyClassName = 'OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\\'.$expectedStrategyClassName;
-        static::assertSame($fullExpectedStrategyClassName, \get_class($strategy));
+        static::assertSame($expectedStrategyClassName, \get_class($strategy));
 
         $strategy->clearCache();
     }
@@ -68,18 +58,6 @@ final class CachingStrategyFactoryTest extends TestCase
      */
     public function testGetMemoryLimitInKB(string $memoryLimitFormatted, float $expectedMemoryLimitInKB)
     {
-        /** @var CachingStrategyFactory|\PHPUnit\Framework\MockObject\MockObject $factoryStub */
-        $factoryStub = $this
-            ->getMockBuilder('\OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory')
-            ->disableOriginalConstructor()
-            ->onlyMethods(['getMemoryLimitFromIni'])
-            ->getMock()
-        ;
-
-        $factoryStub->method('getMemoryLimitFromIni')->willReturn($memoryLimitFormatted);
-
-        $memoryLimitInKB = \ReflectionHelper::callMethodOnObject($factoryStub, 'getMemoryLimitInKB');
-
-        static::assertSame($expectedMemoryLimitInKB, $memoryLimitInKB);
+        static::assertSame($expectedMemoryLimitInKB, (new MemoryLimit($memoryLimitFormatted))->getMemoryLimitInKB());
     }
 }

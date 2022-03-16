@@ -5,7 +5,7 @@ namespace OpenSpout\Reader\XLSX\Helper;
 /**
  * This class provides helper functions to format Excel dates.
  */
-class DateFormatHelper
+final class DateFormatHelper
 {
     public const KEY_GENERAL = 'general';
     public const KEY_HOUR_12 = '12h';

@@ -8,7 +8,7 @@ use OpenSpout\Writer\Common\Entity\Options;
 /**
  * CSV Writer options manager.
  */
-class OptionsManager extends OptionsManagerAbstract
+final class OptionsManager extends OptionsManagerAbstract
 {
     /**
      * {@inheritdoc}

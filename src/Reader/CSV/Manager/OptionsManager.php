@@ -9,7 +9,7 @@ use OpenSpout\Reader\Common\Entity\Options;
 /**
  * CSV Reader options manager.
  */
-class OptionsManager extends OptionsManagerAbstract
+final class OptionsManager extends OptionsManagerAbstract
 {
     /**
      * {@inheritdoc}

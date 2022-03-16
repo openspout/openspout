@@ -5,7 +5,7 @@ namespace OpenSpout\Writer\Common\Helper;
 /**
  * This class provides helper functions to create zip files.
  */
-class ZipHelper
+final class ZipHelper
 {
     public const ZIP_EXTENSION = '.zip';
 
@@ -143,7 +143,7 @@ class ZipHelper
      * @param string      $existingFileMode  Controls what to do when trying to add an existing file
      * @param int         $compressionMethod The compression method
      */
-    protected function addFileToArchiveWithCompressionMethod(\ZipArchive $zip, string $rootFolderPath, string $localFilePath, string $existingFileMode, int $compressionMethod)
+    private function addFileToArchiveWithCompressionMethod(\ZipArchive $zip, string $rootFolderPath, string $localFilePath, string $existingFileMode, int $compressionMethod)
     {
         if (!$this->shouldSkipFile($zip, $localFilePath, $existingFileMode)) {
             $normalizedFullFilePath = $this->getNormalizedRealPath($rootFolderPath.'/'.$localFilePath);
@@ -158,7 +158,7 @@ class ZipHelper
     /**
      * @return bool Whether the file should be added to the archive or skipped
      */
-    protected function shouldSkipFile(\ZipArchive $zip, string $itemLocalPath, string $existingFileMode): bool
+    private function shouldSkipFile(\ZipArchive $zip, string $itemLocalPath, string $existingFileMode): bool
     {
         // Skip files if:
         //   - EXISTING_FILES_SKIP mode chosen
@@ -173,7 +173,7 @@ class ZipHelper
      *
      * @return string Normalized and canonicalized path
      */
-    protected function getNormalizedRealPath(string $path): string
+    private function getNormalizedRealPath(string $path): string
     {
         $realPath = realpath($path);
 
@@ -186,7 +186,7 @@ class ZipHelper
      * @param string   $zipFilePath Path of the zip file
      * @param resource $pointer     Pointer to the stream to copy the zip
      */
-    protected function copyZipToStream(string $zipFilePath, $pointer)
+    private function copyZipToStream(string $zipFilePath, $pointer)
     {
         $zipFilePointer = fopen($zipFilePath, 'r');
         stream_copy_to_stream($zipFilePointer, $pointer);

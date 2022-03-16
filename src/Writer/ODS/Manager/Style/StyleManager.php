@@ -16,7 +16,7 @@ use OpenSpout\Writer\ODS\Helper\BorderHelper;
  *
  * @property StyleRegistry $styleRegistry
  */
-class StyleManager extends CommonStyleManager
+final class StyleManager extends CommonStyleManager
 {
     use ManagesCellSize;
 

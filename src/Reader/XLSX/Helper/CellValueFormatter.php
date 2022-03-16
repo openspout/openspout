@@ -3,14 +3,15 @@
 namespace OpenSpout\Reader\XLSX\Helper;
 
 use DateTimeImmutable;
+use OpenSpout\Common\Helper\Escaper\XLSX;
+use OpenSpout\Reader\Common\Manager\StyleManagerInterface;
 use OpenSpout\Reader\Exception\InvalidValueException;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsManager;
-use OpenSpout\Reader\XLSX\Manager\StyleManager;
 
 /**
  * This class provides helper functions to format cell values.
  */
-class CellValueFormatter
+final class CellValueFormatter
 {
     /** Definition of all possible cell types */
     public const CELL_TYPE_INLINE_STRING = 'inlineStr';
@@ -33,29 +34,34 @@ class CellValueFormatter
     public const NUM_SECONDS_IN_ONE_DAY = 86400;
 
     /** @var SharedStringsManager Manages shared strings */
-    protected SharedStringsManager $sharedStringsManager;
+    private SharedStringsManager $sharedStringsManager;
 
-    /** @var StyleManager Manages styles */
-    protected StyleManager $styleManager;
+    /** @var StyleManagerInterface Manages styles */
+    private StyleManagerInterface $styleManager;
 
     /** @var bool Whether date/time values should be returned as PHP objects or be formatted as strings */
-    protected bool $shouldFormatDates;
+    private bool $shouldFormatDates;
 
     /** @var bool Whether date/time values should use a calendar starting in 1904 instead of 1900 */
-    protected bool $shouldUse1904Dates;
+    private bool $shouldUse1904Dates;
 
-    /** @var \OpenSpout\Common\Helper\Escaper\XLSX Used to unescape XML data */
-    protected \OpenSpout\Common\Helper\Escaper\XLSX $escaper;
+    /** @var XLSX Used to unescape XML data */
+    private XLSX $escaper;
 
     /**
-     * @param SharedStringsManager                  $sharedStringsManager Manages shared strings
-     * @param StyleManager                          $styleManager         Manages styles
-     * @param bool                                  $shouldFormatDates    Whether date/time values should be returned as PHP objects or be formatted as strings
-     * @param bool                                  $shouldUse1904Dates   Whether date/time values should use a calendar starting in 1904 instead of 1900
-     * @param \OpenSpout\Common\Helper\Escaper\XLSX $escaper              Used to unescape XML data
+     * @param SharedStringsManager  $sharedStringsManager Manages shared strings
+     * @param StyleManagerInterface $styleManager         Manages styles
+     * @param bool                  $shouldFormatDates    Whether date/time values should be returned as PHP objects or be formatted as strings
+     * @param bool                  $shouldUse1904Dates   Whether date/time values should use a calendar starting in 1904 instead of 1900
+     * @param XLSX                  $escaper              Used to unescape XML data
      */
-    public function __construct(SharedStringsManager $sharedStringsManager, StyleManager $styleManager, bool $shouldFormatDates, bool $shouldUse1904Dates, \OpenSpout\Common\Helper\Escaper\XLSX $escaper)
-    {
+    public function __construct(
+        SharedStringsManager $sharedStringsManager,
+        StyleManagerInterface $styleManager,
+        bool $shouldFormatDates,
+        bool $shouldUse1904Dates,
+        XLSX $escaper
+    ) {
         $this->sharedStringsManager = $sharedStringsManager;
         $this->styleManager = $styleManager;
         $this->shouldFormatDates = $shouldFormatDates;
@@ -110,7 +116,7 @@ class CellValueFormatter
      *
      * @return string The value associated with the cell
      */
-    protected function getVNodeValue(\DOMElement $node): string
+    private function getVNodeValue(\DOMElement $node): string
     {
         // for cell types having a "v" tag containing the value.
         // if not, the returned value should be empty string.
@@ -124,7 +130,7 @@ class CellValueFormatter
      *
      * @return string The value associated with the cell
      */
-    protected function formatInlineStringCellValue(\DOMElement $node): string
+    private function formatInlineStringCellValue(\DOMElement $node): string
     {
         // inline strings are formatted this way (they can contain any number of <t> nodes):
         // <c r="A1" t="inlineStr"><is><t>[INLINE_STRING]</t><t>[INLINE_STRING_2]</t></is></c>
@@ -144,7 +150,7 @@ class CellValueFormatter
      *
      * @return string The value associated with the cell
      */
-    protected function formatSharedStringCellValue(string $nodeValue): string
+    private function formatSharedStringCellValue(string $nodeValue): string
     {
         // shared strings are formatted this way:
         // <c r="A1" t="s"><v>[SHARED_STRING_INDEX]</v></c>
@@ -159,7 +165,7 @@ class CellValueFormatter
      *
      * @return string The value associated with the cell
      */
-    protected function formatStrCellValue(string $nodeValue): string
+    private function formatStrCellValue(string $nodeValue): string
     {
         $escapedCellValue = trim($nodeValue);
 
@@ -174,7 +180,7 @@ class CellValueFormatter
      *
      * @return \DateTimeImmutable|float|int The value associated with the cell
      */
-    protected function formatNumericCellValue(int|float|string $nodeValue, int $cellStyleId)
+    private function formatNumericCellValue(int|float|string $nodeValue, int $cellStyleId)
     {
         // Numeric values can represent numbers as well as timestamps.
         // We need to look at the style of the cell to determine whether it is one or the other.
@@ -203,7 +209,7 @@ class CellValueFormatter
      *
      * @see ECMA-376 Part 1 - §18.17.4
      */
-    protected function formatExcelTimestampValue(float $nodeValue, int $cellStyleId): string|DateTimeImmutable
+    private function formatExcelTimestampValue(float $nodeValue, int $cellStyleId): string|DateTimeImmutable
     {
         if (!$this->isValidTimestampValue($nodeValue)) {
             throw new InvalidValueException($nodeValue);
@@ -217,7 +223,7 @@ class CellValueFormatter
      *
      * @see ECMA-376 Part 1 - §18.17.4 - this specifies the timestamp boundaries.
      */
-    protected function isValidTimestampValue(float $timestampValue): bool
+    private function isValidTimestampValue(float $timestampValue): bool
     {
         // @NOTE: some versions of Excel don't support negative dates (e.g. Excel for Mac 2011)
         return
@@ -233,7 +239,7 @@ class CellValueFormatter
      *
      * @param int $cellStyleId 0 being the default style
      */
-    protected function formatExcelTimestampValueAsDateTimeValue(float $nodeValue, int $cellStyleId): string|DateTimeImmutable
+    private function formatExcelTimestampValueAsDateTimeValue(float $nodeValue, int $cellStyleId): string|DateTimeImmutable
     {
         $baseDate = $this->shouldUse1904Dates ? '1904-01-01' : '1899-12-30';
 
@@ -261,7 +267,7 @@ class CellValueFormatter
      *
      * @return bool The value associated with the cell
      */
-    protected function formatBooleanCellValue(string $nodeValue): bool
+    private function formatBooleanCellValue(string $nodeValue): bool
     {
         return (bool) $nodeValue;
     }
@@ -275,7 +281,7 @@ class CellValueFormatter
      *
      * @throws InvalidValueException If the value is not a valid date
      */
-    protected function formatDateCellValue(string $nodeValue): string|DateTimeImmutable
+    private function formatDateCellValue(string $nodeValue): string|DateTimeImmutable
     {
         // Mitigate thrown Exception on invalid date-time format (http://php.net/manual/en/datetime.construct.php)
         try {

@@ -8,7 +8,7 @@ use OpenSpout\Reader\Wrapper\XMLReader;
 /**
  * This class provides helper functions to extract data from the "settings.xml" file.
  */
-class SettingsHelper
+final class SettingsHelper
 {
     public const SETTINGS_XML_FILE_PATH = 'settings.xml';
 

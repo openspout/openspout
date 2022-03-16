@@ -9,7 +9,7 @@ use OpenSpout\Writer\Common\Entity\Options;
 /**
  * XLSX Writer options manager.
  */
-class OptionsManager extends OptionsManagerAbstract
+final class OptionsManager extends OptionsManagerAbstract
 {
     /** Default style font values */
     public const DEFAULT_FONT_SIZE = 12;

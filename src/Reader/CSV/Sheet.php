@@ -4,10 +4,10 @@ namespace OpenSpout\Reader\CSV;
 
 use OpenSpout\Reader\SheetInterface;
 
-class Sheet implements SheetInterface
+final class Sheet implements SheetInterface
 {
     /** @var \OpenSpout\Reader\CSV\RowIterator To iterate over the CSV's rows */
-    protected \OpenSpout\Reader\CSV\RowIterator $rowIterator;
+    private \OpenSpout\Reader\CSV\RowIterator $rowIterator;
 
     /**
      * @param RowIterator $rowIterator Corresponding row iterator

@@ -6,9 +6,9 @@ use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
 
-class CellManager
+final class CellManager
 {
-    protected StyleMerger $styleMerger;
+    private StyleMerger $styleMerger;
 
     public function __construct(StyleMerger $styleMerger)
     {

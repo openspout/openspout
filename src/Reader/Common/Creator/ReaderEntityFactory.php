@@ -9,7 +9,7 @@ use OpenSpout\Reader\ReaderInterface;
 /**
  * Factory to create external entities.
  */
-class ReaderEntityFactory
+final class ReaderEntityFactory
 {
     /**
      * Creates a reader by file extension.

@@ -7,7 +7,7 @@ use OpenSpout\Common\Exception\InvalidArgumentException;
 /**
  * This class provides helper functions when working with cells.
  */
-class CellHelper
+final class CellHelper
 {
     // Using ord() is super slow... Using a pre-computed hash table instead.
     private static $columnLetterToIndexMapping = [
@@ -76,7 +76,7 @@ class CellHelper
      *
      * @param string $cellIndex The Excel cell index ('A1', 'BC13', ...)
      */
-    protected static function isValidCellIndex(string $cellIndex): bool
+    private static function isValidCellIndex(string $cellIndex): bool
     {
         return 1 === preg_match('/^[A-Z]{1,3}\d+$/', $cellIndex);
     }

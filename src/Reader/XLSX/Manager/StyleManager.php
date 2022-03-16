@@ -2,12 +2,10 @@
 
 namespace OpenSpout\Reader\XLSX\Manager;
 
+use OpenSpout\Reader\Common\Manager\StyleManagerInterface;
 use OpenSpout\Reader\Wrapper\XMLReader;
 
-/**
- * This class manages XLSX styles.
- */
-class StyleManager
+class StyleManager implements StyleManagerInterface
 {
     /** Nodes used to find relevant information in the styles XML file */
     public const XML_NODE_NUM_FMTS = 'numFmts';
@@ -48,9 +46,6 @@ class StyleManager
     /** @var string Path of the XLSX file being read */
     protected string $filePath;
 
-    /** @var bool Whether the XLSX file contains a styles XML file */
-    protected bool $hasStylesXMLFile;
-
     /** @var null|string Path of the styles XML file */
     protected ?string $stylesXMLFilePath;
 
@@ -67,30 +62,19 @@ class StyleManager
     protected array $numFmtIdToIsDateFormatCache = [];
 
     /**
-     * @param string                       $filePath                     Path of the XLSX file being read
-     * @param WorkbookRelationshipsManager $workbookRelationshipsManager Helps retrieving workbook relationships
+     * @param string  $filePath          Path of the XLSX file being read
+     * @param ?string $stylesXMLFilePath
      */
-    public function __construct(string $filePath, WorkbookRelationshipsManager $workbookRelationshipsManager)
+    public function __construct(string $filePath, ?string $stylesXMLFilePath)
     {
         $this->filePath = $filePath;
         $this->builtinNumFmtIdIndicatingDates = array_keys(self::$builtinNumFmtIdToNumFormatMapping);
-        $this->hasStylesXMLFile = $workbookRelationshipsManager->hasStylesXMLFile();
-        if ($this->hasStylesXMLFile) {
-            $this->stylesXMLFilePath = $workbookRelationshipsManager->getStylesXMLFilePath();
-        }
+        $this->stylesXMLFilePath = $stylesXMLFilePath;
     }
 
-    /**
-     * Returns whether the style with the given ID should consider
-     * numeric values as timestamps and format the cell as a date.
-     *
-     * @param int $styleId Zero-based style ID
-     *
-     * @return bool Whether the cell with the given cell should display a date instead of a numeric value
-     */
     public function shouldFormatNumericValueAsDate(int $styleId): bool
     {
-        if (!$this->hasStylesXMLFile) {
+        if (null === $this->stylesXMLFilePath) {
             return false;
         }
 
@@ -108,14 +92,6 @@ class StyleManager
         return $this->doesStyleIndicateDate($styleAttributes);
     }
 
-    /**
-     * Returns the format as defined in "styles.xml" of the given style.
-     * NOTE: It is assumed that the style DOES have a number format associated to it.
-     *
-     * @param int $styleId Zero-based style ID
-     *
-     * @return string The number format code associated with the given style
-     */
     public function getNumberFormatCode(int $styleId): string
     {
         $stylesAttributes = $this->getStylesAttributes();

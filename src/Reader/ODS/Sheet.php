@@ -7,25 +7,22 @@ use OpenSpout\Reader\SheetInterface;
 /**
  * Represents a sheet within a ODS file.
  */
-class Sheet implements SheetInterface
+final class Sheet implements SheetInterface
 {
-    /** @var \OpenSpout\Reader\ODS\RowIterator To iterate over sheet's rows */
-    protected \OpenSpout\Reader\ODS\RowIterator $rowIterator;
-
-    /** @var int ID of the sheet */
-    protected int $id;
+    /** @var RowIterator To iterate over sheet's rows */
+    private RowIterator $rowIterator;
 
     /** @var int Index of the sheet, based on order in the workbook (zero-based) */
-    protected int $index;
+    private int $index;
 
     /** @var string Name of the sheet */
-    protected string $name;
+    private string $name;
 
     /** @var bool Whether the sheet was the active one */
-    protected bool $isActive;
+    private bool $isActive;
 
     /** @var bool Whether the sheet is visible */
-    protected bool $isVisible;
+    private bool $isVisible;
 
     /**
      * @param RowIterator $rowIterator    The corresponding row iterator
@@ -43,9 +40,6 @@ class Sheet implements SheetInterface
         $this->isVisible = $isSheetVisible;
     }
 
-    /**
-     * @return \OpenSpout\Reader\ODS\RowIterator
-     */
     public function getRowIterator(): RowIterator
     {
         return $this->rowIterator;

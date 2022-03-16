@@ -17,7 +17,7 @@ use OpenSpout\Writer\ODS\Manager\Style\StyleManager;
  * @property FileSystemHelper $fileSystemHelper
  * @property StyleManager     $styleManager
  */
-class WorkbookManager extends WorkbookManagerAbstract
+final class WorkbookManager extends WorkbookManagerAbstract
 {
     /**
      * Maximum number of rows a ODS sheet can contain.

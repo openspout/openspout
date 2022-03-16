@@ -12,7 +12,7 @@ use OpenSpout\Reader\RowIteratorInterface;
 /**
  * Iterate over CSV rows.
  */
-class RowIterator implements RowIteratorInterface
+final class RowIterator implements RowIteratorInterface
 {
     /**
      * Value passed to fgetcsv. 0 means "unlimited" (slightly slower but accomodates for very long lines).
@@ -20,31 +20,31 @@ class RowIterator implements RowIteratorInterface
     public const MAX_READ_BYTES_PER_LINE = 0;
 
     /** @var null|resource Pointer to the CSV file to read */
-    protected $filePointer;
+    private $filePointer;
 
     /** @var int Number of read rows */
-    protected int $numReadRows = 0;
+    private int $numReadRows = 0;
 
     /** @var null|Row Buffer used to store the current row, while checking if there are more rows to read */
-    protected ?Row $rowBuffer;
+    private ?Row $rowBuffer;
 
     /** @var bool Indicates whether all rows have been read */
-    protected bool $hasReachedEndOfFile = false;
+    private bool $hasReachedEndOfFile = false;
 
     /** @var string Defines the character used to delimit fields (one character only) */
-    protected string $fieldDelimiter;
+    private string $fieldDelimiter;
 
     /** @var string Defines the character used to enclose fields (one character only) */
-    protected string $fieldEnclosure;
+    private string $fieldEnclosure;
 
     /** @var string Encoding of the CSV file to be read */
-    protected string $encoding;
+    private string $encoding;
 
     /** @var bool Whether empty rows should be returned or skipped */
-    protected bool $shouldPreserveEmptyRows;
+    private bool $shouldPreserveEmptyRows;
 
     /** @var \OpenSpout\Common\Helper\EncodingHelper Helper to work with different encodings */
-    protected \OpenSpout\Common\Helper\EncodingHelper $encodingHelper;
+    private \OpenSpout\Common\Helper\EncodingHelper $encodingHelper;
 
     /**
      * @param resource $filePointer Pointer to the CSV file to read
@@ -135,7 +135,7 @@ class RowIterator implements RowIteratorInterface
      * This rewinds and skips the BOM if inserted at the beginning of the file
      * by moving the file pointer after it, so that it is not read.
      */
-    protected function rewindAndSkipBom()
+    private function rewindAndSkipBom()
     {
         $byteOffsetToSkipBom = $this->encodingHelper->getBytesOffsetToSkipBOM($this->filePointer, $this->encoding);
 
@@ -146,7 +146,7 @@ class RowIterator implements RowIteratorInterface
     /**
      * @throws \OpenSpout\Common\Exception\EncodingConversionException If unable to convert data to UTF-8
      */
-    protected function readDataForNextRow()
+    private function readDataForNextRow()
     {
         do {
             $rowData = $this->getNextUTF8EncodedRow();
@@ -171,7 +171,7 @@ class RowIterator implements RowIteratorInterface
      *
      * @return bool Whether the data for the current row can be returned or if we need to keep reading
      */
-    protected function shouldReadNextRow($currentRowData): bool
+    private function shouldReadNextRow($currentRowData): bool
     {
         $hasSuccessfullyFetchedRowData = (false !== $currentRowData);
         $hasNowReachedEndOfFile = feof($this->filePointer);
@@ -192,7 +192,7 @@ class RowIterator implements RowIteratorInterface
      *
      * @return array|false The row for the current file pointer, encoded in UTF-8 or FALSE if nothing to read
      */
-    protected function getNextUTF8EncodedRow()
+    private function getNextUTF8EncodedRow()
     {
         $encodedRowData = fgetcsv($this->filePointer, self::MAX_READ_BYTES_PER_LINE, $this->fieldDelimiter, $this->fieldEnclosure, '');
         if (false === $encodedRowData) {
@@ -227,7 +227,7 @@ class RowIterator implements RowIteratorInterface
      *
      * @return bool Whether the given line is empty
      */
-    protected function isEmptyLine($lineData): bool
+    private function isEmptyLine($lineData): bool
     {
         return \is_array($lineData) && 1 === \count($lineData) && null === $lineData[0];
     }

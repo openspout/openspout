@@ -7,7 +7,7 @@ use OpenSpout\Common\Exception\InvalidArgumentException;
 /**
  * Represents a style to be applied to a cell.
  */
-class Style
+final class Style
 {
     /** Default values */
     public const DEFAULT_FONT_SIZE = 11;

@@ -4,7 +4,7 @@ namespace OpenSpout\Reader\Exception;
 
 use Throwable;
 
-class InvalidValueException extends ReaderException
+final class InvalidValueException extends ReaderException
 {
     /** @var mixed */
     private $invalidValue;

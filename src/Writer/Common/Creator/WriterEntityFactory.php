@@ -12,7 +12,7 @@ use OpenSpout\Writer\WriterInterface;
 /**
  * Factory to create external entities.
  */
-class WriterEntityFactory
+final class WriterEntityFactory
 {
     /**
      * This creates an instance of the appropriate writer, given the type of the file to be written.

@@ -17,7 +17,7 @@ final class RowTest extends \PHPUnit\Framework\TestCase
     public function testSetCells()
     {
         $row = new Row([], null);
-        $row->setCells([$this->getCellMock(), $this->getCellMock()]);
+        $row->setCells([new Cell(null), new Cell(null)]);
 
         static::assertSame(2, $row->getNumCells());
     }
@@ -25,11 +25,11 @@ final class RowTest extends \PHPUnit\Framework\TestCase
     public function testSetCellsResets()
     {
         $row = new Row([], null);
-        $row->setCells([$this->getCellMock(), $this->getCellMock()]);
+        $row->setCells([new Cell(null), new Cell(null)]);
 
         static::assertSame(2, $row->getNumCells());
 
-        $row->setCells([$this->getCellMock()]);
+        $row->setCells([new Cell(null)]);
 
         static::assertSame(1, $row->getNumCells());
     }
@@ -40,7 +40,7 @@ final class RowTest extends \PHPUnit\Framework\TestCase
 
         static::assertSame(0, $row->getNumCells());
 
-        $row->setCells([$this->getCellMock(), $this->getCellMock()]);
+        $row->setCells([new Cell(null), new Cell(null)]);
 
         static::assertSame(2, $row->getNumCells());
     }
@@ -48,7 +48,7 @@ final class RowTest extends \PHPUnit\Framework\TestCase
     public function testGetCellAtIndex()
     {
         $row = new Row([], null);
-        $cellMock = $this->getCellMock();
+        $cellMock = new Cell(null);
         $row->setCellAtIndex($cellMock, 3);
 
         static::assertSame($cellMock, $row->getCellAtIndex(3));
@@ -58,7 +58,7 @@ final class RowTest extends \PHPUnit\Framework\TestCase
     public function testSetCellAtIndex()
     {
         $row = new Row([], null);
-        $cellMock = $this->getCellMock();
+        $cellMock = new Cell(null);
         $row->setCellAtIndex($cellMock, 1);
 
         static::assertSame(2, $row->getNumCells());
@@ -68,11 +68,11 @@ final class RowTest extends \PHPUnit\Framework\TestCase
     public function testAddCell()
     {
         $row = new Row([], null);
-        $row->setCells([$this->getCellMock(), $this->getCellMock()]);
+        $row->setCells([new Cell(null), new Cell(null)]);
 
         static::assertSame(2, $row->getNumCells());
 
-        $row->addCell($this->getCellMock());
+        $row->addCell(new Cell(null));
 
         static::assertSame(3, $row->getNumCells());
     }
@@ -81,27 +81,11 @@ final class RowTest extends \PHPUnit\Framework\TestCase
     {
         $row = new Row([], null);
         $row
-            ->addCell($this->getCellMock())
-            ->setStyle($this->getStyleMock())
+            ->addCell(new Cell(null))
+            ->setStyle(new Style())
             ->setCells([])
         ;
 
         static::assertInstanceOf(Row::class, $row);
-    }
-
-    /**
-     * @return \PHPUnit\Framework\MockObject\MockObject|Style
-     */
-    private function getStyleMock()
-    {
-        return $this->createMock(Style::class);
-    }
-
-    /**
-     * @return Cell|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private function getCellMock()
-    {
-        return $this->createMock(Cell::class);
     }
 }

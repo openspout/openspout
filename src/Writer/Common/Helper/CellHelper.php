@@ -5,7 +5,7 @@ namespace OpenSpout\Writer\Common\Helper;
 /**
  * This class provides helper functions when working with cells.
  */
-class CellHelper
+final class CellHelper
 {
     /** @var array Cache containing the mapping column index => column letters */
     private static array $columnIndexToColumnLettersCache = [];

@@ -4,7 +4,7 @@ namespace OpenSpout\Writer\Common\Manager;
 
 use OpenSpout\Common\Entity\Row;
 
-class RowManager
+final class RowManager
 {
     /**
      * Detect whether a row is considered empty.
