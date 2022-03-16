@@ -13,7 +13,7 @@ final class XMLReaderTest extends TestCase
 {
     use TestUsingResource;
 
-    public function testOpenShouldFailIfFileInsideZipDoesNotExist()
+    public function testOpenShouldFailIfFileInsideZipDoesNotExist(): void
     {
         $resourcePath = $this->getResourcePath('one_sheet_with_inline_strings.xlsx');
 
@@ -31,7 +31,7 @@ final class XMLReaderTest extends TestCase
      *
      * @see XMLReader::open()
      */
-    public function testHHVMStillDoesNotComplainWhenCallingOpenWithFileInsideZipNotExisting()
+    public function testHHVMStillDoesNotComplainWhenCallingOpenWithFileInsideZipNotExisting(): void
     {
         // Test should only be run on HHVM
         if ($this->isRunningHHVM()) {
@@ -52,7 +52,7 @@ final class XMLReaderTest extends TestCase
         }
     }
 
-    public function testReadShouldThrowExceptionOnError()
+    public function testReadShouldThrowExceptionOnError(): void
     {
         $this->expectException(XMLProcessingException::class);
 
@@ -68,7 +68,7 @@ final class XMLReaderTest extends TestCase
         // do nothing
     }
 
-    public function testNextShouldThrowExceptionOnError()
+    public function testNextShouldThrowExceptionOnError(): void
     {
         $this->expectException(XMLProcessingException::class);
 
@@ -96,7 +96,7 @@ final class XMLReaderTest extends TestCase
     /**
      * @dataProvider dataProviderForTestFileExistsWithinZip
      */
-    public function testFileExistsWithinZip(string $innerFilePath, bool $expectedResult)
+    public function testFileExistsWithinZip(string $innerFilePath, bool $expectedResult): void
     {
         $resourcePath = $this->getResourcePath('one_sheet_with_inline_strings.xlsx');
         $zipStreamURI = 'zip://'.$resourcePath.'#'.$innerFilePath;
@@ -122,7 +122,7 @@ final class XMLReaderTest extends TestCase
     /**
      * @dataProvider dataProviderForTestGetRealPathURIForFileInZip
      */
-    public function testGetRealPathURIForFileInZip(string $tempFolder, string $zipFilePath, string $fileInsideZipPath, string $expectedRealPathURI)
+    public function testGetRealPathURIForFileInZip(string $tempFolder, string $zipFilePath, string $fileInsideZipPath, string $expectedRealPathURI): void
     {
         touch($tempFolder.'/test.xlsx');
 
@@ -149,7 +149,7 @@ final class XMLReaderTest extends TestCase
     /**
      * @dataProvider dataProviderForTestIsPositionedOnStartingAndEndingNode
      */
-    public function testIsPositionedOnStartingAndEndingNode(string $testXML)
+    public function testIsPositionedOnStartingAndEndingNode(string $testXML): void
     {
         $xmlReader = new XMLReader();
         $xmlReader->XML($testXML);

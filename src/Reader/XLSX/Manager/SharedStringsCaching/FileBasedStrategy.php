@@ -39,9 +39,9 @@ final class FileBasedStrategy implements CachingStrategyInterface
     private string $inMemoryTempFilePath = '';
 
     /**
-     * @var array Contents of the temporary file that was last read
-     *
      * @see CachingStrategyFactory::MAX_NUM_STRINGS_PER_TEMP_FILE
+     *
+     * @var string[] Contents of the temporary file that was last read
      */
     private array $inMemoryTempFileContents;
 

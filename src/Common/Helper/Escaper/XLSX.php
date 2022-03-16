@@ -59,7 +59,7 @@ final class XLSX implements EscaperInterface
     /**
      * Initializes the control characters if not already done.
      */
-    private function initIfNeeded()
+    private function initIfNeeded(): void
     {
         if (!$this->isAlreadyInitialized) {
             $this->escapableControlCharactersPattern = $this->getEscapableControlCharactersPattern();

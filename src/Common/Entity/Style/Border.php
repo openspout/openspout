@@ -19,9 +19,12 @@ final class Border
     public const WIDTH_MEDIUM = 'medium';
     public const WIDTH_THICK = 'thick';
 
-    /** @var array A list of BorderPart objects for this border. */
+    /** @var array<string, BorderPart> A list of BorderPart objects for this border. */
     private array $parts = [];
 
+    /**
+     * @param BorderPart[] $borderParts
+     */
     public function __construct(array $borderParts = [])
     {
         $this->setParts($borderParts);
@@ -43,15 +46,18 @@ final class Border
         return isset($this->parts[$name]);
     }
 
+    /**
+     * @return array<string, BorderPart>
+     */
     public function getParts(): array
     {
         return $this->parts;
     }
 
     /**
-     * Set BorderParts.
+     * @param BorderPart[] $parts
      */
-    public function setParts(array $parts)
+    public function setParts(array $parts): void
     {
         $this->parts = [];
         foreach ($parts as $part) {

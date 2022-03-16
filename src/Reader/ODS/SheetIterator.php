@@ -52,7 +52,7 @@ final class SheetIterator implements SheetIteratorInterface
     /** @var string The name of the sheet that was defined as active */
     private ?string $activeSheetName;
 
-    /** @var array Associative array [STYLE_NAME] => [IS_SHEET_VISIBLE] */
+    /** @var array<string, bool> Associative array [STYLE_NAME] => [IS_SHEET_VISIBLE] */
     private array $sheetsVisibility;
 
     /**
@@ -171,7 +171,7 @@ final class SheetIterator implements SheetIteratorInterface
     /**
      * Extracts the visibility of the sheets.
      *
-     * @return array Associative array [STYLE_NAME] => [IS_SHEET_VISIBLE]
+     * @return array<string, bool> Associative array [STYLE_NAME] => [IS_SHEET_VISIBLE]
      */
     private function readSheetsVisibility(): array
     {

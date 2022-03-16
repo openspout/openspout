@@ -29,8 +29,8 @@ final class WorkbookRelationshipsManager
     /** @var string Path of the XLSX file being read */
     private string $filePath;
 
-    /** @var null|array Cache of the already read workbook relationships: [TYPE] => [FILE_NAME] */
-    private ?array $cachedWorkbookRelationships;
+    /** @var null|array<string, string> Cache of the already read workbook relationships: [TYPE] => [FILE_NAME] */
+    private ?array $cachedWorkbookRelationships = null;
 
     /**
      * @param string $filePath Path of the XLSX file being read
@@ -105,10 +105,12 @@ final class WorkbookRelationshipsManager
      * It caches the result so that the file is read only once.
      *
      * @throws \OpenSpout\Common\Exception\IOException If workbook.xml.rels can't be read
+     *
+     * @return array<string, string>
      */
     private function getWorkbookRelationships(): array
     {
-        if (!isset($this->cachedWorkbookRelationships)) {
+        if (null === $this->cachedWorkbookRelationships) {
             $xmlReader = new XMLReader();
 
             if (false === $xmlReader->openFileInZip($this->filePath, self::WORKBOOK_RELS_XML_FILE_PATH)) {
@@ -128,7 +130,7 @@ final class WorkbookRelationshipsManager
     /**
      * Extracts and store the data of the current workbook relationship.
      */
-    private function processWorkbookRelationship(XMLReader $xmlReader)
+    private function processWorkbookRelationship(XMLReader $xmlReader): void
     {
         $type = $xmlReader->getAttribute(self::XML_ATTRIBUTE_TYPE);
         $target = $xmlReader->getAttribute(self::XML_ATTRIBUTE_TARGET);

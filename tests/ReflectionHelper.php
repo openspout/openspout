@@ -22,25 +22,6 @@ final class ReflectionHelper
     }
 
     /**
-     * Get the value of a static private or public class property.
-     * Used to test internals of class without having to make the property public.
-     *
-     * @return null|mixed
-     */
-    public static function getStaticValue(string $class, string $valueName): mixed
-    {
-        $reflectionClass = new ReflectionClass($class);
-        $reflectionProperty = $reflectionClass->getProperty($valueName);
-        $reflectionProperty->setAccessible(true);
-        $value = $reflectionProperty->getValue();
-
-        // clean up
-        $reflectionProperty->setAccessible(false);
-
-        return $value;
-    }
-
-    /**
      * Set the value of a static private or public class property.
      * Used to test internals of class without having to make the property public.
      *

@@ -14,10 +14,9 @@ final class DateFormatHelper
     /**
      * This map is used to replace Excel format characters by their PHP equivalent.
      * Keys should be ordered from longest to smallest.
-     *
-     * @var array Mapping between Excel format characters and PHP format characters
+     * Mapping between Excel format characters and PHP format characters.
      */
-    private static array $excelDateFormatToPHPDateFormatMapping = [
+    private const excelDateFormatToPHPDateFormatMapping = [
         self::KEY_GENERAL => [
             // Time
             'am/pm' => 'A',  // Uppercase Ante meridiem and Post meridiem
@@ -83,13 +82,13 @@ final class DateFormatHelper
             $transformedPart = str_replace('\\', '', $transformedPart);
 
             // Apply general transformation first...
-            $transformedPart = strtr($transformedPart, self::$excelDateFormatToPHPDateFormatMapping[self::KEY_GENERAL]);
+            $transformedPart = strtr($transformedPart, self::excelDateFormatToPHPDateFormatMapping[self::KEY_GENERAL]);
 
             // ... then apply hour transformation, for 12-hour or 24-hour format
             if (self::has12HourFormatMarker($dateFormatPart)) {
-                $transformedPart = strtr($transformedPart, self::$excelDateFormatToPHPDateFormatMapping[self::KEY_HOUR_12]);
+                $transformedPart = strtr($transformedPart, self::excelDateFormatToPHPDateFormatMapping[self::KEY_HOUR_12]);
             } else {
-                $transformedPart = strtr($transformedPart, self::$excelDateFormatToPHPDateFormatMapping[self::KEY_HOUR_24]);
+                $transformedPart = strtr($transformedPart, self::excelDateFormatToPHPDateFormatMapping[self::KEY_HOUR_24]);
             }
 
             // overwrite the parts array with the new transformed part

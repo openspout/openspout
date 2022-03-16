@@ -22,7 +22,7 @@ final class ReaderPerfTest extends Testcase
      *
      * @group perf-tests
      */
-    public function testPerfWhenReadingOneMillionRowsODS()
+    public function testPerfWhenReadingOneMillionRowsODS(): void
     {
         // getting current memory peak to avoid taking into account the memory used by PHPUnit
         $beforeMemoryPeakUsage = memory_get_peak_usage(true);

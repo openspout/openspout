@@ -115,7 +115,7 @@ final class Sheet
     /**
      * @return $this
      */
-    public function setSheetView(SheetView $sheetView)
+    public function setSheetView(SheetView $sheetView): self
     {
         $this->sheetView = $sheetView;
 

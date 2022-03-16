@@ -54,7 +54,7 @@ final class Worksheet
     /**
      * @param resource $filePointer
      */
-    public function setFilePointer($filePointer)
+    public function setFilePointer($filePointer): void
     {
         $this->filePointer = $filePointer;
     }
@@ -69,7 +69,7 @@ final class Worksheet
         return $this->maxNumColumns;
     }
 
-    public function setMaxNumColumns(int $maxNumColumns)
+    public function setMaxNumColumns(int $maxNumColumns): void
     {
         $this->maxNumColumns = $maxNumColumns;
     }
@@ -79,7 +79,7 @@ final class Worksheet
         return $this->lastWrittenRowIndex;
     }
 
-    public function setLastWrittenRowIndex(int $lastWrittenRowIndex)
+    public function setLastWrittenRowIndex(int $lastWrittenRowIndex): void
     {
         $this->lastWrittenRowIndex = $lastWrittenRowIndex;
     }
@@ -98,7 +98,7 @@ final class Worksheet
         return $this->sheetDataStarted;
     }
 
-    public function setSheetDataStarted(bool $sheetDataStarted)
+    public function setSheetDataStarted(bool $sheetDataStarted): void
     {
         $this->sheetDataStarted = $sheetDataStarted;
     }

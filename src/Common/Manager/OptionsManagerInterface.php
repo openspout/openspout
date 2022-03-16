@@ -20,9 +20,6 @@ interface OptionsManagerInterface
     /**
      * Add an option to the internal list of options
      * Used only for mergeCells() for now.
-     *
-     * @param mixed $optionName
-     * @param mixed $optionValue
      */
-    public function addOption($optionName, $optionValue): void;
+    public function addOption(string $optionName, mixed $optionValue): void;
 }

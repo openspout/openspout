@@ -23,7 +23,7 @@ final class CellHelperTest extends TestCase
     /**
      * @dataProvider dataProviderForTestGetColumnLettersFromColumnIndex
      */
-    public function testGetColumnLettersFromColumnIndex(int $columnIndex, string $expectedColumnLetters)
+    public function testGetColumnLettersFromColumnIndex(int $columnIndex, string $expectedColumnLetters): void
     {
         static::assertSame($expectedColumnLetters, CellHelper::getColumnLettersFromColumnIndex($columnIndex));
     }

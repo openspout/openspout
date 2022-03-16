@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class CellTypeHelperTest extends TestCase
 {
-    public function testIsEmpty()
+    public function testIsEmpty(): void
     {
         static::assertTrue(CellTypeHelper::isEmpty(null));
         static::assertTrue(CellTypeHelper::isEmpty(''));
@@ -23,7 +23,7 @@ final class CellTypeHelperTest extends TestCase
         static::assertFalse(CellTypeHelper::isEmpty(new \stdClass()));
     }
 
-    public function testIsNonEmptyString()
+    public function testIsNonEmptyString(): void
     {
         static::assertTrue(CellTypeHelper::isNonEmptyString('string'));
 
@@ -37,7 +37,7 @@ final class CellTypeHelperTest extends TestCase
         static::assertFalse(CellTypeHelper::isNonEmptyString(null));
     }
 
-    public function testIsNumeric()
+    public function testIsNumeric(): void
     {
         static::assertTrue(CellTypeHelper::isNumeric(0));
         static::assertTrue(CellTypeHelper::isNumeric(10));
@@ -56,7 +56,7 @@ final class CellTypeHelperTest extends TestCase
         static::assertFalse(CellTypeHelper::isNumeric(null));
     }
 
-    public function testIsBoolean()
+    public function testIsBoolean(): void
     {
         static::assertTrue(CellTypeHelper::isBoolean(true));
         static::assertTrue(CellTypeHelper::isBoolean(false));
@@ -72,7 +72,7 @@ final class CellTypeHelperTest extends TestCase
         static::assertFalse(CellTypeHelper::isBoolean(null));
     }
 
-    public function testIsFormula()
+    public function testIsFormula(): void
     {
         static::assertTrue(CellTypeHelper::isFormula('=SUM(A1:A2)'));
 

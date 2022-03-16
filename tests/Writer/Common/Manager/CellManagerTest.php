@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class CellManagerTest extends TestCase
 {
-    public function testApplyStyle()
+    public function testApplyStyle(): void
     {
         $cellManager = new CellManager(new StyleMerger());
         $cell = new Cell('test');

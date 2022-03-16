@@ -16,7 +16,7 @@ trait XMLInternalErrorsHelper
      * To avoid displaying lots of warning/error messages on screen,
      * stores errors internally instead.
      */
-    protected function useXMLInternalErrors()
+    protected function useXMLInternalErrors(): void
     {
         libxml_clear_errors();
         $this->initialUseInternalErrorsValue = libxml_use_internal_errors(true);
@@ -28,7 +28,7 @@ trait XMLInternalErrorsHelper
      *
      * @throws \OpenSpout\Reader\Exception\XMLProcessingException
      */
-    protected function resetXMLInternalErrorsSettingAndThrowIfXMLErrorOccured()
+    protected function resetXMLInternalErrorsSettingAndThrowIfXMLErrorOccured(): void
     {
         if ($this->hasXMLErrorOccured()) {
             $this->resetXMLInternalErrorsSetting();
@@ -39,7 +39,7 @@ trait XMLInternalErrorsHelper
         $this->resetXMLInternalErrorsSetting();
     }
 
-    protected function resetXMLInternalErrorsSetting()
+    protected function resetXMLInternalErrorsSetting(): void
     {
         libxml_use_internal_errors($this->initialUseInternalErrorsValue);
     }

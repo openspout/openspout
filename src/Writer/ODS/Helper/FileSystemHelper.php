@@ -145,7 +145,7 @@ final class FileSystemHelper extends CommonFileSystemHelper implements FileSyste
      *
      * @param resource $streamPointer Pointer to the stream to copy the zip
      */
-    public function zipRootFolderAndCopyToStream($streamPointer)
+    public function zipRootFolderAndCopyToStream($streamPointer): void
     {
         $zip = $this->zipHelper->createZip($this->rootFolder);
 
@@ -270,7 +270,7 @@ final class FileSystemHelper extends CommonFileSystemHelper implements FileSyste
      * @param string   $sourceFilePath Path of the file whose content will be copied
      * @param resource $targetResource Target resource that will receive the content
      */
-    protected function copyFileContentsToTarget(string $sourceFilePath, $targetResource)
+    protected function copyFileContentsToTarget(string $sourceFilePath, $targetResource): void
     {
         $sourceHandle = fopen($sourceFilePath, 'r');
         stream_copy_to_stream($sourceHandle, $targetResource);

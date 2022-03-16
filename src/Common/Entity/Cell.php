@@ -77,7 +77,7 @@ final class Cell
     /**
      * @param null|mixed $value
      */
-    public function setValue($value)
+    public function setValue($value): void
     {
         $this->value = $value;
         $this->type = $this->detectType($value);
@@ -96,9 +96,9 @@ final class Cell
         return $this->value;
     }
 
-    public function setStyle(?Style $style)
+    public function setStyle(?Style $style): void
     {
-        $this->style = $style ?: new Style();
+        $this->style = $style ?? new Style();
     }
 
     public function getStyle(): Style
@@ -111,7 +111,7 @@ final class Cell
         return $this->type;
     }
 
-    public function setType(int $type)
+    public function setType(int $type): void
     {
         $this->type = $type;
     }

@@ -27,7 +27,7 @@ final class ReaderTest extends TestCase
     /**
      * @dataProvider dataProviderForTestReadShouldThrowException
      */
-    public function testReadShouldThrowException(string $filePath)
+    public function testReadShouldThrowException(string $filePath): void
     {
         $this->expectException(IOException::class);
 
@@ -46,7 +46,7 @@ final class ReaderTest extends TestCase
     /**
      * @dataProvider dataProviderForTestReadForAllWorksheets
      */
-    public function testReadForAllWorksheets(string $resourceName, int $expectedNumOfRows, int $expectedNumOfCellsPerRow)
+    public function testReadForAllWorksheets(string $resourceName, int $expectedNumOfRows, int $expectedNumOfCellsPerRow): void
     {
         $allRows = $this->getAllRowsForFile($resourceName);
 
@@ -56,13 +56,13 @@ final class ReaderTest extends TestCase
         }
     }
 
-    public function testReadShouldSupportRowWithOnlyOneCell()
+    public function testReadShouldSupportRowWithOnlyOneCell(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_with_only_one_cell.ods');
         static::assertSame([['foo']], $allRows);
     }
 
-    public function testReadShouldSupportNumberRowsRepeated()
+    public function testReadShouldSupportNumberRowsRepeated(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_with_number_rows_repeated.ods');
         $expectedRows = [
@@ -72,7 +72,7 @@ final class ReaderTest extends TestCase
         static::assertSame($expectedRows, $allRows);
     }
 
-    public function testReadShouldSupportNumberColumnsRepeated()
+    public function testReadShouldSupportNumberColumnsRepeated(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_with_number_columns_repeated.ods');
         $expectedRows = [
@@ -100,7 +100,7 @@ final class ReaderTest extends TestCase
      * The files contain styles, different value types, gaps between cells,
      * repeated values, empty row, different number of cells per row.
      */
-    public function testReadWithFilesGeneratedByExternalSoftwares(string $fileName, bool $skipLastEmptyValues)
+    public function testReadWithFilesGeneratedByExternalSoftwares(string $fileName, bool $skipLastEmptyValues): void
     {
         $allRows = $this->getAllRowsForFile($fileName);
 
@@ -121,7 +121,7 @@ final class ReaderTest extends TestCase
         static::assertEquals($expectedRows, $allRows);
     }
 
-    public function testReadShouldSupportAllCellTypes()
+    public function testReadShouldSupportAllCellTypes(): void
     {
         $utcTz = new \DateTimeZone('UTC');
         $honoluluTz = new \DateTimeZone('Pacific/Honolulu'); // UTC-10
@@ -144,7 +144,7 @@ final class ReaderTest extends TestCase
         static::assertEquals($expectedRows, $allRows);
     }
 
-    public function testReadShouldSupportFormatDatesAndTimesIfSpecified()
+    public function testReadShouldSupportFormatDatesAndTimesIfSpecified(): void
     {
         $shouldFormatDates = true;
         $allRows = $this->getAllRowsForFile('sheet_with_dates_and_times.ods', $shouldFormatDates);
@@ -156,19 +156,19 @@ final class ReaderTest extends TestCase
         static::assertSame($expectedRows, $allRows);
     }
 
-    public function testReadShouldReturnEmptyStringOnUndefinedCellType()
+    public function testReadShouldReturnEmptyStringOnUndefinedCellType(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_with_undefined_value_type.ods');
         static::assertSame([['ods--11', '', 'ods--13']], $allRows);
     }
 
-    public function testReadShouldReturnNullOnInvalidDateOrTime()
+    public function testReadShouldReturnNullOnInvalidDateOrTime(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_with_invalid_date_time.ods');
         static::assertSame([[null, null]], $allRows);
     }
 
-    public function testReadShouldSupportMultilineStrings()
+    public function testReadShouldSupportMultilineStrings(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_with_multiline_string.ods');
 
@@ -176,7 +176,7 @@ final class ReaderTest extends TestCase
         static::assertSame($expectedRows, $allRows);
     }
 
-    public function testReadShouldSkipEmptyRowsIfShouldPreserveEmptyRowsNotSet()
+    public function testReadShouldSkipEmptyRowsIfShouldPreserveEmptyRowsNotSet(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_with_empty_rows.ods');
 
@@ -193,7 +193,7 @@ final class ReaderTest extends TestCase
         static::assertSame($expectedRows, $allRows);
     }
 
-    public function testReadShouldReturnEmptyLinesIfShouldPreserveEmptyRowsSet()
+    public function testReadShouldReturnEmptyLinesIfShouldPreserveEmptyRowsSet(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_with_empty_rows.ods', false, true);
 
@@ -210,7 +210,7 @@ final class ReaderTest extends TestCase
         static::assertSame($expectedRows, $allRows);
     }
 
-    public function testReadShouldPreserveSpacing()
+    public function testReadShouldPreserveSpacing(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_with_various_spaces.ods');
 
@@ -224,7 +224,7 @@ final class ReaderTest extends TestCase
         static::assertSame([$expectedRow], $allRows);
     }
 
-    public function testReadShouldSupportWhitespaceAsXML()
+    public function testReadShouldSupportWhitespaceAsXML(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_with_whitespaces_as_xml.ods');
 
@@ -235,7 +235,7 @@ final class ReaderTest extends TestCase
     /**
      * @NOTE: The LIBXML_NOENT is used to ACTUALLY substitute entities (and should therefore not be used)
      */
-    public function testReadShouldBeProtectedAgainstBillionLaughsAttack()
+    public function testReadShouldBeProtectedAgainstBillionLaughsAttack(): void
     {
         if (\function_exists('xdebug_code_coverage_started') && xdebug_code_coverage_started()) {
             static::markTestSkipped('test not compatible with code coverage');
@@ -260,7 +260,7 @@ final class ReaderTest extends TestCase
     /**
      * @NOTE: The LIBXML_NOENT is used to ACTUALLY substitute entities (and should therefore not be used)
      */
-    public function testReadShouldBeProtectedAgainstQuadraticBlowupAttack()
+    public function testReadShouldBeProtectedAgainstQuadraticBlowupAttack(): void
     {
         if (\function_exists('xdebug_code_coverage_started') && xdebug_code_coverage_started()) {
             static::markTestSkipped('test not compatible with code coverage');
@@ -280,13 +280,13 @@ final class ReaderTest extends TestCase
         static::assertLessThan($expectedMaxMemoryUsage, memory_get_peak_usage(true), 'Entities should not be expanded and therefore consume all the memory.');
     }
 
-    public function testReadShouldBeAbleToProcessEmptySheets()
+    public function testReadShouldBeAbleToProcessEmptySheets(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_with_no_cells.ods');
         static::assertSame([], $allRows, 'Sheet with no cells should be correctly processed.');
     }
 
-    public function testReadShouldSkipFormulas()
+    public function testReadShouldSkipFormulas(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_with_formulas.ods');
 
@@ -298,7 +298,7 @@ final class ReaderTest extends TestCase
         static::assertSame($expectedRows, $allRows);
     }
 
-    public function testReadShouldThrowIfTryingToRewindRowIterator()
+    public function testReadShouldThrowIfTryingToRewindRowIterator(): void
     {
         $this->expectException(IteratorNotRewindableException::class);
 
@@ -319,7 +319,7 @@ final class ReaderTest extends TestCase
         }
     }
 
-    public function testReadMultipleTimesShouldRewindReader()
+    public function testReadMultipleTimesShouldRewindReader(): void
     {
         $allRows = [];
         $resourcePath = $this->getResourcePath('two_sheets_with_strings.ods');
@@ -361,7 +361,7 @@ final class ReaderTest extends TestCase
         static::assertSame($expectedRows, $allRows);
     }
 
-    public function testReadWithUnsupportedCustomStreamWrapper()
+    public function testReadWithUnsupportedCustomStreamWrapper(): void
     {
         $this->expectException(IOException::class);
 
@@ -369,7 +369,7 @@ final class ReaderTest extends TestCase
         $reader->open('unsupported://foobar');
     }
 
-    public function testReadWithSupportedCustomStreamWrapper()
+    public function testReadWithSupportedCustomStreamWrapper(): void
     {
         $this->expectException(IOException::class);
 
@@ -380,7 +380,7 @@ final class ReaderTest extends TestCase
     /**
      * https://github.com/box/spout/issues/184.
      */
-    public function testReadShouldInludeRowsWithZerosOnly()
+    public function testReadShouldInludeRowsWithZerosOnly(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_with_zeros_in_row.ods');
 
@@ -395,7 +395,7 @@ final class ReaderTest extends TestCase
     /**
      * https://github.com/box/spout/issues/184.
      */
-    public function testReadShouldCreateOutputEmptyCellPreserved()
+    public function testReadShouldCreateOutputEmptyCellPreserved(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_with_empty_cells.ods');
 
@@ -410,7 +410,7 @@ final class ReaderTest extends TestCase
     /**
      * https://github.com/box/spout/issues/195.
      */
-    public function testReaderShouldNotTrimCellValues()
+    public function testReaderShouldNotTrimCellValues(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_with_untrimmed_strings.ods');
 
@@ -426,7 +426,7 @@ final class ReaderTest extends TestCase
     /**
      * https://github.com/box/spout/issues/218.
      */
-    public function testReaderShouldReadTextInHyperlinks()
+    public function testReaderShouldReadTextInHyperlinks(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_with_hyperlinks.ods');
 
@@ -439,7 +439,7 @@ final class ReaderTest extends TestCase
         static::assertSame($expectedRows, $allRows, 'Text in hyperlinks should be read');
     }
 
-    public function testReaderShouldReadInlineFontFormattingAsText()
+    public function testReaderShouldReadInlineFontFormattingAsText(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_with_inline_font_formatting.ods');
 

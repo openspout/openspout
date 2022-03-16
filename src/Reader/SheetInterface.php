@@ -8,9 +8,9 @@ namespace OpenSpout\Reader;
 interface SheetInterface
 {
     /**
-     * @return IteratorInterface iterator to iterate over the sheet's rows
+     * @return RowIteratorInterface iterator to iterate over the sheet's rows
      */
-    public function getRowIterator(): IteratorInterface;
+    public function getRowIterator(): RowIteratorInterface;
 
     /**
      * @return int Index of the sheet

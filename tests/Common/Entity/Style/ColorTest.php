@@ -38,7 +38,7 @@ final class ColorTest extends TestCase
     /**
      * @dataProvider dataProviderForTestRGB
      */
-    public function testRGB(int $red, int $green, int $blue, string $expectedColor)
+    public function testRGB(int $red, int $green, int $blue, string $expectedColor): void
     {
         $color = Color::rgb($red, $green, $blue);
         static::assertSame($expectedColor, $color);
@@ -59,7 +59,7 @@ final class ColorTest extends TestCase
     /**
      * @dataProvider dataProviderForTestRGBAInvalidColorComponents
      */
-    public function testRGBInvalidColorComponents(int $red, int $green, int $blue)
+    public function testRGBInvalidColorComponents(int $red, int $green, int $blue): void
     {
         $this->expectException(InvalidColorException::class);
 

@@ -22,7 +22,7 @@ final class WriterPerfTest extends TestCase
      *
      * @group perf-tests
      */
-    public function testPerfWhenWritingOneMillionRowsODS()
+    public function testPerfWhenWritingOneMillionRowsODS(): void
     {
         // getting current memory peak to avoid taking into account the memory used by PHPUnit
         $beforeMemoryPeakUsage = memory_get_peak_usage(true);

@@ -14,10 +14,10 @@ final class SheetManager
     /** Sheet name should not exceed 31 characters */
     public const MAX_LENGTH_SHEET_NAME = 31;
 
-    /** @var array Invalid characters that cannot be contained in the sheet name */
-    private static array $INVALID_CHARACTERS_IN_SHEET_NAME = ['\\', '/', '?', '*', ':', '[', ']'];
+    /** Invalid characters that cannot be contained in the sheet name */
+    private const INVALID_CHARACTERS_IN_SHEET_NAME = ['\\', '/', '?', '*', ':', '[', ']'];
 
-    /** @var array Associative array [WORKBOOK_ID] => [[SHEET_INDEX] => [SHEET_NAME]] keeping track of sheets' name to enforce uniqueness per workbook */
+    /** @var array<string, array<int, string>> Associative array [WORKBOOK_ID] => [[SHEET_INDEX] => [SHEET_NAME]] keeping track of sheets' name to enforce uniqueness per workbook */
     private static array $SHEETS_NAME_USED = [];
 
     private StringHelper $stringHelper;
@@ -39,7 +39,7 @@ final class SheetManager
      *
      * @throws \OpenSpout\Writer\Exception\InvalidSheetNameException if the sheet's name is invalid
      */
-    public function throwIfNameIsInvalid(string $name, Sheet $sheet)
+    public function throwIfNameIsInvalid(string $name, Sheet $sheet): void
     {
         if (!\is_string($name)) {
             $actualType = \gettype($name);
@@ -82,14 +82,14 @@ final class SheetManager
     /**
      * @param string $workbookId Workbook ID associated to a Sheet
      */
-    public function markWorkbookIdAsUsed(string $workbookId)
+    public function markWorkbookIdAsUsed(string $workbookId): void
     {
         if (!isset(self::$SHEETS_NAME_USED[$workbookId])) {
             self::$SHEETS_NAME_USED[$workbookId] = [];
         }
     }
 
-    public function markSheetNameAsUsed(Sheet $sheet)
+    public function markSheetNameAsUsed(Sheet $sheet): void
     {
         self::$SHEETS_NAME_USED[$sheet->getAssociatedWorkbookId()][$sheet->getIndex()] = $sheet->getName();
     }
@@ -97,13 +97,11 @@ final class SheetManager
     /**
      * Returns whether the given name contains at least one invalid character.
      *
-     * @see Sheet::$INVALID_CHARACTERS_IN_SHEET_NAME for the full list.
-     *
      * @return bool TRUE if the name contains invalid characters, FALSE otherwise
      */
     private function doesContainInvalidCharacters(string $name): bool
     {
-        return str_replace(self::$INVALID_CHARACTERS_IN_SHEET_NAME, '', $name) !== $name;
+        return str_replace(self::INVALID_CHARACTERS_IN_SHEET_NAME, '', $name) !== $name;
     }
 
     /**

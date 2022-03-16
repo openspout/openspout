@@ -14,7 +14,7 @@ final class SheetTest extends TestCase
 {
     use TestUsingResource;
 
-    public function testReaderShouldReturnCorrectSheetInfos()
+    public function testReaderShouldReturnCorrectSheetInfos(): void
     {
         $sheet = $this->openFileAndReturnSheet('csv_standard.csv');
 

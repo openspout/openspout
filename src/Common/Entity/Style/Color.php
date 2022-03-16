@@ -63,7 +63,7 @@ abstract class Color
      *
      * @throws \OpenSpout\Common\Exception\InvalidColorException
      */
-    protected static function throwIfInvalidColorComponentValue(int $colorComponent)
+    protected static function throwIfInvalidColorComponentValue(int $colorComponent): void
     {
         if ($colorComponent < 0 || $colorComponent > 255) {
             throw new InvalidColorException("The RGB components must be between 0 and 255. Received: {$colorComponent}");

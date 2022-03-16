@@ -51,7 +51,7 @@ final class ZipHelper
      * @param string      $localFilePath    Path of the file to be added, under the root folder
      * @param string      $existingFileMode Controls what to do when trying to add an existing file
      */
-    public function addFileToArchive(\ZipArchive $zip, string $rootFolderPath, string $localFilePath, string $existingFileMode = self::EXISTING_FILES_OVERWRITE)
+    public function addFileToArchive(\ZipArchive $zip, string $rootFolderPath, string $localFilePath, string $existingFileMode = self::EXISTING_FILES_OVERWRITE): void
     {
         $this->addFileToArchiveWithCompressionMethod(
             $zip,
@@ -75,7 +75,7 @@ final class ZipHelper
      * @param string      $localFilePath    Path of the file to be added, under the root folder
      * @param string      $existingFileMode Controls what to do when trying to add an existing file
      */
-    public function addUncompressedFileToArchive(\ZipArchive $zip, string $rootFolderPath, string $localFilePath, string $existingFileMode = self::EXISTING_FILES_OVERWRITE)
+    public function addUncompressedFileToArchive(\ZipArchive $zip, string $rootFolderPath, string $localFilePath, string $existingFileMode = self::EXISTING_FILES_OVERWRITE): void
     {
         $this->addFileToArchiveWithCompressionMethod(
             $zip,
@@ -100,7 +100,7 @@ final class ZipHelper
      * @param string      $folderPath       Path to the folder to be zipped
      * @param string      $existingFileMode Controls what to do when trying to add an existing file
      */
-    public function addFolderToArchive(\ZipArchive $zip, string $folderPath, string $existingFileMode = self::EXISTING_FILES_OVERWRITE)
+    public function addFolderToArchive(\ZipArchive $zip, string $folderPath, string $existingFileMode = self::EXISTING_FILES_OVERWRITE): void
     {
         $folderRealPath = $this->getNormalizedRealPath($folderPath).'/';
         $itemIterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($folderPath, \RecursiveDirectoryIterator::SKIP_DOTS), \RecursiveIteratorIterator::SELF_FIRST);
@@ -121,7 +121,7 @@ final class ZipHelper
      * @param \ZipArchive $zip           An opened zip archive object
      * @param resource    $streamPointer Pointer to the stream to copy the zip
      */
-    public function closeArchiveAndCopyToStream(\ZipArchive $zip, $streamPointer)
+    public function closeArchiveAndCopyToStream(\ZipArchive $zip, $streamPointer): void
     {
         $zipFilePath = $zip->filename;
         $zip->close();
@@ -143,7 +143,7 @@ final class ZipHelper
      * @param string      $existingFileMode  Controls what to do when trying to add an existing file
      * @param int         $compressionMethod The compression method
      */
-    private function addFileToArchiveWithCompressionMethod(\ZipArchive $zip, string $rootFolderPath, string $localFilePath, string $existingFileMode, int $compressionMethod)
+    private function addFileToArchiveWithCompressionMethod(\ZipArchive $zip, string $rootFolderPath, string $localFilePath, string $existingFileMode, int $compressionMethod): void
     {
         if (!$this->shouldSkipFile($zip, $localFilePath, $existingFileMode)) {
             $normalizedFullFilePath = $this->getNormalizedRealPath($rootFolderPath.'/'.$localFilePath);
@@ -186,7 +186,7 @@ final class ZipHelper
      * @param string   $zipFilePath Path of the zip file
      * @param resource $pointer     Pointer to the stream to copy the zip
      */
-    private function copyZipToStream(string $zipFilePath, $pointer)
+    private function copyZipToStream(string $zipFilePath, $pointer): void
     {
         $zipFilePointer = fopen($zipFilePath, 'r');
         stream_copy_to_stream($zipFilePointer, $pointer);

@@ -9,7 +9,7 @@ abstract class OptionsManagerAbstract implements OptionsManagerInterface
     /** @var string[] List of all supported option names */
     private array $supportedOptions = [];
 
-    /** @var array Associative array [OPTION_NAME => OPTION_VALUE] */
+    /** @var array<string, mixed> Associative array [OPTION_NAME => OPTION_VALUE] */
     private array $options = [];
 
     /**
@@ -23,10 +23,8 @@ abstract class OptionsManagerAbstract implements OptionsManagerInterface
 
     /**
      * Sets the given option, if this option is supported.
-     *
-     * @param mixed $optionValue
      */
-    public function setOption(string $optionName, $optionValue): void
+    public function setOption(string $optionName, mixed $optionValue): void
     {
         if (\in_array($optionName, $this->supportedOptions, true)) {
             $this->options[$optionName] = $optionValue;
@@ -34,13 +32,9 @@ abstract class OptionsManagerAbstract implements OptionsManagerInterface
     }
 
     /**
-     * Add an option to the internal list of options
-     * Used only for mergeCells() for now.
-     *
-     * @param mixed $optionName
-     * @param mixed $optionValue
+     * {@inheritDoc}
      */
-    public function addOption($optionName, $optionValue): void
+    public function addOption(string $optionName, mixed $optionValue): void
     {
         if (\in_array($optionName, $this->supportedOptions, true)) {
             if (!isset($this->options[$optionName])) {
@@ -67,7 +61,7 @@ abstract class OptionsManagerAbstract implements OptionsManagerInterface
     }
 
     /**
-     * @return array List of supported options
+     * @return string[] List of supported options
      */
     abstract protected function getSupportedOptions(): array;
 

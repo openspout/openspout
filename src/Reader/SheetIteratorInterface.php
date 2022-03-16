@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace OpenSpout\Reader;
 
 /**
- * Interface IteratorInterface.
+ * @extends IteratorInterface<SheetInterface>
  */
 interface SheetIteratorInterface extends IteratorInterface
 {

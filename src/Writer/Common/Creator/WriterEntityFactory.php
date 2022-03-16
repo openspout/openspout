@@ -85,9 +85,12 @@ final class WriterEntityFactory
         return new Row($cells, $rowStyle);
     }
 
+    /**
+     * @param mixed[] $cellValues
+     */
     public static function createRowFromArray(array $cellValues = [], Style $rowStyle = null): Row
     {
-        $cells = array_map(function ($cellValue) {
+        $cells = array_map(static function (mixed $cellValue): Cell {
             return new Cell($cellValue);
         }, $cellValues);
 

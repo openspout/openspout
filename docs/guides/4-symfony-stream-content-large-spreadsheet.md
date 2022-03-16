@@ -29,7 +29,7 @@ class MyRegularController extends Controller
             $content .= '<table>';
             foreach ($sheet->getRowIterator() as $row) {
                 $content .= '<tr>';
-                $content .= implode(array_map(function($cell) {
+                $content .= implode(array_map(static function($cell) {
                     return '<td>' . $cell . '</td>';
                 }, $row->getCells()));
                 $content .= '</tr>';
@@ -82,7 +82,7 @@ class MyStreamController extends Controller
                 echo '<table>';
                 foreach ($sheet->getRowIterator() as $row) {
                     echo '<tr>';
-                    echo implode(array_map(function($cell) {
+                    echo implode(array_map(static function($cell) {
                         return '<td>' . $cell . '</td>';
                     }, $row->getCells()));
                     echo '</tr>';

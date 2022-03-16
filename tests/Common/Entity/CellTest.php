@@ -11,55 +11,55 @@ use PHPUnit\Framework\TestCase;
  */
 final class CellTest extends TestCase
 {
-    public function testValidInstance()
+    public function testValidInstance(): void
     {
         static::assertInstanceOf(Cell::class, new Cell('cell'));
     }
 
-    public function testCellTypeNumeric()
+    public function testCellTypeNumeric(): void
     {
         static::assertTrue((new Cell(0))->isNumeric());
         static::assertTrue((new Cell(1))->isNumeric());
     }
 
-    public function testCellTypeString()
+    public function testCellTypeString(): void
     {
         static::assertTrue((new Cell('String!'))->isString());
     }
 
-    public function testCellTypeEmptyString()
+    public function testCellTypeEmptyString(): void
     {
         static::assertTrue((new Cell(''))->isEmpty());
     }
 
-    public function testCellTypeEmptyNull()
+    public function testCellTypeEmptyNull(): void
     {
         static::assertTrue((new Cell(null))->isEmpty());
     }
 
-    public function testCellTypeBool()
+    public function testCellTypeBool(): void
     {
         static::assertTrue((new Cell(true))->isBoolean());
         static::assertTrue((new Cell(false))->isBoolean());
     }
 
-    public function testCellTypeDate()
+    public function testCellTypeDate(): void
     {
         static::assertTrue((new Cell(new DateTimeImmutable()))->isDate());
         static::assertTrue((new Cell(new DateInterval('P2Y4DT6H8M')))->isDate());
     }
 
-    public function testCellTypeFormula()
+    public function testCellTypeFormula(): void
     {
         static::assertTrue((new Cell('=SUM(A1:A2)'))->isFormula());
     }
 
-    public function testCellTypeError()
+    public function testCellTypeError(): void
     {
         static::assertTrue((new Cell([]))->isError());
     }
 
-    public function testErroredCellValueShouldBeNull()
+    public function testErroredCellValueShouldBeNull(): void
     {
         $cell = new Cell([]);
         static::assertTrue($cell->isError());

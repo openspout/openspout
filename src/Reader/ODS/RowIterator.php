@@ -12,11 +12,11 @@ use OpenSpout\Reader\Common\XMLProcessor;
 use OpenSpout\Reader\Exception\InvalidValueException;
 use OpenSpout\Reader\Exception\IteratorNotRewindableException;
 use OpenSpout\Reader\Exception\XMLProcessingException;
-use OpenSpout\Reader\IteratorInterface;
 use OpenSpout\Reader\ODS\Helper\CellValueFormatter;
+use OpenSpout\Reader\RowIteratorInterface;
 use OpenSpout\Reader\Wrapper\XMLReader;
 
-final class RowIterator implements IteratorInterface
+final class RowIterator implements RowIteratorInterface
 {
     /** Definition of XML nodes names used to parse data */
     public const XML_NODE_TABLE = 'table:table';
@@ -204,7 +204,7 @@ final class RowIterator implements IteratorInterface
      * @throws \OpenSpout\Reader\Exception\SharedStringNotFoundException If a shared string was not found
      * @throws \OpenSpout\Common\Exception\IOException                   If unable to read the sheet data XML
      */
-    private function readDataForNextRow()
+    private function readDataForNextRow(): void
     {
         $this->currentlyProcessedRow = new Row([], null);
 

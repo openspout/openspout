@@ -9,42 +9,42 @@ use PHPUnit\Framework\TestCase;
  */
 final class StyleManagerTest extends TestCase
 {
-    public function testShouldFormatNumericValueAsDateWithDefaultStyle()
+    public function testShouldFormatNumericValueAsDateWithDefaultStyle(): void
     {
         $styleManager = $this->getStyleManagerMock();
         $shouldFormatAsDate = $styleManager->shouldFormatNumericValueAsDate(0);
         static::assertFalse($shouldFormatAsDate);
     }
 
-    public function testShouldFormatNumericValueAsDateWhenShouldNotApplyNumberFormat()
+    public function testShouldFormatNumericValueAsDateWhenShouldNotApplyNumberFormat(): void
     {
         $styleManager = $this->getStyleManagerMock([[], ['applyNumberFormat' => false, 'numFmtId' => 14]]);
         $shouldFormatAsDate = $styleManager->shouldFormatNumericValueAsDate(1);
         static::assertFalse($shouldFormatAsDate);
     }
 
-    public function testShouldFormatNumericValueAsDateWithGeneralFormat()
+    public function testShouldFormatNumericValueAsDateWithGeneralFormat(): void
     {
         $styleManager = $this->getStyleManagerMock([[], ['applyNumberFormat' => true, 'numFmtId' => 0]]);
         $shouldFormatAsDate = $styleManager->shouldFormatNumericValueAsDate(1);
         static::assertFalse($shouldFormatAsDate);
     }
 
-    public function testShouldFormatNumericValueAsDateWithNonDateBuiltinFormat()
+    public function testShouldFormatNumericValueAsDateWithNonDateBuiltinFormat(): void
     {
         $styleManager = $this->getStyleManagerMock([[], ['applyNumberFormat' => true, 'numFmtId' => 9]]);
         $shouldFormatAsDate = $styleManager->shouldFormatNumericValueAsDate(1);
         static::assertFalse($shouldFormatAsDate);
     }
 
-    public function testShouldFormatNumericValueAsDateWithNoNumFmtId()
+    public function testShouldFormatNumericValueAsDateWithNoNumFmtId(): void
     {
         $styleManager = $this->getStyleManagerMock([[], ['applyNumberFormat' => true, 'numFmtId' => null]]);
         $shouldFormatAsDate = $styleManager->shouldFormatNumericValueAsDate(1);
         static::assertFalse($shouldFormatAsDate);
     }
 
-    public function testShouldFormatNumericValueAsDateWithBuiltinDateFormats()
+    public function testShouldFormatNumericValueAsDateWithBuiltinDateFormats(): void
     {
         $builtinNumFmtIdsForDate = [14, 15, 16, 17, 18, 19, 20, 21, 22, 45, 46, 47];
 
@@ -56,7 +56,7 @@ final class StyleManagerTest extends TestCase
         }
     }
 
-    public function testShouldFormatNumericValueAsDateWhenApplyNumberFormatNotSetAndUsingBuiltinDateFormat()
+    public function testShouldFormatNumericValueAsDateWhenApplyNumberFormatNotSetAndUsingBuiltinDateFormat(): void
     {
         $styleManager = $this->getStyleManagerMock([[], ['applyNumberFormat' => null, 'numFmtId' => 14]]);
         $shouldFormatAsDate = $styleManager->shouldFormatNumericValueAsDate(1);
@@ -64,7 +64,7 @@ final class StyleManagerTest extends TestCase
         static::assertTrue($shouldFormatAsDate);
     }
 
-    public function testShouldFormatNumericValueAsDateWhenApplyNumberFormatNotSetAndUsingBuiltinNonDateFormat()
+    public function testShouldFormatNumericValueAsDateWhenApplyNumberFormatNotSetAndUsingBuiltinNonDateFormat(): void
     {
         $styleManager = $this->getStyleManagerMock([[], ['applyNumberFormat' => null, 'numFmtId' => 9]]);
         $shouldFormatAsDate = $styleManager->shouldFormatNumericValueAsDate(1);
@@ -72,7 +72,7 @@ final class StyleManagerTest extends TestCase
         static::assertFalse($shouldFormatAsDate);
     }
 
-    public function testShouldFormatNumericValueAsDateWhenCustomNumberFormatNotFound()
+    public function testShouldFormatNumericValueAsDateWhenCustomNumberFormatNotFound(): void
     {
         $styleManager = $this->getStyleManagerMock([[], ['applyNumberFormat' => true, 'numFmtId' => 165]], [166 => []]);
         $shouldFormatAsDate = $styleManager->shouldFormatNumericValueAsDate(1);
@@ -114,7 +114,7 @@ final class StyleManagerTest extends TestCase
     /**
      * @dataProvider dataProviderForCustomDateFormats
      */
-    public function testShouldFormatNumericValueAsDateWithCustomDateFormats(string $numberFormat, bool $expectedResult)
+    public function testShouldFormatNumericValueAsDateWithCustomDateFormats(string $numberFormat, bool $expectedResult): void
     {
         $numFmtId = 165;
         $styleManager = $this->getStyleManagerMock([[], ['applyNumberFormat' => true, 'numFmtId' => $numFmtId]], [$numFmtId => $numberFormat]);

@@ -20,7 +20,7 @@ final class StyleRegistryTest extends TestCase
         $this->styleRegistry = new StyleRegistry($this->defaultStyle);
     }
 
-    public function testSerializeShouldNotTakeIntoAccountId()
+    public function testSerializeShouldNotTakeIntoAccountId(): void
     {
         $style1 = (new Style())->setFontBold();
         $style1->setId(1);
@@ -31,7 +31,7 @@ final class StyleRegistryTest extends TestCase
         static::assertSame($this->styleRegistry->serialize($style1), $this->styleRegistry->serialize($style2));
     }
 
-    public function testRegisterStyleShouldUpdateId()
+    public function testRegisterStyleShouldUpdateId(): void
     {
         $style1 = (new Style())->setFontBold();
         $style2 = (new Style())->setFontUnderline();
@@ -47,7 +47,7 @@ final class StyleRegistryTest extends TestCase
         static::assertSame(2, $registeredStyle2->getId());
     }
 
-    public function testRegisterStyleShouldReuseAlreadyRegisteredStyles()
+    public function testRegisterStyleShouldReuseAlreadyRegisteredStyles(): void
     {
         $style = (new Style())->setFontBold();
 

@@ -7,7 +7,7 @@ use OpenSpout\Writer\Exception\WriterException;
 
 final class InvalidNameException extends WriterException
 {
-    public function __construct($name)
+    public function __construct(string $name)
     {
         $msg = '%s is not a valid name identifier for a border. Valid identifiers are: %s.';
 

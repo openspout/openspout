@@ -10,7 +10,7 @@ use OpenSpout\Writer\Common\Manager\Style\StyleRegistry as CommonStyleRegistry;
  */
 final class StyleRegistry extends CommonStyleRegistry
 {
-    /** @var array [FONT_NAME] => [] Map whose keys contain all the fonts used */
+    /** @var array<string, bool> [FONT_NAME] => [] Map whose keys contain all the fonts used */
     protected array $usedFontsSet = [];
 
     /**

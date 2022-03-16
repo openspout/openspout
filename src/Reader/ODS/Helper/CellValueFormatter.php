@@ -37,18 +37,18 @@ final class CellValueFormatter
     public const XML_ATTRIBUTE_CURRENCY = 'office:currency';
     public const XML_ATTRIBUTE_C = 'text:c';
 
+    /** List of XML nodes representing whitespaces and their corresponding value */
+    private const WHITESPACE_XML_NODES = [
+        self::XML_NODE_TEXT_S => ' ',
+        self::XML_NODE_TEXT_TAB => "\t",
+        self::XML_NODE_TEXT_LINE_BREAK => "\n",
+    ];
+
     /** @var bool Whether date/time values should be returned as PHP objects or be formatted as strings */
     private bool $shouldFormatDates;
 
     /** @var \OpenSpout\Common\Helper\Escaper\ODS Used to unescape XML data */
     private \OpenSpout\Common\Helper\Escaper\ODS $escaper;
-
-    /** @var array List of XML nodes representing whitespaces and their corresponding value */
-    private static array $WHITESPACE_XML_NODES = [
-        self::XML_NODE_TEXT_S => ' ',
-        self::XML_NODE_TEXT_TAB => "\t",
-        self::XML_NODE_TEXT_LINE_BREAK => "\n",
-    ];
 
     /**
      * @param bool                                 $shouldFormatDates Whether date/time values should be returned as PHP objects or be formatted as strings
@@ -69,7 +69,7 @@ final class CellValueFormatter
      *
      * @return bool|\DateInterval|\DateTimeImmutable|float|int|string The value associated with the cell, empty string if cell's type is void/undefined
      */
-    public function extractAndFormatNodeValue(\DOMElement $node)
+    public function extractAndFormatNodeValue(\DOMElement $node): bool|\DateInterval|DateTimeImmutable|float|int|string
     {
         $cellType = $node->getAttribute(self::XML_ATTRIBUTE_TYPE);
 
@@ -125,7 +125,7 @@ final class CellValueFormatter
      *
      * @return float|int The value associated with the cell
      */
-    private function formatFloatCellValue(\DOMElement $node)
+    private function formatFloatCellValue(\DOMElement $node): float|int
     {
         $nodeValue = $node->getAttribute(self::XML_ATTRIBUTE_VALUE);
 
@@ -184,7 +184,7 @@ final class CellValueFormatter
      *
      * @return \DateInterval|string The value associated with the cell
      */
-    private function formatTimeCellValue(\DOMElement $node)
+    private function formatTimeCellValue(\DOMElement $node): \DateInterval|string
     {
         // The XML node looks like this:
         // <table:table-cell calcext:value-type="time" office:time-value="PT13H24M00S" office:value-type="time">
@@ -227,7 +227,7 @@ final class CellValueFormatter
      *
      * @return float|int The value associated with the cell
      */
-    private function formatPercentageCellValue(\DOMElement $node)
+    private function formatPercentageCellValue(\DOMElement $node): float|int
     {
         // percentages are formatted like floats
         return $this->formatFloatCellValue($node);
@@ -258,7 +258,7 @@ final class CellValueFormatter
      */
     private function isWhitespaceNode(string $nodeName): bool
     {
-        return isset(self::$WHITESPACE_XML_NODES[$nodeName]);
+        return isset(self::WHITESPACE_XML_NODES[$nodeName]);
     }
 
     /**
@@ -280,6 +280,6 @@ final class CellValueFormatter
         $countAttribute = $node->getAttribute(self::XML_ATTRIBUTE_C); // only defined for "<text:s>"
         $numWhitespaces = (!empty($countAttribute)) ? (int) $countAttribute : 1;
 
-        return str_repeat(self::$WHITESPACE_XML_NODES[$node->nodeName], $numWhitespaces);
+        return str_repeat(self::WHITESPACE_XML_NODES[$node->nodeName], $numWhitespaces);
     }
 }

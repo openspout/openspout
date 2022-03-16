@@ -34,7 +34,7 @@ final class DateFormatHelperTest extends TestCase
     /**
      * @dataProvider dataProviderForTestToPHPDateFormat
      */
-    public function testToPHPDateFormat(string $excelDateFormat, string $expectedPHPDateFormat)
+    public function testToPHPDateFormat(string $excelDateFormat, string $expectedPHPDateFormat): void
     {
         $phpDateFormat = DateFormatHelper::toPHPDateFormat($excelDateFormat);
         static::assertSame($expectedPHPDateFormat, $phpDateFormat);

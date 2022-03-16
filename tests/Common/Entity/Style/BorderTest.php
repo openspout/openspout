@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class BorderTest extends TestCase
 {
-    public function testValidInstance()
+    public function testValidInstance(): void
     {
         $noConstructorParams = new Border();
         $withConstructorParams = new Border([
@@ -22,28 +22,28 @@ final class BorderTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
-    public function testInvalidBorderPart()
+    public function testInvalidBorderPart(): void
     {
         $this->expectException(InvalidNameException::class);
 
         new BorderPart('invalid');
     }
 
-    public function testInvalidBorderPartStyle()
+    public function testInvalidBorderPartStyle(): void
     {
         $this->expectException(InvalidStyleException::class);
 
         new BorderPart(Border::LEFT, Color::BLACK, Border::WIDTH_THIN, 'invalid');
     }
 
-    public function testInvalidBorderPartWidth()
+    public function testInvalidBorderPartWidth(): void
     {
         $this->expectException(InvalidWidthException::class);
 
         new BorderPart(Border::LEFT, Color::BLACK, 'invalid', Border::STYLE_DASHED);
     }
 
-    public function testNotMoreThanFourPartsPossible()
+    public function testNotMoreThanFourPartsPossible(): void
     {
         $border = new Border();
         $border
@@ -57,7 +57,7 @@ final class BorderTest extends TestCase
         static::assertCount(4, $border->getParts(), 'There should never be more than 4 border parts');
     }
 
-    public function testSetParts()
+    public function testSetParts(): void
     {
         $border = new Border();
         $border->setParts([
@@ -67,7 +67,7 @@ final class BorderTest extends TestCase
         static::assertCount(1, $border->getParts(), 'It should be possible to set the border parts');
     }
 
-    public function testBorderBuilderFluent()
+    public function testBorderBuilderFluent(): void
     {
         $border = (new BorderBuilder())
             ->setBorderBottom()
@@ -82,7 +82,7 @@ final class BorderTest extends TestCase
     /**
      * :D :S.
      */
-    public function testAnyCombinationOfAllowedBorderPartsParams()
+    public function testAnyCombinationOfAllowedBorderPartsParams(): void
     {
         $color = Color::BLACK;
         foreach (BorderPart::getAllowedNames() as $allowedName) {

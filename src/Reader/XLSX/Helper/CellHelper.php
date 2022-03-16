@@ -10,7 +10,7 @@ use OpenSpout\Common\Exception\InvalidArgumentException;
 final class CellHelper
 {
     // Using ord() is super slow... Using a pre-computed hash table instead.
-    private static $columnLetterToIndexMapping = [
+    private const columnLetterToIndexMapping = [
         'A' => 0, 'B' => 1, 'C' => 2, 'D' => 3, 'E' => 4, 'F' => 5, 'G' => 6,
         'H' => 7, 'I' => 8, 'J' => 9, 'K' => 10, 'L' => 11, 'M' => 12, 'N' => 13,
         'O' => 14, 'P' => 15, 'Q' => 16, 'R' => 17, 'S' => 18, 'T' => 19, 'U' => 20,
@@ -46,21 +46,21 @@ final class CellHelper
         // Also, not using the pow() function because it's slooooow...
         switch ($columnLength) {
             case 1:
-                $columnIndex = (self::$columnLetterToIndexMapping[$columnLetters]);
+                $columnIndex = (self::columnLetterToIndexMapping[$columnLetters]);
 
                 break;
 
             case 2:
-                $firstLetterIndex = (self::$columnLetterToIndexMapping[$columnLetters[0]] + 1) * 26;
-                $secondLetterIndex = self::$columnLetterToIndexMapping[$columnLetters[1]];
+                $firstLetterIndex = (self::columnLetterToIndexMapping[$columnLetters[0]] + 1) * 26;
+                $secondLetterIndex = self::columnLetterToIndexMapping[$columnLetters[1]];
                 $columnIndex = $firstLetterIndex + $secondLetterIndex;
 
                 break;
 
             case 3:
-                $firstLetterIndex = (self::$columnLetterToIndexMapping[$columnLetters[0]] + 1) * 676;
-                $secondLetterIndex = (self::$columnLetterToIndexMapping[$columnLetters[1]] + 1) * 26;
-                $thirdLetterIndex = self::$columnLetterToIndexMapping[$columnLetters[2]];
+                $firstLetterIndex = (self::columnLetterToIndexMapping[$columnLetters[0]] + 1) * 676;
+                $secondLetterIndex = (self::columnLetterToIndexMapping[$columnLetters[1]] + 1) * 26;
+                $thirdLetterIndex = self::columnLetterToIndexMapping[$columnLetters[2]];
                 $columnIndex = $firstLetterIndex + $secondLetterIndex + $thirdLetterIndex;
 
                 break;

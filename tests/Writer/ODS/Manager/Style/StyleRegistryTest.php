@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class StyleRegistryTest extends TestCase
 {
-    public function testRegisterStyleKeepsTrackOfUsedFonts()
+    public function testRegisterStyleKeepsTrackOfUsedFonts(): void
     {
         $styleRegistry = $this->getStyleRegistry();
 

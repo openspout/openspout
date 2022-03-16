@@ -11,7 +11,7 @@ csfix: vendor
 
 .PHONY: static-analysis
 static-analysis: vendor
-	vendor/bin/phpstan analyse
+	php -d zend.assertions=1 vendor/bin/phpstan analyse
 
 .PHONY: test
 test: vendor

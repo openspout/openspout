@@ -2,10 +2,13 @@
 
 namespace OpenSpout\Reader;
 
+use Iterator;
+
 /**
- * Interface IteratorInterface.
+ * @template T
+ * @extends Iterator<T>
  */
-interface IteratorInterface extends \Iterator
+interface IteratorInterface extends Iterator
 {
     /**
      * Cleans up what was created to iterate over the object.
