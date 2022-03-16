@@ -135,7 +135,7 @@ final class RowIterator implements RowIteratorInterface
      * This rewinds and skips the BOM if inserted at the beginning of the file
      * by moving the file pointer after it, so that it is not read.
      */
-    private function rewindAndSkipBom()
+    private function rewindAndSkipBom(): void
     {
         $byteOffsetToSkipBom = $this->encodingHelper->getBytesOffsetToSkipBOM($this->filePointer, $this->encoding);
 
@@ -146,7 +146,7 @@ final class RowIterator implements RowIteratorInterface
     /**
      * @throws \OpenSpout\Common\Exception\EncodingConversionException If unable to convert data to UTF-8
      */
-    private function readDataForNextRow()
+    private function readDataForNextRow(): void
     {
         do {
             $rowData = $this->getNextUTF8EncodedRow();
@@ -155,7 +155,7 @@ final class RowIterator implements RowIteratorInterface
         if (false !== $rowData) {
             // array_map will replace NULL values by empty strings
             $rowDataBufferAsArray = array_map('\\strval', $rowData);
-            $this->rowBuffer = new Row(array_map(function ($cellValue) {
+            $this->rowBuffer = new Row(array_map(static function ($cellValue) {
                 return new Cell($cellValue);
             }, $rowDataBufferAsArray), null);
             ++$this->numReadRows;
@@ -167,7 +167,7 @@ final class RowIterator implements RowIteratorInterface
     }
 
     /**
-     * @param array|bool $currentRowData
+     * @param array<int, null|string>|bool $currentRowData
      *
      * @return bool Whether the data for the current row can be returned or if we need to keep reading
      */
@@ -190,9 +190,9 @@ final class RowIterator implements RowIteratorInterface
      *
      * @throws \OpenSpout\Common\Exception\EncodingConversionException If unable to convert data to UTF-8
      *
-     * @return array|false The row for the current file pointer, encoded in UTF-8 or FALSE if nothing to read
+     * @return array<int, null|string>|false The row for the current file pointer, encoded in UTF-8 or FALSE if nothing to read
      */
-    private function getNextUTF8EncodedRow()
+    private function getNextUTF8EncodedRow(): array|false
     {
         $encodedRowData = fgetcsv($this->filePointer, self::MAX_READ_BYTES_PER_LINE, $this->fieldDelimiter, $this->fieldEnclosure, '');
         if (false === $encodedRowData) {
@@ -223,7 +223,7 @@ final class RowIterator implements RowIteratorInterface
     }
 
     /**
-     * @param array|bool $lineData Array containing the cells value for the line
+     * @param array<int, null|string>|bool $lineData Array containing the cells value for the line
      *
      * @return bool Whether the given line is empty
      */

@@ -52,7 +52,7 @@ final class SheetManager
     /** @var \OpenSpout\Common\Helper\Escaper\XLSX Used to unescape XML data */
     private \OpenSpout\Common\Helper\Escaper\XLSX $escaper;
 
-    /** @var array List of sheets */
+    /** @var Sheet[] List of sheets */
     private array $sheets;
 
     /** @var int Index of the sheet currently read */

@@ -20,7 +20,7 @@ final class WriterTest extends TestCase
     use RowCreationHelper;
     use TestUsingResource;
 
-    public function testWriteShouldThrowExceptionIfCannotOpenFileForWriting()
+    public function testWriteShouldThrowExceptionIfCannotOpenFileForWriting(): void
     {
         $this->expectException(IOException::class);
 
@@ -34,7 +34,7 @@ final class WriterTest extends TestCase
         $writer->close();
     }
 
-    public function testWriteShouldThrowExceptionIfCallAddRowBeforeOpeningWriter()
+    public function testWriteShouldThrowExceptionIfCallAddRowBeforeOpeningWriter(): void
     {
         $this->expectException(WriterNotOpenedException::class);
 
@@ -43,7 +43,7 @@ final class WriterTest extends TestCase
         $writer->close();
     }
 
-    public function testWriteShouldThrowExceptionIfCallAddRowsBeforeOpeningWriter()
+    public function testWriteShouldThrowExceptionIfCallAddRowsBeforeOpeningWriter(): void
     {
         $this->expectException(WriterNotOpenedException::class);
 
@@ -52,7 +52,7 @@ final class WriterTest extends TestCase
         $writer->close();
     }
 
-    public function testAddRowsShouldThrowExceptionIfRowsAreNotArrayOfArrays()
+    public function testAddRowsShouldThrowExceptionIfRowsAreNotArrayOfArrays(): void
     {
         $fileName = 'test_non_array_values.csv';
         $this->createGeneratedFolderIfNeeded($fileName);
@@ -65,7 +65,7 @@ final class WriterTest extends TestCase
         $writer->addRows([['csv--11', 'csv--12']]);
     }
 
-    public function testCloseShouldNoopWhenWriterIsNotOpened()
+    public function testCloseShouldNoopWhenWriterIsNotOpened(): void
     {
         $fileName = 'test_double_close_calls.csv';
         $this->createGeneratedFolderIfNeeded($fileName);
@@ -80,7 +80,7 @@ final class WriterTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
-    public function testWriteShouldAddUtf8Bom()
+    public function testWriteShouldAddUtf8Bom(): void
     {
         $allRows = $this->createRowsFromValues([
             ['csv--11', 'csv--12'],
@@ -90,7 +90,7 @@ final class WriterTest extends TestCase
         static::assertStringStartsWith(EncodingHelper::BOM_UTF8, $writtenContent, 'The CSV file should contain a UTF-8 BOM');
     }
 
-    public function testWriteShouldNotAddUtf8Bom()
+    public function testWriteShouldNotAddUtf8Bom(): void
     {
         $allRows = $this->createRowsFromValues([
             ['csv--11', 'csv--12'],
@@ -100,7 +100,7 @@ final class WriterTest extends TestCase
         static::assertStringNotContainsString(EncodingHelper::BOM_UTF8, $writtenContent, 'The CSV file should not contain a UTF-8 BOM');
     }
 
-    public function testWriteShouldSupportNullValues()
+    public function testWriteShouldSupportNullValues(): void
     {
         $allRows = $this->createRowsFromValues([
             ['csv--11', null, 'csv--13'],
@@ -111,7 +111,7 @@ final class WriterTest extends TestCase
         static::assertSame('csv--11,,csv--13', $writtenContent, 'The null values should be replaced by empty values');
     }
 
-    public function testWriteShouldNotSkipEmptyRows()
+    public function testWriteShouldNotSkipEmptyRows(): void
     {
         $allRows = $this->createRowsFromValues([
             ['csv--11', 'csv--12'],
@@ -124,7 +124,7 @@ final class WriterTest extends TestCase
         static::assertSame("csv--11,csv--12\n\ncsv--31,csv--32", $writtenContent, 'Empty rows should be skipped');
     }
 
-    public function testWriteShouldSupportCustomFieldDelimiter()
+    public function testWriteShouldSupportCustomFieldDelimiter(): void
     {
         $allRows = $this->createRowsFromValues([
             ['csv--11', 'csv--12', 'csv--13'],
@@ -136,7 +136,7 @@ final class WriterTest extends TestCase
         static::assertSame("csv--11|csv--12|csv--13\ncsv--21|csv--22|csv--23", $writtenContent, 'The fields should be delimited with |');
     }
 
-    public function testWriteShouldSupportCustomFieldEnclosure()
+    public function testWriteShouldSupportCustomFieldEnclosure(): void
     {
         $allRows = $this->createRowsFromValues([
             ['This is, a comma', 'csv--12', 'csv--13'],
@@ -147,7 +147,7 @@ final class WriterTest extends TestCase
         static::assertSame('#This is, a comma#,csv--12,csv--13', $writtenContent, 'The fields should be enclosed with #');
     }
 
-    public function testWriteShouldSupportedEscapedCharacters()
+    public function testWriteShouldSupportedEscapedCharacters(): void
     {
         $allRows = $this->createRowsFromValues([
             ['"csv--11"', 'csv--12\\', 'csv--13\\\\', 'csv--14\\\\\\'],

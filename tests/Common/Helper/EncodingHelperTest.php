@@ -27,7 +27,7 @@ final class EncodingHelperTest extends TestCase
     /**
      * @dataProvider dataProviderForTestGetBytesOffsetToSkipBOM
      */
-    public function testGetBytesOffsetToSkipBOM(string $fileName, string $encoding, int $expectedBytesOffset)
+    public function testGetBytesOffsetToSkipBOM(string $fileName, string $encoding, int $expectedBytesOffset): void
     {
         $resourcePath = $this->getResourcePath($fileName);
         $filePointer = fopen($resourcePath, 'r');
@@ -49,7 +49,7 @@ final class EncodingHelperTest extends TestCase
     /**
      * @dataProvider dataProviderForIconvOrMbstringUsage
      */
-    public function testAttemptConversionToUTF8ShouldThrowIfConversionFailed(bool $shouldUseIconv)
+    public function testAttemptConversionToUTF8ShouldThrowIfConversionFailed(bool $shouldUseIconv): void
     {
         $encodingHelper = new EncodingHelper($shouldUseIconv, !$shouldUseIconv);
 
@@ -58,7 +58,7 @@ final class EncodingHelperTest extends TestCase
         $encodingHelper->attemptConversionToUTF8('input', uniqid('not_a_charset'));
     }
 
-    public function testAttemptConversionToUTF8ShouldThrowIfConversionNotSupported()
+    public function testAttemptConversionToUTF8ShouldThrowIfConversionNotSupported(): void
     {
         $encodingHelper = new EncodingHelper(false, false);
 
@@ -70,7 +70,7 @@ final class EncodingHelperTest extends TestCase
     /**
      * @dataProvider dataProviderForIconvOrMbstringUsage
      */
-    public function testAttemptConversionToUTF8ShouldReturnReencodedString(bool $shouldUseIconv)
+    public function testAttemptConversionToUTF8ShouldReturnReencodedString(bool $shouldUseIconv): void
     {
         $encodingHelper = new EncodingHelper($shouldUseIconv, !$shouldUseIconv);
 
@@ -80,7 +80,7 @@ final class EncodingHelperTest extends TestCase
         static::assertSame('input', $decodedString);
     }
 
-    public function testAttemptConversionToUTF8ShouldBeNoopWhenTargetIsUTF8()
+    public function testAttemptConversionToUTF8ShouldBeNoopWhenTargetIsUTF8(): void
     {
         $encodingHelper = new EncodingHelper(false, false);
 
@@ -90,7 +90,7 @@ final class EncodingHelperTest extends TestCase
     /**
      * @dataProvider dataProviderForIconvOrMbstringUsage
      */
-    public function testAttemptConversionFromUTF8ShouldThrowIfConversionFailed(bool $shouldUseIconv)
+    public function testAttemptConversionFromUTF8ShouldThrowIfConversionFailed(bool $shouldUseIconv): void
     {
         $encodingHelper = new EncodingHelper($shouldUseIconv, !$shouldUseIconv);
 
@@ -99,7 +99,7 @@ final class EncodingHelperTest extends TestCase
         $encodingHelper->attemptConversionFromUTF8('input', uniqid('not_a_charset'));
     }
 
-    public function testAttemptConversionFromUTF8ShouldThrowIfConversionNotSupported()
+    public function testAttemptConversionFromUTF8ShouldThrowIfConversionNotSupported(): void
     {
         $encodingHelper = new EncodingHelper(false, false);
 
@@ -111,7 +111,7 @@ final class EncodingHelperTest extends TestCase
     /**
      * @dataProvider dataProviderForIconvOrMbstringUsage
      */
-    public function testAttemptConversionFromUTF8ShouldReturnReencodedString(bool $shouldUseIconv)
+    public function testAttemptConversionFromUTF8ShouldReturnReencodedString(bool $shouldUseIconv): void
     {
         $encodingHelper = new EncodingHelper($shouldUseIconv, !$shouldUseIconv);
 
@@ -121,7 +121,7 @@ final class EncodingHelperTest extends TestCase
         static::assertSame($encodedStringWithIconv, $encodedString);
     }
 
-    public function testAttemptConversionFromUTF8ShouldBeNoopWhenTargetIsUTF8()
+    public function testAttemptConversionFromUTF8ShouldBeNoopWhenTargetIsUTF8(): void
     {
         $encodingHelper = new EncodingHelper(false, false);
 

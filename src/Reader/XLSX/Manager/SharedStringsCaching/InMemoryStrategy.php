@@ -3,6 +3,7 @@
 namespace OpenSpout\Reader\XLSX\Manager\SharedStringsCaching;
 
 use OpenSpout\Reader\Exception\SharedStringNotFoundException;
+use SplFixedArray;
 
 /**
  * This class implements the in-memory caching strategy for shared strings.
@@ -10,8 +11,8 @@ use OpenSpout\Reader\Exception\SharedStringNotFoundException;
  */
 final class InMemoryStrategy implements CachingStrategyInterface
 {
-    /** @var \SplFixedArray Array used to cache the shared strings */
-    private \SplFixedArray $inMemoryCache;
+    /** @var SplFixedArray<string> Array used to cache the shared strings */
+    private SplFixedArray $inMemoryCache;
 
     /** @var bool Whether the cache has been closed */
     private bool $isCacheClosed;
@@ -21,7 +22,7 @@ final class InMemoryStrategy implements CachingStrategyInterface
      */
     public function __construct(int $sharedStringsUniqueCount)
     {
-        $this->inMemoryCache = new \SplFixedArray($sharedStringsUniqueCount);
+        $this->inMemoryCache = new SplFixedArray($sharedStringsUniqueCount);
         $this->isCacheClosed = false;
     }
 
@@ -70,7 +71,7 @@ final class InMemoryStrategy implements CachingStrategyInterface
      */
     public function clearCache(): void
     {
-        $this->inMemoryCache = new \SplFixedArray(0);
+        $this->inMemoryCache = new SplFixedArray(0);
         $this->isCacheClosed = false;
     }
 }

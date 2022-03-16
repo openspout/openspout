@@ -1,6 +1,11 @@
 parameters:
 	ignoreErrors:
 		-
+			message: "#^Property OpenSpout\\\\Common\\\\Helper\\\\StringHelper\\:\\:\\$localeInfo type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Common/Helper/StringHelper.php
+
+		-
 			message: "#^Method OpenSpout\\\\Reader\\\\Common\\\\Creator\\\\ReaderEntityFactory\\:\\:createCSVReader\\(\\) should return OpenSpout\\\\Reader\\\\CSV\\\\Reader but returns OpenSpout\\\\Reader\\\\ReaderInterface\\.$#"
 			count: 1
 			path: src/Reader/Common/Creator/ReaderEntityFactory.php
@@ -59,6 +64,21 @@ parameters:
 			message: "#^Method OpenSpout\\\\Writer\\\\Common\\\\Creator\\\\WriterEntityFactory\\:\\:createXLSXWriter\\(\\) should return OpenSpout\\\\Writer\\\\XLSX\\\\Writer but returns null\\.$#"
 			count: 1
 			path: src/Writer/Common/Creator/WriterEntityFactory.php
+
+		-
+			message: "#^Method OpenSpout\\\\Reader\\\\CSV\\\\SpoutTestStream\\:\\:url_stat\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: tests/Reader/CSV/SpoutTestStream.php
+
+		-
+			message: "#^Method OpenSpout\\\\Reader\\\\XLSX\\\\Manager\\\\StyleManagerTest\\:\\:getStyleManagerMock\\(\\) has parameter \\$customNumberFormats with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: tests/Reader/XLSX/Manager/StyleManagerTest.php
+
+		-
+			message: "#^Method OpenSpout\\\\Reader\\\\XLSX\\\\Manager\\\\StyleManagerTest\\:\\:getStyleManagerMock\\(\\) has parameter \\$styleAttributes with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: tests/Reader/XLSX/Manager/StyleManagerTest.php
 
 		-
 			message: "#^Parameter \\#1 \\$rows of method OpenSpout\\\\Writer\\\\WriterAbstract\\:\\:addRows\\(\\) expects array\\<OpenSpout\\\\Common\\\\Entity\\\\Row\\>, array\\<int, array\\<int, string\\>\\> given\\.$#"

@@ -180,7 +180,7 @@ final class WorksheetManager implements WorksheetManagerInterface
      *
      * @throws IOException If the sheet data file cannot be opened for writing
      */
-    private function throwIfSheetFilePointerIsNotAvailable($sheetFilePointer)
+    private function throwIfSheetFilePointerIsNotAvailable($sheetFilePointer): void
     {
         if (!$sheetFilePointer) {
             throw new IOException('Unable to open sheet for writing.');

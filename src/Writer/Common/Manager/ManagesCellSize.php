@@ -10,7 +10,7 @@ trait ManagesCellSize
     /** @var null|float The default row height to use */
     private ?float $defaultRowHeight;
 
-    /** @var array Array of min-max-width arrays */
+    /** @var array<array-key, array<array-key, float|int>> Array of min-max-width arrays */
     private array $columnWidths = [];
 
     public function setDefaultColumnWidth(?float $width): void

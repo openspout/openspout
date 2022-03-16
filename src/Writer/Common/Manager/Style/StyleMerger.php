@@ -33,7 +33,7 @@ final class StyleMerger
     /**
      * @param Style $styleToUpdate (passed as reference)
      */
-    private function mergeFontStyles(Style $styleToUpdate, Style $style, Style $baseStyle)
+    private function mergeFontStyles(Style $styleToUpdate, Style $style, Style $baseStyle): void
     {
         if (!$style->hasSetFontBold() && $baseStyle->isFontBold()) {
             $styleToUpdate->setFontBold();
@@ -52,7 +52,7 @@ final class StyleMerger
     /**
      * @param Style $styleToUpdate Style to update (passed as reference)
      */
-    private function mergeOtherFontProperties(Style $styleToUpdate, Style $style, Style $baseStyle)
+    private function mergeOtherFontProperties(Style $styleToUpdate, Style $style, Style $baseStyle): void
     {
         if (!$style->hasSetFontSize() && Style::DEFAULT_FONT_SIZE !== $baseStyle->getFontSize()) {
             $styleToUpdate->setFontSize($baseStyle->getFontSize());
@@ -68,7 +68,7 @@ final class StyleMerger
     /**
      * @param Style $styleToUpdate Style to update (passed as reference)
      */
-    private function mergeCellProperties(Style $styleToUpdate, Style $style, Style $baseStyle)
+    private function mergeCellProperties(Style $styleToUpdate, Style $style, Style $baseStyle): void
     {
         if (!$style->hasSetWrapText() && $baseStyle->shouldWrapText()) {
             $styleToUpdate->setShouldWrapText();

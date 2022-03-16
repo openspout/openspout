@@ -124,7 +124,7 @@ class FileSystemHelper implements FileSystemHelperInterface
      * @throws \OpenSpout\Common\Exception\IOException If the folder where the I/O operation should occur
      *                                                 is not inside the base folder or the base folder does not exist
      */
-    protected function throwIfOperationNotInBaseFolder(string $operationFolderPath)
+    protected function throwIfOperationNotInBaseFolder(string $operationFolderPath): void
     {
         $operationFolderRealPath = realpath($operationFolderPath);
         if (!$this->baseFolderRealPath) {

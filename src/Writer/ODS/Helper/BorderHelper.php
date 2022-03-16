@@ -22,7 +22,7 @@ final class BorderHelper
     /**
      * Width mappings.
      */
-    private static array $widthMap = [
+    public const widthMap = [
         Border::WIDTH_THIN => '0.75pt',
         Border::WIDTH_MEDIUM => '1.75pt',
         Border::WIDTH_THICK => '2.5pt',
@@ -31,7 +31,7 @@ final class BorderHelper
     /**
      * Style mapping.
      */
-    private static array $styleMap = [
+    public const styleMap = [
         Border::STYLE_SOLID => 'solid',
         Border::STYLE_DASHED => 'dashed',
         Border::STYLE_DOTTED => 'dotted',
@@ -46,8 +46,8 @@ final class BorderHelper
             $borderPartDefinition = sprintf($definition, $borderPart->getName(), 'none');
         } else {
             $attributes = [
-                self::$widthMap[$borderPart->getWidth()],
-                self::$styleMap[$borderPart->getStyle()],
+                self::widthMap[$borderPart->getWidth()],
+                self::styleMap[$borderPart->getStyle()],
                 '#'.$borderPart->getColor(),
             ];
             $borderPartDefinition = sprintf($definition, $borderPart->getName(), implode(' ', $attributes));

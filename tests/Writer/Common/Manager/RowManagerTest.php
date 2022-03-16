@@ -25,8 +25,10 @@ final class RowManagerTest extends TestCase
 
     /**
      * @dataProvider dataProviderForTestIsEmptyRow
+     *
+     * @param Cell[] $cells
      */
-    public function testIsEmptyRow(array $cells, bool $expectedIsEmpty)
+    public function testIsEmptyRow(array $cells, bool $expectedIsEmpty): void
     {
         $rowManager = new RowManager();
 

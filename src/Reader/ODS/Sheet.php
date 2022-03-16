@@ -2,6 +2,7 @@
 
 namespace OpenSpout\Reader\ODS;
 
+use OpenSpout\Reader\RowIteratorInterface;
 use OpenSpout\Reader\SheetInterface;
 
 /**
@@ -40,7 +41,7 @@ final class Sheet implements SheetInterface
         $this->isVisible = $isSheetVisible;
     }
 
-    public function getRowIterator(): RowIterator
+    public function getRowIterator(): RowIteratorInterface
     {
         return $this->rowIterator;
     }

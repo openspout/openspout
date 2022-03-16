@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class StyleTest extends TestCase
 {
-    public function testStyleBuilderShouldApplyBorders()
+    public function testStyleBuilderShouldApplyBorders(): void
     {
         $border = (new BorderBuilder())
             ->setBorderBottom()
@@ -25,7 +25,7 @@ final class StyleTest extends TestCase
         static::assertTrue($style->shouldApplyBorder());
     }
 
-    public function testStyleBuilderShouldMergeBorders()
+    public function testStyleBuilderShouldMergeBorders(): void
     {
         $border = (new BorderBuilder())->setBorderBottom(Color::RED, Border::WIDTH_THIN, Border::STYLE_DASHED)->build();
 
@@ -40,13 +40,13 @@ final class StyleTest extends TestCase
         static::assertInstanceOf(Border::class, $mergedStyle->getBorder(), 'Merged style has a border');
     }
 
-    public function testStyleBuilderShouldApplyCellAlignment()
+    public function testStyleBuilderShouldApplyCellAlignment(): void
     {
         $style = (new Style())->setCellAlignment(CellAlignment::CENTER);
         static::assertTrue($style->shouldApplyCellAlignment());
     }
 
-    public function testStyleBuilderShouldThrowOnInvalidCellAlignment()
+    public function testStyleBuilderShouldThrowOnInvalidCellAlignment(): void
     {
         $this->expectException(InvalidArgumentException::class);
         (new Style())->setCellAlignment('invalid_cell_alignment');

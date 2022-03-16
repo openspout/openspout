@@ -32,7 +32,7 @@ final class WriterWithStyleTest extends TestCase
         $this->defaultStyle = (new Style());
     }
 
-    public function testAddRowShouldThrowExceptionIfCallAddRowBeforeOpeningWriter()
+    public function testAddRowShouldThrowExceptionIfCallAddRowBeforeOpeningWriter(): void
     {
         $this->expectException(WriterNotOpenedException::class);
 
@@ -40,7 +40,7 @@ final class WriterWithStyleTest extends TestCase
         $writer->addRow($this->createStyledRowFromValues(['xlsx--11', 'xlsx--12'], $this->defaultStyle));
     }
 
-    public function testAddRowShouldThrowExceptionIfCalledBeforeOpeningWriter()
+    public function testAddRowShouldThrowExceptionIfCalledBeforeOpeningWriter(): void
     {
         $this->expectException(WriterNotOpenedException::class);
 
@@ -48,7 +48,7 @@ final class WriterWithStyleTest extends TestCase
         $writer->addRow($this->createStyledRowFromValues(['xlsx--11', 'xlsx--12'], $this->defaultStyle));
     }
 
-    public function testAddRowShouldListAllUsedFontsInCreatedStylesXmlFile()
+    public function testAddRowShouldListAllUsedFontsInCreatedStylesXmlFile(): void
     {
         $fileName = 'test_add_row_should_list_all_used_fonts.xlsx';
 
@@ -108,7 +108,7 @@ final class WriterWithStyleTest extends TestCase
         $this->assertFirstChildHasAttributeEquals('Cambria', $thirdFontElement, 'name', 'val');
     }
 
-    public function testAddRowShouldApplyStyleToCells()
+    public function testAddRowShouldApplyStyleToCells(): void
     {
         $fileName = 'test_add_row_should_apply_style_to_cells.xlsx';
 
@@ -131,7 +131,7 @@ final class WriterWithStyleTest extends TestCase
         static::assertSame('0', $cellDomElements[2]->getAttribute('s'));
     }
 
-    public function testAddRowShouldApplyStyleToEmptyCellsIfNeeded()
+    public function testAddRowShouldApplyStyleToEmptyCellsIfNeeded(): void
     {
         $fileName = 'test_add_row_should_apply_style_to_empty_cells_if_needed.xlsx';
 
@@ -176,7 +176,7 @@ final class WriterWithStyleTest extends TestCase
         static::assertSame('3', $cellDomElements[9]->getAttribute('s'));
     }
 
-    public function testAddRowShouldReuseDuplicateStyles()
+    public function testAddRowShouldReuseDuplicateStyles(): void
     {
         $fileName = 'test_add_row_should_reuse_duplicate_styles.xlsx';
 
@@ -193,7 +193,7 @@ final class WriterWithStyleTest extends TestCase
         static::assertSame('1', $cellDomElements[1]->getAttribute('s'));
     }
 
-    public function testAddRowWithNumFmtStyles()
+    public function testAddRowWithNumFmtStyles(): void
     {
         $fileName = 'test_add_row_with_numfmt.xlsx';
         $style = (new Style())
@@ -229,7 +229,7 @@ final class WriterWithStyleTest extends TestCase
         }
     }
 
-    public function testAddRowShouldAddWrapTextAlignmentInfoInStylesXmlFileIfSpecified()
+    public function testAddRowShouldAddWrapTextAlignmentInfoInStylesXmlFileIfSpecified(): void
     {
         $fileName = 'test_add_row_should_add_wrap_text_alignment.xlsx';
 
@@ -246,7 +246,7 @@ final class WriterWithStyleTest extends TestCase
         $this->assertFirstChildHasAttributeEquals('1', $xfElement, 'alignment', 'wrapText');
     }
 
-    public function testAddRowShouldApplyWrapTextIfCellContainsNewLine()
+    public function testAddRowShouldApplyWrapTextIfCellContainsNewLine(): void
     {
         $fileName = 'test_add_row_should_apply_wrap_text_if_new_lines.xlsx';
 
@@ -263,7 +263,7 @@ final class WriterWithStyleTest extends TestCase
         $this->assertFirstChildHasAttributeEquals('1', $xfElement, 'alignment', 'wrapText');
     }
 
-    public function testAddRowShouldApplyCellAlignment()
+    public function testAddRowShouldApplyCellAlignment(): void
     {
         $fileName = 'test_add_row_should_apply_cell_alignment.xlsx';
 
@@ -278,7 +278,7 @@ final class WriterWithStyleTest extends TestCase
         $this->assertFirstChildHasAttributeEquals(CellAlignment::RIGHT, $xfElement, 'alignment', 'horizontal');
     }
 
-    public function testAddRowShouldApplyShrinkToFit()
+    public function testAddRowShouldApplyShrinkToFit(): void
     {
         $fileName = 'test_add_row_should_apply_shrink_to_fit.xlsx';
 
@@ -293,7 +293,7 @@ final class WriterWithStyleTest extends TestCase
         $this->assertFirstChildHasAttributeEquals('true', $xfElement, 'alignment', 'shrinkToFit');
     }
 
-    public function testAddRowShouldSupportCellStyling()
+    public function testAddRowShouldSupportCellStyling(): void
     {
         $fileName = 'test_add_row_should_support_cell_styling.xlsx';
 
@@ -316,7 +316,7 @@ final class WriterWithStyleTest extends TestCase
         static::assertSame('2', $cellDomElements[2]->getAttribute('s'));
     }
 
-    public function testAddBackgroundColor()
+    public function testAddBackgroundColor(): void
     {
         $fileName = 'test_add_background_color.xlsx';
 
@@ -344,7 +344,7 @@ final class WriterWithStyleTest extends TestCase
         static::assertSame(2, (int) $customFillId, 'The custom fill id should have the index 2');
     }
 
-    public function testReuseBackgroundColorSharedDefinition()
+    public function testReuseBackgroundColorSharedDefinition(): void
     {
         $fileName = 'test_add_background_color_shared_definition.xlsx';
 
@@ -383,7 +383,7 @@ final class WriterWithStyleTest extends TestCase
         static::assertSame(2, (int) $secondCustomId, 'The second custom fill id should have the index 2');
     }
 
-    public function testBorders()
+    public function testBorders(): void
     {
         $fileName = 'test_borders.xlsx';
 
@@ -414,7 +414,7 @@ final class WriterWithStyleTest extends TestCase
         static::assertSame('3', $styleXfsElements->getAttribute('count'), '3 cell xfs present');
     }
 
-    public function testBordersCorrectOrder()
+    public function testBordersCorrectOrder(): void
     {
         // Border should be Left, Right, Top, Bottom
         $fileName = 'test_borders_correct_order.xlsx';
@@ -455,7 +455,7 @@ final class WriterWithStyleTest extends TestCase
         }
     }
 
-    public function testSetDefaultRowStyle()
+    public function testSetDefaultRowStyle(): void
     {
         $fileName = 'test_set_default_row_style.xlsx';
         $dataRows = $this->createRowsFromValues([['xlsx--11']]);
@@ -473,7 +473,7 @@ final class WriterWithStyleTest extends TestCase
         $this->assertFirstChildHasAttributeEquals((string) $defaultFontSize, $defaultFontElement, 'sz', 'val');
     }
 
-    public function testReuseBorders()
+    public function testReuseBorders(): void
     {
         $fileName = 'test_reuse_borders.xlsx';
 
@@ -611,17 +611,17 @@ final class WriterWithStyleTest extends TestCase
         return $cellElements;
     }
 
-    private function assertFirstChildHasAttributeEquals(string $expectedValue, \DOMElement $parentElement, string $childTagName, string $attributeName)
+    private function assertFirstChildHasAttributeEquals(string $expectedValue, \DOMElement $parentElement, string $childTagName, string $attributeName): void
     {
         static::assertSame($expectedValue, $parentElement->getElementsByTagName($childTagName)->item(0)->getAttribute($attributeName));
     }
 
-    private function assertChildrenNumEquals(int $expectedNumber, \DOMElement $parentElement, string $message)
+    private function assertChildrenNumEquals(int $expectedNumber, \DOMElement $parentElement, string $message): void
     {
         static::assertSame($expectedNumber, $parentElement->getElementsByTagName('*')->length, $message);
     }
 
-    private function assertChildExists(\DOMElement $parentElement, string $childTagName)
+    private function assertChildExists(\DOMElement $parentElement, string $childTagName): void
     {
         static::assertSame(1, $parentElement->getElementsByTagName($childTagName)->length);
     }

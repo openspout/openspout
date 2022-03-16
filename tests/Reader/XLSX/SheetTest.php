@@ -14,7 +14,7 @@ final class SheetTest extends TestCase
 {
     use TestUsingResource;
 
-    public function testReaderShouldReturnCorrectSheetInfos()
+    public function testReaderShouldReturnCorrectSheetInfos(): void
     {
         // NOTE: This spreadsheet has its second tab defined as active
         $sheets = $this->openFileAndReturnSheets('two_sheets_with_custom_names_and_custom_active_tab.xlsx');
@@ -28,7 +28,7 @@ final class SheetTest extends TestCase
         static::assertTrue($sheets[1]->isActive());
     }
 
-    public function testReaderShouldReturnCorrectSheetVisibility()
+    public function testReaderShouldReturnCorrectSheetVisibility(): void
     {
         $sheets = $this->openFileAndReturnSheets('two_sheets_one_hidden_one_not.xlsx');
 

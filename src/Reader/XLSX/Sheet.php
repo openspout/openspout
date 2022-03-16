@@ -2,6 +2,7 @@
 
 namespace OpenSpout\Reader\XLSX;
 
+use OpenSpout\Reader\RowIteratorInterface;
 use OpenSpout\Reader\SheetInterface;
 
 /**
@@ -43,7 +44,7 @@ final class Sheet implements SheetInterface
     /**
      * @return \OpenSpout\Reader\XLSX\RowIterator
      */
-    public function getRowIterator(): RowIterator
+    public function getRowIterator(): RowIteratorInterface
     {
         return $this->rowIterator;
     }

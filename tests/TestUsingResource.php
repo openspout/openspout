@@ -39,7 +39,7 @@ trait TestUsingResource
         return realpath($this->generatedResourcesPath).'/'.strtolower($resourceType).'/'.$resourceName;
     }
 
-    protected function createGeneratedFolderIfNeeded(string $resourceName)
+    protected function createGeneratedFolderIfNeeded(string $resourceName): void
     {
         $resourceType = pathinfo($resourceName, PATHINFO_EXTENSION);
         $generatedResourcePathForType = $this->generatedResourcesPath.'/'.strtolower($resourceType);
@@ -57,7 +57,7 @@ trait TestUsingResource
         return realpath($this->generatedUnwritableResourcesPath).'/'.$resourceName;
     }
 
-    protected function createUnwritableFolderIfNeeded()
+    protected function createUnwritableFolderIfNeeded(): void
     {
         // On Windows, chmod() or the mkdir's mode is ignored
         if ($this->isWindows()) {
@@ -83,7 +83,7 @@ trait TestUsingResource
         return realpath($this->tempFolderPath);
     }
 
-    protected function recreateTempFolder()
+    protected function recreateTempFolder(): void
     {
         if (file_exists($this->tempFolderPath)) {
             $this->deleteFolderRecursively($this->tempFolderPath);
@@ -100,7 +100,7 @@ trait TestUsingResource
         return 'WIN' === strtoupper(substr(PHP_OS, 0, 3));
     }
 
-    private function deleteFolderRecursively(string $folderPath)
+    private function deleteFolderRecursively(string $folderPath): void
     {
         $itemIterator = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator($folderPath, \RecursiveDirectoryIterator::SKIP_DOTS),

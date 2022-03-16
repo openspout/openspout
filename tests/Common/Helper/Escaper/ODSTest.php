@@ -26,7 +26,7 @@ final class ODSTest extends TestCase
     /**
      * @dataProvider dataProviderForTestEscape
      */
-    public function testEscape(string $stringToEscape, string $expectedEscapedString)
+    public function testEscape(string $stringToEscape, string $expectedEscapedString): void
     {
         $escaper = new Escaper\ODS();
         $escapedString = $escaper->escape($stringToEscape);

@@ -28,7 +28,7 @@ final class StyleManagerTest extends TestCase
     /**
      * @dataProvider dataProviderForTestShouldApplyStyleOnEmptyCell
      */
-    public function testShouldApplyStyleOnEmptyCell(?int $fillId, ?int $borderId, bool $expectedResult)
+    public function testShouldApplyStyleOnEmptyCell(?int $fillId, ?int $borderId, bool $expectedResult): void
     {
         $styleRegistryMock = $this->getMockBuilder(StyleRegistry::class)
             ->disableOriginalConstructor()

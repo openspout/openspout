@@ -9,6 +9,36 @@ use OpenSpout\Writer\Exception\Border\InvalidWidthException;
 final class BorderPart
 {
     /**
+     * Allowed style constants for parts.
+     */
+    private const allowedStyles = [
+        'none',
+        'solid',
+        'dashed',
+        'dotted',
+        'double',
+    ];
+
+    /**
+     * Allowed names constants for border parts.
+     */
+    private const allowedNames = [
+        'left',
+        'right',
+        'top',
+        'bottom',
+    ];
+
+    /**
+     * Allowed width constants for border parts.
+     */
+    private const allowedWidths = [
+        'thin',
+        'medium',
+        'thick',
+    ];
+
+    /**
      * @var string the style of this border part
      */
     private string $style;
@@ -29,40 +59,10 @@ final class BorderPart
     private string $width;
 
     /**
-     * @var array allowed style constants for parts
-     */
-    private static array $allowedStyles = [
-        'none',
-        'solid',
-        'dashed',
-        'dotted',
-        'double',
-    ];
-
-    /**
-     * @var array allowed names constants for border parts
-     */
-    private static array $allowedNames = [
-        'left',
-        'right',
-        'top',
-        'bottom',
-    ];
-
-    /**
-     * @var array allowed width constants for border parts
-     */
-    private static array $allowedWidths = [
-        'thin',
-        'medium',
-        'thick',
-    ];
-
-    /**
-     * @param string $name  @see  BorderPart::$allowedNames
+     * @param string $name  @see  BorderPart::allowedNames
      * @param string $color A RGB color code
-     * @param string $width @see BorderPart::$allowedWidths
-     * @param string $style @see BorderPart::$allowedStyles
+     * @param string $width @see BorderPart::allowedWidths
+     * @param string $style @see BorderPart::allowedStyles
      *
      * @throws InvalidNameException
      * @throws InvalidStyleException
@@ -82,13 +82,13 @@ final class BorderPart
     }
 
     /**
-     * @param string $name The name of the border part @see BorderPart::$allowedNames
+     * @param string $name The name of the border part @see BorderPart::allowedNames
      *
      * @throws InvalidNameException
      */
-    public function setName(string $name)
+    public function setName(string $name): void
     {
-        if (!\in_array($name, self::$allowedNames, true)) {
+        if (!\in_array($name, self::allowedNames, true)) {
             throw new InvalidNameException($name);
         }
         $this->name = $name;
@@ -100,13 +100,13 @@ final class BorderPart
     }
 
     /**
-     * @param string $style The style of the border part @see BorderPart::$allowedStyles
+     * @param string $style The style of the border part @see BorderPart::allowedStyles
      *
      * @throws InvalidStyleException
      */
-    public function setStyle(string $style)
+    public function setStyle(string $style): void
     {
-        if (!\in_array($style, self::$allowedStyles, true)) {
+        if (!\in_array($style, self::allowedStyles, true)) {
             throw new InvalidStyleException($style);
         }
         $this->style = $style;
@@ -120,7 +120,7 @@ final class BorderPart
     /**
      * @param string $color The color of the border part @see Color::rgb()
      */
-    public function setColor(string $color)
+    public function setColor(string $color): void
     {
         $this->color = $color;
     }
@@ -131,30 +131,39 @@ final class BorderPart
     }
 
     /**
-     * @param string $width The width of the border part @see BorderPart::$allowedWidths
+     * @param string $width The width of the border part @see BorderPart::allowedWidths
      *
      * @throws InvalidWidthException
      */
-    public function setWidth(string $width)
+    public function setWidth(string $width): void
     {
-        if (!\in_array($width, self::$allowedWidths, true)) {
+        if (!\in_array($width, self::allowedWidths, true)) {
             throw new InvalidWidthException($width);
         }
         $this->width = $width;
     }
 
+    /**
+     * @return string[]
+     */
     public static function getAllowedStyles(): array
     {
-        return self::$allowedStyles;
+        return self::allowedStyles;
     }
 
+    /**
+     * @return string[]
+     */
     public static function getAllowedNames(): array
     {
-        return self::$allowedNames;
+        return self::allowedNames;
     }
 
+    /**
+     * @return string[]
+     */
     public static function getAllowedWidths(): array
     {
-        return self::$allowedWidths;
+        return self::allowedWidths;
     }
 }

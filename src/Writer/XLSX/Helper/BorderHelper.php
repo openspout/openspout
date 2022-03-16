@@ -7,7 +7,7 @@ use OpenSpout\Common\Entity\Style\BorderPart;
 
 final class BorderHelper
 {
-    public static $xlsxStyleMap = [
+    private const xlsxStyleMap = [
         Border::STYLE_SOLID => [
             Border::WIDTH_THIN => 'thin',
             Border::WIDTH_MEDIUM => 'medium',
@@ -56,6 +56,6 @@ final class BorderHelper
      */
     private static function getBorderStyle(BorderPart $borderPart): string
     {
-        return self::$xlsxStyleMap[$borderPart->getStyle()][$borderPart->getWidth()];
+        return self::xlsxStyleMap[$borderPart->getStyle()][$borderPart->getWidth()];
     }
 }

@@ -100,11 +100,11 @@ final class Row
     }
 
     /**
-     * @return array The row values, as array
+     * @return mixed[] The row values, as array
      */
     public function toArray(): array
     {
-        return array_map(function (Cell $cell) {
+        return array_map(static function (Cell $cell): mixed {
             return $cell->getValue();
         }, $this->cells);
     }

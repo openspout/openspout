@@ -3,6 +3,7 @@
 namespace OpenSpout\Reader\Common;
 
 use OpenSpout\Reader\Wrapper\XMLReader;
+use ReflectionMethod;
 
 /**
  * Helps process XML files.
@@ -24,7 +25,7 @@ final class XMLProcessor
     /** @var XMLReader The XMLReader object that will help read sheet's XML data */
     private XMLReader $xmlReader;
 
-    /** @var array Registered callbacks */
+    /** @var array<string, array{reflectionMethod: ReflectionMethod, reflectionObject: object}> Registered callbacks */
     private array $callbacks = [];
 
     /**
@@ -54,7 +55,7 @@ final class XMLProcessor
      *
      * @throws \OpenSpout\Reader\Exception\XMLProcessingException
      */
-    public function readUntilStopped()
+    public function readUntilStopped(): void
     {
         while ($this->xmlReader->read()) {
             $nodeType = $this->xmlReader->nodeType;
@@ -93,13 +94,13 @@ final class XMLProcessor
      *
      * @param callable $callback Array reference to a callback: [OBJECT, METHOD_NAME]
      *
-     * @return array Associative array containing the elements needed to invoke the callback using Reflection
+     * @return array{reflectionMethod: ReflectionMethod, reflectionObject: object} Associative array containing the elements needed to invoke the callback using Reflection
      */
     private function getInvokableCallbackData($callback): array
     {
         $callbackObject = $callback[0];
         $callbackMethodName = $callback[1];
-        $reflectionMethod = new \ReflectionMethod(\get_class($callbackObject), $callbackMethodName);
+        $reflectionMethod = new ReflectionMethod(\get_class($callbackObject), $callbackMethodName);
         $reflectionMethod->setAccessible(true);
 
         return [
@@ -113,7 +114,7 @@ final class XMLProcessor
      * @param string $nodeNameWithoutPrefix      Name of the same node, un-prefixed
      * @param int    $nodeType                   Type of the node [NODE_TYPE_START || NODE_TYPE_END]
      *
-     * @return null|array Callback data to be used for execution when a node of the given name/type is read or NULL if none found
+     * @return null|array{reflectionMethod: ReflectionMethod, reflectionObject: object} Callback data to be used for execution when a node of the given name/type is read or NULL if none found
      */
     private function getRegisteredCallbackData(string $nodeNamePossiblyWithPrefix, string $nodeNameWithoutPrefix, int $nodeType): ?array
     {
@@ -134,8 +135,8 @@ final class XMLProcessor
     }
 
     /**
-     * @param array $callbackData Associative array containing data to invoke the callback using Reflection
-     * @param array $args         Arguments to pass to the callback
+     * @param array{reflectionMethod: ReflectionMethod, reflectionObject: object} $callbackData Associative array containing data to invoke the callback using Reflection
+     * @param XMLReader[]                                                         $args         Arguments to pass to the callback
      *
      * @return int Callback response
      */

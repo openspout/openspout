@@ -9,10 +9,10 @@ use OpenSpout\Common\Entity\Style\Style;
  */
 class StyleRegistry
 {
-    /** @var array [SERIALIZED_STYLE] => [STYLE_ID] mapping table, keeping track of the registered styles */
+    /** @var array<string, int> [SERIALIZED_STYLE] => [STYLE_ID] mapping table, keeping track of the registered styles */
     protected array $serializedStyleToStyleIdMappingTable = [];
 
-    /** @var array [STYLE_ID] => [STYLE] mapping table, keeping track of the registered styles */
+    /** @var array<int, Style> [STYLE_ID] => [STYLE] mapping table, keeping track of the registered styles */
     protected array $styleIdToStyleMappingTable = [];
 
     public function __construct(Style $defaultStyle)

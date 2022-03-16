@@ -5,13 +5,16 @@
  */
 final class ReflectionHelper
 {
-    private static $privateVarsToReset = [];
+    /**
+     * @var array<string, array<string, mixed>>
+     */
+    private static array $privateVarsToReset = [];
 
     /**
      * Resets any static vars that were set to their
      * original values (to not screw up later unit test runs).
      */
-    public static function reset()
+    public static function reset(): void
     {
         foreach (self::$privateVarsToReset as $class => $valueNames) {
             foreach ($valueNames as $valueName => $originalValue) {
@@ -22,31 +25,12 @@ final class ReflectionHelper
     }
 
     /**
-     * Get the value of a static private or public class property.
-     * Used to test internals of class without having to make the property public.
-     *
-     * @return null|mixed
-     */
-    public static function getStaticValue(string $class, string $valueName): mixed
-    {
-        $reflectionClass = new ReflectionClass($class);
-        $reflectionProperty = $reflectionClass->getProperty($valueName);
-        $reflectionProperty->setAccessible(true);
-        $value = $reflectionProperty->getValue();
-
-        // clean up
-        $reflectionProperty->setAccessible(false);
-
-        return $value;
-    }
-
-    /**
      * Set the value of a static private or public class property.
      * Used to test internals of class without having to make the property public.
      *
      * @param null|mixed $value
      */
-    public static function setStaticValue(string $class, string $valueName, $value, bool $saveOriginalValue = true)
+    public static function setStaticValue(string $class, string $valueName, $value, bool $saveOriginalValue = true): void
     {
         $reflectionClass = new ReflectionClass($class);
         $reflectionProperty = $reflectionClass->getProperty($valueName);

@@ -23,7 +23,7 @@ final class EncodingHelper
     public const BOM_UTF32_LE = "\xFF\xFE\x00\x00";
     public const BOM_UTF32_BE = "\x00\x00\xFE\xFF";
 
-    /** @var array Map representing the encodings supporting BOMs (key) and their associated BOM (value) */
+    /** @var array<string, string> Map representing the encodings supporting BOMs (key) and their associated BOM (value) */
     private array $supportedEncodingsWithBom;
 
     private bool $canUseIconv;

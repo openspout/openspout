@@ -393,7 +393,7 @@ final class StyleManager extends CommonStyleManager
      */
     private function getBorderXMLContent(\OpenSpout\Common\Entity\Style\Style $style): string
     {
-        $borders = array_map(function (BorderPart $borderPart) {
+        $borders = array_map(static function (BorderPart $borderPart) {
             return BorderHelper::serializeBorderPart($borderPart);
         }, $style->getBorder()->getParts());
 

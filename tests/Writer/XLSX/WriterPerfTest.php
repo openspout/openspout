@@ -32,7 +32,7 @@ final class WriterPerfTest extends TestCase
      * @dataProvider dataProviderForTestPerfWhenWritingOneMillionRowsXLSX
      * @group perf-tests
      */
-    public function testPerfWhenWritingOneMillionRowsXLSX(bool $shouldUseInlineStrings, int $expectedMaxExecutionTime)
+    public function testPerfWhenWritingOneMillionRowsXLSX(bool $shouldUseInlineStrings, int $expectedMaxExecutionTime): void
     {
         // getting current memory peak to avoid taking into account the memory used by PHPUnit
         $beforeMemoryPeakUsage = memory_get_peak_usage(true);

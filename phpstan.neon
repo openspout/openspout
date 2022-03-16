@@ -3,7 +3,12 @@ includes:
     - phpstan-baseline.neon
 
 parameters:
-    level: 5
+    level: 6
     paths:
         - src
         - tests
+    ignoreErrors:
+        -
+            message: "#^Method .+Test::dataProvider.+\\(\\) return type has no value type specified in iterable type array\\.$#"
+            paths:
+                - tests/

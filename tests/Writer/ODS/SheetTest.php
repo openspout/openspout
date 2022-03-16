@@ -17,7 +17,7 @@ final class SheetTest extends TestCase
     use RowCreationHelper;
     use TestUsingResource;
 
-    public function testGetSheetIndex()
+    public function testGetSheetIndex(): void
     {
         $sheets = $this->writeDataToMulitpleSheetsAndReturnSheets('test_get_sheet_index.ods');
 
@@ -26,7 +26,7 @@ final class SheetTest extends TestCase
         static::assertSame(1, $sheets[1]->getIndex(), 'The second sheet should be index 1');
     }
 
-    public function testGetSheetName()
+    public function testGetSheetName(): void
     {
         $sheets = $this->writeDataToMulitpleSheetsAndReturnSheets('test_get_sheet_name.ods');
 
@@ -35,7 +35,7 @@ final class SheetTest extends TestCase
         static::assertSame('Sheet2', $sheets[1]->getName(), 'Invalid name for the second sheet');
     }
 
-    public function testSetSheetNameShouldCreateSheetWithCustomName()
+    public function testSetSheetNameShouldCreateSheetWithCustomName(): void
     {
         $fileName = 'test_set_name_should_create_sheet_with_custom_name.ods';
         $customSheetName = 'CustomName';
@@ -44,7 +44,7 @@ final class SheetTest extends TestCase
         $this->assertSheetNameEquals($customSheetName, $fileName, "The sheet name should have been changed to '{$customSheetName}'");
     }
 
-    public function testSetSheetNameShouldThrowWhenNameIsAlreadyUsed()
+    public function testSetSheetNameShouldThrowWhenNameIsAlreadyUsed(): void
     {
         $this->expectException(InvalidSheetNameException::class);
 
@@ -65,7 +65,7 @@ final class SheetTest extends TestCase
         $sheet->setName($customSheetName);
     }
 
-    public function testSetSheetVisibilityShouldCreateSheetHidden()
+    public function testSetSheetVisibilityShouldCreateSheetHidden(): void
     {
         $fileName = 'test_set_visibility_should_create_sheet_hidden.ods';
         $this->writeDataToHiddenSheet($fileName);
@@ -77,7 +77,7 @@ final class SheetTest extends TestCase
         static::assertStringContainsString(' table:display="false"', $xmlContents, 'The sheet visibility should have been changed to "hidden"');
     }
 
-    private function writerForFile($fileName)
+    private function writerForFile(string $fileName): Writer
     {
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
@@ -88,7 +88,7 @@ final class SheetTest extends TestCase
         return $writer;
     }
 
-    private function writeDataAndReturnSheetWithCustomName(string $fileName, string $sheetName)
+    private function writeDataAndReturnSheetWithCustomName(string $fileName, string $sheetName): void
     {
         $writer = $this->writerForFile($fileName);
 
@@ -119,7 +119,7 @@ final class SheetTest extends TestCase
         return $writer->getSheets();
     }
 
-    private function writeDataToHiddenSheet(string $fileName)
+    private function writeDataToHiddenSheet(string $fileName): void
     {
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
@@ -134,7 +134,7 @@ final class SheetTest extends TestCase
         $writer->close();
     }
 
-    private function assertSheetNameEquals(string $expectedName, string $fileName, string $message = '')
+    private function assertSheetNameEquals(string $expectedName, string $fileName, string $message = ''): void
     {
         $resourcePath = $this->getGeneratedResourcePath($fileName);
         $pathToWorkbookFile = $resourcePath.'#content.xml';

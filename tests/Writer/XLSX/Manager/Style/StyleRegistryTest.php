@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class StyleRegistryTest extends TestCase
 {
-    public function testRegisterStyleAlsoRegistersFills()
+    public function testRegisterStyleAlsoRegistersFills(): void
     {
         $styleRegistry = $this->getStyleRegistry();
 
@@ -34,7 +34,7 @@ final class StyleRegistryTest extends TestCase
         static::assertSame(0, $styleRegistry->getFillIdForStyleId($styleNoBackgroundColor->getId()), 'Style with no background color should have index 0');
     }
 
-    public function testRegisterStyleAlsoRegistersBorders()
+    public function testRegisterStyleAlsoRegistersBorders(): void
     {
         $styleRegistry = $this->getStyleRegistry();
 
@@ -59,7 +59,7 @@ final class StyleRegistryTest extends TestCase
         static::assertSame(0, $styleRegistry->getBorderIdForStyleId($styleNoBorder->getId()), 'Style with no border should have index 0');
     }
 
-    public function testRegisterStyleAlsoRegistersFormats()
+    public function testRegisterStyleAlsoRegistersFormats(): void
     {
         $styleRegistry = $this->getStyleRegistry();
 

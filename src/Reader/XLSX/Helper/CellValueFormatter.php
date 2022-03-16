@@ -76,7 +76,7 @@ final class CellValueFormatter
      *
      * @return bool|\DateTimeImmutable|float|int|string The value associated with the cell
      */
-    public function extractAndFormatNodeValue(\DOMElement $node)
+    public function extractAndFormatNodeValue(\DOMElement $node): bool|DateTimeImmutable|float|int|string
     {
         // Default cell type is "n"
         $cellType = $node->getAttribute(self::XML_ATTRIBUTE_TYPE) ?: self::CELL_TYPE_NUMERIC;
@@ -177,10 +177,8 @@ final class CellValueFormatter
      * The value can also represent a timestamp and a DateTime will be returned.
      *
      * @param int $cellStyleId 0 being the default style
-     *
-     * @return \DateTimeImmutable|float|int The value associated with the cell
      */
-    private function formatNumericCellValue(int|float|string $nodeValue, int $cellStyleId)
+    private function formatNumericCellValue(int|float|string $nodeValue, int $cellStyleId): DateTimeImmutable|float|int|string
     {
         // Numeric values can represent numbers as well as timestamps.
         // We need to look at the style of the cell to determine whether it is one or the other.

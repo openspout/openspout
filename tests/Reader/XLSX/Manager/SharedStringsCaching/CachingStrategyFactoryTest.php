@@ -25,7 +25,7 @@ final class CachingStrategyFactoryTest extends TestCase
     /**
      * @dataProvider dataProviderForTestCreateBestCachingStrategy
      */
-    public function testCreateBestCachingStrategy(?int $sharedStringsUniqueCount, string $memoryLimitInKB, string $expectedStrategyClassName)
+    public function testCreateBestCachingStrategy(?int $sharedStringsUniqueCount, string $memoryLimitInKB, string $expectedStrategyClassName): void
     {
         $strategy = (new CachingStrategyFactory(new MemoryLimit($memoryLimitInKB)))
             ->createBestCachingStrategy($sharedStringsUniqueCount, sys_get_temp_dir())
@@ -56,7 +56,7 @@ final class CachingStrategyFactoryTest extends TestCase
     /**
      * @dataProvider dataProviderForTestGetMemoryLimitInKB
      */
-    public function testGetMemoryLimitInKB(string $memoryLimitFormatted, float $expectedMemoryLimitInKB)
+    public function testGetMemoryLimitInKB(string $memoryLimitFormatted, float $expectedMemoryLimitInKB): void
     {
         static::assertSame($expectedMemoryLimitInKB, (new MemoryLimit($memoryLimitFormatted))->getMemoryLimitInKB());
     }

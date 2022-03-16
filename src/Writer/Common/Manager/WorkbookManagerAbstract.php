@@ -220,7 +220,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
     /**
      * Deletes the root folder created in the temp folder and all its contents.
      */
-    protected function cleanupTempFolder()
+    protected function cleanupTempFolder(): void
     {
         $rootFolder = $this->fileSystemHelper->getRootFolder();
         $this->fileSystemHelper->deleteFolderRecursively($rootFolder);
@@ -252,7 +252,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
         return $worksheet;
     }
 
-    private function setCurrentWorksheet(Worksheet $worksheet)
+    private function setCurrentWorksheet(Worksheet $worksheet): void
     {
         $this->currentWorksheet = $worksheet;
     }
@@ -296,7 +296,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
      * @throws IOException
      * @throws \OpenSpout\Common\Exception\InvalidArgumentException
      */
-    private function addRowToWorksheet(Worksheet $worksheet, Row $row)
+    private function addRowToWorksheet(Worksheet $worksheet, Row $row): void
     {
         $this->applyDefaultRowStyle($row);
         $this->worksheetManager->addRow($worksheet, $row);
@@ -307,7 +307,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
         $worksheet->setMaxNumColumns(max($currentMaxNumColumns, $cellsCount));
     }
 
-    private function applyDefaultRowStyle(Row $row)
+    private function applyDefaultRowStyle(Row $row): void
     {
         $defaultRowStyle = $this->optionsManager->getOption(Options::DEFAULT_ROW_STYLE);
 
@@ -320,7 +320,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
     /**
      * Closes all workbook's associated sheets.
      */
-    private function closeAllWorksheets()
+    private function closeAllWorksheets(): void
     {
         $worksheets = $this->getWorksheets();
 

@@ -12,7 +12,7 @@ abstract class CellAlignment
     public const CENTER = 'center';
     public const JUSTIFY = 'justify';
 
-    private static $VALID_ALIGNMENTS = [
+    private const VALID_ALIGNMENTS = [
         self::LEFT => 1,
         self::RIGHT => 1,
         self::CENTER => 1,
@@ -24,6 +24,6 @@ abstract class CellAlignment
      */
     public static function isValid(string $cellAlignment): bool
     {
-        return isset(self::$VALID_ALIGNMENTS[$cellAlignment]);
+        return isset(self::VALID_ALIGNMENTS[$cellAlignment]);
     }
 }

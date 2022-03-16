@@ -9,12 +9,12 @@ use OpenSpout\Common\Entity\Style\Style;
  */
 final class RowTest extends \PHPUnit\Framework\TestCase
 {
-    public function testValidInstance()
+    public function testValidInstance(): void
     {
         static::assertInstanceOf(Row::class, new Row([], null));
     }
 
-    public function testSetCells()
+    public function testSetCells(): void
     {
         $row = new Row([], null);
         $row->setCells([new Cell(null), new Cell(null)]);
@@ -22,7 +22,7 @@ final class RowTest extends \PHPUnit\Framework\TestCase
         static::assertSame(2, $row->getNumCells());
     }
 
-    public function testSetCellsResets()
+    public function testSetCellsResets(): void
     {
         $row = new Row([], null);
         $row->setCells([new Cell(null), new Cell(null)]);
@@ -34,7 +34,7 @@ final class RowTest extends \PHPUnit\Framework\TestCase
         static::assertSame(1, $row->getNumCells());
     }
 
-    public function testGetCells()
+    public function testGetCells(): void
     {
         $row = new Row([], null);
 
@@ -45,7 +45,7 @@ final class RowTest extends \PHPUnit\Framework\TestCase
         static::assertSame(2, $row->getNumCells());
     }
 
-    public function testGetCellAtIndex()
+    public function testGetCellAtIndex(): void
     {
         $row = new Row([], null);
         $cellMock = new Cell(null);
@@ -55,7 +55,7 @@ final class RowTest extends \PHPUnit\Framework\TestCase
         static::assertNull($row->getCellAtIndex(10));
     }
 
-    public function testSetCellAtIndex()
+    public function testSetCellAtIndex(): void
     {
         $row = new Row([], null);
         $cellMock = new Cell(null);
@@ -65,7 +65,7 @@ final class RowTest extends \PHPUnit\Framework\TestCase
         static::assertNull($row->getCellAtIndex(0));
     }
 
-    public function testAddCell()
+    public function testAddCell(): void
     {
         $row = new Row([], null);
         $row->setCells([new Cell(null), new Cell(null)]);
@@ -77,7 +77,7 @@ final class RowTest extends \PHPUnit\Framework\TestCase
         static::assertSame(3, $row->getNumCells());
     }
 
-    public function testFluentInterface()
+    public function testFluentInterface(): void
     {
         $row = new Row([], null);
         $row

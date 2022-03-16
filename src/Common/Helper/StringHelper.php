@@ -86,10 +86,8 @@ final class StringHelper
      * @see https://wiki.php.net/rfc/locale_independent_float_to_string for the changed behavior in PHP8.
      *
      * @param float|int $numericValue
-     *
-     * @return float|int|string
      */
-    public function formatNumericValue($numericValue)
+    public function formatNumericValue($numericValue): float|int|string
     {
         if ($this->isRunningPhp7OrOlder && \is_float($numericValue)) {
             return str_replace(

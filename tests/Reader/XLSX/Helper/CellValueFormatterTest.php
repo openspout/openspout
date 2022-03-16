@@ -61,7 +61,7 @@ final class CellValueFormatterTest extends TestCase
      *
      * @param float|int|string $nodeValue
      */
-    public function testExcelDate(bool $shouldUse1904Dates, $nodeValue, ?string $expectedDateAsString)
+    public function testExcelDate(bool $shouldUse1904Dates, $nodeValue, ?string $expectedDateAsString): void
     {
         $nodeListMock = $this->createMock(\DOMNodeList::class);
 
@@ -155,7 +155,7 @@ final class CellValueFormatterTest extends TestCase
      * @param float|int|string $value
      * @param float|int        $expectedFormattedValue
      */
-    public function testFormatNumericCellValueWithNumbers($value, $expectedFormattedValue, string $expectedType)
+    public function testFormatNumericCellValueWithNumbers($value, $expectedFormattedValue, string $expectedType): void
     {
         $styleManagerMock = $this->createMock(StyleManagerInterface::class);
         $styleManagerMock
@@ -195,7 +195,7 @@ final class CellValueFormatterTest extends TestCase
     /**
      * @dataProvider dataProviderForTestFormatStringCellValue
      */
-    public function testFormatInlineStringCellValue(string $value, string $expectedFormattedValue)
+    public function testFormatInlineStringCellValue(string $value, string $expectedFormattedValue): void
     {
         $nodeListMock = $this->createMock(\DOMNodeList::class);
         $nodeListMock

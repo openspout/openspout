@@ -31,7 +31,7 @@ final class SharedStringsManagerTest extends TestCase
         }
     }
 
-    public function testGetStringAtIndexShouldThrowExceptionIfStringNotFound()
+    public function testGetStringAtIndexShouldThrowExceptionIfStringNotFound(): void
     {
         $this->expectException(SharedStringNotFoundException::class);
 
@@ -40,7 +40,7 @@ final class SharedStringsManagerTest extends TestCase
         $sharedStringsManager->getStringAtIndex(PHP_INT_MAX);
     }
 
-    public function testGetStringAtIndexShouldReturnTheCorrectStringIfFound()
+    public function testGetStringAtIndexShouldReturnTheCorrectStringIfFound(): void
     {
         $sharedStringsManager = $this->createSharedStringsManager();
         $sharedStringsManager->extractSharedStrings();
@@ -55,7 +55,7 @@ final class SharedStringsManagerTest extends TestCase
         static::assertInstanceOf(InMemoryStrategy::class, $usedCachingStrategy);
     }
 
-    public function testGetStringAtIndexShouldWorkWithMultilineStrings()
+    public function testGetStringAtIndexShouldWorkWithMultilineStrings(): void
     {
         $sharedStringsManager = $this->createSharedStringsManager('one_sheet_with_shared_multiline_strings.xlsx');
 
@@ -68,7 +68,7 @@ final class SharedStringsManagerTest extends TestCase
         static::assertSame("s1\nE5", $sharedString);
     }
 
-    public function testGetStringAtIndexShouldWorkWithStringsContainingTextAndHyperlinkInSameCell()
+    public function testGetStringAtIndexShouldWorkWithStringsContainingTextAndHyperlinkInSameCell(): void
     {
         $sharedStringsManager = $this->createSharedStringsManager('one_sheet_with_shared_strings_containing_text_and_hyperlink_in_same_cell.xlsx');
 
@@ -78,7 +78,7 @@ final class SharedStringsManagerTest extends TestCase
         static::assertSame('go to https://github.com please', $sharedString);
     }
 
-    public function testGetStringAtIndexShouldNotDoubleDecodeHTMLEntities()
+    public function testGetStringAtIndexShouldNotDoubleDecodeHTMLEntities(): void
     {
         $sharedStringsManager = $this->createSharedStringsManager('one_sheet_with_pre_encoded_html_entities.xlsx');
 
@@ -88,7 +88,7 @@ final class SharedStringsManagerTest extends TestCase
         static::assertSame('quote: &#34; - ampersand: &amp;', $sharedString);
     }
 
-    public function testGetStringAtIndexWithFileBasedStrategy()
+    public function testGetStringAtIndexWithFileBasedStrategy(): void
     {
         // force the file-based strategy by setting no memory limit
         $originalMemoryLimit = \ini_get('memory_limit');

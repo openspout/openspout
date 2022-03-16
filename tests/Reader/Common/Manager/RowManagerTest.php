@@ -28,7 +28,7 @@ final class RowManagerTest extends TestCase
      * @param null|Cell[] $rowCells
      * @param Cell[]      $expectedFilledCells
      */
-    public function testFillMissingIndexesWithEmptyCells(?array $rowCells, array $expectedFilledCells)
+    public function testFillMissingIndexesWithEmptyCells(?array $rowCells, array $expectedFilledCells): void
     {
         $rowManager = new RowManager();
 
@@ -54,8 +54,10 @@ final class RowManagerTest extends TestCase
 
     /**
      * @dataProvider dataProviderForTestIsEmptyRow
+     *
+     * @param Cell[] $cells
      */
-    public function testIsEmptyRow(array $cells, bool $expectedIsEmpty)
+    public function testIsEmptyRow(array $cells, bool $expectedIsEmpty): void
     {
         $rowManager = new RowManager();
         $row = new Row($cells, null);

@@ -2,6 +2,7 @@
 
 namespace OpenSpout\Reader\CSV;
 
+use OpenSpout\Reader\RowIteratorInterface;
 use OpenSpout\Reader\SheetInterface;
 
 final class Sheet implements SheetInterface
@@ -20,7 +21,7 @@ final class Sheet implements SheetInterface
     /**
      * @return \OpenSpout\Reader\CSV\RowIterator
      */
-    public function getRowIterator(): RowIterator
+    public function getRowIterator(): RowIteratorInterface
     {
         return $this->rowIterator;
     }

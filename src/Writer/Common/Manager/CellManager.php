@@ -18,7 +18,7 @@ final class CellManager
     /**
      * Merges a Style into a cell's Style.
      */
-    public function applyStyle(Cell $cell, Style $style)
+    public function applyStyle(Cell $cell, Style $style): void
     {
         $mergedStyle = $this->styleMerger->merge($cell->getStyle(), $style);
         $cell->setStyle($mergedStyle);

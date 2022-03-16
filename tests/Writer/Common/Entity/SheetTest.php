@@ -19,7 +19,7 @@ final class SheetTest extends TestCase
         $this->sheetManager = new SheetManager(new StringHelper());
     }
 
-    public function testGetSheetName()
+    public function testGetSheetName(): void
     {
         $sheets = [$this->createSheet(0, 'workbookId1'), $this->createSheet(1, 'workbookId1')];
 
@@ -27,7 +27,7 @@ final class SheetTest extends TestCase
         static::assertSame('Sheet2', $sheets[1]->getName(), 'Invalid name for the second sheet');
     }
 
-    public function testSetSheetNameShouldCreateSheetWithCustomName()
+    public function testSetSheetNameShouldCreateSheetWithCustomName(): void
     {
         $customSheetName = 'CustomName';
         $sheet = $this->createSheet(0, 'workbookId1');
@@ -56,7 +56,7 @@ final class SheetTest extends TestCase
     /**
      * @dataProvider dataProviderForInvalidSheetNames
      */
-    public function testSetSheetNameShouldThrowOnInvalidName(string $customSheetName)
+    public function testSetSheetNameShouldThrowOnInvalidName(string $customSheetName): void
     {
         $sheet = $this->createSheet(0, 'workbookId1');
 
@@ -64,7 +64,7 @@ final class SheetTest extends TestCase
         $sheet->setName($customSheetName);
     }
 
-    public function testSetSheetNameShouldNotThrowWhenSettingSameNameAsCurrentOne()
+    public function testSetSheetNameShouldNotThrowWhenSettingSameNameAsCurrentOne(): void
     {
         $customSheetName = 'Sheet name';
         $sheet = $this->createSheet(0, 'workbookId1');
@@ -73,7 +73,7 @@ final class SheetTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
-    public function testSetSheetNameShouldThrowWhenNameIsAlreadyUsed()
+    public function testSetSheetNameShouldThrowWhenNameIsAlreadyUsed(): void
     {
         $this->expectException(InvalidSheetNameException::class);
 
@@ -86,7 +86,7 @@ final class SheetTest extends TestCase
         $sheet->setName($customSheetName);
     }
 
-    public function testSetSheetNameShouldNotThrowWhenSameNameUsedInDifferentWorkbooks()
+    public function testSetSheetNameShouldNotThrowWhenSameNameUsedInDifferentWorkbooks(): void
     {
         $customSheetName = 'Sheet name';
 

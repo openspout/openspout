@@ -11,17 +11,25 @@ use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
  */
 trait RowCreationHelper
 {
+    /**
+     * @param mixed[] $cellValues
+     */
     protected function createRowFromValues(array $cellValues): Row
     {
         return $this->createStyledRowFromValues($cellValues, null);
     }
 
-    protected function createStyledRowFromValues(array $cellValues, Style $rowStyle = null): Row
+    /**
+     * @param mixed[] $cellValues
+     */
+    protected function createStyledRowFromValues(array $cellValues, ?Style $rowStyle): Row
     {
         return WriterEntityFactory::createRowFromArray($cellValues, $rowStyle);
     }
 
     /**
+     * @param mixed[][] $rowValues
+     *
      * @return Row[]
      */
     protected function createRowsFromValues(array $rowValues): array
@@ -30,9 +38,11 @@ trait RowCreationHelper
     }
 
     /**
+     * @param mixed[][] $rowValues
+     *
      * @return Row[]
      */
-    protected function createStyledRowsFromValues(array $rowValues, Style $rowsStyle = null): array
+    protected function createStyledRowsFromValues(array $rowValues, ?Style $rowsStyle): array
     {
         $rows = [];
 

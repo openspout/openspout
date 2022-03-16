@@ -30,7 +30,7 @@ final class XLSXTest extends TestCase
     /**
      * @dataProvider dataProviderForTestEscape
      */
-    public function testEscape(string $stringToEscape, string $expectedEscapedString)
+    public function testEscape(string $stringToEscape, string $expectedEscapedString): void
     {
         $escaper = new Escaper\XLSX();
         $escapedString = $escaper->escape($stringToEscape);
@@ -58,7 +58,7 @@ final class XLSXTest extends TestCase
     /**
      * @dataProvider dataProviderForTestUnescape
      */
-    public function testUnescape(string $stringToUnescape, string $expectedUnescapedString)
+    public function testUnescape(string $stringToUnescape, string $expectedUnescapedString): void
     {
         $escaper = new Escaper\XLSX();
         $unescapedString = $escaper->unescape($stringToUnescape);

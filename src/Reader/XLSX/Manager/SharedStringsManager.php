@@ -78,7 +78,7 @@ final class SharedStringsManager
      *
      * @throws \OpenSpout\Common\Exception\IOException If shared strings XML file can't be read
      */
-    public function extractSharedStrings()
+    public function extractSharedStrings(): void
     {
         $sharedStringsXMLFilePath = $this->workbookRelationshipsManager->getSharedStringsXMLFilePath();
         $xmlReader = new XMLReader();
@@ -127,7 +127,7 @@ final class SharedStringsManager
     /**
      * Destroys the cache, freeing memory and removing any created artifacts.
      */
-    public function cleanup()
+    public function cleanup(): void
     {
         if (null !== $this->cachingStrategy) {
             $this->cachingStrategy->clearCache();
@@ -181,7 +181,7 @@ final class SharedStringsManager
      * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader         XML Reader positioned on a "<si>" node
      * @param int                                 $sharedStringIndex Index of the processed shared strings item
      */
-    private function processSharedStringsItem(XMLReader $xmlReader, int $sharedStringIndex)
+    private function processSharedStringsItem(XMLReader $xmlReader, int $sharedStringIndex): void
     {
         $sharedStringValue = '';
 

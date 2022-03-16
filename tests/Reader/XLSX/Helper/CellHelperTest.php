@@ -25,12 +25,12 @@ final class CellHelperTest extends TestCase
     /**
      * @dataProvider dataProviderForTestGetColumnIndexFromCellIndex
      */
-    public function testGetColumnIndexFromCellIndex(string $cellIndex, int $expectedColumnIndex)
+    public function testGetColumnIndexFromCellIndex(string $cellIndex, int $expectedColumnIndex): void
     {
         static::assertSame($expectedColumnIndex, CellHelper::getColumnIndexFromCellIndex($cellIndex));
     }
 
-    public function testGetColumnIndexFromCellIndexShouldThrowIfInvalidCellIndex()
+    public function testGetColumnIndexFromCellIndexShouldThrowIfInvalidCellIndex(): void
     {
         $this->expectException(InvalidArgumentException::class);
 

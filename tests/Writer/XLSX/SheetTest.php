@@ -19,7 +19,7 @@ final class SheetTest extends TestCase
     use RowCreationHelper;
     use TestUsingResource;
 
-    public function testGetSheetIndex()
+    public function testGetSheetIndex(): void
     {
         $sheets = $this->writeDataToMultipleSheetsAndReturnSheets('test_get_sheet_index.xlsx');
 
@@ -28,7 +28,7 @@ final class SheetTest extends TestCase
         static::assertSame(1, $sheets[1]->getIndex(), 'The second sheet should be index 1');
     }
 
-    public function testGetSheetName()
+    public function testGetSheetName(): void
     {
         $sheets = $this->writeDataToMultipleSheetsAndReturnSheets('test_get_sheet_name.xlsx');
 
@@ -37,7 +37,7 @@ final class SheetTest extends TestCase
         static::assertSame('Sheet2', $sheets[1]->getName(), 'Invalid name for the second sheet');
     }
 
-    public function testSetSheetNameShouldCreateSheetWithCustomName()
+    public function testSetSheetNameShouldCreateSheetWithCustomName(): void
     {
         $fileName = 'test_set_name_should_create_sheet_with_custom_name.xlsx';
         $customSheetName = 'CustomName';
@@ -46,7 +46,7 @@ final class SheetTest extends TestCase
         $this->assertSheetNameEquals($customSheetName, $fileName, "The sheet name should have been changed to '{$customSheetName}'");
     }
 
-    public function testSetSheetNameShouldThrowWhenNameIsAlreadyUsed()
+    public function testSetSheetNameShouldThrowWhenNameIsAlreadyUsed(): void
     {
         $this->expectException(InvalidSheetNameException::class);
 
@@ -67,7 +67,7 @@ final class SheetTest extends TestCase
         $sheet->setName($customSheetName);
     }
 
-    public function testSetSheetVisibilityShouldCreateSheetHidden()
+    public function testSetSheetVisibilityShouldCreateSheetHidden(): void
     {
         $fileName = 'test_set_visibility_should_create_sheet_hidden.xlsx';
         $this->writeDataToHiddenSheet($fileName);
@@ -79,7 +79,7 @@ final class SheetTest extends TestCase
         static::assertStringContainsString(' state="hidden"', $xmlContents, 'The sheet visibility should have been changed to "hidden"');
     }
 
-    public function testThrowsIfWorkbookIsNotInitialized()
+    public function testThrowsIfWorkbookIsNotInitialized(): void
     {
         $this->expectException(WriterNotOpenedException::class);
         $writer = WriterEntityFactory::createXLSXWriter();
@@ -87,7 +87,7 @@ final class SheetTest extends TestCase
         $writer->addRow($this->createRowFromValues([]));
     }
 
-    public function testWritesDefaultCellSizesIfSet()
+    public function testWritesDefaultCellSizesIfSet(): void
     {
         $fileName = 'test_writes_default_cell_sizes_if_set.xlsx';
         $this->createGeneratedFolderIfNeeded($fileName);
@@ -109,7 +109,7 @@ final class SheetTest extends TestCase
         static::assertStringContainsString(' customHeight="1"', $xmlContents, 'No row height override flag found in row');
     }
 
-    public function testWritesDefaultRequiredRowHeightIfOmitted()
+    public function testWritesDefaultRequiredRowHeightIfOmitted(): void
     {
         $fileName = 'test_writes_default_required_row_height_if_omitted.xlsx';
         $this->createGeneratedFolderIfNeeded($fileName);
@@ -130,7 +130,7 @@ final class SheetTest extends TestCase
         static::assertStringContainsString(' defaultRowHeight="0', $xmlContents, 'No default row height found in sheet');
     }
 
-    public function testWritesColumnWidths()
+    public function testWritesColumnWidths(): void
     {
         $fileName = 'test_column_widths.xlsx';
         $this->createGeneratedFolderIfNeeded($fileName);
@@ -149,7 +149,7 @@ final class SheetTest extends TestCase
         static::assertStringContainsString('<col min="1" max="1" width="100" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
     }
 
-    public function testWritesMultipleColumnWidths()
+    public function testWritesMultipleColumnWidths(): void
     {
         $fileName = 'test_multiple_column_widths.xlsx';
         $this->createGeneratedFolderIfNeeded($fileName);
@@ -168,7 +168,7 @@ final class SheetTest extends TestCase
         static::assertStringContainsString('<col min="1" max="3" width="100" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
     }
 
-    public function testWritesMultipleColumnWidthsInRanges()
+    public function testWritesMultipleColumnWidthsInRanges(): void
     {
         $fileName = 'test_multiple_column_widths_in_ranges.xlsx';
         $this->createGeneratedFolderIfNeeded($fileName);
@@ -192,7 +192,7 @@ final class SheetTest extends TestCase
         static::assertStringContainsString('<col min="5" max="5" width="100" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
     }
 
-    public function testCanTakeColumnWidthsAsRange()
+    public function testCanTakeColumnWidthsAsRange(): void
     {
         $fileName = 'test_column_widths_as_ranges.xlsx';
         $this->createGeneratedFolderIfNeeded($fileName);
@@ -211,7 +211,7 @@ final class SheetTest extends TestCase
         static::assertStringContainsString('<col min="1" max="3" width="50" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
     }
 
-    public function testCanWriteAFormula()
+    public function testCanWriteAFormula(): void
     {
         $fileName = 'test_formula.xlsx';
         $this->createGeneratedFolderIfNeeded($fileName);
@@ -230,7 +230,7 @@ final class SheetTest extends TestCase
         static::assertStringContainsString('<f>SUM(A1:A2)</f>', $xmlContents, 'Formula not found');
     }
 
-    public function testCanSetSheetViewProperties()
+    public function testCanSetSheetViewProperties(): void
     {
         $fileName = 'test_sheetview_properties.xlsx';
         $this->createGeneratedFolderIfNeeded($fileName);
@@ -301,7 +301,7 @@ final class SheetTest extends TestCase
         return $writer->getSheets();
     }
 
-    private function writeDataToHiddenSheet(string $fileName)
+    private function writeDataToHiddenSheet(string $fileName): void
     {
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
@@ -316,7 +316,7 @@ final class SheetTest extends TestCase
         $writer->close();
     }
 
-    private function assertSheetNameEquals(string $expectedName, string $fileName, string $message = '')
+    private function assertSheetNameEquals(string $expectedName, string $fileName, string $message = ''): void
     {
         $resourcePath = $this->getGeneratedResourcePath($fileName);
         $pathToWorkbookFile = $resourcePath.'#xl/workbook.xml';
