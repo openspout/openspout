@@ -10,7 +10,7 @@ namespace OpenSpout\Common\Helper;
 final class StringHelper
 {
     /** @var bool Whether the mbstring extension is loaded */
-    protected bool $hasMbstringSupport;
+    private bool $hasMbstringSupport;
 
     /** @var bool Whether the code is running with PHP7 or older versions */
     private bool $isRunningPhp7OrOlder;

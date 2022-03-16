@@ -32,28 +32,28 @@ final class SheetIterator implements SheetIteratorInterface
     public const XML_ATTRIBUTE_TABLE_DISPLAY = 'table:display';
 
     /** @var string Path of the file to be read */
-    protected string $filePath;
+    private string $filePath;
 
     /** @var \OpenSpout\Common\Manager\OptionsManagerInterface Reader's options manager */
-    protected \OpenSpout\Common\Manager\OptionsManagerInterface $optionsManager;
+    private \OpenSpout\Common\Manager\OptionsManagerInterface $optionsManager;
 
     /** @var XMLReader The XMLReader object that will help read sheet's XML data */
-    protected XMLReader $xmlReader;
+    private XMLReader $xmlReader;
 
     /** @var \OpenSpout\Common\Helper\Escaper\ODS Used to unescape XML data */
-    protected \OpenSpout\Common\Helper\Escaper\ODS $escaper;
+    private \OpenSpout\Common\Helper\Escaper\ODS $escaper;
 
     /** @var bool Whether there are still at least a sheet to be read */
-    protected bool $hasFoundSheet;
+    private bool $hasFoundSheet;
 
     /** @var int The index of the sheet being read (zero-based) */
-    protected int $currentSheetIndex;
+    private int $currentSheetIndex;
 
     /** @var string The name of the sheet that was defined as active */
-    protected ?string $activeSheetName;
+    private ?string $activeSheetName;
 
     /** @var array Associative array [STYLE_NAME] => [IS_SHEET_VISIBLE] */
-    protected array $sheetsVisibility;
+    private array $sheetsVisibility;
 
     /**
      * @param string                               $filePath       Path of the file to be read

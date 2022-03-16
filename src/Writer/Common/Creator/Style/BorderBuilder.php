@@ -8,7 +8,7 @@ use OpenSpout\Common\Entity\Style\Color;
 
 final class BorderBuilder
 {
-    protected Border $border;
+    private Border $border;
 
     public function __construct()
     {

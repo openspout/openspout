@@ -16,34 +16,34 @@ final class FileBasedStrategy implements CachingStrategyInterface
     public const ESCAPED_LINE_FEED_CHARACTER = '_x000A_';
 
     /** @var FileSystemHelper Helper to perform file system operations */
-    protected FileSystemHelper $fileSystemHelper;
+    private FileSystemHelper $fileSystemHelper;
 
     /** @var string Temporary folder where the temporary files will be created */
-    protected string $tempFolder;
+    private string $tempFolder;
 
     /**
      * @var int Maximum number of strings that can be stored in one temp file
      *
      * @see CachingStrategyFactory::MAX_NUM_STRINGS_PER_TEMP_FILE
      */
-    protected int $maxNumStringsPerTempFile;
+    private int $maxNumStringsPerTempFile;
 
     /** @var null|resource Pointer to the last temp file a shared string was written to */
-    protected $tempFilePointer;
+    private $tempFilePointer;
 
     /**
      * @var string Path of the temporary file whose contents is currently stored in memory
      *
      * @see CachingStrategyFactory::MAX_NUM_STRINGS_PER_TEMP_FILE
      */
-    protected string $inMemoryTempFilePath = '';
+    private string $inMemoryTempFilePath = '';
 
     /**
      * @var array Contents of the temporary file that was last read
      *
      * @see CachingStrategyFactory::MAX_NUM_STRINGS_PER_TEMP_FILE
      */
-    protected array $inMemoryTempFileContents;
+    private array $inMemoryTempFileContents;
 
     /**
      * @param string $tempFolder               Temporary folder where the temporary files to store shared strings will be stored
@@ -150,7 +150,7 @@ final class FileBasedStrategy implements CachingStrategyInterface
      *
      * @return string The temp file path for the given index
      */
-    protected function getSharedStringTempFilePath(int $sharedStringIndex): string
+    private function getSharedStringTempFilePath(int $sharedStringIndex): string
     {
         $numTempFile = (int) ($sharedStringIndex / $this->maxNumStringsPerTempFile);
 

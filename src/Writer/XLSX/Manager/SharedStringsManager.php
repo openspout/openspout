@@ -24,13 +24,13 @@ final class SharedStringsManager
     public const DEFAULT_STRINGS_COUNT_PART = 'count="9999999999999" uniqueCount="9999999999999"';
 
     /** @var resource Pointer to the sharedStrings.xml file */
-    protected $sharedStringsFilePointer;
+    private $sharedStringsFilePointer;
 
     /** @var int Number of shared strings already written */
-    protected int $numSharedStrings = 0;
+    private int $numSharedStrings = 0;
 
     /** @var Escaper\XLSX Strings escaper */
-    protected Escaper\XLSX $stringsEscaper;
+    private Escaper\XLSX $stringsEscaper;
 
     /**
      * @param string       $xlFolder       Path to the "xl" folder
@@ -92,7 +92,7 @@ final class SharedStringsManager
      *
      * @throws \OpenSpout\Common\Exception\IOException If the sheet data file cannot be opened for writing
      */
-    protected function throwIfSharedStringsFilePointerIsNotAvailable(): void
+    private function throwIfSharedStringsFilePointerIsNotAvailable(): void
     {
         if (!\is_resource($this->sharedStringsFilePointer)) {
             throw new IOException('Unable to open shared strings file for writing.');

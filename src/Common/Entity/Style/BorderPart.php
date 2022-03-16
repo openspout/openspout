@@ -11,27 +11,27 @@ final class BorderPart
     /**
      * @var string the style of this border part
      */
-    protected string $style;
+    private string $style;
 
     /**
      * @var string the name of this border part
      */
-    protected string $name;
+    private string $name;
 
     /**
      * @var string the color of this border part
      */
-    protected string $color;
+    private string $color;
 
     /**
      * @var string the width of this border part
      */
-    protected string $width;
+    private string $width;
 
     /**
      * @var array allowed style constants for parts
      */
-    protected static array $allowedStyles = [
+    private static array $allowedStyles = [
         'none',
         'solid',
         'dashed',
@@ -42,7 +42,7 @@ final class BorderPart
     /**
      * @var array allowed names constants for border parts
      */
-    protected static array $allowedNames = [
+    private static array $allowedNames = [
         'left',
         'right',
         'top',
@@ -52,7 +52,7 @@ final class BorderPart
     /**
      * @var array allowed width constants for border parts
      */
-    protected static array $allowedWidths = [
+    private static array $allowedWidths = [
         'thin',
         'medium',
         'thick',

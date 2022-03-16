@@ -24,7 +24,7 @@ final class EncodingHelper
     public const BOM_UTF32_BE = "\x00\x00\xFE\xFF";
 
     /** @var array Map representing the encodings supporting BOMs (key) and their associated BOM (value) */
-    protected array $supportedEncodingsWithBom;
+    private array $supportedEncodingsWithBom;
 
     private bool $canUseIconv;
 
@@ -112,7 +112,7 @@ final class EncodingHelper
      *
      * @return bool TRUE if the file has a BOM, FALSE otherwise
      */
-    protected function hasBOM($filePointer, string $encoding): bool
+    private function hasBOM($filePointer, string $encoding): bool
     {
         $hasBOM = false;
 
@@ -140,7 +140,7 @@ final class EncodingHelper
      *
      * @return string The converted string, encoded with the given encoding
      */
-    protected function attemptConversion(?string $string, string $sourceEncoding, string $targetEncoding): ?string
+    private function attemptConversion(?string $string, string $sourceEncoding, string $targetEncoding): ?string
     {
         // if source and target encodings are the same, it's a no-op
         if (null === $string || $sourceEncoding === $targetEncoding) {

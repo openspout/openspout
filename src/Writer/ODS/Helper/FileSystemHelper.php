@@ -3,6 +3,7 @@
 namespace OpenSpout\Writer\ODS\Helper;
 
 use DateTimeImmutable;
+use OpenSpout\Common\Helper\FileSystemHelper as CommonFileSystemHelper;
 use OpenSpout\Writer\Common\Entity\Worksheet;
 use OpenSpout\Writer\Common\Helper\FileSystemWithRootFolderHelperInterface;
 use OpenSpout\Writer\Common\Helper\ZipHelper;
@@ -13,7 +14,7 @@ use OpenSpout\Writer\ODS\Manager\WorksheetManager;
  * This class provides helper functions to help with the file system operations
  * like files/folders creation & deletion for ODS files.
  */
-final class FileSystemHelper extends \OpenSpout\Common\Helper\FileSystemHelper implements FileSystemWithRootFolderHelperInterface
+final class FileSystemHelper extends CommonFileSystemHelper implements FileSystemWithRootFolderHelperInterface
 {
     public const APP_NAME = 'Spout';
     public const MIMETYPE = 'application/vnd.oasis.opendocument.spreadsheet';

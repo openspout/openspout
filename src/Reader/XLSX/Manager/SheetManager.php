@@ -41,25 +41,25 @@ final class SheetManager
     public const SHEET_STATE_HIDDEN = 'hidden';
 
     /** @var string Path of the XLSX file being read */
-    protected string $filePath;
+    private string $filePath;
 
     /** @var OptionsManagerInterface Reader's options manager */
-    protected OptionsManagerInterface $optionsManager;
+    private OptionsManagerInterface $optionsManager;
 
     /** @var \OpenSpout\Reader\XLSX\Manager\SharedStringsManager Manages shared strings */
-    protected \OpenSpout\Reader\XLSX\Manager\SharedStringsManager $sharedStringsManager;
+    private \OpenSpout\Reader\XLSX\Manager\SharedStringsManager $sharedStringsManager;
 
     /** @var \OpenSpout\Common\Helper\Escaper\XLSX Used to unescape XML data */
-    protected \OpenSpout\Common\Helper\Escaper\XLSX $escaper;
+    private \OpenSpout\Common\Helper\Escaper\XLSX $escaper;
 
     /** @var array List of sheets */
-    protected array $sheets;
+    private array $sheets;
 
     /** @var int Index of the sheet currently read */
-    protected int $currentSheetIndex;
+    private int $currentSheetIndex;
 
     /** @var int Index of the active sheet (0 by default) */
-    protected int $activeSheetIndex;
+    private int $activeSheetIndex;
 
     public function __construct(
         string $filePath,
@@ -106,7 +106,7 @@ final class SheetManager
      *
      * @return int A return code that indicates what action should the processor take next
      */
-    protected function processWorkbookPropertiesStartingNode(XMLReader $xmlReader): int
+    private function processWorkbookPropertiesStartingNode(XMLReader $xmlReader): int
     {
         // Using "filter_var($x, FILTER_VALIDATE_BOOLEAN)" here because the value of the "date1904" attribute
         // may be the string "false", that is not mapped to the boolean "false" by default...
@@ -121,7 +121,7 @@ final class SheetManager
      *
      * @return int A return code that indicates what action should the processor take next
      */
-    protected function processWorkbookViewStartingNode(XMLReader $xmlReader): int
+    private function processWorkbookViewStartingNode(XMLReader $xmlReader): int
     {
         // The "workbookView" node is located before "sheet" nodes, ensuring that
         // the active sheet is known before parsing sheets data.
@@ -135,7 +135,7 @@ final class SheetManager
      *
      * @return int A return code that indicates what action should the processor take next
      */
-    protected function processSheetStartingNode(XMLReader $xmlReader): int
+    private function processSheetStartingNode(XMLReader $xmlReader): int
     {
         $isSheetActive = ($this->currentSheetIndex === $this->activeSheetIndex);
         $this->sheets[] = $this->getSheetFromSheetXMLNode($xmlReader, $this->currentSheetIndex, $isSheetActive);
@@ -147,7 +147,7 @@ final class SheetManager
     /**
      * @return int A return code that indicates what action should the processor take next
      */
-    protected function processSheetsEndingNode(): int
+    private function processSheetsEndingNode(): int
     {
         return XMLProcessor::PROCESSING_STOP;
     }
@@ -163,7 +163,7 @@ final class SheetManager
      *
      * @return \OpenSpout\Reader\XLSX\Sheet Sheet instance
      */
-    protected function getSheetFromSheetXMLNode(XMLReader $xmlReaderOnSheetNode, int $sheetIndexZeroBased, bool $isSheetActive): Sheet
+    private function getSheetFromSheetXMLNode(XMLReader $xmlReaderOnSheetNode, int $sheetIndexZeroBased, bool $isSheetActive): Sheet
     {
         $sheetId = $xmlReaderOnSheetNode->getAttribute(self::XML_ATTRIBUTE_R_ID);
 
@@ -189,7 +189,7 @@ final class SheetManager
      *
      * @return string The XML file path describing the sheet inside "workbook.xml.res", for the given sheet ID
      */
-    protected function getSheetDataXMLFilePathForSheetId(string $sheetId): string
+    private function getSheetDataXMLFilePathForSheetId(string $sheetId): string
     {
         $sheetDataXMLFilePath = '';
 
@@ -232,7 +232,13 @@ final class SheetManager
         $xmlReader = new XMLReader();
         $xmlProcessor = new XMLProcessor($xmlReader);
 
-        $styleManager = new StyleManager($filePath, new WorkbookRelationshipsManager($filePath));
+        $workbookRelationshipsManager = new WorkbookRelationshipsManager($filePath);
+        $styleManager = new StyleManager(
+            $filePath,
+            $workbookRelationshipsManager->hasStylesXMLFile()
+                ? $workbookRelationshipsManager->getStylesXMLFilePath()
+                : null
+        );
         $rowManager = new RowManager();
         $shouldFormatDates = $optionsManager->getOption(Options::SHOULD_FORMAT_DATES);
         $shouldUse1904Dates = $optionsManager->getOption(Options::SHOULD_USE_1904_DATES);

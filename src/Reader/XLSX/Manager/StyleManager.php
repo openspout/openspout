@@ -5,7 +5,7 @@ namespace OpenSpout\Reader\XLSX\Manager;
 use OpenSpout\Reader\Common\Manager\StyleManagerInterface;
 use OpenSpout\Reader\Wrapper\XMLReader;
 
-final class StyleManager implements StyleManagerInterface
+class StyleManager implements StyleManagerInterface
 {
     /** Nodes used to find relevant information in the styles XML file */
     public const XML_NODE_NUM_FMTS = 'numFmts';
@@ -46,9 +46,6 @@ final class StyleManager implements StyleManagerInterface
     /** @var string Path of the XLSX file being read */
     protected string $filePath;
 
-    /** @var bool Whether the XLSX file contains a styles XML file */
-    protected bool $hasStylesXMLFile;
-
     /** @var null|string Path of the styles XML file */
     protected ?string $stylesXMLFilePath;
 
@@ -65,22 +62,19 @@ final class StyleManager implements StyleManagerInterface
     protected array $numFmtIdToIsDateFormatCache = [];
 
     /**
-     * @param string                       $filePath                     Path of the XLSX file being read
-     * @param WorkbookRelationshipsManager $workbookRelationshipsManager Helps retrieving workbook relationships
+     * @param string  $filePath          Path of the XLSX file being read
+     * @param ?string $stylesXMLFilePath
      */
-    public function __construct(string $filePath, WorkbookRelationshipsManager $workbookRelationshipsManager)
+    public function __construct(string $filePath, ?string $stylesXMLFilePath)
     {
         $this->filePath = $filePath;
         $this->builtinNumFmtIdIndicatingDates = array_keys(self::$builtinNumFmtIdToNumFormatMapping);
-        $this->hasStylesXMLFile = $workbookRelationshipsManager->hasStylesXMLFile();
-        if ($this->hasStylesXMLFile) {
-            $this->stylesXMLFilePath = $workbookRelationshipsManager->getStylesXMLFilePath();
-        }
+        $this->stylesXMLFilePath = $stylesXMLFilePath;
     }
 
     public function shouldFormatNumericValueAsDate(int $styleId): bool
     {
-        if (!$this->hasStylesXMLFile) {
+        if (null === $this->stylesXMLFilePath) {
             return false;
         }
 

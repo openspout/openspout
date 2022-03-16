@@ -11,17 +11,17 @@ final class Row
      *
      * @var Cell[]
      */
-    protected array $cells = [];
+    private array $cells = [];
 
     /**
      * The row style.
      */
-    protected Style $style;
+    private Style $style;
 
     /**
      * Row height (default is 15).
      */
-    protected string $height = '15';
+    private string $height = '15';
 
     /**
      * Row constructor.

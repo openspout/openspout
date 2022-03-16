@@ -12,10 +12,10 @@ use OpenSpout\Reader\XLSX\Manager\SheetManager;
 final class SheetIterator implements SheetIteratorInterface
 {
     /** @var \OpenSpout\Reader\XLSX\Sheet[] The list of sheet present in the file */
-    protected array $sheets;
+    private array $sheets;
 
     /** @var int The index of the sheet being read (zero-based) */
-    protected int $currentSheetIndex;
+    private int $currentSheetIndex;
 
     /**
      * @param SheetManager $sheetManager Manages sheets

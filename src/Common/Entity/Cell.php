@@ -48,17 +48,17 @@ final class Cell
      *
      * @var null|mixed
      */
-    protected $value;
+    private $value;
 
     /**
      * The cell type.
      */
-    protected ?int $type;
+    private ?int $type;
 
     /**
      * The cell style.
      */
-    protected Style $style;
+    private Style $style;
 
     /**
      * @param null|mixed $value
@@ -156,7 +156,7 @@ final class Cell
      *
      * @param null|mixed $value
      */
-    protected function detectType($value): int
+    private function detectType($value): int
     {
         if (CellTypeHelper::isBoolean($value)) {
             return self::TYPE_BOOLEAN;

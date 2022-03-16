@@ -54,7 +54,7 @@ final class BorderHelper
     /**
      * Get the style definition from the style map.
      */
-    protected static function getBorderStyle(BorderPart $borderPart): string
+    private static function getBorderStyle(BorderPart $borderPart): string
     {
         return self::$xlsxStyleMap[$borderPart->getStyle()][$borderPart->getWidth()];
     }

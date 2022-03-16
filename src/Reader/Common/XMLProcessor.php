@@ -22,7 +22,7 @@ final class XMLProcessor
     public const PROCESSING_STOP = 2;
 
     /** @var XMLReader The XMLReader object that will help read sheet's XML data */
-    protected XMLReader $xmlReader;
+    private XMLReader $xmlReader;
 
     /** @var array Registered callbacks */
     private array $callbacks = [];

@@ -2,7 +2,6 @@
 
 namespace OpenSpout\Reader\Common\Manager;
 
-
 /**
  * This class manages XLSX styles.
  */

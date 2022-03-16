@@ -10,7 +10,7 @@ final class MemoryLimit
     {
         $this->memoryLimit = $memoryLimit;
     }
-    
+
     /**
      * Returns the PHP "memory_limit" in Kilobytes.
      */

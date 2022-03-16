@@ -76,7 +76,7 @@ final class CachingStrategyFactory
      *
      * @param null|int $sharedStringsUniqueCount Number of unique shared strings (NULL if unknown)
      */
-    protected function isInMemoryStrategyUsageSafe(?int $sharedStringsUniqueCount): bool
+    private function isInMemoryStrategyUsageSafe(?int $sharedStringsUniqueCount): bool
     {
         // if the number of shared strings in unknown, do not use "in memory" strategy
         if (null === $sharedStringsUniqueCount) {

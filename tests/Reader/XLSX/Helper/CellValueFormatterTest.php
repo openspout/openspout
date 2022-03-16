@@ -9,7 +9,6 @@ use OpenSpout\Reader\Exception\InvalidValueException;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\MemoryLimit;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsManager;
-use OpenSpout\Reader\XLSX\Manager\StyleManager;
 use OpenSpout\Reader\XLSX\Manager\WorkbookRelationshipsManager;
 use PHPUnit\Framework\TestCase;
 
@@ -92,7 +91,7 @@ final class CellValueFormatterTest extends TestCase
         ;
 
         $styleManagerMock = $this->createMock(StyleManagerInterface::class);
-        
+
         $styleManagerMock
             ->expects(static::once())
             ->method('shouldFormatNumericValueAsDate')

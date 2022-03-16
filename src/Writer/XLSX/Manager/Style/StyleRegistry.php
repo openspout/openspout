@@ -8,7 +8,7 @@ use OpenSpout\Writer\Common\Manager\Style\StyleRegistry as CommonStyleRegistry;
 /**
  * Registry for all used styles.
  */
-final class StyleRegistry extends CommonStyleRegistry
+class StyleRegistry extends CommonStyleRegistry
 {
     /**
      * @see https://msdn.microsoft.com/en-us/library/ff529597(v=office.12).aspx

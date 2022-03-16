@@ -76,7 +76,7 @@ final class CellHelper
      *
      * @param string $cellIndex The Excel cell index ('A1', 'BC13', ...)
      */
-    protected static function isValidCellIndex(string $cellIndex): bool
+    private static function isValidCellIndex(string $cellIndex): bool
     {
         return 1 === preg_match('/^[A-Z]{1,3}\d+$/', $cellIndex);
     }
