@@ -386,7 +386,7 @@ final class ReaderTest extends TestCase
     }
 
     /**
-     * @return array All the read rows the given file
+     * @return mixed[][] All the read rows the given file
      */
     private function getAllRowsForFile(
         string $fileName,

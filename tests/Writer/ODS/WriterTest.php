@@ -303,6 +303,8 @@ final class WriterTest extends TestCase
 
     /**
      * @dataProvider dataProviderForTestAddRowShouldUseNumberColumnsRepeatedForRepeatedValues
+     *
+     * @param mixed[] $dataRow
      */
     public function testAddRowShouldUseNumberColumnsRepeatedForRepeatedValues(array $dataRow, int $expectedNumTableCells, int $expectedNumColumnsRepeated): void
     {

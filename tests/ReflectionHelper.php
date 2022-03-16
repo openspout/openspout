@@ -5,13 +5,16 @@
  */
 final class ReflectionHelper
 {
-    private static $privateVarsToReset = [];
+    /**
+     * @var array<string, array<string, mixed>>
+     */
+    private static array $privateVarsToReset = [];
 
     /**
      * Resets any static vars that were set to their
      * original values (to not screw up later unit test runs).
      */
-    public static function reset()
+    public static function reset(): void
     {
         foreach (self::$privateVarsToReset as $class => $valueNames) {
             foreach ($valueNames as $valueName => $originalValue) {
@@ -27,7 +30,7 @@ final class ReflectionHelper
      *
      * @param null|mixed $value
      */
-    public static function setStaticValue(string $class, string $valueName, $value, bool $saveOriginalValue = true)
+    public static function setStaticValue(string $class, string $valueName, $value, bool $saveOriginalValue = true): void
     {
         $reflectionClass = new ReflectionClass($class);
         $reflectionProperty = $reflectionClass->getProperty($valueName);

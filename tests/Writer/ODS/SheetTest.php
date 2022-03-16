@@ -77,7 +77,7 @@ final class SheetTest extends TestCase
         static::assertStringContainsString(' table:display="false"', $xmlContents, 'The sheet visibility should have been changed to "hidden"');
     }
 
-    private function writerForFile($fileName): Writer
+    private function writerForFile(string $fileName): Writer
     {
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
