@@ -19,7 +19,7 @@ final class Writer extends WriterAbstract
     /** @var string Content-Type value for the header */
     protected static string $headerContentType = 'text/csv; charset=UTF-8';
 
-    protected int $lastWrittenRowIndex = 0;
+    private int $lastWrittenRowIndex = 0;
 
     /**
      * Sets the field delimiter for the CSV.

@@ -13,13 +13,13 @@ use OpenSpout\Reader\ReaderAbstract;
 final class Reader extends ReaderAbstract
 {
     /** @var resource Pointer to the file to be written */
-    protected $filePointer;
+    private $filePointer;
 
     /** @var SheetIterator To iterator over the CSV unique "sheet" */
-    protected SheetIterator $sheetIterator;
+    private SheetIterator $sheetIterator;
 
     /** @var string Original value for the "auto_detect_line_endings" INI value */
-    protected string $originalAutoDetectLineEndings;
+    private string $originalAutoDetectLineEndings;
 
     /** @var bool Whether the code is running with PHP >= 8.1 */
     private bool $isRunningAtLeastPhp81;

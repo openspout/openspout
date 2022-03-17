@@ -14,20 +14,20 @@ use OpenSpout\Writer\Exception\WriterNotOpenedException;
 
 abstract class WriterAbstract implements WriterInterface
 {
-    /** @var string Path to the output file */
-    protected string $outputFilePath;
-
     /** @var resource Pointer to the file/stream we will write to */
     protected $filePointer;
-
-    /** @var bool Indicates whether the writer has been opened or not */
-    protected bool $isWriterOpened = false;
 
     /** @var OptionsManagerInterface Writer options manager */
     protected OptionsManagerInterface $optionsManager;
 
     /** @var string Content-Type value for the header - to be defined by child class */
     protected static string $headerContentType;
+
+    /** @var string Path to the output file */
+    private string $outputFilePath;
+
+    /** @var bool Indicates whether the writer has been opened or not */
+    private bool $isWriterOpened = false;
 
     public function __construct(
         OptionsManagerInterface $optionsManager

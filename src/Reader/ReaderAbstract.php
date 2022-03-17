@@ -10,11 +10,11 @@ use OpenSpout\Reader\Exception\ReaderNotOpenedException;
 
 abstract class ReaderAbstract implements ReaderInterface
 {
-    /** @var bool Indicates whether the stream is currently open */
-    protected bool $isStreamOpened = false;
-
     /** @var OptionsManagerInterface Writer options manager */
     protected OptionsManagerInterface $optionsManager;
+
+    /** @var bool Indicates whether the stream is currently open */
+    private bool $isStreamOpened = false;
 
     public function __construct(
         OptionsManagerInterface $optionsManager
@@ -137,7 +137,7 @@ abstract class ReaderAbstract implements ReaderInterface
      * Returns the real path of the given path.
      * If the given path is a valid stream wrapper, returns the path unchanged.
      */
-    protected function getFileRealPath(string $filePath): string
+    private function getFileRealPath(string $filePath): string
     {
         if ($this->isSupportedStreamWrapper($filePath)) {
             return $filePath;
@@ -158,7 +158,7 @@ abstract class ReaderAbstract implements ReaderInterface
      *
      * @return null|string The stream wrapper scheme or NULL if not a stream wrapper
      */
-    protected function getStreamWrapperScheme(string $filePath): ?string
+    private function getStreamWrapperScheme(string $filePath): ?string
     {
         $streamScheme = null;
         if (1 === preg_match('/^(\w+):\/\//', $filePath, $matches)) {
@@ -176,7 +176,7 @@ abstract class ReaderAbstract implements ReaderInterface
      *
      * @return bool Whether the given path is an unsupported stream wrapper
      */
-    protected function isStreamWrapper(string $filePath): bool
+    private function isStreamWrapper(string $filePath): bool
     {
         return null !== $this->getStreamWrapperScheme($filePath);
     }
@@ -190,7 +190,7 @@ abstract class ReaderAbstract implements ReaderInterface
      *
      * @return bool Whether the given path is an supported stream wrapper
      */
-    protected function isSupportedStreamWrapper(string $filePath): bool
+    private function isSupportedStreamWrapper(string $filePath): bool
     {
         $streamScheme = $this->getStreamWrapperScheme($filePath);
 
@@ -206,7 +206,7 @@ abstract class ReaderAbstract implements ReaderInterface
      *
      * @return bool Whether the given path maps to a PHP stream
      */
-    protected function isPhpStream(string $filePath): bool
+    private function isPhpStream(string $filePath): bool
     {
         $streamScheme = $this->getStreamWrapperScheme($filePath);
 

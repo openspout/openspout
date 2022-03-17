@@ -24,7 +24,7 @@ final class WorkbookManager extends WorkbookManagerAbstract
      *
      * @see http://office.microsoft.com/en-us/excel-help/excel-specifications-and-limits-HP010073849.aspx
      */
-    protected static int $maxRowsPerWorksheet = 1048576;
+    private static int $maxRowsPerWorksheet = 1048576;
 
     public function __construct(
         Workbook $workbook,

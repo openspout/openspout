@@ -24,7 +24,7 @@ final class WorkbookManager extends WorkbookManagerAbstract
      *
      * @see https://ask.libreoffice.org/en/question/8631/upper-limit-to-number-of-rows-in-calc/
      */
-    protected static int $maxRowsPerWorksheet = 1048576;
+    private static int $maxRowsPerWorksheet = 1048576;
 
     public function __construct(
         Workbook $workbook,

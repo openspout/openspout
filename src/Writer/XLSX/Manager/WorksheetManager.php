@@ -43,7 +43,7 @@ final class WorksheetManager implements WorksheetManagerInterface
         EOD;
 
     /** @var bool Whether inline or shared strings should be used */
-    protected bool $shouldUseInlineStrings;
+    private bool $shouldUseInlineStrings;
 
     private OptionsManagerInterface $optionsManager;
 

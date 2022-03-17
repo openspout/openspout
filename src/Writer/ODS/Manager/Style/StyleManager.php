@@ -157,23 +157,9 @@ final class StyleManager extends CommonStyleManager
     }
 
     /**
-     * Returns the content of the "<office:font-face-decls>" section, inside "styles.xml" file.
-     */
-    protected function getFontFaceSectionContent(): string
-    {
-        $content = '<office:font-face-decls>';
-        foreach ($this->styleRegistry->getUsedFonts() as $fontName) {
-            $content .= '<style:font-face style:name="'.$fontName.'" svg:font-family="'.$fontName.'"/>';
-        }
-        $content .= '</office:font-face-decls>';
-
-        return $content;
-    }
-
-    /**
      * Returns the content of the "<office:styles>" section, inside "styles.xml" file.
      */
-    protected function getStylesSectionContent(): string
+    private function getStylesSectionContent(): string
     {
         $defaultStyle = $this->getDefaultStyle();
 
@@ -193,35 +179,11 @@ final class StyleManager extends CommonStyleManager
     }
 
     /**
-     * Returns the content of the "<office:automatic-styles>" section, inside "styles.xml" file.
-     *
-     * @param int $numWorksheets Number of worksheets created
-     */
-    protected function getAutomaticStylesSectionContent(int $numWorksheets): string
-    {
-        $content = '<office:automatic-styles>';
-
-        for ($i = 1; $i <= $numWorksheets; ++$i) {
-            $content .= <<<EOD
-                <style:page-layout style:name="pm{$i}">
-                    <style:page-layout-properties style:first-page-number="continue" style:print="objects charts drawings" style:table-centering="none"/>
-                    <style:header-style/>
-                    <style:footer-style/>
-                </style:page-layout>
-                EOD;
-        }
-
-        $content .= '</office:automatic-styles>';
-
-        return $content;
-    }
-
-    /**
      * Returns the content of the "<office:master-styles>" section, inside "styles.xml" file.
      *
      * @param int $numWorksheets Number of worksheets created
      */
-    protected function getMasterStylesSectionContent(int $numWorksheets): string
+    private function getMasterStylesSectionContent(int $numWorksheets): string
     {
         $content = '<office:master-styles>';
 
@@ -242,9 +204,47 @@ final class StyleManager extends CommonStyleManager
     }
 
     /**
+     * Returns the content of the "<office:font-face-decls>" section, inside "styles.xml" file.
+     */
+    private function getFontFaceSectionContent(): string
+    {
+        $content = '<office:font-face-decls>';
+        foreach ($this->styleRegistry->getUsedFonts() as $fontName) {
+            $content .= '<style:font-face style:name="'.$fontName.'" svg:font-family="'.$fontName.'"/>';
+        }
+        $content .= '</office:font-face-decls>';
+
+        return $content;
+    }
+
+    /**
+     * Returns the content of the "<office:automatic-styles>" section, inside "styles.xml" file.
+     *
+     * @param int $numWorksheets Number of worksheets created
+     */
+    private function getAutomaticStylesSectionContent(int $numWorksheets): string
+    {
+        $content = '<office:automatic-styles>';
+
+        for ($i = 1; $i <= $numWorksheets; ++$i) {
+            $content .= <<<EOD
+                <style:page-layout style:name="pm{$i}">
+                    <style:page-layout-properties style:first-page-number="continue" style:print="objects charts drawings" style:table-centering="none"/>
+                    <style:header-style/>
+                    <style:footer-style/>
+                </style:page-layout>
+                EOD;
+        }
+
+        $content .= '</office:automatic-styles>';
+
+        return $content;
+    }
+
+    /**
      * Returns the contents of the "<style:style>" section, inside "<office:automatic-styles>" section.
      */
-    protected function getStyleSectionContent(\OpenSpout\Common\Entity\Style\Style $style): string
+    private function getStyleSectionContent(\OpenSpout\Common\Entity\Style\Style $style): string
     {
         $styleIndex = $style->getId() + 1; // 1-based
 

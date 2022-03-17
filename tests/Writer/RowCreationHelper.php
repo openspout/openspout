@@ -14,7 +14,7 @@ trait RowCreationHelper
     /**
      * @param mixed[] $cellValues
      */
-    protected function createRowFromValues(array $cellValues): Row
+    private function createRowFromValues(array $cellValues): Row
     {
         return $this->createStyledRowFromValues($cellValues, null);
     }
@@ -22,7 +22,7 @@ trait RowCreationHelper
     /**
      * @param mixed[] $cellValues
      */
-    protected function createStyledRowFromValues(array $cellValues, ?Style $rowStyle): Row
+    private function createStyledRowFromValues(array $cellValues, ?Style $rowStyle): Row
     {
         return WriterEntityFactory::createRowFromArray($cellValues, $rowStyle);
     }
@@ -32,7 +32,7 @@ trait RowCreationHelper
      *
      * @return Row[]
      */
-    protected function createRowsFromValues(array $rowValues): array
+    private function createRowsFromValues(array $rowValues): array
     {
         return $this->createStyledRowsFromValues($rowValues, null);
     }
@@ -42,7 +42,7 @@ trait RowCreationHelper
      *
      * @return Row[]
      */
-    protected function createStyledRowsFromValues(array $rowValues, ?Style $rowsStyle): array
+    private function createStyledRowsFromValues(array $rowValues, ?Style $rowsStyle): array
     {
         $rows = [];
 

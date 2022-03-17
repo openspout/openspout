@@ -12,10 +12,10 @@ use OpenSpout\Reader\ReaderAbstract;
  */
 final class Reader extends ReaderAbstract
 {
-    protected \ZipArchive $zip;
+    private \ZipArchive $zip;
 
     /** @var SheetIterator To iterator over the ODS sheets */
-    protected SheetIterator $sheetIterator;
+    private SheetIterator $sheetIterator;
 
     /**
      * Returns whether stream wrappers are supported.

@@ -74,7 +74,7 @@ final class StyleManager extends CommonStyleManager
     /**
      * Returns the content of the "<numFmts>" section.
      */
-    protected function getFormatsSectionContent(): string
+    private function getFormatsSectionContent(): string
     {
         $tags = [];
         $registeredFormats = $this->styleRegistry->getRegisteredFormats();
@@ -101,7 +101,7 @@ final class StyleManager extends CommonStyleManager
     /**
      * Returns the content of the "<fonts>" section.
      */
-    protected function getFontsSectionContent(): string
+    private function getFontsSectionContent(): string
     {
         $registeredStyles = $this->styleRegistry->getRegisteredStyles();
 
@@ -139,7 +139,7 @@ final class StyleManager extends CommonStyleManager
     /**
      * Returns the content of the "<fills>" section.
      */
-    protected function getFillsSectionContent(): string
+    private function getFillsSectionContent(): string
     {
         $registeredFills = $this->styleRegistry->getRegisteredFills();
 
@@ -170,7 +170,7 @@ final class StyleManager extends CommonStyleManager
     /**
      * Returns the content of the "<borders>" section.
      */
-    protected function getBordersSectionContent(): string
+    private function getBordersSectionContent(): string
     {
         $registeredBorders = $this->styleRegistry->getRegisteredBorders();
 
@@ -210,7 +210,7 @@ final class StyleManager extends CommonStyleManager
     /**
      * Returns the content of the "<cellStyleXfs>" section.
      */
-    protected function getCellStyleXfsSectionContent(): string
+    private function getCellStyleXfsSectionContent(): string
     {
         return <<<'EOD'
             <cellStyleXfs count="1">
@@ -222,7 +222,7 @@ final class StyleManager extends CommonStyleManager
     /**
      * Returns the content of the "<cellXfs>" section.
      */
-    protected function getCellXfsSectionContent(): string
+    private function getCellXfsSectionContent(): string
     {
         $registeredStyles = $this->styleRegistry->getRegisteredStyles();
 
@@ -270,7 +270,7 @@ final class StyleManager extends CommonStyleManager
     /**
      * Returns the content of the "<cellStyles>" section.
      */
-    protected function getCellStylesSectionContent(): string
+    private function getCellStylesSectionContent(): string
     {
         return <<<'EOD'
             <cellStyles count="1">

@@ -63,7 +63,7 @@ abstract class Color
      *
      * @throws \OpenSpout\Common\Exception\InvalidColorException
      */
-    protected static function throwIfInvalidColorComponentValue(int $colorComponent): void
+    private static function throwIfInvalidColorComponentValue(int $colorComponent): void
     {
         if ($colorComponent < 0 || $colorComponent > 255) {
             throw new InvalidColorException("The RGB components must be between 0 and 255. Received: {$colorComponent}");
@@ -77,7 +77,7 @@ abstract class Color
      *
      * @return string Corresponding hexadecimal value, with a leading 0 if needed. E.g "0f", "2d"
      */
-    protected static function convertColorComponentToHex(int $colorComponent): string
+    private static function convertColorComponentToHex(int $colorComponent): string
     {
         return str_pad(dechex($colorComponent), 2, '0', STR_PAD_LEFT);
     }

@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class OptionsManagerTest extends TestCase
 {
-    protected OptionsManagerAbstract $optionsManager;
+    private OptionsManagerAbstract $optionsManager;
 
     protected function setUp(): void
     {

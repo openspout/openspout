@@ -141,7 +141,7 @@ final class XMLReader extends \XMLReader
      *
      * @return bool TRUE if the file exists, FALSE otherwise
      */
-    protected function fileExistsWithinZip(string $zipStreamURI): bool
+    private function fileExistsWithinZip(string $zipStreamURI): bool
     {
         $doesFileExists = false;
 

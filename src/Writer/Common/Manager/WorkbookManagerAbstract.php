@@ -20,24 +20,24 @@ use OpenSpout\Writer\Exception\SheetNotFoundException;
  */
 abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
 {
-    /** @var null|Workbook The workbook to manage */
-    protected ?Workbook $workbook;
-
-    protected OptionsManagerInterface $optionsManager;
-
     protected WorksheetManagerInterface $worksheetManager;
 
     /** @var StyleManagerInterface Manages styles */
     protected StyleManagerInterface $styleManager;
 
-    /** @var StyleMerger Helper to merge styles */
-    protected StyleMerger $styleMerger;
-
     /** @var FileSystemWithRootFolderHelperInterface Helper to perform file system operations */
     protected FileSystemWithRootFolderHelperInterface $fileSystemHelper;
 
+    /** @var null|Workbook The workbook to manage */
+    private ?Workbook $workbook;
+
+    private OptionsManagerInterface $optionsManager;
+
+    /** @var StyleMerger Helper to merge styles */
+    private StyleMerger $styleMerger;
+
     /** @var Worksheet The worksheet where data will be written to */
-    protected Worksheet $currentWorksheet;
+    private Worksheet $currentWorksheet;
 
     public function __construct(
         Workbook $workbook,
@@ -220,7 +220,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
     /**
      * Deletes the root folder created in the temp folder and all its contents.
      */
-    protected function cleanupTempFolder(): void
+    private function cleanupTempFolder(): void
     {
         $rootFolder = $this->fileSystemHelper->getRootFolder();
         $this->fileSystemHelper->deleteFolderRecursively($rootFolder);
