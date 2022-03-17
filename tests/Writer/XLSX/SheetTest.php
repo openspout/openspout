@@ -76,6 +76,7 @@ final class SheetTest extends TestCase
         $pathToWorkbookFile = $resourcePath.'#xl/workbook.xml';
         $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
 
+        static::assertNotFalse($xmlContents);
         static::assertStringContainsString(' state="hidden"', $xmlContents, 'The sheet visibility should have been changed to "hidden"');
     }
 
@@ -103,6 +104,7 @@ final class SheetTest extends TestCase
         $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
         $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
 
+        static::assertNotFalse($xmlContents);
         static::assertStringContainsString('<sheetFormatPr', $xmlContents, 'No sheetFormatPr tag found in sheet');
         static::assertStringContainsString(' defaultColWidth="10', $xmlContents, 'No default column width found in sheet');
         static::assertStringContainsString(' defaultRowHeight="20', $xmlContents, 'No default row height found in sheet');
@@ -125,6 +127,7 @@ final class SheetTest extends TestCase
         $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
         $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
 
+        static::assertNotFalse($xmlContents);
         static::assertStringContainsString('<sheetFormatPr', $xmlContents, 'No sheetFormatPr tag found in sheet');
         static::assertStringContainsString(' defaultColWidth="10', $xmlContents, 'No default column width found in sheet');
         static::assertStringContainsString(' defaultRowHeight="0', $xmlContents, 'No default row height found in sheet');
@@ -145,6 +148,7 @@ final class SheetTest extends TestCase
         $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
         $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
 
+        static::assertNotFalse($xmlContents);
         static::assertStringContainsString('<cols', $xmlContents, 'No cols tag found in sheet');
         static::assertStringContainsString('<col min="1" max="1" width="100" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
     }
@@ -164,6 +168,7 @@ final class SheetTest extends TestCase
         $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
         $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
 
+        static::assertNotFalse($xmlContents);
         static::assertStringContainsString('<cols', $xmlContents, 'No cols tag found in sheet');
         static::assertStringContainsString('<col min="1" max="3" width="100" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
     }
@@ -184,6 +189,7 @@ final class SheetTest extends TestCase
         $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
         $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
 
+        static::assertNotFalse($xmlContents);
         static::assertStringContainsString('<cols', $xmlContents, 'No cols tag found in sheet');
         static::assertStringContainsString('<col min="1" max="1" width="50" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
         static::assertStringContainsString('<col min="3" max="4" width="50" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
@@ -207,6 +213,7 @@ final class SheetTest extends TestCase
         $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
         $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
 
+        static::assertNotFalse($xmlContents);
         static::assertStringContainsString('<cols', $xmlContents, 'No cols tag found in sheet');
         static::assertStringContainsString('<col min="1" max="3" width="50" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
     }
@@ -227,6 +234,7 @@ final class SheetTest extends TestCase
         $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
         $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
 
+        static::assertNotFalse($xmlContents);
         static::assertStringContainsString('<f>SUM(A1:A2)</f>', $xmlContents, 'Formula not found');
     }
 
@@ -260,6 +268,7 @@ final class SheetTest extends TestCase
         $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
         $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
 
+        static::assertNotFalse($xmlContents);
         static::assertStringContainsString('<sheetView', $xmlContents);
         static::assertStringContainsString('<pane', $xmlContents);
     }
@@ -322,6 +331,7 @@ final class SheetTest extends TestCase
         $pathToWorkbookFile = $resourcePath.'#xl/workbook.xml';
         $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
 
+        static::assertNotFalse($xmlContents);
         static::assertStringContainsString("<sheet name=\"{$expectedName}\"", $xmlContents, $message);
     }
 }

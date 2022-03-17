@@ -246,6 +246,7 @@ final class CellValueFormatter
         $secondsRemainder = round($timeRemainder * self::NUM_SECONDS_IN_ONE_DAY, 0);
 
         $dateObj = DateTimeImmutable::createFromFormat('|Y-m-d', $baseDate);
+        \assert(false !== $dateObj);
         $dateObj = $dateObj->modify('+'.$daysSinceBaseDate.'days');
         $dateObj = $dateObj->modify('+'.$secondsRemainder.'seconds');
 

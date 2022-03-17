@@ -22,7 +22,10 @@ final class SpoutTestStream
     {
         $filePath = $this->getFilePathFromStreamPath($path);
 
-        return stat($filePath);
+        $stat = stat($filePath);
+        \assert(false !== $stat);
+
+        return $stat;
     }
 
     public function stream_open(string $path, string $mode, int $options, ?string &$opened_path): bool
@@ -31,16 +34,24 @@ final class SpoutTestStream
 
         // the path is like "spout://csv_name" so the actual file name correspond the name of the host.
         $filePath = $this->getFilePathFromStreamPath($path);
-        $this->fileHandle = fopen($filePath, $mode);
+        $resource = fopen($filePath, $mode);
+        \assert(false !== $resource);
+        $this->fileHandle = $resource;
 
         return true;
     }
 
+    /**
+     * @param positive-int $numBytes
+     */
     public function stream_read(int $numBytes): string
     {
         $this->position += $numBytes;
 
-        return fread($this->fileHandle, $numBytes);
+        $fread = fread($this->fileHandle, $numBytes);
+        \assert(false !== $fread);
+
+        return $fread;
     }
 
     public function stream_tell(): int

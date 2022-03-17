@@ -147,7 +147,10 @@ abstract class ReaderAbstract implements ReaderInterface
         }
 
         // Need to use realpath to fix "Can't open file" on some Windows setup
-        return realpath($filePath);
+        $realpath = realpath($filePath);
+        \assert(false !== $realpath);
+
+        return $realpath;
     }
 
     /**

@@ -51,8 +51,11 @@ abstract class WriterAbstract implements WriterInterface
     {
         $this->outputFilePath = $outputFilePath;
 
-        $this->filePointer = fopen($this->outputFilePath, 'wb+');
-        $this->throwIfFilePointerIsNotAvailable();
+        $resource = fopen($this->outputFilePath, 'wb+');
+        if (false === $resource) {
+            throw new IOException("Unable to open file {$this->outputFilePath}");
+        }
+        $this->filePointer = $resource;
 
         $this->openWriter();
         $this->isWriterOpened = true;
@@ -66,8 +69,9 @@ abstract class WriterAbstract implements WriterInterface
     {
         $this->outputFilePath = basename($outputFileName);
 
-        $this->filePointer = fopen('php://output', 'w');
-        $this->throwIfFilePointerIsNotAvailable();
+        $resource = fopen('php://output', 'w');
+        \assert(false !== $resource);
+        $this->filePointer = $resource;
 
         // Clear any previous output (otherwise the generated file will be corrupted)
         // @see https://github.com/box/spout/issues/241
@@ -186,19 +190,6 @@ abstract class WriterAbstract implements WriterInterface
      * Closes the streamer, preventing any additional writing.
      */
     abstract protected function closeWriter(): void;
-
-    /**
-     * Checks if the pointer to the file/stream to write to is available.
-     * Will throw an exception if not available.
-     *
-     * @throws IOException If the pointer is not available
-     */
-    protected function throwIfFilePointerIsNotAvailable(): void
-    {
-        if (!\is_resource($this->filePointer)) {
-            throw new IOException('File pointer has not be opened');
-        }
-    }
 
     /**
      * Checks if the writer has already been opened, since some actions must be done before it gets opened.

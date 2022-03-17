@@ -112,6 +112,7 @@ final class WriterPerfTest extends TestCase
 
         // Get the last 200 characters
         $lastCharacters = shell_exec("tail -c {$numCharacters} {$tmpFile}");
+        static::assertNotFalse($lastCharacters);
 
         // remove the temporary file
         unlink($tmpFile);

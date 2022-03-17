@@ -110,6 +110,7 @@ final class XMLReaderTest extends TestCase
     public function dataProviderForTestGetRealPathURIForFileInZip(): array
     {
         $tempFolder = realpath(sys_get_temp_dir());
+        static::assertNotFalse($tempFolder);
         $tempFolderName = basename($tempFolder);
         $expectedRealPathURI = 'zip://'.$tempFolder.'/test.xlsx#test.xml';
 

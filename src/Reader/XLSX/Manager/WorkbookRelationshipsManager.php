@@ -134,6 +134,7 @@ final class WorkbookRelationshipsManager
     {
         $type = $xmlReader->getAttribute(self::XML_ATTRIBUTE_TYPE);
         $target = $xmlReader->getAttribute(self::XML_ATTRIBUTE_TARGET);
+        \assert(null !== $target);
 
         // @NOTE: if a type is defined more than once, we overwrite the previous value
         // To be changed if we want to get the file paths of sheet XML files for instance.

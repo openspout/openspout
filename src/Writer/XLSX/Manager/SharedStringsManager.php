@@ -2,7 +2,6 @@
 
 namespace OpenSpout\Writer\XLSX\Manager;
 
-use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\Escaper;
 
 /**
@@ -39,9 +38,9 @@ final class SharedStringsManager
     public function __construct(string $xlFolder, Escaper\XLSX $stringsEscaper)
     {
         $sharedStringsFilePath = $xlFolder.'/'.self::SHARED_STRINGS_FILE_NAME;
-        $this->sharedStringsFilePointer = fopen($sharedStringsFilePath, 'w');
-
-        $this->throwIfSharedStringsFilePointerIsNotAvailable();
+        $resource = fopen($sharedStringsFilePath, 'w');
+        \assert(false !== $resource);
+        $this->sharedStringsFilePointer = $resource;
 
         // the headers is split into different parts so that we can fseek and put in the correct count and uniqueCount later
         $header = self::SHARED_STRINGS_XML_FILE_FIRST_PART_HEADER.' '.self::DEFAULT_STRINGS_COUNT_PART.'>';
@@ -85,17 +84,5 @@ final class SharedStringsManager
         fwrite($this->sharedStringsFilePointer, sprintf("%-{$defaultStringsCountPartLength}s", 'count="'.$this->numSharedStrings.'" uniqueCount="'.$this->numSharedStrings.'"'));
 
         fclose($this->sharedStringsFilePointer);
-    }
-
-    /**
-     * Checks if the book has been created. Throws an exception if not created yet.
-     *
-     * @throws \OpenSpout\Common\Exception\IOException If the sheet data file cannot be opened for writing
-     */
-    private function throwIfSharedStringsFilePointerIsNotAvailable(): void
-    {
-        if (!\is_resource($this->sharedStringsFilePointer)) {
-            throw new IOException('Unable to open shared strings file for writing.');
-        }
     }
 }

@@ -65,7 +65,15 @@ final class ReaderFactory
     {
         $optionsManager = new XLSXOptionsManager();
 
-        return new XLSXReader($optionsManager, new CachingStrategyFactory(new MemoryLimit(\ini_get('memory_limit'))));
+        $memoryLimit = \ini_get('memory_limit');
+        \assert(false !== $memoryLimit);
+
+        return new XLSXReader(
+            $optionsManager,
+            new CachingStrategyFactory(
+                new MemoryLimit($memoryLimit)
+            )
+        );
     }
 
     private static function createODSReader(): ODSReader
