@@ -93,6 +93,7 @@ class StyleManager implements StyleManagerInterface
         $stylesAttributes = $this->getStylesAttributes();
         $styleAttributes = $stylesAttributes[$styleId];
         $numFmtId = $styleAttributes[self::XML_ATTRIBUTE_NUM_FMT_ID];
+        \assert(\is_int($numFmtId));
 
         if ($this->isNumFmtIdBuiltInDateFormat($numFmtId)) {
             $numberFormatCode = self::builtinNumFmtIdToNumFormatMapping[$numFmtId];
@@ -140,6 +141,7 @@ class StyleManager implements StyleManagerInterface
             if ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_NUM_FMT)) {
                 $numFmtId = (int) ($xmlReader->getAttribute(self::XML_ATTRIBUTE_NUM_FMT_ID));
                 $formatCode = $xmlReader->getAttribute(self::XML_ATTRIBUTE_FORMAT_CODE);
+                \assert(null !== $formatCode);
                 $this->customNumberFormats[$numFmtId] = $formatCode;
             } elseif ($xmlReader->isPositionedOnEndingNode(self::XML_NODE_NUM_FMTS)) {
                 // Once done reading "numFmts" node's children
@@ -215,7 +217,7 @@ class StyleManager implements StyleManagerInterface
         //  - "numFmtId" attribute set
         // This is a preliminary check, as having "numFmtId" set just means the style should apply a specific number format,
         // but this is not necessarily a date.
-        if (false === $applyNumberFormat || null === $numFmtId) {
+        if (false === $applyNumberFormat || !\is_int($numFmtId)) {
             return false;
         }
 

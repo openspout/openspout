@@ -73,7 +73,9 @@ final class FileBasedStrategy implements CachingStrategyInterface
             if ($this->tempFilePointer) {
                 fclose($this->tempFilePointer);
             }
-            $this->tempFilePointer = fopen($tempFilePath, 'w');
+            $resource = fopen($tempFilePath, 'w');
+            \assert(false !== $resource);
+            $this->tempFilePointer = $resource;
         }
 
         // The shared string retrieval logic expects each cell data to be on one line only
@@ -114,7 +116,9 @@ final class FileBasedStrategy implements CachingStrategyInterface
         }
 
         if ($this->inMemoryTempFilePath !== $tempFilePath) {
-            $this->inMemoryTempFileContents = explode(PHP_EOL, file_get_contents($this->convertToUseRealPath($tempFilePath)));
+            $contents = file_get_contents($this->convertToUseRealPath($tempFilePath));
+            \assert(false !== $contents);
+            $this->inMemoryTempFileContents = explode(PHP_EOL, $contents);
             $this->inMemoryTempFilePath = $tempFilePath;
         }
 
@@ -177,6 +181,7 @@ final class FileBasedStrategy implements CachingStrategyInterface
             }
         } else {
             $realFilePath = realpath($filePath);
+            \assert(false !== $realFilePath);
         }
 
         return $realFilePath;

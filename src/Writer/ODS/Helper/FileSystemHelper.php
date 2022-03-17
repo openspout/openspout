@@ -98,6 +98,7 @@ final class FileSystemHelper extends CommonFileSystemHelper implements FileSyste
         // Append sheets content to "content.xml"
         $contentXmlFilePath = $this->rootFolder.'/'.self::CONTENT_XML_FILE_NAME;
         $contentXmlHandle = fopen($contentXmlFilePath, 'a');
+        \assert(false !== $contentXmlHandle);
 
         foreach ($worksheets as $worksheet) {
             // write the "<table:table>" node, with the final sheet's name
@@ -273,6 +274,7 @@ final class FileSystemHelper extends CommonFileSystemHelper implements FileSyste
     protected function copyFileContentsToTarget(string $sourceFilePath, $targetResource): void
     {
         $sourceHandle = fopen($sourceFilePath, 'r');
+        \assert(false !== $sourceHandle);
         stream_copy_to_stream($sourceHandle, $targetResource);
         fclose($sourceHandle);
     }

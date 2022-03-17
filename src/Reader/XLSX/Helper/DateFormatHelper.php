@@ -104,6 +104,7 @@ final class DateFormatHelper
         return preg_replace_callback('/"(.+?)"/', function ($matches) {
             $stringToEscape = $matches[1];
             $letters = preg_split('//u', $stringToEscape, -1, PREG_SPLIT_NO_EMPTY);
+            \assert(false !== $letters);
 
             return '\\'.implode('\\', $letters);
         }, $phpDateFormat);

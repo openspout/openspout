@@ -18,7 +18,9 @@ class FileSystemHelper implements FileSystemHelperInterface
      */
     public function __construct(string $baseFolderPath)
     {
-        $this->baseFolderRealPath = realpath($baseFolderPath);
+        $realpath = realpath($baseFolderPath);
+        \assert(false !== $realpath);
+        $this->baseFolderRealPath = $realpath;
     }
 
     /**
@@ -126,9 +128,12 @@ class FileSystemHelper implements FileSystemHelperInterface
      */
     protected function throwIfOperationNotInBaseFolder(string $operationFolderPath): void
     {
-        $operationFolderRealPath = realpath($operationFolderPath);
         if (!$this->baseFolderRealPath) {
             throw new IOException("The base folder path is invalid: {$this->baseFolderRealPath}");
+        }
+        $operationFolderRealPath = realpath($operationFolderPath);
+        if (false === $operationFolderRealPath) {
+            throw new IOException("Folder not found: {$operationFolderRealPath}");
         }
         $isInBaseFolder = (0 === strpos($operationFolderRealPath, $this->baseFolderRealPath));
         if (!$isInBaseFolder) {

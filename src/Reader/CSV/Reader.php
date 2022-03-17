@@ -94,12 +94,15 @@ final class Reader extends ReaderAbstract
     {
         // "auto_detect_line_endings" is deprecated in PHP 8.1
         if (!$this->isRunningAtLeastPhp81) {
-            $this->originalAutoDetectLineEndings = \ini_get('auto_detect_line_endings');
+            $originalAutoDetectLineEndings = \ini_get('auto_detect_line_endings');
+            \assert(false !== $originalAutoDetectLineEndings);
+            $this->originalAutoDetectLineEndings = $originalAutoDetectLineEndings;
             ini_set('auto_detect_line_endings', '1');
         }
 
-        $this->filePointer = fopen($filePath, 'r');
-        \assert(false !== $this->filePointer);
+        $resource = fopen($filePath, 'r');
+        \assert(false !== $resource);
+        $this->filePointer = $resource;
 
         $this->sheetIterator = new SheetIterator(
             new Sheet(

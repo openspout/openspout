@@ -176,6 +176,7 @@ final class ZipHelper
     private function getNormalizedRealPath(string $path): string
     {
         $realPath = realpath($path);
+        \assert(false !== $realPath);
 
         return str_replace(\DIRECTORY_SEPARATOR, '/', $realPath);
     }
@@ -189,6 +190,7 @@ final class ZipHelper
     private function copyZipToStream(string $zipFilePath, $pointer): void
     {
         $zipFilePointer = fopen($zipFilePath, 'r');
+        \assert(false !== $zipFilePointer);
         stream_copy_to_stream($zipFilePointer, $pointer);
         fclose($zipFilePointer);
     }

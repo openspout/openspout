@@ -101,7 +101,7 @@ final class WorksheetManager implements WorksheetManagerInterface
     public function startSheet(Worksheet $worksheet): void
     {
         $sheetFilePointer = fopen($worksheet->getFilePath(), 'w');
-        $this->throwIfSheetFilePointerIsNotAvailable($sheetFilePointer);
+        \assert(false !== $sheetFilePointer);
 
         $worksheet->setFilePointer($sheetFilePointer);
 
@@ -203,20 +203,6 @@ final class WorksheetManager implements WorksheetManagerInterface
         fwrite($worksheetFilePointer, $this->getXMLFragmentForColumnWidths());
         fwrite($worksheetFilePointer, '<sheetData>');
         $worksheet->setSheetDataStarted(true);
-    }
-
-    /**
-     * Checks if the sheet has been sucessfully created. Throws an exception if not.
-     *
-     * @param bool|resource $sheetFilePointer Pointer to the sheet data file or FALSE if unable to open the file
-     *
-     * @throws IOException If the sheet data file cannot be opened for writing
-     */
-    private function throwIfSheetFilePointerIsNotAvailable($sheetFilePointer): void
-    {
-        if (!$sheetFilePointer) {
-            throw new IOException('Unable to open sheet for writing.');
-        }
     }
 
     /**
