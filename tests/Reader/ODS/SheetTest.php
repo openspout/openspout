@@ -2,7 +2,6 @@
 
 namespace OpenSpout\Reader\ODS;
 
-use OpenSpout\Reader\SheetInterface;
 use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
@@ -45,7 +44,7 @@ final class SheetTest extends TestCase
     }
 
     /**
-     * @return SheetInterface[]
+     * @return Sheet[]
      */
     private function openFileAndReturnSheets(string $fileName): array
     {

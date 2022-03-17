@@ -2,7 +2,6 @@
 
 namespace OpenSpout\Reader\CSV;
 
-use OpenSpout\Reader\SheetInterface;
 use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
@@ -22,7 +21,7 @@ final class SheetTest extends TestCase
         static::assertTrue($sheet->isActive());
     }
 
-    private function openFileAndReturnSheet(string $fileName): SheetInterface
+    private function openFileAndReturnSheet(string $fileName): Sheet
     {
         $resourcePath = $this->getResourcePath($fileName);
         $reader = Reader::factory();

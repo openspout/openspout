@@ -3,7 +3,6 @@
 namespace OpenSpout\Reader\Common\Creator;
 
 use OpenSpout\Common\Exception\UnsupportedTypeException;
-use OpenSpout\Common\Type;
 use OpenSpout\Reader\CSV\Reader as CSVReader;
 use OpenSpout\Reader\ODS\Reader as ODSReader;
 use OpenSpout\Reader\ReaderInterface;

@@ -3,7 +3,6 @@
 namespace OpenSpout\Writer\Common\Creator;
 
 use OpenSpout\Common\Exception\UnsupportedTypeException;
-use OpenSpout\Common\Type;
 use OpenSpout\Writer\CSV\Writer as CSVWriter;
 use OpenSpout\Writer\ODS\Writer as ODSWriter;
 use OpenSpout\Writer\WriterInterface;

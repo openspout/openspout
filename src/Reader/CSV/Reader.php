@@ -31,7 +31,7 @@ final class Reader extends ReaderAbstract
         EncodingHelper $encodingHelper
     ) {
         parent::__construct($optionsManager);
-        $this->isRunningAtLeastPhp81 = version_compare(PHP_VERSION, '8.1.0') >= 0;
+        $this->isRunningAtLeastPhp81 = \PHP_VERSION_ID >= 80100;
         $this->encodingHelper = $encodingHelper;
     }
 
