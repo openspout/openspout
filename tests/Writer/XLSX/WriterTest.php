@@ -7,7 +7,7 @@ use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\InvalidArgumentException;
 use OpenSpout\Common\Exception\IOException;
-use OpenSpout\Common\Exception\SpoutException;
+use OpenSpout\Common\Exception\OpenSpoutException;
 use OpenSpout\Reader\Wrapper\XMLReader;
 use OpenSpout\TestUsingResource;
 use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
@@ -136,7 +136,7 @@ final class WriterTest extends TestCase
         try {
             $writer->addRows($dataRows);
             static::fail('Exception should have been thrown');
-        } catch (SpoutException $e) {
+        } catch (OpenSpoutException $e) {
             static::assertFileDoesNotExist($fileName, 'Output file should have been deleted');
 
             $numFiles = iterator_count(new \FilesystemIterator($tempFolderPath, \FilesystemIterator::SKIP_DOTS));

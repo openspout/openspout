@@ -5,7 +5,7 @@ namespace OpenSpout\Writer;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Common\Exception\IOException;
-use OpenSpout\Common\Exception\SpoutException;
+use OpenSpout\Common\Exception\OpenSpoutException;
 use OpenSpout\Common\Helper\FileSystemHelper;
 use OpenSpout\Common\Manager\OptionsManagerInterface;
 use OpenSpout\Writer\Common\Entity\Options;
@@ -124,7 +124,7 @@ abstract class WriterAbstract implements WriterInterface
 
         try {
             $this->addRowToWriter($row);
-        } catch (SpoutException $e) {
+        } catch (OpenSpoutException $e) {
             // if an exception occurs while writing data,
             // close the writer and remove all files created so far.
             $this->closeAndAttemptToCleanupAllFiles();

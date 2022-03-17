@@ -2,8 +2,8 @@
 
 namespace OpenSpout\Writer\Exception;
 
-use OpenSpout\Common\Exception\SpoutException;
+use OpenSpout\Common\Exception\OpenSpoutException;
 
-abstract class WriterException extends SpoutException
+abstract class WriterException extends OpenSpoutException
 {
 }
