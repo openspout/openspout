@@ -103,10 +103,7 @@ abstract class ReaderAbstract implements ReaderInterface
         if ($this->isStreamOpened) {
             $this->closeReader();
 
-            $sheetIterator = $this->getConcreteSheetIterator();
-            if (null !== $sheetIterator) {
-                $sheetIterator->end();
-            }
+            $this->getConcreteSheetIterator()->end();
 
             $this->isStreamOpened = false;
         }
@@ -164,7 +161,7 @@ abstract class ReaderAbstract implements ReaderInterface
     protected function getStreamWrapperScheme(string $filePath): ?string
     {
         $streamScheme = null;
-        if (preg_match('/^(\w+):\/\//', $filePath, $matches)) {
+        if (1 === preg_match('/^(\w+):\/\//', $filePath, $matches)) {
             $streamScheme = $matches[1];
         }
 

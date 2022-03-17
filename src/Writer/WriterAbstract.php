@@ -4,7 +4,6 @@ namespace OpenSpout\Writer;
 
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\Style;
-use OpenSpout\Common\Exception\InvalidArgumentException;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Exception\SpoutException;
 use OpenSpout\Common\Helper\FileSystemHelper;
@@ -141,12 +140,6 @@ abstract class WriterAbstract implements WriterInterface
     public function addRows(array $rows): void
     {
         foreach ($rows as $row) {
-            if (!$row instanceof Row) {
-                $this->closeAndAttemptToCleanupAllFiles();
-
-                throw new InvalidArgumentException('The input should be an array of Row');
-            }
-
             $this->addRow($row);
         }
     }
@@ -162,9 +155,7 @@ abstract class WriterAbstract implements WriterInterface
 
         $this->closeWriter();
 
-        if (\is_resource($this->filePointer)) {
-            fclose($this->filePointer);
-        }
+        fclose($this->filePointer);
 
         $this->isWriterOpened = false;
     }

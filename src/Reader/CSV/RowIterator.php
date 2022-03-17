@@ -84,7 +84,7 @@ final class RowIterator implements RowIteratorInterface
      */
     public function valid(): bool
     {
-        return $this->filePointer && !$this->hasReachedEndOfFile;
+        return null !== $this->filePointer && !$this->hasReachedEndOfFile;
     }
 
     /**
@@ -108,7 +108,7 @@ final class RowIterator implements RowIteratorInterface
      *
      * @see http://php.net/manual/en/iterator.current.php
      */
-    public function current(): ?Row
+    public function current(): Row
     {
         return $this->rowBuffer;
     }

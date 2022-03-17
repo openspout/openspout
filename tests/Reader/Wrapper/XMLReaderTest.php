@@ -41,9 +41,7 @@ final class XMLReaderTest extends TestCase
             libxml_clear_errors();
             $initialUseInternalErrorsSetting = libxml_use_internal_errors(true);
 
-            // using the built-in XMLReader
-            $xmlReader = new \XMLReader();
-            static::assertNotFalse($xmlReader->open($nonExistingXMLFilePath));
+            static::assertNotFalse(\XMLReader::open($nonExistingXMLFilePath));
             static::assertFalse(libxml_get_last_error());
 
             libxml_use_internal_errors($initialUseInternalErrorsSetting);

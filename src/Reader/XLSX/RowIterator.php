@@ -170,7 +170,7 @@ final class RowIterator implements RowIteratorInterface
      *
      * @see http://php.net/manual/en/iterator.current.php
      */
-    public function current(): ?Row
+    public function current(): Row
     {
         $rowToBeProcessed = $this->rowBuffer;
 
@@ -272,7 +272,7 @@ final class RowIterator implements RowIteratorInterface
     {
         // Read dimensions of the sheet
         $dimensionRef = $xmlReader->getAttribute(self::XML_ATTRIBUTE_REF); // returns 'A1:M13' for instance (or 'A1' for empty sheet)
-        if (preg_match('/[A-Z]+\d+:([A-Z]+\d+)/', $dimensionRef, $matches)) {
+        if (1 === preg_match('/[A-Z]+\d+:([A-Z]+\d+)/', $dimensionRef, $matches)) {
             $this->numColumns = CellHelper::getColumnIndexFromCellIndex($matches[1]) + 1;
         }
 
@@ -295,7 +295,7 @@ final class RowIterator implements RowIteratorInterface
         // Read spans info if present
         $numberOfColumnsForRow = $this->numColumns;
         $spans = $xmlReader->getAttribute(self::XML_ATTRIBUTE_SPANS); // returns '1:5' for instance
-        if ($spans) {
+        if (null !== $spans) {
             [, $numberOfColumnsForRow] = explode(':', $spans);
             $numberOfColumnsForRow = (int) $numberOfColumnsForRow;
         }

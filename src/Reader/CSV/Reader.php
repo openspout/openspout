@@ -130,9 +130,7 @@ final class Reader extends ReaderAbstract
      */
     protected function closeReader(): void
     {
-        if (\is_resource($this->filePointer)) {
-            fclose($this->filePointer);
-        }
+        fclose($this->filePointer);
 
         // "auto_detect_line_endings" is deprecated in PHP 8.1
         if (!$this->isRunningAtLeastPhp81) {

@@ -62,7 +62,8 @@ final class WriterPerfTest extends TestCase
         // to avoid executing the regex of the entire file to get the last row number, we only retrieve the last 10 lines
         $endingContentXmlContents = $this->getLastCharactersOfContentXmlFile($resourcePath);
 
-        if (preg_match_all('/<text:p>ods--(\d+)-\d<\/text:p>/', $endingContentXmlContents, $matches)) {
+        $preg_match_all = preg_match_all('/<text:p>ods--(\d+)-\d<\/text:p>/', $endingContentXmlContents, $matches);
+        if (false !== $preg_match_all && 0 < $preg_match_all) {
             $lastMatch = array_pop($matches);
             $numWrittenRows = (int) (array_pop($lastMatch));
         }

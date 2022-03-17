@@ -128,9 +128,6 @@ class FileSystemHelper implements FileSystemHelperInterface
      */
     protected function throwIfOperationNotInBaseFolder(string $operationFolderPath): void
     {
-        if (!$this->baseFolderRealPath) {
-            throw new IOException("The base folder path is invalid: {$this->baseFolderRealPath}");
-        }
         $operationFolderRealPath = realpath($operationFolderPath);
         if (false === $operationFolderRealPath) {
             throw new IOException("Folder not found: {$operationFolderRealPath}");

@@ -278,7 +278,7 @@ final class CellValueFormatter
     private function transformWhitespaceNode(\DOMElement $node): string
     {
         $countAttribute = $node->getAttribute(self::XML_ATTRIBUTE_C); // only defined for "<text:s>"
-        $numWhitespaces = (!empty($countAttribute)) ? (int) $countAttribute : 1;
+        $numWhitespaces = '' !== $countAttribute ? (int) $countAttribute : 1;
 
         return str_repeat(self::WHITESPACE_XML_NODES[$node->nodeName], $numWhitespaces);
     }

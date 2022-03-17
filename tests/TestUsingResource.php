@@ -61,7 +61,7 @@ trait TestUsingResource
     {
         // On Windows, chmod() or the mkdir's mode is ignored
         if ($this->isWindows()) {
-            $this->markTestSkipped('Skipping because Windows cannot create read-only folders through PHP');
+            self::markTestSkipped('Skipping because Windows cannot create read-only folders through PHP');
         }
 
         if (!file_exists($this->generatedUnwritableResourcesPath)) {

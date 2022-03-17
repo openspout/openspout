@@ -138,7 +138,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
         // if we reached the maximum number of rows for the current sheet...
         if ($hasReachedMaxRows) {
             // ... continue writing in a new sheet if option set
-            if ($this->optionsManager->getOption(Options::SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY)) {
+            if ((bool) $this->optionsManager->getOption(Options::SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY)) {
                 $currentWorksheet = $this->addNewSheetAndMakeItCurrent();
 
                 $this->addRowToWorksheet($currentWorksheet, $row);

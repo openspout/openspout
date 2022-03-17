@@ -87,15 +87,6 @@ final class ZipHelper
     }
 
     /**
-     * @return bool Whether it is possible to choose the desired compression method to be used
-     */
-    public static function canChooseCompressionMethod(): bool
-    {
-        // setCompressionName() is a PHP7+ method...
-        return method_exists(new \ZipArchive(), 'setCompressionName');
-    }
-
-    /**
      * @param \ZipArchive $zip              An opened zip archive object
      * @param string      $folderPath       Path to the folder to be zipped
      * @param string      $existingFileMode Controls what to do when trying to add an existing file
@@ -149,9 +140,7 @@ final class ZipHelper
             $normalizedFullFilePath = $this->getNormalizedRealPath($rootFolderPath.'/'.$localFilePath);
             $zip->addFile($normalizedFullFilePath, $localFilePath);
 
-            if (self::canChooseCompressionMethod()) {
-                $zip->setCompressionName($localFilePath, $compressionMethod);
-            }
+            $zip->setCompressionName($localFilePath, $compressionMethod);
         }
     }
 

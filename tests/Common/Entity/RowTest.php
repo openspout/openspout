@@ -2,18 +2,11 @@
 
 namespace OpenSpout\Common\Entity;
 
-use OpenSpout\Common\Entity\Style\Style;
-
 /**
  * @internal
  */
 final class RowTest extends \PHPUnit\Framework\TestCase
 {
-    public function testValidInstance(): void
-    {
-        static::assertInstanceOf(Row::class, new Row([], null));
-    }
-
     public function testSetCells(): void
     {
         $row = new Row([], null);
@@ -75,17 +68,5 @@ final class RowTest extends \PHPUnit\Framework\TestCase
         $row->addCell(new Cell(null));
 
         static::assertSame(3, $row->getNumCells());
-    }
-
-    public function testFluentInterface(): void
-    {
-        $row = new Row([], null);
-        $row
-            ->addCell(new Cell(null))
-            ->setStyle(new Style())
-            ->setCells([])
-        ;
-
-        static::assertInstanceOf(Row::class, $row);
     }
 }

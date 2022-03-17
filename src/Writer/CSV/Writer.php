@@ -54,7 +54,7 @@ final class Writer extends WriterAbstract
      */
     protected function openWriter(): void
     {
-        if ($this->optionsManager->getOption(Options::SHOULD_ADD_BOM)) {
+        if ((bool) $this->optionsManager->getOption(Options::SHOULD_ADD_BOM)) {
             // Adds UTF-8 BOM for Unicode compatibility
             fwrite($this->filePointer, EncodingHelper::BOM_UTF8);
         }

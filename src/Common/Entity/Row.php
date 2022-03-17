@@ -80,7 +80,7 @@ final class Row
     {
         // When using "setCellAtIndex", it's possible to
         // have "$this->cells" contain holes.
-        if (empty($this->cells)) {
+        if ([] === $this->cells) {
             return 0;
         }
 
@@ -94,7 +94,7 @@ final class Row
 
     public function setStyle(?Style $style): self
     {
-        $this->style = $style ?: new Style();
+        $this->style = $style ?? new Style();
 
         return $this;
     }

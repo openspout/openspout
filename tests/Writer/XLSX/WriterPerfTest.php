@@ -96,7 +96,8 @@ final class WriterPerfTest extends TestCase
 
         // in sharedStrings.xml and sheetN.xml, the cell value will look like this:
         // <t>xlsx--[ROW_NUMBER]-[CELL_NUMBER]</t> or <t xml:space="preserve">xlsx--[ROW_NUMBER]-[CELL_NUMBER]</t>
-        if (preg_match_all('/<t.*>xlsx--(\d+)-\d+<\/t>/', $lastCharactersOfFile, $matches)) {
+        $preg_match_all = preg_match_all('/<t.*>xlsx--(\d+)-\d+<\/t>/', $lastCharactersOfFile, $matches);
+        if (false !== $preg_match_all && 0 < $preg_match_all) {
             $lastMatch = array_pop($matches);
             $lastRowNumber = (int) (array_pop($lastMatch));
         }

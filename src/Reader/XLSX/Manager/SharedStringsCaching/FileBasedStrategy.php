@@ -70,7 +70,7 @@ final class FileBasedStrategy implements CachingStrategyInterface
         $tempFilePath = $this->getSharedStringTempFilePath($sharedStringIndex);
 
         if (!file_exists($tempFilePath)) {
-            if ($this->tempFilePointer) {
+            if (null !== $this->tempFilePointer) {
                 fclose($this->tempFilePointer);
             }
             $resource = fopen($tempFilePath, 'w');
@@ -92,7 +92,7 @@ final class FileBasedStrategy implements CachingStrategyInterface
     public function closeCache(): void
     {
         // close pointer to the last temp file that was written
-        if ($this->tempFilePointer) {
+        if (null !== $this->tempFilePointer) {
             fclose($this->tempFilePointer);
         }
     }
@@ -142,9 +142,7 @@ final class FileBasedStrategy implements CachingStrategyInterface
      */
     public function clearCache(): void
     {
-        if ($this->tempFolder) {
-            $this->fileSystemHelper->deleteFolderRecursively($this->tempFolder);
-        }
+        $this->fileSystemHelper->deleteFolderRecursively($this->tempFolder);
     }
 
     /**
@@ -174,7 +172,7 @@ final class FileBasedStrategy implements CachingStrategyInterface
         $realFilePath = $filePath;
 
         if (0 === strpos($filePath, 'zip://')) {
-            if (preg_match('/zip:\/\/(.*)#(.*)/', $filePath, $matches)) {
+            if (1 === preg_match('/zip:\/\/(.*)#(.*)/', $filePath, $matches)) {
                 $documentPath = $matches[1];
                 $documentInsideZipPath = $matches[2];
                 $realFilePath = 'zip://'.realpath($documentPath).'#'.$documentInsideZipPath;
