@@ -183,20 +183,13 @@ final class StyleManager extends CommonStyleManager
         $content .= '<border><left/><right/><top/><bottom/></border>';
 
         foreach ($registeredBorders as $styleId) {
-            /** @var Style $style */
             $style = $this->styleRegistry->getStyleFromStyleId($styleId);
             $border = $style->getBorder();
             $content .= '<border>';
 
-            /** @see https://github.com/box/spout/issues/271 */
-            $sortOrder = ['left', 'right', 'top', 'bottom'];
-
-            foreach ($sortOrder as $partName) {
-                if ($border->hasPart($partName)) {
-                    /** @var BorderPart $part */
-                    $part = $border->getPart($partName);
-                    $content .= BorderHelper::serializeBorderPart($part);
-                }
+            // @see https://github.com/box/spout/issues/271
+            foreach (BorderPart::allowedNames as $partName) {
+                $content .= BorderHelper::serializeBorderPart($border->getPart($partName));
             }
 
             $content .= '</border>';

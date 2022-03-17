@@ -4,12 +4,12 @@ namespace OpenSpout\Writer\XLSX;
 
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\Border;
+use OpenSpout\Common\Entity\Style\BorderPart;
 use OpenSpout\Common\Entity\Style\CellAlignment;
 use OpenSpout\Common\Entity\Style\Color;
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Reader\Wrapper\XMLReader;
 use OpenSpout\TestUsingResource;
-use OpenSpout\Writer\Common\Creator\Style\BorderBuilder;
 use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
@@ -25,7 +25,7 @@ final class WriterWithStyleTest extends TestCase
     use RowCreationHelper;
     use TestUsingResource;
 
-    private \OpenSpout\Common\Entity\Style\Style $defaultStyle;
+    private Style $defaultStyle;
 
     protected function setUp(): void
     {
@@ -138,7 +138,7 @@ final class WriterWithStyleTest extends TestCase
         $styleWithFont = (new Style())->setFontBold();
         $styleWithBackground = (new Style())->setBackgroundColor(Color::BLUE);
 
-        $border = (new BorderBuilder())->setBorderBottom(Color::GREEN)->build();
+        $border = new Border(new BorderPart(Border::BOTTOM, Color::GREEN));
         $styleWithBorder = (new Style())->setBorder($border);
 
         $dataRows = [
@@ -387,11 +387,8 @@ final class WriterWithStyleTest extends TestCase
     {
         $fileName = 'test_borders.xlsx';
 
-        $borderBottomGreenThickSolid = (new BorderBuilder())
-            ->setBorderBottom(Color::GREEN, Border::WIDTH_THICK, Border::STYLE_SOLID)->build();
-
-        $borderTopRedThinDashed = (new BorderBuilder())
-            ->setBorderTop(Color::RED, Border::WIDTH_THIN, Border::STYLE_DASHED)->build();
+        $borderBottomGreenThickSolid = new Border(new BorderPart(Border::BOTTOM, Color::GREEN, Border::WIDTH_THICK, Border::STYLE_SOLID));
+        $borderTopRedThinDashed = new Border(new BorderPart(Border::TOP, Color::RED, Border::WIDTH_THIN, Border::STYLE_DASHED));
 
         $styles = [
             (new Style())->setBorder($borderBottomGreenThickSolid),
@@ -419,13 +416,12 @@ final class WriterWithStyleTest extends TestCase
         // Border should be Left, Right, Top, Bottom
         $fileName = 'test_borders_correct_order.xlsx';
 
-        $borders = (new BorderBuilder())
-            ->setBorderRight()
-            ->setBorderTop()
-            ->setBorderLeft()
-            ->setBorderBottom()
-            ->build()
-        ;
+        $borders = new Border(
+            new BorderPart(Border::RIGHT),
+            new BorderPart(Border::TOP),
+            new BorderPart(Border::LEFT),
+            new BorderPart(Border::BOTTOM)
+        );
 
         $style = (new Style())->setBorder($borders);
 
@@ -477,10 +473,10 @@ final class WriterWithStyleTest extends TestCase
     {
         $fileName = 'test_reuse_borders.xlsx';
 
-        $borderLeft = (new BorderBuilder())->setBorderLeft()->build();
+        $borderLeft = new Border(new BorderPart(Border::LEFT));
         $borderLeftStyle = (new Style())->setBorder($borderLeft);
 
-        $borderRight = (new BorderBuilder())->setBorderRight(Color::RED, Border::WIDTH_THICK)->build();
+        $borderRight = new Border(new BorderPart(Border::RIGHT, Color::RED, Border::WIDTH_THICK));
         $borderRightStyle = (new Style())->setBorder($borderRight);
 
         $fontStyle = (new Style())->setFontBold();

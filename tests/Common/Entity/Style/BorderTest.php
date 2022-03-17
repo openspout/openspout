@@ -2,7 +2,6 @@
 
 namespace OpenSpout\Common\Entity\Style;
 
-use OpenSpout\Writer\Common\Creator\Style\BorderBuilder;
 use OpenSpout\Writer\Exception\Border\InvalidNameException;
 use OpenSpout\Writer\Exception\Border\InvalidStyleException;
 use OpenSpout\Writer\Exception\Border\InvalidWidthException;
@@ -13,70 +12,38 @@ use PHPUnit\Framework\TestCase;
  */
 final class BorderTest extends TestCase
 {
-    public function testValidInstance(): void
-    {
-        $noConstructorParams = new Border();
-        $withConstructorParams = new Border([
-            new BorderPart(Border::LEFT),
-        ]);
-        $this->expectNotToPerformAssertions();
-    }
-
     public function testInvalidBorderPart(): void
     {
         $this->expectException(InvalidNameException::class);
 
-        new BorderPart('invalid');
+        new BorderPart(uniqid('invalid'));
     }
 
     public function testInvalidBorderPartStyle(): void
     {
         $this->expectException(InvalidStyleException::class);
 
-        new BorderPart(Border::LEFT, Color::BLACK, Border::WIDTH_THIN, 'invalid');
+        new BorderPart(Border::LEFT, Color::BLACK, Border::WIDTH_THIN, uniqid('invalid'));
     }
 
     public function testInvalidBorderPartWidth(): void
     {
         $this->expectException(InvalidWidthException::class);
 
-        new BorderPart(Border::LEFT, Color::BLACK, 'invalid', Border::STYLE_DASHED);
+        new BorderPart(Border::LEFT, Color::BLACK, uniqid('invalid'), Border::STYLE_DASHED);
     }
 
     public function testNotMoreThanFourPartsPossible(): void
     {
-        $border = new Border();
-        $border
-            ->addPart(new BorderPart(Border::LEFT))
-            ->addPart(new BorderPart(Border::RIGHT))
-            ->addPart(new BorderPart(Border::TOP))
-            ->addPart(new BorderPart(Border::BOTTOM))
-            ->addPart(new BorderPart(Border::LEFT))
-        ;
+        $border = new Border(
+            new BorderPart(Border::LEFT),
+            new BorderPart(Border::RIGHT),
+            new BorderPart(Border::TOP),
+            new BorderPart(Border::BOTTOM),
+            new BorderPart(Border::LEFT),
+        );
 
         static::assertCount(4, $border->getParts(), 'There should never be more than 4 border parts');
-    }
-
-    public function testSetParts(): void
-    {
-        $border = new Border();
-        $border->setParts([
-            new BorderPart(Border::LEFT),
-        ]);
-
-        static::assertCount(1, $border->getParts(), 'It should be possible to set the border parts');
-    }
-
-    public function testBorderBuilderFluent(): void
-    {
-        $border = (new BorderBuilder())
-            ->setBorderBottom()
-            ->setBorderTop()
-            ->setBorderLeft()
-            ->setBorderRight()
-            ->build()
-        ;
-        static::assertCount(4, $border->getParts(), 'The border builder exposes a fluent interface');
     }
 
     /**
@@ -85,15 +52,12 @@ final class BorderTest extends TestCase
     public function testAnyCombinationOfAllowedBorderPartsParams(): void
     {
         $color = Color::BLACK;
-        foreach (BorderPart::getAllowedNames() as $allowedName) {
-            foreach (BorderPart::getAllowedStyles() as $allowedStyle) {
-                foreach (BorderPart::getAllowedWidths() as $allowedWidth) {
-                    $borderPart = new BorderPart($allowedName, $color, $allowedWidth, $allowedStyle);
-                    $border = new Border();
-                    $border->addPart($borderPart);
+        foreach (BorderPart::allowedNames as $allowedName) {
+            foreach (BorderPart::allowedStyles as $allowedStyle) {
+                foreach (BorderPart::allowedWidths as $allowedWidth) {
+                    $border = new Border(new BorderPart($allowedName, $color, $allowedWidth, $allowedStyle));
                     static::assertCount(1, $border->getParts());
 
-                    /** @var BorderPart $part */
                     $part = $border->getParts()[$allowedName];
 
                     static::assertSame($allowedStyle, $part->getStyle());

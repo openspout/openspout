@@ -4,6 +4,7 @@ namespace OpenSpout\Writer\ODS\Manager\Style;
 
 use OpenSpout\Common\Entity\Style\BorderPart;
 use OpenSpout\Common\Entity\Style\CellAlignment;
+use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Common\Manager\OptionsManagerInterface;
 use OpenSpout\Writer\Common\Entity\Options;
 use OpenSpout\Writer\Common\Entity\Worksheet;
@@ -244,7 +245,7 @@ final class StyleManager extends CommonStyleManager
     /**
      * Returns the contents of the "<style:style>" section, inside "<office:automatic-styles>" section.
      */
-    private function getStyleSectionContent(\OpenSpout\Common\Entity\Style\Style $style): string
+    private function getStyleSectionContent(Style $style): string
     {
         $styleIndex = $style->getId() + 1; // 1-based
 
@@ -262,7 +263,7 @@ final class StyleManager extends CommonStyleManager
     /**
      * Returns the contents of the "<style:text-properties>" section, inside "<style:style>" section.
      */
-    private function getTextPropertiesSectionContent(\OpenSpout\Common\Entity\Style\Style $style): string
+    private function getTextPropertiesSectionContent(Style $style): string
     {
         if (!$style->shouldApplyFont()) {
             return '';
@@ -276,7 +277,7 @@ final class StyleManager extends CommonStyleManager
     /**
      * Returns the contents of the fonts definition section, inside "<style:text-properties>" section.
      */
-    private function getFontSectionContent(\OpenSpout\Common\Entity\Style\Style $style): string
+    private function getFontSectionContent(Style $style): string
     {
         $defaultStyle = $this->getDefaultStyle();
         $content = '';
@@ -315,7 +316,7 @@ final class StyleManager extends CommonStyleManager
     /**
      * Returns the contents of the "<style:paragraph-properties>" section, inside "<style:style>" section.
      */
-    private function getParagraphPropertiesSectionContent(\OpenSpout\Common\Entity\Style\Style $style): string
+    private function getParagraphPropertiesSectionContent(Style $style): string
     {
         if (!$style->shouldApplyCellAlignment()) {
             return '';
@@ -329,7 +330,7 @@ final class StyleManager extends CommonStyleManager
     /**
      * Returns the contents of the cell alignment definition for the "<style:paragraph-properties>" section.
      */
-    private function getCellAlignmentSectionContent(\OpenSpout\Common\Entity\Style\Style $style): string
+    private function getCellAlignmentSectionContent(Style $style): string
     {
         return sprintf(
             ' fo:text-align="%s" ',
@@ -359,7 +360,7 @@ final class StyleManager extends CommonStyleManager
     /**
      * Returns the contents of the "<style:table-cell-properties>" section, inside "<style:style>" section.
      */
-    private function getTableCellPropertiesSectionContent(\OpenSpout\Common\Entity\Style\Style $style): string
+    private function getTableCellPropertiesSectionContent(Style $style): string
     {
         $content = '<style:table-cell-properties ';
 
@@ -391,7 +392,7 @@ final class StyleManager extends CommonStyleManager
     /**
      * Returns the contents of the borders definition for the "<style:table-cell-properties>" section.
      */
-    private function getBorderXMLContent(\OpenSpout\Common\Entity\Style\Style $style): string
+    private function getBorderXMLContent(Style $style): string
     {
         $borders = array_map(static function (BorderPart $borderPart) {
             return BorderHelper::serializeBorderPart($borderPart);
@@ -403,7 +404,7 @@ final class StyleManager extends CommonStyleManager
     /**
      * Returns the contents of the background color definition for the "<style:table-cell-properties>" section.
      */
-    private function getBackgroundColorXMLContent(\OpenSpout\Common\Entity\Style\Style $style): string
+    private function getBackgroundColorXMLContent(Style $style): string
     {
         return sprintf(' fo:background-color="#%s" ', $style->getBackgroundColor());
     }

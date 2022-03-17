@@ -2,9 +2,10 @@
 
 namespace OpenSpout\Writer\XLSX\Manager\Style;
 
+use OpenSpout\Common\Entity\Style\Border;
+use OpenSpout\Common\Entity\Style\BorderPart;
 use OpenSpout\Common\Entity\Style\Color;
 use OpenSpout\Common\Entity\Style\Style;
-use OpenSpout\Writer\Common\Creator\Style\BorderBuilder;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -38,8 +39,8 @@ final class StyleRegistryTest extends TestCase
     {
         $styleRegistry = $this->getStyleRegistry();
 
-        $borderLeft = (new BorderBuilder())->setBorderLeft()->build();
-        $borderRight = (new BorderBuilder())->setBorderRight()->build();
+        $borderLeft = new Border(new BorderPart(Border::LEFT));
+        $borderRight = new Border(new BorderPart(Border::RIGHT));
 
         $styleBorderLeft = (new Style())->setBorder($borderLeft);
         $styleBorderRight = (new Style())->setBorder($borderRight);

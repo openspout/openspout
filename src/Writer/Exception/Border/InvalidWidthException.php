@@ -11,6 +11,6 @@ final class InvalidWidthException extends WriterException
     {
         $msg = '%s is not a valid width identifier for a border. Valid identifiers are: %s.';
 
-        parent::__construct(sprintf($msg, $name, implode(',', BorderPart::getAllowedWidths())));
+        parent::__construct(sprintf($msg, $name, implode(',', BorderPart::allowedWidths)));
     }
 }
