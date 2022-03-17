@@ -2,6 +2,7 @@
 
 namespace OpenSpout\Writer\Common\Manager;
 
+use OpenSpout\Common\Entity\Cell\EmptyCell;
 use OpenSpout\Common\Entity\Row;
 
 final class RowManager
@@ -13,7 +14,7 @@ final class RowManager
     public function isEmpty(Row $row): bool
     {
         foreach ($row->getCells() as $cell) {
-            if (!$cell->isEmpty()) {
+            if (!$cell instanceof EmptyCell) {
                 return false;
             }
         }

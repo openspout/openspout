@@ -17,9 +17,9 @@ final class RowManagerTest extends TestCase
         return [
             // cells, expected isEmpty
             [[], true],
-            [[new Cell('')], true],
-            [[new Cell(''), new Cell('')], true],
-            [[new Cell(''), new Cell(''), new Cell('Okay')], false],
+            [[Cell::fromValue('')], true],
+            [[Cell::fromValue(''), Cell::fromValue('')], true],
+            [[Cell::fromValue(''), Cell::fromValue(''), Cell::fromValue('Okay')], false],
         ];
     }
 

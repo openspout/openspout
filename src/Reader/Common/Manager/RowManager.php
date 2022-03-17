@@ -14,7 +14,7 @@ final class RowManager
     public function isEmpty(Row $row): bool
     {
         foreach ($row->getCells() as $cell) {
-            if (!$cell->isEmpty()) {
+            if (!$cell instanceof Cell\EmptyCell) {
                 return false;
             }
         }
@@ -47,7 +47,7 @@ final class RowManager
 
         for ($cellIndex = 0; $cellIndex < $maxCellIndex; ++$cellIndex) {
             if (!isset($rowCells[$cellIndex])) {
-                $row->setCellAtIndex(new Cell(''), $cellIndex);
+                $row->setCellAtIndex(Cell::fromValue(''), $cellIndex);
                 $needsSorting = true;
             }
         }

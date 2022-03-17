@@ -10,7 +10,7 @@ final class RowTest extends \PHPUnit\Framework\TestCase
     public function testSetCells(): void
     {
         $row = new Row([], null);
-        $row->setCells([new Cell(null), new Cell(null)]);
+        $row->setCells([Cell::fromValue(null), Cell::fromValue(null)]);
 
         static::assertSame(2, $row->getNumCells());
     }
@@ -18,11 +18,11 @@ final class RowTest extends \PHPUnit\Framework\TestCase
     public function testSetCellsResets(): void
     {
         $row = new Row([], null);
-        $row->setCells([new Cell(null), new Cell(null)]);
+        $row->setCells([Cell::fromValue(null), Cell::fromValue(null)]);
 
         static::assertSame(2, $row->getNumCells());
 
-        $row->setCells([new Cell(null)]);
+        $row->setCells([Cell::fromValue(null)]);
 
         static::assertSame(1, $row->getNumCells());
     }
@@ -33,7 +33,7 @@ final class RowTest extends \PHPUnit\Framework\TestCase
 
         static::assertSame(0, $row->getNumCells());
 
-        $row->setCells([new Cell(null), new Cell(null)]);
+        $row->setCells([Cell::fromValue(null), Cell::fromValue(null)]);
 
         static::assertSame(2, $row->getNumCells());
     }
@@ -41,7 +41,7 @@ final class RowTest extends \PHPUnit\Framework\TestCase
     public function testGetCellAtIndex(): void
     {
         $row = new Row([], null);
-        $cellMock = new Cell(null);
+        $cellMock = Cell::fromValue(null);
         $row->setCellAtIndex($cellMock, 3);
 
         static::assertSame($cellMock, $row->getCellAtIndex(3));
@@ -51,7 +51,7 @@ final class RowTest extends \PHPUnit\Framework\TestCase
     public function testSetCellAtIndex(): void
     {
         $row = new Row([], null);
-        $cellMock = new Cell(null);
+        $cellMock = Cell::fromValue(null);
         $row->setCellAtIndex($cellMock, 1);
 
         static::assertSame(2, $row->getNumCells());
@@ -61,11 +61,11 @@ final class RowTest extends \PHPUnit\Framework\TestCase
     public function testAddCell(): void
     {
         $row = new Row([], null);
-        $row->setCells([new Cell(null), new Cell(null)]);
+        $row->setCells([Cell::fromValue(null), Cell::fromValue(null)]);
 
         static::assertSame(2, $row->getNumCells());
 
-        $row->addCell(new Cell(null));
+        $row->addCell(Cell::fromValue(null));
 
         static::assertSame(3, $row->getNumCells());
     }

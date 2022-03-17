@@ -343,10 +343,9 @@ final class RowIterator implements RowIteratorInterface
     {
         try {
             $cellValue = $this->cellValueFormatter->extractAndFormatNodeValue($node);
-            $cell = new Cell($cellValue);
+            $cell = Cell::fromValue($cellValue);
         } catch (InvalidValueException $exception) {
-            $cell = new Cell($exception->getInvalidValue());
-            $cell->setType(Cell::TYPE_ERROR);
+            $cell = new Cell\ErrorCell($exception->getInvalidValue(), null);
         }
 
         return $cell;
@@ -366,7 +365,7 @@ final class RowIterator implements RowIteratorInterface
     {
         return
             $this->rowManager->isEmpty($currentRow)
-            && (!isset($lastReadCell) || $lastReadCell->isEmpty())
+            && (null === $lastReadCell || $lastReadCell instanceof Cell\EmptyCell)
         ;
     }
 }

@@ -16,7 +16,7 @@ final class CellManagerTest extends TestCase
     public function testApplyStyle(): void
     {
         $cellManager = new CellManager(new StyleMerger());
-        $cell = new Cell('test');
+        $cell = Cell::fromValue('test');
 
         static::assertFalse($cell->getStyle()->isFontBold());
 

@@ -4,6 +4,13 @@ namespace OpenSpout\Common\Entity;
 
 use DateInterval;
 use DateTimeImmutable;
+use OpenSpout\Common\Entity\Cell\BooleanCell;
+use OpenSpout\Common\Entity\Cell\DateCell;
+use OpenSpout\Common\Entity\Cell\EmptyCell;
+use OpenSpout\Common\Entity\Cell\ErrorCell;
+use OpenSpout\Common\Entity\Cell\FormulaCell;
+use OpenSpout\Common\Entity\Cell\NumericCell;
+use OpenSpout\Common\Entity\Cell\StringCell;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -13,51 +20,58 @@ final class CellTest extends TestCase
 {
     public function testCellTypeNumeric(): void
     {
-        static::assertTrue((new Cell(0))->isNumeric());
-        static::assertTrue((new Cell(1))->isNumeric());
+        static::assertInstanceOf(NumericCell::class, Cell::fromValue(0));
+        static::assertInstanceOf(NumericCell::class, Cell::fromValue(1));
+        static::assertInstanceOf(NumericCell::class, Cell::fromValue(10.1));
+        static::assertInstanceOf(NumericCell::class, Cell::fromValue(10.10000000000000000000001));
+        static::assertInstanceOf(NumericCell::class, Cell::fromValue(0x539));
+        static::assertInstanceOf(NumericCell::class, Cell::fromValue(02471));
+        static::assertInstanceOf(NumericCell::class, Cell::fromValue(0b10100111001));
+        static::assertInstanceOf(NumericCell::class, Cell::fromValue(1337e0));
     }
 
     public function testCellTypeString(): void
     {
-        static::assertTrue((new Cell('String!'))->isString());
+        static::assertInstanceOf(StringCell::class, Cell::fromValue('String!'));
     }
 
     public function testCellTypeEmptyString(): void
     {
-        static::assertTrue((new Cell(''))->isEmpty());
+        static::assertInstanceOf(EmptyCell::class, Cell::fromValue(''));
     }
 
     public function testCellTypeEmptyNull(): void
     {
-        static::assertTrue((new Cell(null))->isEmpty());
+        static::assertInstanceOf(EmptyCell::class, Cell::fromValue(null));
     }
 
     public function testCellTypeBool(): void
     {
-        static::assertTrue((new Cell(true))->isBoolean());
-        static::assertTrue((new Cell(false))->isBoolean());
+        static::assertInstanceOf(BooleanCell::class, Cell::fromValue(true));
+        static::assertInstanceOf(BooleanCell::class, Cell::fromValue(false));
     }
 
     public function testCellTypeDate(): void
     {
-        static::assertTrue((new Cell(new DateTimeImmutable()))->isDate());
-        static::assertTrue((new Cell(new DateInterval('P2Y4DT6H8M')))->isDate());
+        static::assertInstanceOf(DateCell::class, Cell::fromValue(new DateTimeImmutable()));
+        static::assertInstanceOf(DateCell::class, Cell::fromValue(new DateInterval('P2Y4DT6H8M')));
     }
 
     public function testCellTypeFormula(): void
     {
-        static::assertTrue((new Cell('=SUM(A1:A2)'))->isFormula());
+        static::assertInstanceOf(FormulaCell::class, Cell::fromValue('=SUM(A1:A2)'));
     }
 
     public function testCellTypeError(): void
     {
-        static::assertTrue((new Cell([]))->isError());
+        static::assertInstanceOf(ErrorCell::class, Cell::fromValue([]));
     }
 
     public function testErroredCellValueShouldBeNull(): void
     {
-        $cell = new Cell([]);
-        static::assertTrue($cell->isError());
+        $cell = Cell::fromValue([]);
+        static::assertInstanceOf(ErrorCell::class, $cell);
         static::assertNull($cell->getValue());
+        static::assertSame([], $cell->getRawValue());
     }
 }

@@ -2,99 +2,27 @@
 
 namespace OpenSpout\Common\Entity;
 
+use DateInterval;
+use DateTimeInterface;
+use OpenSpout\Common\Entity\Cell\BooleanCell;
+use OpenSpout\Common\Entity\Cell\DateCell;
+use OpenSpout\Common\Entity\Cell\EmptyCell;
+use OpenSpout\Common\Entity\Cell\ErrorCell;
+use OpenSpout\Common\Entity\Cell\FormulaCell;
+use OpenSpout\Common\Entity\Cell\NumericCell;
+use OpenSpout\Common\Entity\Cell\StringCell;
 use OpenSpout\Common\Entity\Style\Style;
-use OpenSpout\Common\Helper\CellTypeHelper;
 
-final class Cell
+abstract class Cell
 {
-    /**
-     * Numeric cell type (whole numbers, fractional numbers, dates).
-     */
-    public const TYPE_NUMERIC = 0;
-
-    /**
-     * String (text) cell type.
-     */
-    public const TYPE_STRING = 1;
-
-    /**
-     * Formula cell type
-     * Not used at the moment.
-     */
-    public const TYPE_FORMULA = 2;
-
-    /**
-     * Empty cell type.
-     */
-    public const TYPE_EMPTY = 3;
-
-    /**
-     * Boolean cell type.
-     */
-    public const TYPE_BOOLEAN = 4;
-
-    /**
-     * Date cell type.
-     */
-    public const TYPE_DATE = 5;
-
-    /**
-     * Error cell type.
-     */
-    public const TYPE_ERROR = 6;
-
-    /**
-     * The value of this cell.
-     *
-     * @var null|mixed
-     */
-    private $value;
-
-    /**
-     * The cell type.
-     */
-    private ?int $type;
-
-    /**
-     * The cell style.
-     */
     private Style $style;
 
-    /**
-     * @param null|mixed $value
-     */
-    public function __construct($value, Style $style = null)
+    public function __construct(?Style $style)
     {
-        $this->setValue($value);
         $this->setStyle($style);
     }
 
-    public function __toString(): string
-    {
-        return (string) $this->getValue();
-    }
-
-    /**
-     * @param null|mixed $value
-     */
-    public function setValue($value): void
-    {
-        $this->value = $value;
-        $this->type = $this->detectType($value);
-    }
-
-    /**
-     * @return null|mixed
-     */
-    public function getValue(): mixed
-    {
-        return !$this->isError() ? $this->value : null;
-    }
-
-    public function getValueEvenIfError(): mixed
-    {
-        return $this->value;
-    }
+    abstract public function getValue(): mixed;
 
     public function setStyle(?Style $style): void
     {
@@ -106,77 +34,27 @@ final class Cell
         return $this->style;
     }
 
-    public function getType(): ?int
+    final public static function fromValue(mixed $value, ?Style $style = null): self
     {
-        return $this->type;
-    }
-
-    public function setType(int $type): void
-    {
-        $this->type = $type;
-    }
-
-    public function isBoolean(): bool
-    {
-        return self::TYPE_BOOLEAN === $this->type;
-    }
-
-    public function isEmpty(): bool
-    {
-        return self::TYPE_EMPTY === $this->type;
-    }
-
-    public function isNumeric(): bool
-    {
-        return self::TYPE_NUMERIC === $this->type;
-    }
-
-    public function isString(): bool
-    {
-        return self::TYPE_STRING === $this->type;
-    }
-
-    public function isDate(): bool
-    {
-        return self::TYPE_DATE === $this->type;
-    }
-
-    public function isFormula(): bool
-    {
-        return self::TYPE_FORMULA === $this->type;
-    }
-
-    public function isError(): bool
-    {
-        return self::TYPE_ERROR === $this->type;
-    }
-
-    /**
-     * Get the current value type.
-     *
-     * @param null|mixed $value
-     */
-    private function detectType($value): int
-    {
-        if (CellTypeHelper::isBoolean($value)) {
-            return self::TYPE_BOOLEAN;
+        if (\is_bool($value)) {
+            return new BooleanCell($value, $style);
         }
-        if (CellTypeHelper::isEmpty($value)) {
-            return self::TYPE_EMPTY;
+        if (null === $value || '' === $value) {
+            return new EmptyCell($value, $style);
         }
-        if (CellTypeHelper::isNumeric($value)) {
-            return self::TYPE_NUMERIC;
+        if (\is_int($value) || \is_float($value)) {
+            return new NumericCell($value, $style);
         }
-        if (CellTypeHelper::isDateTimeOrDateInterval($value)) {
-            return self::TYPE_DATE;
+        if ($value instanceof DateTimeInterface || $value instanceof DateInterval) {
+            return new DateCell($value, $style);
         }
-        if (CellTypeHelper::isFormula($value)) {
-            return self::TYPE_FORMULA;
+        if (\is_string($value) && isset($value[0]) && '=' === $value[0]) {
+            return new FormulaCell($value, $style);
         }
-        if (CellTypeHelper::isNonEmptyString($value)) {
-            return self::TYPE_STRING;
+        if (\is_string($value)) {
+            return new StringCell($value, $style);
         }
 
-        return self::TYPE_ERROR;
+        return new ErrorCell($value, $style);
     }
 }

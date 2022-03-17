@@ -2,6 +2,7 @@
 
 namespace OpenSpout\Writer\CSV;
 
+use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\EncodingHelper;
@@ -72,7 +73,10 @@ final class Writer extends WriterAbstract
         $fieldDelimiter = $this->optionsManager->getOption(Options::FIELD_DELIMITER);
         $fieldEnclosure = $this->optionsManager->getOption(Options::FIELD_ENCLOSURE);
 
-        $wasWriteSuccessful = fputcsv($this->filePointer, $row->getCells(), $fieldDelimiter, $fieldEnclosure, '');
+        $cells = array_map(static function (Cell $value): string {
+            return (string) $value->getValue();
+        }, $row->getCells());
+        $wasWriteSuccessful = fputcsv($this->filePointer, $cells, $fieldDelimiter, $fieldEnclosure, '');
         if (false === $wasWriteSuccessful) {
             throw new IOException('Unable to write data');
         }

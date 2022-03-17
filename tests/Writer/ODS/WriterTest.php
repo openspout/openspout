@@ -336,8 +336,7 @@ final class WriterTest extends TestCase
     {
         $fileName = 'test_add_row_should_support_cell_in_error.ods';
 
-        $cell = WriterEntityFactory::createCell('#DIV/0');
-        $cell->setType(Cell::TYPE_ERROR);
+        $cell = new Cell\ErrorCell('#DIV/0', null);
 
         $row = WriterEntityFactory::createRow([$cell]);
 

@@ -91,7 +91,7 @@ final class WriterEntityFactory
     public static function createRowFromArray(array $cellValues = [], Style $rowStyle = null): Row
     {
         $cells = array_map(static function (mixed $cellValue): Cell {
-            return new Cell($cellValue);
+            return Cell::fromValue($cellValue);
         }, $cellValues);
 
         return new Row($cells, $rowStyle);
@@ -102,6 +102,6 @@ final class WriterEntityFactory
      */
     public static function createCell($cellValue, Style $cellStyle = null): Cell
     {
-        return new Cell($cellValue, $cellStyle);
+        return Cell::fromValue($cellValue, $cellStyle);
     }
 }
