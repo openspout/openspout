@@ -4,7 +4,6 @@ namespace OpenSpout\Reader\ODS;
 
 use DateTimeImmutable;
 use OpenSpout\Common\Exception\IOException;
-use OpenSpout\Reader\Common\Creator\ReaderEntityFactory;
 use OpenSpout\Reader\Exception\IteratorNotRewindableException;
 use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
@@ -303,7 +302,7 @@ final class ReaderTest extends TestCase
         $this->expectException(IteratorNotRewindableException::class);
 
         $resourcePath = $this->getResourcePath('one_sheet_with_strings.ods');
-        $reader = ReaderEntityFactory::createODSReader();
+        $reader = Reader::factory();
         $reader->open($resourcePath);
 
         foreach ($reader->getSheetIterator() as $sheet) {
@@ -324,7 +323,7 @@ final class ReaderTest extends TestCase
         $allRows = [];
         $resourcePath = $this->getResourcePath('two_sheets_with_strings.ods');
 
-        $reader = ReaderEntityFactory::createODSReader();
+        $reader = Reader::factory();
         $reader->open($resourcePath);
 
         foreach ($reader->getSheetIterator() as $sheet);
@@ -363,17 +362,17 @@ final class ReaderTest extends TestCase
 
     public function testReadWithUnsupportedCustomStreamWrapper(): void
     {
-        $this->expectException(IOException::class);
+        $reader = Reader::factory();
 
-        $reader = ReaderEntityFactory::createODSReader();
+        $this->expectException(IOException::class);
         $reader->open('unsupported://foobar');
     }
 
     public function testReadWithSupportedCustomStreamWrapper(): void
     {
-        $this->expectException(IOException::class);
+        $reader = Reader::factory();
 
-        $reader = ReaderEntityFactory::createODSReader();
+        $this->expectException(IOException::class);
         $reader->open('php://memory');
     }
 
@@ -458,7 +457,7 @@ final class ReaderTest extends TestCase
         $allRows = [];
         $resourcePath = $this->getResourcePath($fileName);
 
-        $reader = ReaderEntityFactory::createODSReader();
+        $reader = Reader::factory();
         $reader->setShouldFormatDates($shouldFormatDates);
         $reader->setShouldPreserveEmptyRows($shouldPreserveEmptyRows);
         $reader->open($resourcePath);

@@ -17,35 +17,28 @@ final class ReaderFactoryTest extends TestCase
     {
         $validCsv = $this->getResourcePath('csv_test_create_from_file.csv');
         $reader = ReaderFactory::createFromFile($validCsv);
-        static::assertInstanceOf('OpenSpout\Reader\CSV\Reader', $reader);
+        static::assertInstanceOf(\OpenSpout\Reader\CSV\Reader::class, $reader);
     }
 
     public function testCreateFromFileCSVAllCaps(): void
     {
         $validCsv = $this->getResourcePath('csv_test_create_from_file.CSV');
         $reader = ReaderFactory::createFromFile($validCsv);
-        static::assertInstanceOf('OpenSpout\Reader\CSV\Reader', $reader);
+        static::assertInstanceOf(\OpenSpout\Reader\CSV\Reader::class, $reader);
     }
 
     public function testCreateFromFileODS(): void
     {
         $validOds = $this->getResourcePath('csv_test_create_from_file.ods');
         $reader = ReaderFactory::createFromFile($validOds);
-        static::assertInstanceOf('OpenSpout\Reader\ODS\Reader', $reader);
+        static::assertInstanceOf(\OpenSpout\Reader\ODS\Reader::class, $reader);
     }
 
     public function testCreateFromFileXLSX(): void
     {
         $validXlsx = $this->getResourcePath('csv_test_create_from_file.xlsx');
         $reader = ReaderFactory::createFromFile($validXlsx);
-        static::assertInstanceOf('OpenSpout\Reader\XLSX\Reader', $reader);
-    }
-
-    public function testCreateReaderShouldThrowWithUnsupportedType(): void
-    {
-        $this->expectException(UnsupportedTypeException::class);
-
-        ReaderFactory::createFromType('unsupportedType');
+        static::assertInstanceOf(\OpenSpout\Reader\XLSX\Reader::class, $reader);
     }
 
     public function testCreateFromFileUnsupported(): void
@@ -58,7 +51,7 @@ final class ReaderFactoryTest extends TestCase
     public function testCreateFromFileMissingShouldWork(): void
     {
         $notExistingFile = 'thereisnosuchfile.csv';
-        $reader = ReaderEntityFactory::createReaderFromFile($notExistingFile);
-        static::assertInstanceOf('OpenSpout\Reader\CSV\Reader', $reader);
+        $reader = ReaderFactory::createFromFile($notExistingFile);
+        static::assertInstanceOf(\OpenSpout\Reader\CSV\Reader::class, $reader);
     }
 }

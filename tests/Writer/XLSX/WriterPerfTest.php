@@ -45,7 +45,7 @@ final class WriterPerfTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = WriterEntityFactory::createXLSXWriter();
+        $writer = Writer::factory();
         $writer->setShouldUseInlineStrings($shouldUseInlineStrings);
         $writer->setShouldCreateNewSheetsAutomatically(true);
 

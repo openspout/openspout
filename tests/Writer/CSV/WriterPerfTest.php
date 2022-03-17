@@ -36,7 +36,7 @@ final class WriterPerfTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = WriterEntityFactory::createCSVWriter();
+        $writer = Writer::factory();
         $writer->openToFile($resourcePath);
 
         for ($i = 1; $i <= $numRows; ++$i) {

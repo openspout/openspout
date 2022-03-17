@@ -3,7 +3,6 @@
 namespace OpenSpout\Writer\ODS;
 
 use OpenSpout\TestUsingResource;
-use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 use OpenSpout\Writer\Common\Entity\Sheet;
 use OpenSpout\Writer\Exception\InvalidSheetNameException;
 use OpenSpout\Writer\RowCreationHelper;
@@ -52,7 +51,7 @@ final class SheetTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = WriterEntityFactory::createODSWriter();
+        $writer = Writer::factory();
         $writer->openToFile($resourcePath);
 
         $customSheetName = 'Sheet name';
@@ -83,7 +82,7 @@ final class SheetTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = WriterEntityFactory::createODSWriter();
+        $writer = Writer::factory();
         $writer->openToFile($resourcePath);
 
         return $writer;
@@ -108,7 +107,7 @@ final class SheetTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = WriterEntityFactory::createODSWriter();
+        $writer = Writer::factory();
         $writer->openToFile($resourcePath);
 
         $writer->addRow($this->createRowFromValues(['ods--sheet1--11', 'ods--sheet1--12']));
@@ -125,7 +124,7 @@ final class SheetTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = WriterEntityFactory::createODSWriter();
+        $writer = Writer::factory();
         $writer->openToFile($resourcePath);
 
         $sheet = $writer->getCurrentSheet();

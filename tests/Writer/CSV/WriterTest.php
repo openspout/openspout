@@ -6,7 +6,6 @@ use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\EncodingHelper;
 use OpenSpout\TestUsingResource;
-use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
 use OpenSpout\Writer\RowCreationHelper;
 use PHPUnit\Framework\TestCase;
@@ -27,7 +26,7 @@ final class WriterTest extends TestCase
         $this->createUnwritableFolderIfNeeded();
         $filePath = $this->getGeneratedUnwritableResourcePath($fileName);
 
-        $writer = WriterEntityFactory::createCSVWriter();
+        $writer = Writer::factory();
         @$writer->openToFile($filePath);
         $writer->addRow($this->createRowFromValues(['csv--11', 'csv--12']));
         $writer->close();
@@ -37,7 +36,7 @@ final class WriterTest extends TestCase
     {
         $this->expectException(WriterNotOpenedException::class);
 
-        $writer = WriterEntityFactory::createCSVWriter();
+        $writer = Writer::factory();
         $writer->addRow($this->createRowFromValues(['csv--11', 'csv--12']));
         $writer->close();
     }
@@ -46,7 +45,7 @@ final class WriterTest extends TestCase
     {
         $this->expectException(WriterNotOpenedException::class);
 
-        $writer = WriterEntityFactory::createCSVWriter();
+        $writer = Writer::factory();
         $writer->addRow($this->createRowFromValues(['csv--11', 'csv--12']));
         $writer->close();
     }
@@ -57,7 +56,7 @@ final class WriterTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = WriterEntityFactory::createCSVWriter();
+        $writer = Writer::factory();
         $writer->close(); // This call should not cause any error
 
         $writer->openToFile($resourcePath);
@@ -157,7 +156,7 @@ final class WriterTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = WriterEntityFactory::createCSVWriter();
+        $writer = Writer::factory();
         $writer->setFieldDelimiter($fieldDelimiter);
         $writer->setFieldEnclosure($fieldEnclosure);
         $writer->setShouldAddBOM($shouldAddBOM);

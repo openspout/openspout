@@ -2,7 +2,6 @@
 
 namespace OpenSpout\Reader\ODS;
 
-use OpenSpout\Reader\Common\Creator\ReaderEntityFactory;
 use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
@@ -34,7 +33,7 @@ final class ReaderPerfTest extends Testcase
         $fileName = 'ods_with_one_million_rows.ods';
         $resourcePath = $this->getResourcePath($fileName);
 
-        $reader = ReaderEntityFactory::createODSReader();
+        $reader = Reader::factory();
         $reader->open($resourcePath);
 
         $numReadRows = 0;

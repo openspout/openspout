@@ -14,12 +14,12 @@ $existingFilePath = 'path/to/orders.xlsx';
 $newFilePath = 'path/to/new-orders.xlsx';
 
 // we need a reader to read the existing file...
-$reader = ReaderEntityFactory::createReaderFromFile($existingFilePath);
+$reader = \OpenSpout\Reader\XLSX\Reader::factory();
 $reader->setShouldFormatDates(true); // this is to be able to copy dates
 $reader->open($existingFilePath);
 
 // ... and a writer to create the new file
-$writer = WriterEntityFactory::createWriterFromFile($newFilePath);
+$writer = \OpenSpout\Writer\XLSX\Writer::factory();
 $writer->openToFile($newFilePath);
 
 // let's read the entire spreadsheet...

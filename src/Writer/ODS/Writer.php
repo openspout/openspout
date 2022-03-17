@@ -3,6 +3,8 @@
 namespace OpenSpout\Writer\ODS;
 
 use OpenSpout\Writer\Common\Entity\Options;
+use OpenSpout\Writer\ODS\Creator\ManagerFactory;
+use OpenSpout\Writer\ODS\Manager\OptionsManager;
 use OpenSpout\Writer\WriterMultiSheetsAbstract;
 
 /**
@@ -12,6 +14,16 @@ final class Writer extends WriterMultiSheetsAbstract
 {
     /** @var string Content-Type value for the header */
     protected static string $headerContentType = 'application/vnd.oasis.opendocument.spreadsheet';
+
+    public function __construct(OptionsManager $optionsManager, ManagerFactory $managerFactory)
+    {
+        parent::__construct($optionsManager, $managerFactory);
+    }
+
+    public static function factory(): self
+    {
+        return new self(new OptionsManager(), new ManagerFactory());
+    }
 
     /**
      * Sets a custom temporary folder for creating intermediate files/folders.

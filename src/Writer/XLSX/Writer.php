@@ -4,6 +4,8 @@ namespace OpenSpout\Writer\XLSX;
 
 use OpenSpout\Writer\Common\Entity\Options;
 use OpenSpout\Writer\WriterMultiSheetsAbstract;
+use OpenSpout\Writer\XLSX\Creator\ManagerFactory;
+use OpenSpout\Writer\XLSX\Manager\OptionsManager;
 
 /**
  * This class provides base support to write data to XLSX files.
@@ -12,6 +14,16 @@ final class Writer extends WriterMultiSheetsAbstract
 {
     /** @var string Content-Type value for the header */
     protected static string $headerContentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+
+    public function __construct(OptionsManager $optionsManager, ManagerFactory $managerFactory)
+    {
+        parent::__construct($optionsManager, $managerFactory);
+    }
+
+    public static function factory(): self
+    {
+        return new self(new OptionsManager(), new ManagerFactory());
+    }
 
     /**
      * Sets a custom temporary folder for creating intermediate files/folders.

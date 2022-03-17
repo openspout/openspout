@@ -2,7 +2,6 @@
 
 namespace OpenSpout\Reader\CSV;
 
-use OpenSpout\Reader\Common\Creator\ReaderEntityFactory;
 use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
@@ -34,7 +33,7 @@ final class ReaderPerfTest extends TestCase
         $fileName = 'csv_with_one_million_rows.csv';
         $resourcePath = $this->getResourcePath($fileName);
 
-        $reader = ReaderEntityFactory::createCSVReader();
+        $reader = Reader::factory();
         $reader->open($resourcePath);
 
         $numReadRows = 0;

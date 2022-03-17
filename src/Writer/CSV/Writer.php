@@ -7,6 +7,7 @@ use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\EncodingHelper;
 use OpenSpout\Writer\Common\Entity\Options;
+use OpenSpout\Writer\CSV\Manager\OptionsManager;
 use OpenSpout\Writer\WriterAbstract;
 
 /**
@@ -21,6 +22,16 @@ final class Writer extends WriterAbstract
     protected static string $headerContentType = 'text/csv; charset=UTF-8';
 
     private int $lastWrittenRowIndex = 0;
+
+    public function __construct(OptionsManager $optionsManager)
+    {
+        parent::__construct($optionsManager);
+    }
+
+    public static function factory(): self
+    {
+        return new self(new OptionsManager());
+    }
 
     /**
      * Sets the field delimiter for the CSV.

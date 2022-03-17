@@ -3,7 +3,6 @@
 namespace OpenSpout\Writer\XLSX;
 
 use OpenSpout\TestUsingResource;
-use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 use OpenSpout\Writer\Common\Entity\Sheet;
 use OpenSpout\Writer\Exception\InvalidSheetNameException;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
@@ -54,7 +53,7 @@ final class SheetTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = WriterEntityFactory::createXLSXWriter();
+        $writer = Writer::factory();
         $writer->openToFile($resourcePath);
 
         $customSheetName = 'Sheet name';
@@ -83,7 +82,7 @@ final class SheetTest extends TestCase
     public function testThrowsIfWorkbookIsNotInitialized(): void
     {
         $this->expectException(WriterNotOpenedException::class);
-        $writer = WriterEntityFactory::createXLSXWriter();
+        $writer = Writer::factory();
 
         $writer->addRow($this->createRowFromValues([]));
     }
@@ -94,7 +93,7 @@ final class SheetTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = WriterEntityFactory::createXLSXWriter();
+        $writer = Writer::factory();
         $writer->setDefaultColumnWidth(10.0);
         $writer->setDefaultRowHeight(20.0);
         $writer->openToFile($resourcePath);
@@ -117,7 +116,7 @@ final class SheetTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = WriterEntityFactory::createXLSXWriter();
+        $writer = Writer::factory();
         $writer->setDefaultColumnWidth(10.0);
         $writer->openToFile($resourcePath);
 
@@ -139,7 +138,7 @@ final class SheetTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = WriterEntityFactory::createXLSXWriter();
+        $writer = Writer::factory();
         $writer->openToFile($resourcePath);
         $writer->setColumnWidth(100.0, 1);
         $writer->addRow($this->createRowFromValues(['xlsx--11', 'xlsx--12']));
@@ -159,7 +158,7 @@ final class SheetTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = WriterEntityFactory::createXLSXWriter();
+        $writer = Writer::factory();
         $writer->openToFile($resourcePath);
         $writer->setColumnWidth(100.0, 1, 2, 3);
         $writer->addRow($this->createRowFromValues(['xlsx--11', 'xlsx--12', 'xlsx--13']));
@@ -179,7 +178,7 @@ final class SheetTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = WriterEntityFactory::createXLSXWriter();
+        $writer = Writer::factory();
         $writer->openToFile($resourcePath);
         $writer->setColumnWidth(50.0, 1, 3, 4, 6);
         $writer->setColumnWidth(100.0, 2, 5);
@@ -204,7 +203,7 @@ final class SheetTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = WriterEntityFactory::createXLSXWriter();
+        $writer = Writer::factory();
         $writer->openToFile($resourcePath);
         $writer->setColumnWidthForRange(50.0, 1, 3);
         $writer->addRow($this->createRowFromValues(['xlsx--11', 'xlsx--12', 'xlsx--13']));
@@ -224,7 +223,7 @@ final class SheetTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = WriterEntityFactory::createXLSXWriter();
+        $writer = Writer::factory();
         $writer->openToFile($resourcePath);
         $writer->addRow($this->createRowFromValues([1]));
         $writer->addRow($this->createRowFromValues([2]));
@@ -244,7 +243,7 @@ final class SheetTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = WriterEntityFactory::createXLSXWriter();
+        $writer = Writer::factory();
         $writer->openToFile($resourcePath);
 
         $writer->getCurrentSheet()->setSheetView(
@@ -278,7 +277,7 @@ final class SheetTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = WriterEntityFactory::createXLSXWriter();
+        $writer = Writer::factory();
         $writer->openToFile($resourcePath);
 
         $sheet = $writer->getCurrentSheet();
@@ -298,7 +297,7 @@ final class SheetTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = WriterEntityFactory::createXLSXWriter();
+        $writer = Writer::factory();
         $writer->openToFile($resourcePath);
 
         $writer->addRow($this->createRowFromValues(['xlsx--sheet1--11', 'xlsx--sheet1--12']));
@@ -315,7 +314,7 @@ final class SheetTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = WriterEntityFactory::createXLSXWriter();
+        $writer = Writer::factory();
         $writer->openToFile($resourcePath);
 
         $sheet = $writer->getCurrentSheet();

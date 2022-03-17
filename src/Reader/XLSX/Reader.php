@@ -4,10 +4,11 @@ namespace OpenSpout\Reader\XLSX;
 
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\Escaper\XLSX;
-use OpenSpout\Common\Manager\OptionsManagerInterface;
 use OpenSpout\Reader\Common\Entity\Options;
 use OpenSpout\Reader\ReaderAbstract;
+use OpenSpout\Reader\XLSX\Manager\OptionsManager;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory;
+use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\MemoryLimit;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsManager;
 use OpenSpout\Reader\XLSX\Manager\SheetManager;
 use OpenSpout\Reader\XLSX\Manager\WorkbookRelationshipsManager;
@@ -28,11 +29,26 @@ final class Reader extends ReaderAbstract
     private CachingStrategyFactory $cachingStrategyFactory;
 
     public function __construct(
-        OptionsManagerInterface $optionsManager,
+        OptionsManager $optionsManager,
         CachingStrategyFactory $cachingStrategyFactory
     ) {
         parent::__construct($optionsManager);
         $this->cachingStrategyFactory = $cachingStrategyFactory;
+    }
+
+    public static function factory(): self
+    {
+        $optionsManager = new OptionsManager();
+
+        $memoryLimit = \ini_get('memory_limit');
+        \assert(false !== $memoryLimit);
+
+        return new self(
+            $optionsManager,
+            new CachingStrategyFactory(
+                new MemoryLimit($memoryLimit)
+            )
+        );
     }
 
     /**

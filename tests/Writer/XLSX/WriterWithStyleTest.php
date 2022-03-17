@@ -2,6 +2,7 @@
 
 namespace OpenSpout\Writer\XLSX;
 
+use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\Border;
 use OpenSpout\Common\Entity\Style\BorderPart;
@@ -10,7 +11,6 @@ use OpenSpout\Common\Entity\Style\Color;
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Reader\Wrapper\XMLReader;
 use OpenSpout\TestUsingResource;
-use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
 use OpenSpout\Writer\RowCreationHelper;
@@ -34,17 +34,17 @@ final class WriterWithStyleTest extends TestCase
 
     public function testAddRowShouldThrowExceptionIfCallAddRowBeforeOpeningWriter(): void
     {
-        $this->expectException(WriterNotOpenedException::class);
+        $writer = Writer::factory();
 
-        $writer = WriterEntityFactory::createXLSXWriter();
+        $this->expectException(WriterNotOpenedException::class);
         $writer->addRow($this->createStyledRowFromValues(['xlsx--11', 'xlsx--12'], $this->defaultStyle));
     }
 
     public function testAddRowShouldThrowExceptionIfCalledBeforeOpeningWriter(): void
     {
-        $this->expectException(WriterNotOpenedException::class);
+        $writer = Writer::factory();
 
-        $writer = WriterEntityFactory::createXLSXWriter();
+        $this->expectException(WriterNotOpenedException::class);
         $writer->addRow($this->createStyledRowFromValues(['xlsx--11', 'xlsx--12'], $this->defaultStyle));
     }
 
@@ -300,10 +300,10 @@ final class WriterWithStyleTest extends TestCase
         $boldStyle = (new Style())->setFontBold();
         $underlineStyle = (new Style())->setFontUnderline();
 
-        $dataRow = WriterEntityFactory::createRow([
-            WriterEntityFactory::createCell('xlsx--11', $boldStyle),
-            WriterEntityFactory::createCell('xlsx--12', $underlineStyle),
-            WriterEntityFactory::createCell('xlsx--13', $underlineStyle),
+        $dataRow = new Row([
+            Cell::fromValue('xlsx--11', $boldStyle),
+            Cell::fromValue('xlsx--12', $underlineStyle),
+            Cell::fromValue('xlsx--13', $underlineStyle),
         ]);
 
         $this->writeToXLSXFile([$dataRow], $fileName);
@@ -537,7 +537,7 @@ final class WriterWithStyleTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = WriterEntityFactory::createXLSXWriter();
+        $writer = Writer::factory();
         $writer->setShouldUseInlineStrings(true);
 
         $writer->openToFile($resourcePath);
@@ -555,7 +555,7 @@ final class WriterWithStyleTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = WriterEntityFactory::createXLSXWriter();
+        $writer = Writer::factory();
         $writer->setShouldUseInlineStrings(true);
         $writer->setDefaultRowStyle($defaultStyle);
 

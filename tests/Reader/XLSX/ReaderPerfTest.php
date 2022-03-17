@@ -2,7 +2,6 @@
 
 namespace OpenSpout\Reader\XLSX;
 
-use OpenSpout\Reader\Common\Creator\ReaderEntityFactory;
 use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
@@ -43,7 +42,7 @@ final class ReaderPerfTest extends TestCase
         $fileName = ($shouldUseInlineStrings) ? 'xlsx_with_300k_rows_and_inline_strings.xlsx' : 'xlsx_with_300k_rows_and_shared_strings.xlsx';
         $resourcePath = $this->getResourcePath($fileName);
 
-        $reader = ReaderEntityFactory::createXLSXReader();
+        $reader = Reader::factory();
         $reader->open($resourcePath);
 
         $numReadRows = 0;
