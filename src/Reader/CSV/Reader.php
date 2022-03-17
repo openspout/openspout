@@ -8,7 +8,7 @@ use OpenSpout\Reader\CSV\Manager\OptionsManager;
 use OpenSpout\Reader\ReaderAbstract;
 
 /**
- * This class provides support to read data from a CSV file.
+ * @extends ReaderAbstract<SheetIterator>
  */
 final class Reader extends ReaderAbstract
 {

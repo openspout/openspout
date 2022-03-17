@@ -3,7 +3,7 @@
 namespace OpenSpout\Reader;
 
 /**
- * Interface ReaderInterface.
+ * @template T of SheetIteratorInterface
  */
 interface ReaderInterface
 {
@@ -22,7 +22,7 @@ interface ReaderInterface
      *
      * @throws \OpenSpout\Reader\Exception\ReaderNotOpenedException If called before opening the reader
      *
-     * @return SheetIteratorInterface To iterate over sheets
+     * @return T
      */
     public function getSheetIterator(): SheetIteratorInterface;
 

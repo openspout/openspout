@@ -8,6 +8,10 @@ use OpenSpout\Reader\Common\Entity\Options;
 use OpenSpout\Reader\Exception\ReaderException;
 use OpenSpout\Reader\Exception\ReaderNotOpenedException;
 
+/**
+ * @template T of SheetIteratorInterface
+ * @implements ReaderInterface<T>
+ */
 abstract class ReaderAbstract implements ReaderInterface
 {
     /** @var OptionsManagerInterface Writer options manager */
@@ -25,7 +29,7 @@ abstract class ReaderAbstract implements ReaderInterface
     /**
      * Sets whether date/time values should be returned as PHP objects or be formatted as strings.
      */
-    public function setShouldFormatDates(bool $shouldFormatDates): self
+    public function setShouldFormatDates(bool $shouldFormatDates): static
     {
         $this->optionsManager->setOption(Options::SHOULD_FORMAT_DATES, $shouldFormatDates);
 
@@ -35,7 +39,7 @@ abstract class ReaderAbstract implements ReaderInterface
     /**
      * Sets whether empty rows should be returned or skipped.
      */
-    public function setShouldPreserveEmptyRows(bool $shouldPreserveEmptyRows): self
+    public function setShouldPreserveEmptyRows(bool $shouldPreserveEmptyRows): static
     {
         $this->optionsManager->setOption(Options::SHOULD_PRESERVE_EMPTY_ROWS, $shouldPreserveEmptyRows);
 
@@ -84,7 +88,7 @@ abstract class ReaderAbstract implements ReaderInterface
      *
      * @throws \OpenSpout\Reader\Exception\ReaderNotOpenedException If called before opening the reader
      *
-     * @return SheetIteratorInterface To iterate over sheets
+     * @return T
      */
     public function getSheetIterator(): SheetIteratorInterface
     {
@@ -124,7 +128,7 @@ abstract class ReaderAbstract implements ReaderInterface
     /**
      * Returns an iterator to iterate over sheets.
      *
-     * @return SheetIteratorInterface To iterate over sheets
+     * @return T To iterate over sheets
      */
     abstract protected function getConcreteSheetIterator(): SheetIteratorInterface;
 

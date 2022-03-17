@@ -6,6 +6,11 @@ parameters:
 			path: src/Common/Entity/Row.php
 
 		-
+			message: "#^Method OpenSpout\\\\Reader\\\\Common\\\\Creator\\\\ReaderFactory\\:\\:createFromFile\\(\\) return type with generic interface OpenSpout\\\\Reader\\\\ReaderInterface does not specify its types\\: T$#"
+			count: 1
+			path: src/Reader/Common/Creator/ReaderFactory.php
+
+		-
 			message: "#^Cannot access offset 0 on callable\\(\\)\\: mixed\\.$#"
 			count: 1
 			path: src/Reader/Common/XMLProcessor.php

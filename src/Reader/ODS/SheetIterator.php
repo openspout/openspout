@@ -14,7 +14,7 @@ use OpenSpout\Reader\SheetIteratorInterface;
 use OpenSpout\Reader\Wrapper\XMLReader;
 
 /**
- * Iterate over ODS sheet.
+ * @implements SheetIteratorInterface<Sheet>
  */
 final class SheetIterator implements SheetIteratorInterface
 {

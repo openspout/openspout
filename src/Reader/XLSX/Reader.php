@@ -14,7 +14,7 @@ use OpenSpout\Reader\XLSX\Manager\SheetManager;
 use OpenSpout\Reader\XLSX\Manager\WorkbookRelationshipsManager;
 
 /**
- * This class provides support to read data from a XLSX file.
+ * @extends ReaderAbstract<SheetIterator>
  */
 final class Reader extends ReaderAbstract
 {

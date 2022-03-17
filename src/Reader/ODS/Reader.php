@@ -9,7 +9,7 @@ use OpenSpout\Reader\ODS\Manager\OptionsManager;
 use OpenSpout\Reader\ReaderAbstract;
 
 /**
- * This class provides support to read data from a ODS file.
+ * @extends ReaderAbstract<SheetIterator>
  */
 final class Reader extends ReaderAbstract
 {
