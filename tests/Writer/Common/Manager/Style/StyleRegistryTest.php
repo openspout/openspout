@@ -37,14 +37,18 @@ final class StyleRegistryTest extends TestCase
         $style2 = (new Style())->setFontUnderline();
 
         static::assertSame(0, $this->defaultStyle->getId(), 'Default style ID should be 0');
-        static::assertNull($style1->getId());
-        static::assertNull($style2->getId());
 
         $registeredStyle1 = $this->styleRegistry->registerStyle($style1);
         $registeredStyle2 = $this->styleRegistry->registerStyle($style2);
 
         static::assertSame(1, $registeredStyle1->getId());
         static::assertSame(2, $registeredStyle2->getId());
+
+        try {
+            (new Style())->getId();
+            static::fail('Style::getId should never be called before registration');
+        } catch (\AssertionError $assertionError) {
+        }
     }
 
     public function testRegisterStyleShouldReuseAlreadyRegisteredStyles(): void

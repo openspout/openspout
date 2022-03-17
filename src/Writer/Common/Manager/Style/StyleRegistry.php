@@ -66,15 +66,7 @@ class StyleRegistry
      */
     public function serialize(Style $style): string
     {
-        // In order to be able to properly compare style, set static ID value and reset registration
-        $currentId = $style->getId();
-        $style->unmarkAsRegistered();
-
-        $serializedStyle = serialize($style);
-
-        $style->markAsRegistered($currentId);
-
-        return $serializedStyle;
+        return serialize($style);
     }
 
     /**
