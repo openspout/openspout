@@ -8,7 +8,7 @@ use OpenSpout\Writer\XLSX\Creator\ManagerFactory;
 use OpenSpout\Writer\XLSX\Manager\OptionsManager;
 
 /**
- * This class provides base support to write data to XLSX files.
+ * @extends WriterMultiSheetsAbstract<OptionsManager, ManagerFactory>
  */
 final class Writer extends WriterMultiSheetsAbstract
 {

@@ -13,12 +13,25 @@ use OpenSpout\Writer\Exception\SheetNotFoundException;
 use OpenSpout\Writer\Exception\WriterAlreadyOpenedException;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
 
+/**
+ * @template O of OptionsManagerInterface
+ * @template M of ManagerFactoryInterface
+ *
+ * @extends WriterAbstract<O>
+ */
 abstract class WriterMultiSheetsAbstract extends WriterAbstract
 {
+    /**
+     * @var M
+     */
     private ManagerFactoryInterface $managerFactory;
 
     private ?WorkbookManagerInterface $workbookManager = null;
 
+    /**
+     * @param O $optionsManager
+     * @param M $managerFactory
+     */
     public function __construct(
         OptionsManagerInterface $optionsManager,
         ManagerFactoryInterface $managerFactory

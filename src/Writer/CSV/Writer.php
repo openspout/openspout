@@ -11,7 +11,7 @@ use OpenSpout\Writer\CSV\Manager\OptionsManager;
 use OpenSpout\Writer\WriterAbstract;
 
 /**
- * This class provides support to write data to CSV files.
+ * @extends WriterAbstract<OptionsManager>
  */
 final class Writer extends WriterAbstract
 {

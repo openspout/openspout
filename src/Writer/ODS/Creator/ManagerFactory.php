@@ -11,16 +11,20 @@ use OpenSpout\Writer\Common\Entity\Workbook;
 use OpenSpout\Writer\Common\Helper\ZipHelper;
 use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
 use OpenSpout\Writer\ODS\Helper\FileSystemHelper;
+use OpenSpout\Writer\ODS\Manager\OptionsManager;
 use OpenSpout\Writer\ODS\Manager\Style\StyleManager;
 use OpenSpout\Writer\ODS\Manager\Style\StyleRegistry;
 use OpenSpout\Writer\ODS\Manager\WorkbookManager;
 use OpenSpout\Writer\ODS\Manager\WorksheetManager;
 
 /**
- * Factory for managers needed by the ODS Writer.
+ * @implements ManagerFactoryInterface<OptionsManager, WorkbookManager>
  */
 final class ManagerFactory implements ManagerFactoryInterface
 {
+    /**
+     * @param OptionsManager $optionsManager
+     */
     public function createWorkbookManager(OptionsManagerInterface $optionsManager): WorkbookManager
     {
         $workbook = new Workbook();

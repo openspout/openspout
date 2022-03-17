@@ -8,7 +8,7 @@ use OpenSpout\Writer\ODS\Manager\OptionsManager;
 use OpenSpout\Writer\WriterMultiSheetsAbstract;
 
 /**
- * This class provides base support to write data to ODS files.
+ * @extends WriterMultiSheetsAbstract<OptionsManager, ManagerFactory>
  */
 final class Writer extends WriterMultiSheetsAbstract
 {
