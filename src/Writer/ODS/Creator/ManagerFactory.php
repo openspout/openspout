@@ -30,7 +30,7 @@ final class ManagerFactory implements ManagerFactoryInterface
 
         $styleMerger = new StyleMerger();
         $styleManager = new StyleManager(new StyleRegistry($optionsManager->getOption(Options::DEFAULT_ROW_STYLE)), $optionsManager);
-        $worksheetManager = new WorksheetManager($styleManager, $styleMerger, new ODS(), new StringHelper());
+        $worksheetManager = new WorksheetManager($styleManager, $styleMerger, new ODS(), StringHelper::factory());
 
         return new WorkbookManager(
             $workbook,

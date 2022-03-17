@@ -238,7 +238,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
         $worksheets = $this->getWorksheets();
 
         $newSheetIndex = \count($worksheets);
-        $sheetManager = new SheetManager(new StringHelper());
+        $sheetManager = new SheetManager(StringHelper::factory());
         $sheet = new Sheet($newSheetIndex, $this->workbook->getInternalId(), $sheetManager);
 
         $worksheetFilePath = $this->getWorksheetFilePath($sheet);

@@ -46,7 +46,7 @@ final class ManagerFactory implements ManagerFactoryInterface
             $styleMerger,
             $sharedStringsManager,
             new XLSX(),
-            new StringHelper()
+            StringHelper::factory()
         );
 
         return new WorkbookManager(

@@ -6,11 +6,6 @@ parameters:
 			path: src/Common/Entity/Row.php
 
 		-
-			message: "#^Property OpenSpout\\\\Common\\\\Helper\\\\StringHelper\\:\\:\\$localeInfo type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Common/Helper/StringHelper.php
-
-		-
 			message: "#^Method OpenSpout\\\\Reader\\\\Common\\\\Creator\\\\ReaderEntityFactory\\:\\:createCSVReader\\(\\) should return OpenSpout\\\\Reader\\\\CSV\\\\Reader but returns OpenSpout\\\\Reader\\\\ReaderInterface\\.$#"
 			count: 1
 			path: src/Reader/Common/Creator/ReaderEntityFactory.php

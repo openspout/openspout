@@ -16,7 +16,7 @@ final class SheetTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->sheetManager = new SheetManager(new StringHelper());
+        $this->sheetManager = new SheetManager(StringHelper::factory());
     }
 
     public function testGetSheetName(): void

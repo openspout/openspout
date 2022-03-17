@@ -4,25 +4,20 @@ namespace OpenSpout\Common\Helper;
 
 /**
  * This class provides helper functions to work with strings and multibyte strings.
- *
- * @codeCoverageIgnore
  */
 final class StringHelper
 {
     /** @var bool Whether the mbstring extension is loaded */
     private bool $hasMbstringSupport;
 
-    /** @var bool Whether the code is running with PHP7 or older versions */
-    private bool $isRunningPhp7OrOlder;
-
-    /** @var array Locale info, used for number formatting */
-    private array $localeInfo;
-
-    public function __construct()
+    public function __construct(bool $hasMbstringSupport)
     {
-        $this->hasMbstringSupport = \extension_loaded('mbstring');
-        $this->isRunningPhp7OrOlder = version_compare(PHP_VERSION, '8.0.0') < 0;
-        $this->localeInfo = localeconv();
+        $this->hasMbstringSupport = $hasMbstringSupport;
+    }
+
+    public static function factory(): self
+    {
+        return new self(\extension_loaded('mbstring'));
     }
 
     /**
@@ -34,7 +29,10 @@ final class StringHelper
      */
     public function getStringLength(string $string): int
     {
-        return $this->hasMbstringSupport ? mb_strlen($string) : \strlen($string);
+        return $this->hasMbstringSupport
+            ? mb_strlen($string)
+            : \strlen($string)
+        ;
     }
 
     /**
@@ -51,7 +49,10 @@ final class StringHelper
      */
     public function getCharFirstOccurrencePosition(string $char, string $string): int
     {
-        $position = $this->hasMbstringSupport ? mb_strpos($string, $char) : strpos($string, $char);
+        $position = $this->hasMbstringSupport
+            ? mb_strpos($string, $char)
+            : strpos($string, $char)
+        ;
 
         return (false !== $position) ? $position : -1;
     }
@@ -70,7 +71,10 @@ final class StringHelper
      */
     public function getCharLastOccurrencePosition(string $char, string $string): int
     {
-        $position = $this->hasMbstringSupport ? mb_strrpos($string, $char) : strrpos($string, $char);
+        $position = $this->hasMbstringSupport
+            ? mb_strrpos($string, $char)
+            : strrpos($string, $char)
+        ;
 
         return (false !== $position) ? $position : -1;
     }
@@ -89,14 +93,6 @@ final class StringHelper
      */
     public function formatNumericValue($numericValue): float|int|string
     {
-        if ($this->isRunningPhp7OrOlder && \is_float($numericValue)) {
-            return str_replace(
-                [$this->localeInfo['thousands_sep'], $this->localeInfo['decimal_point']],
-                ['', '.'],
-                (string) $numericValue
-            );
-        }
-
         return $numericValue;
     }
 }
