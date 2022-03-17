@@ -29,13 +29,13 @@ final class FileSystemHelper extends CommonFileSystemHelper implements FileSyste
     public const STYLES_XML_FILE_NAME = 'styles.xml';
 
     /** @var string Path to the root folder inside the temp folder where the files to create the ODS will be stored */
-    protected string $rootFolder;
+    private string $rootFolder;
 
     /** @var string Path to the "META-INF" folder inside the root folder */
-    protected string $metaInfFolder;
+    private string $metaInfFolder;
 
     /** @var string Path to the temp folder, inside the root folder, where specific sheets content will be written to */
-    protected string $sheetsContentTempFolder;
+    private string $sheetsContentTempFolder;
 
     /** @var ZipHelper Helper to perform tasks with Zip archive */
     private ZipHelper $zipHelper;
@@ -169,7 +169,7 @@ final class FileSystemHelper extends CommonFileSystemHelper implements FileSyste
      *
      * @throws \OpenSpout\Common\Exception\IOException If unable to create the folder
      */
-    protected function createRootFolder(): self
+    private function createRootFolder(): self
     {
         $this->rootFolder = $this->createFolder($this->baseFolderRealPath, uniqid('ods'));
 
@@ -181,7 +181,7 @@ final class FileSystemHelper extends CommonFileSystemHelper implements FileSyste
      *
      * @throws \OpenSpout\Common\Exception\IOException If unable to create the folder or the "manifest.xml" file
      */
-    protected function createMetaInfoFolderAndFile(): self
+    private function createMetaInfoFolderAndFile(): self
     {
         $this->metaInfFolder = $this->createFolder($this->rootFolder, self::META_INF_FOLDER_NAME);
 
@@ -195,7 +195,7 @@ final class FileSystemHelper extends CommonFileSystemHelper implements FileSyste
      *
      * @throws \OpenSpout\Common\Exception\IOException If unable to create the file
      */
-    protected function createManifestFile(): self
+    private function createManifestFile(): self
     {
         $manifestXmlFileContents = <<<'EOD'
             <?xml version="1.0" encoding="UTF-8"?>
@@ -218,7 +218,7 @@ final class FileSystemHelper extends CommonFileSystemHelper implements FileSyste
      *
      * @throws \OpenSpout\Common\Exception\IOException If unable to create the folder
      */
-    protected function createSheetsContentTempFolder(): self
+    private function createSheetsContentTempFolder(): self
     {
         $this->sheetsContentTempFolder = $this->createFolder($this->rootFolder, self::SHEETS_CONTENT_TEMP_FOLDER_NAME);
 
@@ -230,7 +230,7 @@ final class FileSystemHelper extends CommonFileSystemHelper implements FileSyste
      *
      * @throws \OpenSpout\Common\Exception\IOException If unable to create the file
      */
-    protected function createMetaFile(): self
+    private function createMetaFile(): self
     {
         $appName = self::APP_NAME;
         $createdDate = (new DateTimeImmutable())->format(DateTimeImmutable::W3C);
@@ -256,7 +256,7 @@ final class FileSystemHelper extends CommonFileSystemHelper implements FileSyste
      *
      * @throws \OpenSpout\Common\Exception\IOException If unable to create the file
      */
-    protected function createMimetypeFile(): self
+    private function createMimetypeFile(): self
     {
         $this->createFileWithContents($this->rootFolder, self::MIMETYPE_FILE_NAME, self::MIMETYPE);
 
@@ -271,7 +271,7 @@ final class FileSystemHelper extends CommonFileSystemHelper implements FileSyste
      * @param string   $sourceFilePath Path of the file whose content will be copied
      * @param resource $targetResource Target resource that will receive the content
      */
-    protected function copyFileContentsToTarget(string $sourceFilePath, $targetResource): void
+    private function copyFileContentsToTarget(string $sourceFilePath, $targetResource): void
     {
         $sourceHandle = fopen($sourceFilePath, 'r');
         \assert(false !== $sourceHandle);

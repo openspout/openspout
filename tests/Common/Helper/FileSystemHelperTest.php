@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class FileSystemHelperTest extends TestCase
 {
-    protected FileSystemHelper $fileSystemHelper;
+    private FileSystemHelper $fileSystemHelper;
 
     protected function setUp(): void
     {

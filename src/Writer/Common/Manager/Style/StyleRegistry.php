@@ -10,10 +10,10 @@ use OpenSpout\Common\Entity\Style\Style;
 class StyleRegistry
 {
     /** @var array<string, int> [SERIALIZED_STYLE] => [STYLE_ID] mapping table, keeping track of the registered styles */
-    protected array $serializedStyleToStyleIdMappingTable = [];
+    private array $serializedStyleToStyleIdMappingTable = [];
 
     /** @var array<int, Style> [STYLE_ID] => [STYLE] mapping table, keeping track of the registered styles */
-    protected array $styleIdToStyleMappingTable = [];
+    private array $styleIdToStyleMappingTable = [];
 
     public function __construct(Style $defaultStyle)
     {
@@ -82,7 +82,7 @@ class StyleRegistry
      *
      * @param string $serializedStyle The serialized style
      */
-    protected function hasSerializedStyleAlreadyBeenRegistered(string $serializedStyle): bool
+    private function hasSerializedStyleAlreadyBeenRegistered(string $serializedStyle): bool
     {
         // Using isset here because it is way faster than array_key_exists...
         return isset($this->serializedStyleToStyleIdMappingTable[$serializedStyle]);
@@ -93,7 +93,7 @@ class StyleRegistry
      *
      * @param string $serializedStyle The serialized style from which the actual style should be fetched from
      */
-    protected function getStyleFromSerializedStyle(string $serializedStyle): Style
+    private function getStyleFromSerializedStyle(string $serializedStyle): Style
     {
         $styleId = $this->serializedStyleToStyleIdMappingTable[$serializedStyle];
 

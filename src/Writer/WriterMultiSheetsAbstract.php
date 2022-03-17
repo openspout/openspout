@@ -171,18 +171,6 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
     }
 
     /**
-     * Checks if the workbook has been created. Throws an exception if not created yet.
-     *
-     * @throws WriterNotOpenedException If the workbook is not created yet
-     */
-    protected function throwIfWorkbookIsNotAvailable(): void
-    {
-        if (null === $this->workbookManager->getWorkbook()) {
-            throw new WriterNotOpenedException('The writer must be opened before performing this action.');
-        }
-    }
-
-    /**
      * {@inheritdoc}
      *
      * @throws Exception\WriterException
@@ -200,6 +188,18 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
     {
         if (null !== $this->workbookManager) {
             $this->workbookManager->close($this->filePointer);
+        }
+    }
+
+    /**
+     * Checks if the workbook has been created. Throws an exception if not created yet.
+     *
+     * @throws WriterNotOpenedException If the workbook is not created yet
+     */
+    private function throwIfWorkbookIsNotAvailable(): void
+    {
+        if (null === $this->workbookManager->getWorkbook()) {
+            throw new WriterNotOpenedException('The writer must be opened before performing this action.');
         }
     }
 }

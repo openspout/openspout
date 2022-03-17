@@ -22,7 +22,7 @@ trait TestUsingResource
     /**
      * @return string Path of the resource who matches the given name or null if resource not found
      */
-    protected function getResourcePath(string $resourceName): string
+    private function getResourcePath(string $resourceName): string
     {
         $resourceType = pathinfo($resourceName, PATHINFO_EXTENSION);
 
@@ -32,14 +32,14 @@ trait TestUsingResource
     /**
      * @return string Path of the generated resource for the given name
      */
-    protected function getGeneratedResourcePath(string $resourceName): string
+    private function getGeneratedResourcePath(string $resourceName): string
     {
         $resourceType = pathinfo($resourceName, PATHINFO_EXTENSION);
 
         return realpath($this->generatedResourcesPath).'/'.strtolower($resourceType).'/'.$resourceName;
     }
 
-    protected function createGeneratedFolderIfNeeded(string $resourceName): void
+    private function createGeneratedFolderIfNeeded(string $resourceName): void
     {
         $resourceType = pathinfo($resourceName, PATHINFO_EXTENSION);
         $generatedResourcePathForType = $this->generatedResourcesPath.'/'.strtolower($resourceType);
@@ -52,12 +52,12 @@ trait TestUsingResource
     /**
      * @return string Path of the generated unwritable (because parent folder is read only) resource for the given name
      */
-    protected function getGeneratedUnwritableResourcePath(string $resourceName): string
+    private function getGeneratedUnwritableResourcePath(string $resourceName): string
     {
         return realpath($this->generatedUnwritableResourcesPath).'/'.$resourceName;
     }
 
-    protected function createUnwritableFolderIfNeeded(): void
+    private function createUnwritableFolderIfNeeded(): void
     {
         // On Windows, chmod() or the mkdir's mode is ignored
         if ($this->isWindows()) {
@@ -78,7 +78,7 @@ trait TestUsingResource
     /**
      * @return string Path of the temp folder
      */
-    protected function getTempFolderPath(): string
+    private function getTempFolderPath(): string
     {
         $realpath = realpath($this->tempFolderPath);
         self::assertNotFalse($realpath);
@@ -86,7 +86,7 @@ trait TestUsingResource
         return $realpath;
     }
 
-    protected function recreateTempFolder(): void
+    private function recreateTempFolder(): void
     {
         if (file_exists($this->tempFolderPath)) {
             $this->deleteFolderRecursively($this->tempFolderPath);
@@ -98,7 +98,7 @@ trait TestUsingResource
     /**
      * @return bool Whether the OS on which PHP is installed is Windows
      */
-    protected function isWindows(): bool
+    private function isWindows(): bool
     {
         return 'WIN' === strtoupper(substr(PHP_OS, 0, 3));
     }

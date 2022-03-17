@@ -66,7 +66,7 @@ class StyleManager implements StyleManagerInterface
      *
      * @return PossiblyUpdatedStyle The eventually updated style
      */
-    protected function applyWrapTextIfCellContainsNewLine(Cell $cell): PossiblyUpdatedStyle
+    private function applyWrapTextIfCellContainsNewLine(Cell $cell): PossiblyUpdatedStyle
     {
         $cellStyle = $cell->getStyle();
 

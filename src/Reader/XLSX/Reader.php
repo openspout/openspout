@@ -17,13 +17,13 @@ use OpenSpout\Reader\XLSX\Manager\WorkbookRelationshipsManager;
  */
 final class Reader extends ReaderAbstract
 {
-    protected \ZipArchive $zip;
+    private \ZipArchive $zip;
 
     /** @var SharedStringsManager Manages shared strings */
-    protected SharedStringsManager $sharedStringsManager;
+    private SharedStringsManager $sharedStringsManager;
 
     /** @var SheetIterator To iterator over the XLSX sheets */
-    protected SheetIterator $sheetIterator;
+    private SheetIterator $sheetIterator;
 
     private CachingStrategyFactory $cachingStrategyFactory;
 

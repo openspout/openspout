@@ -10,13 +10,13 @@ use OpenSpout\Reader\Exception\XMLProcessingException;
 trait XMLInternalErrorsHelper
 {
     /** @var bool Stores whether XML errors were initially stored internally - used to reset */
-    protected bool $initialUseInternalErrorsValue;
+    private bool $initialUseInternalErrorsValue;
 
     /**
      * To avoid displaying lots of warning/error messages on screen,
      * stores errors internally instead.
      */
-    protected function useXMLInternalErrors(): void
+    private function useXMLInternalErrors(): void
     {
         libxml_clear_errors();
         $this->initialUseInternalErrorsValue = libxml_use_internal_errors(true);
@@ -28,7 +28,7 @@ trait XMLInternalErrorsHelper
      *
      * @throws \OpenSpout\Reader\Exception\XMLProcessingException
      */
-    protected function resetXMLInternalErrorsSettingAndThrowIfXMLErrorOccured(): void
+    private function resetXMLInternalErrorsSettingAndThrowIfXMLErrorOccured(): void
     {
         if ($this->hasXMLErrorOccured()) {
             $this->resetXMLInternalErrorsSetting();
@@ -39,7 +39,7 @@ trait XMLInternalErrorsHelper
         $this->resetXMLInternalErrorsSetting();
     }
 
-    protected function resetXMLInternalErrorsSetting(): void
+    private function resetXMLInternalErrorsSetting(): void
     {
         libxml_use_internal_errors($this->initialUseInternalErrorsValue);
     }

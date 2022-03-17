@@ -180,7 +180,7 @@ class StyleRegistry extends CommonStyleRegistry
     /**
      * Register a format definition.
      */
-    protected function registerFormat(Style $style): void
+    private function registerFormat(Style $style): void
     {
         $styleId = $style->getId();
         \assert(null !== $styleId);
