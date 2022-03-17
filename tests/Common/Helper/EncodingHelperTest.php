@@ -31,7 +31,7 @@ final class EncodingHelperTest extends TestCase
     {
         $resourcePath = $this->getResourcePath($fileName);
         $filePointer = fopen($resourcePath, 'r');
-        self::assertNotFalse($filePointer);
+        static::assertNotFalse($filePointer);
 
         $encodingHelper = new EncodingHelper(false, false);
         $bytesOffset = $encodingHelper->getBytesOffsetToSkipBOM($filePointer, $encoding);
@@ -76,7 +76,7 @@ final class EncodingHelperTest extends TestCase
         $encodingHelper = new EncodingHelper($shouldUseIconv, !$shouldUseIconv);
 
         $encodedString = iconv(EncodingHelper::ENCODING_UTF8, EncodingHelper::ENCODING_UTF16_LE, 'input');
-        self::assertNotFalse($encodedString);
+        static::assertNotFalse($encodedString);
         $decodedString = $encodingHelper->attemptConversionToUTF8($encodedString, EncodingHelper::ENCODING_UTF16_LE);
 
         static::assertSame('input', $decodedString);

@@ -254,14 +254,14 @@ final class WriterTest extends TestCase
     public function testAddRowShouldSupportFloatValuesInDifferentLocale(): void
     {
         $previousLocale = setlocale(LC_ALL, '0');
-        self::assertNotFalse($previousLocale);
+        static::assertNotFalse($previousLocale);
 
         try {
             // Pick a supported locale whose decimal point is a comma.
             // Installed locales differ from one system to another, so we can't pick
             // a given locale.
             $shell_exec = shell_exec('locale -a');
-            self::assertIsString($shell_exec);
+            static::assertIsString($shell_exec);
             $supportedLocales = explode("\n", $shell_exec);
             $foundCommaLocale = false;
             foreach ($supportedLocales as $supportedLocale) {
@@ -527,7 +527,7 @@ final class WriterTest extends TestCase
         $pathToContentFile = $resourcePath.'#content.xml';
         $xmlContents = file_get_contents('zip://'.$pathToContentFile);
 
-        self::assertNotFalse($xmlContents);
+        static::assertNotFalse($xmlContents);
         static::assertStringContainsString($value, $xmlContents, $message);
     }
 
@@ -558,7 +558,7 @@ final class WriterTest extends TestCase
         $xmlReader = $this->moveReaderToCorrectTableNode($fileName, $sheetIndex);
 
         $DOMNode = $xmlReader->expand();
-        self::assertNotFalse($DOMNode);
+        static::assertNotFalse($DOMNode);
 
         return $DOMNode;
     }

@@ -74,7 +74,7 @@ final class SheetTest extends TestCase
         $pathToContentFile = $resourcePath.'#content.xml';
         $xmlContents = file_get_contents('zip://'.$pathToContentFile);
 
-        self::assertNotFalse($xmlContents);
+        static::assertNotFalse($xmlContents);
         static::assertStringContainsString(' table:display="false"', $xmlContents, 'The sheet visibility should have been changed to "hidden"');
     }
 
@@ -141,7 +141,7 @@ final class SheetTest extends TestCase
         $pathToWorkbookFile = $resourcePath.'#content.xml';
         $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
 
-        self::assertNotFalse($xmlContents);
+        static::assertNotFalse($xmlContents);
         static::assertStringContainsString("table:name=\"{$expectedName}\"", $xmlContents, $message);
     }
 }

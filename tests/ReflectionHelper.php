@@ -29,7 +29,7 @@ final class ReflectionHelper
      * Used to test internals of class without having to make the property public.
      *
      * @param class-string $class
-     * @param null|mixed $value
+     * @param null|mixed   $value
      */
     public static function setStaticValue(string $class, string $valueName, $value, bool $saveOriginalValue = true): void
     {

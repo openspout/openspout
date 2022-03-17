@@ -13,8 +13,8 @@ use OpenSpout\TestUsingResource;
 use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 use OpenSpout\Writer\Exception\WriterAlreadyOpenedException;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
-use OpenSpout\Writer\ODS\Manager\WorkbookManager;
 use OpenSpout\Writer\RowCreationHelper;
+use OpenSpout\Writer\XLSX\Manager\WorkbookManager;
 use OpenSpout\Writer\XLSX\Manager\WorksheetManager;
 use PHPUnit\Framework\TestCase;
 
@@ -347,7 +347,7 @@ final class WriterTest extends TestCase
     public function testAddRowShouldSupportFloatValuesInDifferentLocale(): void
     {
         $previousLocale = setlocale(LC_ALL, '0');
-        self::assertNotFalse($previousLocale);
+        static::assertNotFalse($previousLocale);
         $valueToWrite = 1234.5; // needs to be defined before changing the locale as PHP8 would expect 1234,5
 
         try {
@@ -355,7 +355,7 @@ final class WriterTest extends TestCase
             // Installed locales differ from one system to another, so we can't pick
             // a given locale.
             $shell_exec = shell_exec('locale -a');
-            self::assertIsString($shell_exec);
+            static::assertIsString($shell_exec);
             $supportedLocales = explode("\n", $shell_exec);
             $foundCommaLocale = false;
             foreach ($supportedLocales as $supportedLocale) {
@@ -524,7 +524,7 @@ final class WriterTest extends TestCase
         $xmlReader->readUntilNodeFound('mergeCells');
         static::assertEquals('mergeCells', $xmlReader->getCurrentNodeName(), 'Sheet does not have mergeCells tag');
         $DOMNode2 = $xmlReader->expand();
-        self::assertNotFalse($DOMNode2);
+        static::assertNotFalse($DOMNode2);
         static::assertEquals(2, $DOMNode2->childNodes->length, 'Sheet does not have the specified number of mergeCell definitions');
         $xmlReader->readUntilNodeFound('mergeCell');
         $DOMNode = $xmlReader->expand();
@@ -624,7 +624,7 @@ final class WriterTest extends TestCase
         $pathToSheetFile = $resourcePath.'#xl/worksheets/sheet'.$sheetIndex.'.xml';
         $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
 
-        self::assertNotFalse($xmlContents);
+        static::assertNotFalse($xmlContents);
         static::assertStringContainsString((string) $inlineData, $xmlContents, $message);
     }
 
@@ -637,7 +637,7 @@ final class WriterTest extends TestCase
         $pathToSheetFile = $resourcePath.'#xl/worksheets/sheet'.$sheetIndex.'.xml';
         $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
 
-        self::assertNotFalse($xmlContents);
+        static::assertNotFalse($xmlContents);
         static::assertStringNotContainsString((string) $inlineData, $xmlContents, $message);
     }
 
@@ -647,7 +647,7 @@ final class WriterTest extends TestCase
         $pathToSharedStringsFile = $resourcePath.'#xl/sharedStrings.xml';
         $xmlContents = file_get_contents('zip://'.$pathToSharedStringsFile);
 
-        self::assertNotFalse($xmlContents);
+        static::assertNotFalse($xmlContents);
         static::assertStringContainsString($sharedString, $xmlContents, $message);
     }
 

@@ -23,7 +23,7 @@ final class SpoutTestStream
         $filePath = $this->getFilePathFromStreamPath($path);
 
         $stat = stat($filePath);
-        assert(false !== $stat);
+        \assert(false !== $stat);
 
         return $stat;
     }
@@ -35,7 +35,7 @@ final class SpoutTestStream
         // the path is like "spout://csv_name" so the actual file name correspond the name of the host.
         $filePath = $this->getFilePathFromStreamPath($path);
         $resource = fopen($filePath, $mode);
-        assert(false !== $resource);
+        \assert(false !== $resource);
         $this->fileHandle = $resource;
 
         return true;
@@ -49,7 +49,7 @@ final class SpoutTestStream
         $this->position += $numBytes;
 
         $fread = fread($this->fileHandle, $numBytes);
-        assert(false !== $fread);
+        \assert(false !== $fread);
 
         return $fread;
     }

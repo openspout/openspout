@@ -167,8 +167,7 @@ final class WriterTest extends TestCase
         string $fieldDelimiter = ',',
         string $fieldEnclosure = '"',
         bool $shouldAddBOM = true
-    ): string
-    {
+    ): string {
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
@@ -182,7 +181,7 @@ final class WriterTest extends TestCase
         $writer->close();
 
         $file_get_contents = file_get_contents($resourcePath);
-        self::assertNotFalse($file_get_contents);
+        static::assertNotFalse($file_get_contents);
 
         return $file_get_contents;
     }
