@@ -1,6 +1,11 @@
 parameters:
 	ignoreErrors:
 		-
+			message: "#^Binary operation \"\\+\" between int\\|string and 1 results in an error\\.$#"
+			count: 1
+			path: src/Common/Entity/Row.php
+
+		-
 			message: "#^Property OpenSpout\\\\Common\\\\Helper\\\\StringHelper\\:\\:\\$localeInfo type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Common/Helper/StringHelper.php
@@ -34,6 +39,16 @@ parameters:
 			message: "#^Method OpenSpout\\\\Reader\\\\Common\\\\Creator\\\\ReaderEntityFactory\\:\\:createXLSXReader\\(\\) should return OpenSpout\\\\Reader\\\\XLSX\\\\Reader but returns null\\.$#"
 			count: 1
 			path: src/Reader/Common/Creator/ReaderEntityFactory.php
+
+		-
+			message: "#^Cannot access offset 0 on callable\\(\\)\\: mixed\\.$#"
+			count: 1
+			path: src/Reader/Common/XMLProcessor.php
+
+		-
+			message: "#^Cannot access offset 1 on callable\\(\\)\\: mixed\\.$#"
+			count: 1
+			path: src/Reader/Common/XMLProcessor.php
 
 		-
 			message: "#^Method OpenSpout\\\\Writer\\\\Common\\\\Creator\\\\WriterEntityFactory\\:\\:createCSVWriter\\(\\) should return OpenSpout\\\\Writer\\\\CSV\\\\Writer but returns OpenSpout\\\\Writer\\\\WriterInterface\\.$#"

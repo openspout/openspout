@@ -161,7 +161,13 @@ final class WriterTest extends TestCase
     /**
      * @param Row[] $allRows
      */
-    private function writeToCsvFileAndReturnWrittenContent(array $allRows, string $fileName, string $fieldDelimiter = ',', string $fieldEnclosure = '"', bool $shouldAddBOM = true): string
+    private function writeToCsvFileAndReturnWrittenContent(
+        array $allRows,
+        string $fileName,
+        string $fieldDelimiter = ',',
+        string $fieldEnclosure = '"',
+        bool $shouldAddBOM = true
+    ): string
     {
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
@@ -175,7 +181,10 @@ final class WriterTest extends TestCase
         $writer->addRows($allRows);
         $writer->close();
 
-        return file_get_contents($resourcePath);
+        $file_get_contents = file_get_contents($resourcePath);
+        self::assertNotFalse($file_get_contents);
+
+        return $file_get_contents;
     }
 
     private function trimWrittenContent(string $writtenContent): string

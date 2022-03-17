@@ -6,7 +6,7 @@
 final class ReflectionHelper
 {
     /**
-     * @var array<string, array<string, mixed>>
+     * @var array<class-string, array<string, mixed>>
      */
     private static array $privateVarsToReset = [];
 
@@ -28,6 +28,7 @@ final class ReflectionHelper
      * Set the value of a static private or public class property.
      * Used to test internals of class without having to make the property public.
      *
+     * @param class-string $class
      * @param null|mixed $value
      */
     public static function setStaticValue(string $class, string $valueName, $value, bool $saveOriginalValue = true): void

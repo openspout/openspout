@@ -80,7 +80,10 @@ trait TestUsingResource
      */
     protected function getTempFolderPath(): string
     {
-        return realpath($this->tempFolderPath);
+        $realpath = realpath($this->tempFolderPath);
+        self::assertNotFalse($realpath);
+
+        return $realpath;
     }
 
     protected function recreateTempFolder(): void
