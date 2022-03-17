@@ -36,10 +36,11 @@
         "ext-zip": "*"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.4",
-        "phpstan/phpstan": "^1.4",
-        "phpstan/phpstan-phpunit": "^1.0",
-        "phpunit/phpunit": "^9.5"
+        "friendsofphp/php-cs-fixer": "^3.7.0",
+        "phpstan/phpstan": "^1.4.10",
+        "phpstan/phpstan-phpunit": "^1.0.0",
+        "phpstan/phpstan-strict-rules": "^1.1.0",
+        "phpunit/phpunit": "^9.5.19"
     },
     "suggest": {
         "ext-iconv": "To handle non UTF-8 CSV files (if \"php-intl\" is not already installed or is too limited)",

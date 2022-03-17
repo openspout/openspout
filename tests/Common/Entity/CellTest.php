@@ -11,11 +11,6 @@ use PHPUnit\Framework\TestCase;
  */
 final class CellTest extends TestCase
 {
-    public function testValidInstance(): void
-    {
-        static::assertInstanceOf(Cell::class, new Cell('cell'));
-    }
-
     public function testCellTypeNumeric(): void
     {
         static::assertTrue((new Cell(0))->isNumeric());

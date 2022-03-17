@@ -19,8 +19,8 @@ final class Reader extends ReaderAbstract
 {
     protected \ZipArchive $zip;
 
-    /** @var \OpenSpout\Reader\XLSX\Manager\SharedStringsManager Manages shared strings */
-    protected \OpenSpout\Reader\XLSX\Manager\SharedStringsManager $sharedStringsManager;
+    /** @var SharedStringsManager Manages shared strings */
+    protected SharedStringsManager $sharedStringsManager;
 
     /** @var SheetIterator To iterator over the XLSX sheets */
     protected SheetIterator $sheetIterator;
@@ -109,12 +109,7 @@ final class Reader extends ReaderAbstract
      */
     protected function closeReader(): void
     {
-        if (null !== $this->zip) {
-            $this->zip->close();
-        }
-
-        if (null !== $this->sharedStringsManager) {
-            $this->sharedStringsManager->cleanup();
-        }
+        $this->zip->close();
+        $this->sharedStringsManager->cleanup();
     }
 }

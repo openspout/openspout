@@ -51,6 +51,16 @@ parameters:
 			path: src/Reader/Common/XMLProcessor.php
 
 		-
+			message: "#^Dynamic call to static method XMLReader\\:\\:open\\(\\)\\.$#"
+			count: 1
+			path: src/Reader/Wrapper/XMLReader.php
+
+		-
+			message: "#^Short ternary operator is not allowed\\. Use null coalesce operator if applicable or consider using long ternary\\.$#"
+			count: 1
+			path: src/Reader/XLSX/Helper/CellValueFormatter.php
+
+		-
 			message: "#^Method OpenSpout\\\\Writer\\\\Common\\\\Creator\\\\WriterEntityFactory\\:\\:createCSVWriter\\(\\) should return OpenSpout\\\\Writer\\\\CSV\\\\Writer but returns OpenSpout\\\\Writer\\\\WriterInterface\\.$#"
 			count: 1
 			path: src/Writer/Common/Creator/WriterEntityFactory.php
@@ -81,9 +91,24 @@ parameters:
 			path: src/Writer/Common/Creator/WriterEntityFactory.php
 
 		-
+			message: "#^Variable \\$entry might not be defined\\.$#"
+			count: 1
+			path: src/Writer/ODS/Manager/Style/StyleManager.php
+
+		-
+			message: "#^Short ternary operator is not allowed\\. Use null coalesce operator if applicable or consider using long ternary\\.$#"
+			count: 1
+			path: src/Writer/ODS/Manager/WorksheetManager.php
+
+		-
 			message: "#^Method OpenSpout\\\\Reader\\\\CSV\\\\SpoutTestStream\\:\\:url_stat\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: tests/Reader/CSV/SpoutTestStream.php
+
+		-
+			message: "#^Dynamic call to static method XMLReader\\:\\:XML\\(\\)\\.$#"
+			count: 1
+			path: tests/Reader/Wrapper/XMLReaderTest.php
 
 		-
 			message: "#^Method OpenSpout\\\\Reader\\\\XLSX\\\\Manager\\\\StyleManagerTest\\:\\:getStyleManagerMock\\(\\) has parameter \\$customNumberFormats with no value type specified in iterable type array\\.$#"
@@ -94,14 +119,4 @@ parameters:
 			message: "#^Method OpenSpout\\\\Reader\\\\XLSX\\\\Manager\\\\StyleManagerTest\\:\\:getStyleManagerMock\\(\\) has parameter \\$styleAttributes with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: tests/Reader/XLSX/Manager/StyleManagerTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$rows of method OpenSpout\\\\Writer\\\\WriterAbstract\\:\\:addRows\\(\\) expects array\\<OpenSpout\\\\Common\\\\Entity\\\\Row\\>, array\\<int, array\\<int, string\\>\\> given\\.$#"
-			count: 1
-			path: tests/Writer/CSV/WriterTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$allRows of method OpenSpout\\\\Writer\\\\XLSX\\\\WriterTest\\:\\:writeToXLSXFile\\(\\) expects array\\<OpenSpout\\\\Common\\\\Entity\\\\Row\\>, array\\<int, array\\<int, string\\>\\> given\\.$#"
-			count: 1
-			path: tests/Writer/XLSX/WriterTest.php
 

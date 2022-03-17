@@ -3,7 +3,6 @@
 namespace OpenSpout\Writer\CSV;
 
 use OpenSpout\Common\Entity\Row;
-use OpenSpout\Common\Exception\InvalidArgumentException;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\EncodingHelper;
 use OpenSpout\TestUsingResource;
@@ -50,19 +49,6 @@ final class WriterTest extends TestCase
         $writer = WriterEntityFactory::createCSVWriter();
         $writer->addRow($this->createRowFromValues(['csv--11', 'csv--12']));
         $writer->close();
-    }
-
-    public function testAddRowsShouldThrowExceptionIfRowsAreNotArrayOfArrays(): void
-    {
-        $fileName = 'test_non_array_values.csv';
-        $this->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
-
-        $writer = WriterEntityFactory::createCSVWriter();
-        $writer->openToFile($resourcePath);
-
-        $this->expectException(InvalidArgumentException::class);
-        $writer->addRows([['csv--11', 'csv--12']]);
     }
 
     public function testCloseShouldNoopWhenWriterIsNotOpened(): void

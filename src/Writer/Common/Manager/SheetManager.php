@@ -41,33 +41,24 @@ final class SheetManager
      */
     public function throwIfNameIsInvalid(string $name, Sheet $sheet): void
     {
-        if (!\is_string($name)) {
-            $actualType = \gettype($name);
-            $errorMessage = "The sheet's name is invalid. It must be a string ({$actualType} given).";
-
-            throw new InvalidSheetNameException($errorMessage);
-        }
-
         $failedRequirements = [];
         $nameLength = $this->stringHelper->getStringLength($name);
 
         if (!$this->isNameUnique($name, $sheet)) {
             $failedRequirements[] = 'It should be unique';
+        } elseif (0 === $nameLength) {
+            $failedRequirements[] = 'It should not be blank';
         } else {
-            if (0 === $nameLength) {
-                $failedRequirements[] = 'It should not be blank';
-            } else {
-                if ($nameLength > self::MAX_LENGTH_SHEET_NAME) {
-                    $failedRequirements[] = 'It should not exceed 31 characters';
-                }
+            if ($nameLength > self::MAX_LENGTH_SHEET_NAME) {
+                $failedRequirements[] = 'It should not exceed 31 characters';
+            }
 
-                if ($this->doesContainInvalidCharacters($name)) {
-                    $failedRequirements[] = 'It should not contain these characters: \\ / ? * : [ or ]';
-                }
+            if ($this->doesContainInvalidCharacters($name)) {
+                $failedRequirements[] = 'It should not contain these characters: \\ / ? * : [ or ]';
+            }
 
-                if ($this->doesStartOrEndWithSingleQuote($name)) {
-                    $failedRequirements[] = 'It should not start or end with a single quote';
-                }
+            if ($this->doesStartOrEndWithSingleQuote($name)) {
+                $failedRequirements[] = 'It should not start or end with a single quote';
             }
         }
 

@@ -146,7 +146,7 @@ final class XMLReader extends \XMLReader
         $doesFileExists = false;
 
         $pattern = '/zip:\/\/([^#]+)#(.*)/';
-        if (preg_match($pattern, $zipStreamURI, $matches)) {
+        if (1 === preg_match($pattern, $zipStreamURI, $matches)) {
             $zipFilePath = $matches[1];
             $innerFilePath = $matches[2];
 

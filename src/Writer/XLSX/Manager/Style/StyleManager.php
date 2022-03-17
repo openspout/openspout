@@ -289,7 +289,7 @@ final class StyleManager extends CommonStyleManager
         // Otherwise all cells of the spreadsheet will have a background color.
         $isDefaultStyle = (0 === $styleId);
 
-        return $isDefaultStyle ? 0 : ($this->styleRegistry->getFillIdForStyleId($styleId) ?: 0);
+        return $isDefaultStyle ? 0 : ($this->styleRegistry->getFillIdForStyleId($styleId) ?? 0);
     }
 
     /**
@@ -302,7 +302,7 @@ final class StyleManager extends CommonStyleManager
         // Otherwise all cells of the spreadsheet will have a border.
         $isDefaultStyle = (0 === $styleId);
 
-        return $isDefaultStyle ? 0 : ($this->styleRegistry->getBorderIdForStyleId($styleId) ?: 0);
+        return $isDefaultStyle ? 0 : ($this->styleRegistry->getBorderIdForStyleId($styleId) ?? 0);
     }
 
     /**
@@ -315,6 +315,6 @@ final class StyleManager extends CommonStyleManager
         // Otherwise all cells of the spreadsheet will have a format.
         $isDefaultStyle = (0 === $styleId);
 
-        return $isDefaultStyle ? 0 : ($this->styleRegistry->getFormatIdForStyleId($styleId) ?: 0);
+        return $isDefaultStyle ? 0 : ($this->styleRegistry->getFormatIdForStyleId($styleId) ?? 0);
     }
 }

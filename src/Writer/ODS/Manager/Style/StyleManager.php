@@ -79,9 +79,9 @@ final class StyleManager extends CommonStyleManager
             $content .= $this->getStyleSectionContent($style);
         }
 
-        $useOptimalRowHeight = empty($this->defaultRowHeight) ? 'true' : 'false';
-        $defaultRowHeight = empty($this->defaultRowHeight) ? '15pt' : "{$this->defaultRowHeight}pt";
-        $defaultColumnWidth = empty($this->defaultColumnWidth) ? '' : "style:column-width=\"{$this->defaultColumnWidth}pt\"";
+        $useOptimalRowHeight = null === $this->defaultRowHeight ? 'true' : 'false';
+        $defaultRowHeight = null === $this->defaultRowHeight ? '15pt' : "{$this->defaultRowHeight}pt";
+        $defaultColumnWidth = null === $this->defaultColumnWidth ? '' : "style:column-width=\"{$this->defaultColumnWidth}pt\"";
 
         $content .= <<<EOD
             <style:style style:family="table-column" style:name="default-column-style">
@@ -120,7 +120,7 @@ final class StyleManager extends CommonStyleManager
 
     public function getTableColumnStylesXMLContent(): string
     {
-        if (empty($this->columnWidths)) {
+        if ([] === $this->columnWidths) {
             return '';
         }
 
@@ -138,7 +138,7 @@ final class StyleManager extends CommonStyleManager
 
     public function getStyledTableColumnXMLContent(int $maxNumColumns): string
     {
-        if (empty($this->columnWidths)) {
+        if ([] === $this->columnWidths) {
             return '';
         }
 

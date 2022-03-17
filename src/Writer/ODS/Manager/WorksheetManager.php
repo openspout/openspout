@@ -138,10 +138,6 @@ final class WorksheetManager implements WorksheetManagerInterface
     {
         $worksheetFilePointer = $worksheet->getFilePointer();
 
-        if (!\is_resource($worksheetFilePointer)) {
-            return;
-        }
-
         fclose($worksheetFilePointer);
     }
 
@@ -247,7 +243,7 @@ final class WorksheetManager implements WorksheetManagerInterface
 
             $data .= '</table:table-cell>';
         } elseif ($cell->isBoolean()) {
-            $value = $cell->getValue() ? 'true' : 'false'; // boolean-value spec: http://docs.oasis-open.org/office/v1.2/os/OpenDocument-v1.2-os-part1.html#datatype-boolean
+            $value = ((bool) $cell->getValue()) ? 'true' : 'false'; // boolean-value spec: http://docs.oasis-open.org/office/v1.2/os/OpenDocument-v1.2-os-part1.html#datatype-boolean
             $data .= ' office:value-type="boolean" calcext:value-type="boolean" office:boolean-value="'.$value.'">';
             $data .= '<text:p>'.$cell->getValue().'</text:p>';
             $data .= '</table:table-cell>';

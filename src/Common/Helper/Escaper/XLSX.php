@@ -102,7 +102,7 @@ final class XLSX implements EscaperInterface
         // control characters values are from 0 to 1F (hex values) in the ASCII table
         for ($charValue = 0x00; $charValue <= 0x1F; ++$charValue) {
             $character = \chr($charValue);
-            if (preg_match("/{$this->escapableControlCharactersPattern}/", $character)) {
+            if (1 === preg_match("/{$this->escapableControlCharactersPattern}/", $character)) {
                 $charHexValue = dechex($charValue);
                 $escapedChar = '_x'.sprintf('%04s', strtoupper($charHexValue)).'_';
                 $controlCharactersEscapingMap[$escapedChar] = $character;
@@ -130,7 +130,7 @@ final class XLSX implements EscaperInterface
         $escapedString = $this->escapeEscapeCharacter($string);
 
         // if no control characters
-        if (!preg_match("/{$this->escapableControlCharactersPattern}/", $escapedString)) {
+        if (1 !== preg_match("/{$this->escapableControlCharactersPattern}/", $escapedString)) {
             return $escapedString;
         }
 

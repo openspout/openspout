@@ -11,5 +11,5 @@ interface SheetIteratorInterface extends IteratorInterface
 {
     public function end(): void;
 
-    public function current(): ?SheetInterface;
+    public function current(): SheetInterface;
 }

@@ -23,7 +23,7 @@ final class MemoryLimit
             return -1;
         }
 
-        if (preg_match('/(\d+)([bkmgt])b?/', $memoryLimitFormatted, $matches)) {
+        if (1 === preg_match('/(\d+)([bkmgt])b?/', $memoryLimitFormatted, $matches)) {
             $amount = (int) ($matches[1]);
             $unit = $matches[2];
 

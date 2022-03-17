@@ -48,6 +48,8 @@ final class Worksheet
      */
     public function getFilePointer()
     {
+        \assert(null !== $this->filePointer);
+
         return $this->filePointer;
     }
 

@@ -15,7 +15,6 @@ use OpenSpout\Writer\Exception\WriterAlreadyOpenedException;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
 use OpenSpout\Writer\RowCreationHelper;
 use OpenSpout\Writer\XLSX\Manager\WorkbookManager;
-use OpenSpout\Writer\XLSX\Manager\WorksheetManager;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -97,7 +96,7 @@ final class WriterTest extends TestCase
     {
         $fileName = 'test_add_row_should_throw_exception_if_unsupported_data_type_passed_in.xlsx';
         $dataRows = [
-            [str_repeat('a', WorksheetManager::MAX_CHARACTERS_PER_CELL + 1)],
+            $this->createRowFromValues([new \stdClass()]),
         ];
 
         $this->expectException(InvalidArgumentException::class);

@@ -125,7 +125,7 @@ final class WorksheetManager implements WorksheetManagerInterface
      */
     public function getXMLFragmentForColumnWidths(): string
     {
-        if (empty($this->columnWidths)) {
+        if ([] === $this->columnWidths) {
             return '';
         }
         $xml = '<cols>';
@@ -142,13 +142,13 @@ final class WorksheetManager implements WorksheetManagerInterface
      */
     public function getXMLFragmentForDefaultCellSizing(): string
     {
-        $rowHeightXml = empty($this->defaultRowHeight) ? '' : " defaultRowHeight=\"{$this->defaultRowHeight}\"";
-        $colWidthXml = empty($this->defaultColumnWidth) ? '' : " defaultColWidth=\"{$this->defaultColumnWidth}\"";
-        if (empty($colWidthXml) && empty($rowHeightXml)) {
+        $rowHeightXml = null === $this->defaultRowHeight ? '' : " defaultRowHeight=\"{$this->defaultRowHeight}\"";
+        $colWidthXml = null === $this->defaultColumnWidth ? '' : " defaultColWidth=\"{$this->defaultColumnWidth}\"";
+        if ('' === $colWidthXml && '' === $rowHeightXml) {
             return '';
         }
         // Ensure that the required defaultRowHeight is set
-        $rowHeightXml = empty($rowHeightXml) ? ' defaultRowHeight="0"' : $rowHeightXml;
+        $rowHeightXml = '' === $rowHeightXml ? ' defaultRowHeight="0"' : $rowHeightXml;
 
         return "<sheetFormatPr{$colWidthXml}{$rowHeightXml}/>";
     }
@@ -158,18 +158,15 @@ final class WorksheetManager implements WorksheetManagerInterface
      */
     public function close(Worksheet $worksheet): void
     {
-        $worksheetFilePointer = $worksheet->getFilePointer();
-
-        if (!\is_resource($worksheetFilePointer)) {
-            return;
-        }
         $this->ensureSheetDataStated($worksheet);
+        $worksheetFilePointer = $worksheet->getFilePointer();
         fwrite($worksheetFilePointer, '</sheetData>');
 
         // create nodes for merge cells
-        if ($this->optionsManager->getOption(Options::MERGE_CELLS)) {
-            $mergeCellString = '<mergeCells count="'.\count($this->optionsManager->getOption(Options::MERGE_CELLS)).'">';
-            foreach ($this->optionsManager->getOption(Options::MERGE_CELLS) as $values) {
+        $mergeCellsOption = $this->optionsManager->getOption(Options::MERGE_CELLS);
+        if ([] !== $mergeCellsOption) {
+            $mergeCellString = '<mergeCells count="'.\count($mergeCellsOption).'">';
+            foreach ($mergeCellsOption as $values) {
                 $output = array_map(static function ($value): string {
                     return CellHelper::getColumnLettersFromColumnIndex($value[0]).$value[1];
                 }, $values);

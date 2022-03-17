@@ -13,5 +13,5 @@ interface RowIteratorInterface extends IteratorInterface
 {
     public function end(): void;
 
-    public function current(): ?Row;
+    public function current(): Row;
 }

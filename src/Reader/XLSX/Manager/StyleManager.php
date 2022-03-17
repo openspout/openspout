@@ -296,7 +296,7 @@ class StyleManager implements StyleManagerInterface
             // character not preceded by "\" (case insensitive)
             $pattern = '/(?<!\\\)'.$dateFormatCharacter.'/i';
 
-            if (preg_match($pattern, $formatCode)) {
+            if (1 === preg_match($pattern, $formatCode)) {
                 $hasFoundDateFormatCharacter = true;
 
                 break;
