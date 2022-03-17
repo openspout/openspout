@@ -19,11 +19,6 @@ final class Row
     private Style $style;
 
     /**
-     * Row height (default is 15).
-     */
-    private string $height = '15';
-
-    /**
      * Row constructor.
      *
      * @param Cell[] $cells
@@ -107,23 +102,5 @@ final class Row
         return array_map(static function (Cell $cell): mixed {
             return $cell->getValue();
         }, $this->cells);
-    }
-
-    /**
-     * Set row height.
-     */
-    public function setHeight(string $height): self
-    {
-        $this->height = $height;
-
-        return $this;
-    }
-
-    /**
-     * Returns row height.
-     */
-    public function getHeight(): string
-    {
-        return $this->height;
     }
 }
