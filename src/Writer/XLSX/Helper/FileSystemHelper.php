@@ -3,6 +3,7 @@
 namespace OpenSpout\Writer\XLSX\Helper;
 
 use DateTimeImmutable;
+use OpenSpout\Common\Helper\Escaper\XLSX;
 use OpenSpout\Common\Helper\FileSystemHelper as CommonFileSystemHelper;
 use OpenSpout\Writer\Common\Entity\Worksheet;
 use OpenSpout\Writer\Common\Helper\FileSystemWithRootFolderHelperInterface;
@@ -13,7 +14,7 @@ use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
  * This class provides helper functions to help with the file system operations
  * like files/folders creation & deletion for XLSX files.
  */
-final class FileSystemHelper extends CommonFileSystemHelper implements FileSystemWithRootFolderHelperInterface
+final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 {
     public const APP_NAME = 'Spout';
 
@@ -30,11 +31,14 @@ final class FileSystemHelper extends CommonFileSystemHelper implements FileSyste
     public const WORKBOOK_RELS_XML_FILE_NAME = 'workbook.xml.rels';
     public const STYLES_XML_FILE_NAME = 'styles.xml';
 
+    private string $baseFolderRealPath;
+    private CommonFileSystemHelper $baseFileSystemHelper;
+
     /** @var ZipHelper Helper to perform tasks with Zip archive */
     private ZipHelper $zipHelper;
 
-    /** @var \OpenSpout\Common\Helper\Escaper\XLSX Used to escape XML data */
-    private \OpenSpout\Common\Helper\Escaper\XLSX $escaper;
+    /** @var XLSX Used to escape XML data */
+    private XLSX $escaper;
 
     /** @var string Path to the root folder inside the temp folder where the files to create the XLSX will be stored */
     private string $rootFolder;
@@ -55,15 +59,36 @@ final class FileSystemHelper extends CommonFileSystemHelper implements FileSyste
     private string $xlWorksheetsFolder;
 
     /**
-     * @param string                                $baseFolderPath The path of the base folder where all the I/O can occur
-     * @param ZipHelper                             $zipHelper      Helper to perform tasks with Zip archive
-     * @param \OpenSpout\Common\Helper\Escaper\XLSX $escaper        Used to escape XML data
+     * @param string    $baseFolderPath The path of the base folder where all the I/O can occur
+     * @param ZipHelper $zipHelper      Helper to perform tasks with Zip archive
+     * @param XLSX      $escaper        Used to escape XML data
      */
-    public function __construct(string $baseFolderPath, ZipHelper $zipHelper, \OpenSpout\Common\Helper\Escaper\XLSX $escaper)
+    public function __construct(string $baseFolderPath, ZipHelper $zipHelper, XLSX $escaper)
     {
-        parent::__construct($baseFolderPath);
+        $this->baseFileSystemHelper = new CommonFileSystemHelper($baseFolderPath);
+        $this->baseFolderRealPath = $this->baseFileSystemHelper->getBaseFolderRealPath();
         $this->zipHelper = $zipHelper;
         $this->escaper = $escaper;
+    }
+
+    public function createFolder(string $parentFolderPath, string $folderName): string
+    {
+        return $this->baseFileSystemHelper->createFolder($parentFolderPath, $folderName);
+    }
+
+    public function createFileWithContents(string $parentFolderPath, string $fileName, string $fileContents): string
+    {
+        return $this->baseFileSystemHelper->createFileWithContents($parentFolderPath, $fileName, $fileContents);
+    }
+
+    public function deleteFile(string $filePath): void
+    {
+        $this->baseFileSystemHelper->deleteFile($filePath);
+    }
+
+    public function deleteFolderRecursively(string $folderPath): void
+    {
+        $this->baseFileSystemHelper->deleteFolderRecursively($folderPath);
     }
 
     public function getRootFolder(): string
