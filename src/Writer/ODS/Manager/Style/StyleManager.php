@@ -345,16 +345,11 @@ final class StyleManager extends CommonStyleManager
      */
     private function transformCellAlignment(string $cellAlignment): string
     {
-        switch ($cellAlignment) {
-            case CellAlignment::LEFT:
-                return 'start';
-
-            case CellAlignment::RIGHT:
-                return 'end';
-
-            default:
-                return $cellAlignment;
-        }
+        return match ($cellAlignment) {
+            CellAlignment::LEFT => 'start',
+            CellAlignment::RIGHT => 'end',
+            default => $cellAlignment,
+        };
     }
 
     /**

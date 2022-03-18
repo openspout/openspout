@@ -341,7 +341,7 @@ final class RowIterator implements RowIteratorInterface
 
         // If needed, we fill the empty cells
         if (0 === $this->numColumns) {
-            $this->currentlyProcessedRow = $this->rowManager->fillMissingIndexesWithEmptyCells($this->currentlyProcessedRow);
+            $this->rowManager->fillMissingIndexesWithEmptyCells($this->currentlyProcessedRow);
         }
 
         // at this point, we have all the data we need for the row

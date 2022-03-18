@@ -10,12 +10,12 @@ final class RowManager
     /**
      * Fills the missing indexes of a row with empty cells.
      */
-    public function fillMissingIndexesWithEmptyCells(Row $row): Row
+    public function fillMissingIndexesWithEmptyCells(Row $row): void
     {
         $numCells = $row->getNumCells();
 
         if (0 === $numCells) {
-            return $row;
+            return;
         }
 
         $rowCells = $row->getCells();
@@ -42,7 +42,5 @@ final class RowManager
             ksort($rowCells);
             $row->setCells($rowCells);
         }
-
-        return $row;
     }
 }

@@ -87,28 +87,15 @@ final class CellValueFormatter
             return $vNodeValue;
         }
 
-        switch ($cellType) {
-            case self::CELL_TYPE_INLINE_STRING:
-                return $this->formatInlineStringCellValue($node);
-
-            case self::CELL_TYPE_SHARED_STRING:
-                return $this->formatSharedStringCellValue($vNodeValue);
-
-            case self::CELL_TYPE_STR:
-                return $this->formatStrCellValue($vNodeValue);
-
-            case self::CELL_TYPE_BOOLEAN:
-                return $this->formatBooleanCellValue($vNodeValue);
-
-            case self::CELL_TYPE_NUMERIC:
-                return $this->formatNumericCellValue($vNodeValue, $cellStyleId);
-
-            case self::CELL_TYPE_DATE:
-                return $this->formatDateCellValue($vNodeValue);
-
-            default:
-                throw new InvalidValueException($vNodeValue);
-        }
+        return match ($cellType) {
+            self::CELL_TYPE_INLINE_STRING => $this->formatInlineStringCellValue($node),
+            self::CELL_TYPE_SHARED_STRING => $this->formatSharedStringCellValue($vNodeValue),
+            self::CELL_TYPE_STR => $this->formatStrCellValue($vNodeValue),
+            self::CELL_TYPE_BOOLEAN => $this->formatBooleanCellValue($vNodeValue),
+            self::CELL_TYPE_NUMERIC => $this->formatNumericCellValue($vNodeValue, $cellStyleId),
+            self::CELL_TYPE_DATE => $this->formatDateCellValue($vNodeValue),
+            default => throw new InvalidValueException($vNodeValue),
+        };
     }
 
     /**

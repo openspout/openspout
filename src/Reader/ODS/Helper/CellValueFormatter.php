@@ -3,6 +3,7 @@
 namespace OpenSpout\Reader\ODS\Helper;
 
 use DateTimeImmutable;
+use OpenSpout\Common\Helper\Escaper\ODS;
 use OpenSpout\Reader\Exception\InvalidValueException;
 
 /**
@@ -47,14 +48,14 @@ final class CellValueFormatter
     /** @var bool Whether date/time values should be returned as PHP objects or be formatted as strings */
     private bool $shouldFormatDates;
 
-    /** @var \OpenSpout\Common\Helper\Escaper\ODS Used to unescape XML data */
-    private \OpenSpout\Common\Helper\Escaper\ODS $escaper;
+    /** @var ODS Used to unescape XML data */
+    private ODS $escaper;
 
     /**
-     * @param bool                                 $shouldFormatDates Whether date/time values should be returned as PHP objects or be formatted as strings
-     * @param \OpenSpout\Common\Helper\Escaper\ODS $escaper           Used to unescape XML data
+     * @param bool $shouldFormatDates Whether date/time values should be returned as PHP objects or be formatted as strings
+     * @param ODS  $escaper           Used to unescape XML data
      */
-    public function __construct(bool $shouldFormatDates, \OpenSpout\Common\Helper\Escaper\ODS $escaper)
+    public function __construct(bool $shouldFormatDates, ODS $escaper)
     {
         $this->shouldFormatDates = $shouldFormatDates;
         $this->escaper = $escaper;
@@ -73,32 +74,16 @@ final class CellValueFormatter
     {
         $cellType = $node->getAttribute(self::XML_ATTRIBUTE_TYPE);
 
-        switch ($cellType) {
-            case self::CELL_TYPE_STRING:
-                return $this->formatStringCellValue($node);
-
-            case self::CELL_TYPE_FLOAT:
-                return $this->formatFloatCellValue($node);
-
-            case self::CELL_TYPE_BOOLEAN:
-                return $this->formatBooleanCellValue($node);
-
-            case self::CELL_TYPE_DATE:
-                return $this->formatDateCellValue($node);
-
-            case self::CELL_TYPE_TIME:
-                return $this->formatTimeCellValue($node);
-
-            case self::CELL_TYPE_CURRENCY:
-                return $this->formatCurrencyCellValue($node);
-
-            case self::CELL_TYPE_PERCENTAGE:
-                return $this->formatPercentageCellValue($node);
-
-            case self::CELL_TYPE_VOID:
-            default:
-                return '';
-        }
+        return match ($cellType) {
+            self::CELL_TYPE_STRING => $this->formatStringCellValue($node),
+            self::CELL_TYPE_FLOAT => $this->formatFloatCellValue($node),
+            self::CELL_TYPE_BOOLEAN => $this->formatBooleanCellValue($node),
+            self::CELL_TYPE_DATE => $this->formatDateCellValue($node),
+            self::CELL_TYPE_TIME => $this->formatTimeCellValue($node),
+            self::CELL_TYPE_CURRENCY => $this->formatCurrencyCellValue($node),
+            self::CELL_TYPE_PERCENTAGE => $this->formatPercentageCellValue($node),
+            default => '',
+        };
     }
 
     /**
@@ -142,9 +127,7 @@ final class CellValueFormatter
      */
     private function formatBooleanCellValue(\DOMElement $node): bool
     {
-        $nodeValue = $node->getAttribute(self::XML_ATTRIBUTE_BOOLEAN_VALUE);
-
-        return (bool) $nodeValue;
+        return (bool) ($node->getAttribute(self::XML_ATTRIBUTE_BOOLEAN_VALUE));
     }
 
     /**
@@ -169,8 +152,8 @@ final class CellValueFormatter
 
             try {
                 $cellValue = new DateTimeImmutable($nodeValue);
-            } catch (\Exception $e) {
-                throw new InvalidValueException($nodeValue);
+            } catch (\Exception $previous) {
+                throw new InvalidValueException($nodeValue, '', 0, $previous);
             }
         }
 
@@ -201,8 +184,8 @@ final class CellValueFormatter
 
             try {
                 $cellValue = new \DateInterval($nodeValue);
-            } catch (\Exception $e) {
-                throw new InvalidValueException($nodeValue);
+            } catch (\Exception $previous) {
+                throw new InvalidValueException($nodeValue, '', 0, $previous);
             }
         }
 

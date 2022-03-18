@@ -37,7 +37,8 @@ final class RowManagerTest extends TestCase
             $rowToFill->setCellAtIndex($cell, $cellIndex);
         }
 
-        $filledRow = $rowManager->fillMissingIndexesWithEmptyCells($rowToFill);
-        static::assertEquals($expectedFilledCells, $filledRow->getCells());
+        $rowManager->fillMissingIndexesWithEmptyCells($rowToFill);
+
+        static::assertEquals($expectedFilledCells, $rowToFill->getCells());
     }
 }

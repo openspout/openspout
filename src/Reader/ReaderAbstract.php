@@ -198,9 +198,7 @@ abstract class ReaderAbstract implements ReaderInterface
     {
         $streamScheme = $this->getStreamWrapperScheme($filePath);
 
-        return (null !== $streamScheme) ?
-            \in_array($streamScheme, stream_get_wrappers(), true) :
-            true;
+        return null === $streamScheme || \in_array($streamScheme, stream_get_wrappers(), true);
     }
 
     /**
