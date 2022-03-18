@@ -8,21 +8,6 @@ use OpenSpout\Common\Entity\Row;
 final class RowManager
 {
     /**
-     * Detect whether a row is considered empty.
-     * An empty row has all of its cells empty.
-     */
-    public function isEmpty(Row $row): bool
-    {
-        foreach ($row->getCells() as $cell) {
-            if (!$cell instanceof Cell\EmptyCell) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
      * Fills the missing indexes of a row with empty cells.
      */
     public function fillMissingIndexesWithEmptyCells(Row $row): Row

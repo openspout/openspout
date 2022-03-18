@@ -40,28 +40,4 @@ final class RowManagerTest extends TestCase
         $filledRow = $rowManager->fillMissingIndexesWithEmptyCells($rowToFill);
         static::assertEquals($expectedFilledCells, $filledRow->getCells());
     }
-
-    public function dataProviderForTestIsEmptyRow(): array
-    {
-        return [
-            // cells, expected isEmpty
-            [[], true],
-            [[Cell::fromValue('')], true],
-            [[Cell::fromValue(''), Cell::fromValue('')], true],
-            [[Cell::fromValue(''), Cell::fromValue(''), Cell::fromValue('Okay')], false],
-        ];
-    }
-
-    /**
-     * @dataProvider dataProviderForTestIsEmptyRow
-     *
-     * @param Cell[] $cells
-     */
-    public function testIsEmptyRow(array $cells, bool $expectedIsEmpty): void
-    {
-        $rowManager = new RowManager();
-        $row = new Row($cells, null);
-
-        static::assertSame($expectedIsEmpty, $rowManager->isEmpty($row));
-    }
 }

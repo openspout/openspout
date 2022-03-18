@@ -115,4 +115,19 @@ final class Row
             return $cell->getValue();
         }, $this->cells);
     }
+
+    /**
+     * Detect whether a row is considered empty.
+     * An empty row has all of its cells empty.
+     */
+    public function isEmpty(): bool
+    {
+        foreach ($this->cells as $cell) {
+            if (!$cell instanceof Cell\EmptyCell) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

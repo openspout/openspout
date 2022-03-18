@@ -69,4 +69,27 @@ final class RowTest extends \PHPUnit\Framework\TestCase
 
         static::assertSame(3, $row->getNumCells());
     }
+
+    /**
+     * @dataProvider dataProviderForTestIsEmptyRow
+     *
+     * @param Cell[] $cells
+     */
+    public function testIsEmptyRow(array $cells, bool $expectedIsEmpty): void
+    {
+        $row = new Row($cells, null);
+
+        static::assertSame($expectedIsEmpty, $row->isEmpty());
+    }
+
+    public function dataProviderForTestIsEmptyRow(): array
+    {
+        return [
+            // cells, expected isEmpty
+            [[], true],
+            [[Cell::fromValue('')], true],
+            [[Cell::fromValue(''), Cell::fromValue('')], true],
+            [[Cell::fromValue(''), Cell::fromValue(''), Cell::fromValue('Okay')], false],
+        ];
+    }
 }
