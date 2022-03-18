@@ -19,7 +19,7 @@ final class StringHelper
 
     public static function factory(): self
     {
-        return new self(\extension_loaded('mbstring'));
+        return new self(\function_exists('mb_strlen'));
     }
 
     /**
@@ -33,7 +33,7 @@ final class StringHelper
     {
         return $this->hasMbstringSupport
             ? mb_strlen($string)
-            : \strlen($string)
+            : \strlen($string) // @codeCoverageIgnore
         ;
     }
 
@@ -53,7 +53,7 @@ final class StringHelper
     {
         $position = $this->hasMbstringSupport
             ? mb_strpos($string, $char)
-            : strpos($string, $char)
+            : strpos($string, $char) // @codeCoverageIgnore
         ;
 
         return (false !== $position) ? $position : -1;
@@ -75,26 +75,9 @@ final class StringHelper
     {
         $position = $this->hasMbstringSupport
             ? mb_strrpos($string, $char)
-            : strrpos($string, $char)
+            : strrpos($string, $char) // @codeCoverageIgnore
         ;
 
         return (false !== $position) ? $position : -1;
-    }
-
-    /**
-     * Formats a numeric value (int or float) in a way that's compatible with the expected spreadsheet format.
-     *
-     * Formatting of float values is locale dependent in PHP < 8.
-     * Thousands separators and decimal points vary from locale to locale (en_US: 12.34 vs pl_PL: 12,34).
-     * However, float values must be formatted with no thousands separator and a "." as decimal point
-     * to work properly. This method can be used to convert the value to the correct format before storing it.
-     *
-     * @see https://wiki.php.net/rfc/locale_independent_float_to_string for the changed behavior in PHP8.
-     *
-     * @param float|int $numericValue
-     */
-    public function formatNumericValue($numericValue): float|int|string
-    {
-        return $numericValue;
     }
 }

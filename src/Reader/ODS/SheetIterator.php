@@ -104,7 +104,12 @@ final class SheetIterator implements SheetIteratorInterface
      */
     public function valid(): bool
     {
-        return $this->hasFoundSheet;
+        $valid = $this->hasFoundSheet;
+        if (!$valid) {
+            $this->xmlReader->close();
+        }
+
+        return $valid;
     }
 
     /**
@@ -138,7 +143,6 @@ final class SheetIterator implements SheetIteratorInterface
 
         return new Sheet(
             new RowIterator(
-                $this->xmlReader,
                 $this->options,
                 new CellValueFormatter($this->options->SHOULD_FORMAT_DATES, new ODS()),
                 new XMLProcessor($this->xmlReader)
@@ -158,14 +162,6 @@ final class SheetIterator implements SheetIteratorInterface
     public function key(): int
     {
         return $this->currentSheetIndex + 1;
-    }
-
-    /**
-     * Cleans up what was created to iterate over the object.
-     */
-    public function end(): void
-    {
-        $this->xmlReader->close();
     }
 
     /**

@@ -284,7 +284,7 @@ final class WorksheetManager implements WorksheetManagerInterface
         } elseif ($cell instanceof Cell\BooleanCell) {
             $cellXML .= ' t="b"><v>'.(int) ($cell->getValue()).'</v></c>';
         } elseif ($cell instanceof Cell\NumericCell) {
-            $cellXML .= '><v>'.$this->stringHelper->formatNumericValue($cell->getValue()).'</v></c>';
+            $cellXML .= '><v>'.$cell->getValue().'</v></c>';
         } elseif ($cell instanceof Cell\FormulaCell) {
             $cellXML .= '><f>'.substr($cell->getValue(), 1).'</f></c>';
         } elseif ($cell instanceof Cell\DateCell) {

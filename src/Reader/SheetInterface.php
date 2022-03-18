@@ -28,9 +28,4 @@ interface SheetInterface
      * @return bool Whether the sheet was defined as active
      */
     public function isActive(): bool;
-
-    /**
-     * @return bool Whether the sheet is visible
-     */
-    public function isVisible(): bool;
 }

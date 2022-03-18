@@ -50,12 +50,4 @@ final class Sheet implements SheetInterface
     {
         return true;
     }
-
-    /**
-     * @return bool Always TRUE as the only sheet is always visible
-     */
-    public function isVisible(): bool
-    {
-        return true;
-    }
 }

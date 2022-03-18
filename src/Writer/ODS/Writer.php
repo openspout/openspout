@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace OpenSpout\Writer\ODS;
 
 use OpenSpout\Common\Helper\Escaper\ODS;
-use OpenSpout\Common\Helper\StringHelper;
 use OpenSpout\Writer\Common\Entity\Workbook;
 use OpenSpout\Writer\Common\Helper\ZipHelper;
 use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
@@ -46,7 +45,7 @@ final class Writer extends WriterMultiSheetsAbstract
 
         $styleMerger = new StyleMerger();
         $styleManager = new StyleManager(new StyleRegistry($this->options->DEFAULT_ROW_STYLE), $this->options);
-        $worksheetManager = new WorksheetManager($styleManager, $styleMerger, new ODS(), StringHelper::factory());
+        $worksheetManager = new WorksheetManager($styleManager, $styleMerger, new ODS());
 
         return new WorkbookManager(
             $workbook,

@@ -7,11 +7,9 @@ namespace OpenSpout\Reader\ODS;
 use DOMElement;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
-use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Reader\Common\XMLProcessor;
 use OpenSpout\Reader\Exception\InvalidValueException;
 use OpenSpout\Reader\Exception\IteratorNotRewindableException;
-use OpenSpout\Reader\Exception\XMLProcessingException;
 use OpenSpout\Reader\ODS\Helper\CellValueFormatter;
 use OpenSpout\Reader\RowIteratorInterface;
 use OpenSpout\Reader\Wrapper\XMLReader;
@@ -31,9 +29,6 @@ final class RowIterator implements RowIteratorInterface
      */
     public const XML_ATTRIBUTE_NUM_ROWS_REPEATED = 'table:number-rows-repeated';
     public const XML_ATTRIBUTE_NUM_COLUMNS_REPEATED = 'table:number-columns-repeated';
-
-    /** @var XMLReader The XMLReader object that will help read sheet's XML data */
-    private XMLReader $xmlReader;
 
     private Options $options;
 
@@ -74,12 +69,10 @@ final class RowIterator implements RowIteratorInterface
     private bool $hasAlreadyReadOneCellInCurrentRow = false;
 
     public function __construct(
-        XMLReader $xmlReader,
         Options $options,
         CellValueFormatter $cellValueFormatter,
         XMLProcessor $xmlProcessor
     ) {
-        $this->xmlReader = $xmlReader;
         $this->cellValueFormatter = $cellValueFormatter;
 
         // Register all callbacks to process different nodes when reading the XML file
@@ -165,14 +158,6 @@ final class RowIterator implements RowIteratorInterface
     }
 
     /**
-     * Cleans up what was created to iterate over the object.
-     */
-    public function end(): void
-    {
-        $this->xmlReader->close();
-    }
-
-    /**
      * Returns whether we need data for the next row to be processed.
      * We DO need to read data if:
      *   - we have not read any rows yet
@@ -199,11 +184,7 @@ final class RowIterator implements RowIteratorInterface
     {
         $this->currentlyProcessedRow = new Row([], null);
 
-        try {
-            $this->xmlProcessor->readUntilStopped();
-        } catch (XMLProcessingException $exception) {
-            throw new IOException("The sheet's data cannot be read. [{$exception->getMessage()}]");
-        }
+        $this->xmlProcessor->readUntilStopped();
 
         $this->rowBuffer = $this->currentlyProcessedRow;
     }
