@@ -183,7 +183,6 @@ class StyleRegistry extends CommonStyleRegistry
     private function registerFormat(Style $style): void
     {
         $styleId = $style->getId();
-        \assert(null !== $styleId);
 
         $format = $style->getFormat();
         if (null !== $format) {
@@ -213,7 +212,6 @@ class StyleRegistry extends CommonStyleRegistry
     private function registerFill(Style $style): void
     {
         $styleId = $style->getId();
-        \assert(null !== $styleId);
 
         // Currently - only solid backgrounds are supported
         // so $backgroundColor is a scalar value (RGB Color)
@@ -244,7 +242,6 @@ class StyleRegistry extends CommonStyleRegistry
     private function registerBorder(Style $style): void
     {
         $styleId = $style->getId();
-        \assert(null !== $styleId);
 
         if ($style->shouldApplyBorder()) {
             $border = $style->getBorder();

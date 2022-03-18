@@ -2,14 +2,16 @@
 
 namespace OpenSpout\Writer\CSV;
 
+use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\EncodingHelper;
 use OpenSpout\Writer\Common\Entity\Options;
+use OpenSpout\Writer\CSV\Manager\OptionsManager;
 use OpenSpout\Writer\WriterAbstract;
 
 /**
- * This class provides support to write data to CSV files.
+ * @extends WriterAbstract<OptionsManager>
  */
 final class Writer extends WriterAbstract
 {
@@ -20,6 +22,16 @@ final class Writer extends WriterAbstract
     protected static string $headerContentType = 'text/csv; charset=UTF-8';
 
     private int $lastWrittenRowIndex = 0;
+
+    public function __construct(OptionsManager $optionsManager)
+    {
+        parent::__construct($optionsManager);
+    }
+
+    public static function factory(): self
+    {
+        return new self(new OptionsManager());
+    }
 
     /**
      * Sets the field delimiter for the CSV.
@@ -72,7 +84,10 @@ final class Writer extends WriterAbstract
         $fieldDelimiter = $this->optionsManager->getOption(Options::FIELD_DELIMITER);
         $fieldEnclosure = $this->optionsManager->getOption(Options::FIELD_ENCLOSURE);
 
-        $wasWriteSuccessful = fputcsv($this->filePointer, $row->getCells(), $fieldDelimiter, $fieldEnclosure, '');
+        $cells = array_map(static function (Cell $value): string {
+            return (string) $value->getValue();
+        }, $row->getCells());
+        $wasWriteSuccessful = fputcsv($this->filePointer, $cells, $fieldDelimiter, $fieldEnclosure, '');
         if (false === $wasWriteSuccessful) {
             throw new IOException('Unable to write data');
         }

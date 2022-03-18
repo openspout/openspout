@@ -5,10 +5,11 @@ namespace OpenSpout\Reader\ODS;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\Escaper\ODS;
 use OpenSpout\Reader\ODS\Helper\SettingsHelper;
+use OpenSpout\Reader\ODS\Manager\OptionsManager;
 use OpenSpout\Reader\ReaderAbstract;
 
 /**
- * This class provides support to read data from a ODS file.
+ * @extends ReaderAbstract<SheetIterator>
  */
 final class Reader extends ReaderAbstract
 {
@@ -16,6 +17,16 @@ final class Reader extends ReaderAbstract
 
     /** @var SheetIterator To iterator over the ODS sheets */
     private SheetIterator $sheetIterator;
+
+    public function __construct(OptionsManager $optionsManager)
+    {
+        parent::__construct($optionsManager);
+    }
+
+    public static function factory(): self
+    {
+        return new self(new OptionsManager());
+    }
 
     /**
      * Returns whether stream wrappers are supported.

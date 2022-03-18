@@ -8,29 +8,14 @@ use OpenSpout\Common\Entity\Row;
 final class RowManager
 {
     /**
-     * Detect whether a row is considered empty.
-     * An empty row has all of its cells empty.
-     */
-    public function isEmpty(Row $row): bool
-    {
-        foreach ($row->getCells() as $cell) {
-            if (!$cell->isEmpty()) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
      * Fills the missing indexes of a row with empty cells.
      */
-    public function fillMissingIndexesWithEmptyCells(Row $row): Row
+    public function fillMissingIndexesWithEmptyCells(Row $row): void
     {
         $numCells = $row->getNumCells();
 
         if (0 === $numCells) {
-            return $row;
+            return;
         }
 
         $rowCells = $row->getCells();
@@ -47,7 +32,7 @@ final class RowManager
 
         for ($cellIndex = 0; $cellIndex < $maxCellIndex; ++$cellIndex) {
             if (!isset($rowCells[$cellIndex])) {
-                $row->setCellAtIndex(new Cell(''), $cellIndex);
+                $row->setCellAtIndex(Cell::fromValue(''), $cellIndex);
                 $needsSorting = true;
             }
         }
@@ -57,7 +42,5 @@ final class RowManager
             ksort($rowCells);
             $row->setCells($rowCells);
         }
-
-        return $row;
     }
 }

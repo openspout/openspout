@@ -14,8 +14,8 @@ final class Style
     public const DEFAULT_FONT_COLOR = Color::BLACK;
     public const DEFAULT_FONT_NAME = 'Arial';
 
-    /** @var null|int Style ID */
-    private ?int $id = null;
+    /** @var int Style ID */
+    private int $id = -1;
 
     /** @var bool Whether the font should be bold */
     private bool $fontBold = false;
@@ -102,8 +102,18 @@ final class Style
 
     private bool $isEmpty = true;
 
-    public function getId(): ?int
+    public function __sleep(): array
     {
+        $vars = get_object_vars($this);
+        unset($vars['id'], $vars['isRegistered']);
+
+        return array_keys($vars);
+    }
+
+    public function getId(): int
+    {
+        \assert(0 <= $this->id);
+
         return $this->id;
     }
 
@@ -410,12 +420,6 @@ final class Style
     {
         $this->setId($id);
         $this->isRegistered = true;
-    }
-
-    public function unmarkAsRegistered(): void
-    {
-        $this->setId(0);
-        $this->isRegistered = false;
     }
 
     public function isEmpty(): bool

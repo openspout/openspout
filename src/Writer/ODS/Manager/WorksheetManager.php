@@ -233,7 +233,7 @@ final class WorksheetManager implements WorksheetManagerInterface
             $data .= ' table:number-columns-repeated="'.$numTimesValueRepeated.'"';
         }
 
-        if ($cell->isString()) {
+        if ($cell instanceof Cell\StringCell) {
             $data .= ' office:value-type="string" calcext:value-type="string">';
 
             $cellValueLines = explode("\n", $cell->getValue());
@@ -242,39 +242,37 @@ final class WorksheetManager implements WorksheetManagerInterface
             }
 
             $data .= '</table:table-cell>';
-        } elseif ($cell->isBoolean()) {
-            $value = ((bool) $cell->getValue()) ? 'true' : 'false'; // boolean-value spec: http://docs.oasis-open.org/office/v1.2/os/OpenDocument-v1.2-os-part1.html#datatype-boolean
+        } elseif ($cell instanceof Cell\BooleanCell) {
+            $value = $cell->getValue() ? 'true' : 'false'; // boolean-value spec: http://docs.oasis-open.org/office/v1.2/os/OpenDocument-v1.2-os-part1.html#datatype-boolean
             $data .= ' office:value-type="boolean" calcext:value-type="boolean" office:boolean-value="'.$value.'">';
             $data .= '<text:p>'.$cell->getValue().'</text:p>';
             $data .= '</table:table-cell>';
-        } elseif ($cell->isNumeric()) {
+        } elseif ($cell instanceof Cell\NumericCell) {
             $cellValue = $this->stringHelper->formatNumericValue($cell->getValue());
             $data .= ' office:value-type="float" calcext:value-type="float" office:value="'.$cellValue.'">';
             $data .= '<text:p>'.$cellValue.'</text:p>';
             $data .= '</table:table-cell>';
-        } elseif ($cell->isDate()) {
+        } elseif ($cell instanceof Cell\DateCell) {
             $value = $cell->getValue();
             if ($value instanceof \DateTimeInterface) {
                 $datevalue = substr((new \DateTimeImmutable('@'.$value->getTimestamp()))->format(\DateTimeInterface::W3C), 0, -6);
                 $data .= ' office:value-type="date" calcext:value-type="date" office:date-value="'.$datevalue.'Z">';
                 $data .= '<text:p>'.$datevalue.'Z</text:p>';
-            } elseif ($value instanceof \DateInterval) {
+            } else {
                 // workaround for missing DateInterval::format('c'), see https://stackoverflow.com/a/61088115/53538
                 static $f = ['M0S', 'H0M', 'DT0H', 'M0D', 'Y0M', 'P0Y', 'Y0M', 'P0M'];
                 static $r = ['M', 'H', 'DT', 'M', 'Y0M', 'P', 'Y', 'P'];
                 $value = rtrim(str_replace($f, $r, $value->format('P%yY%mM%dDT%hH%iM%sS')), 'PT') ?: 'PT0S';
                 $data .= ' office:value-type="time" office:time-value="'.$value.'">';
                 $data .= '<text:p>'.$value.'</text:p>';
-            } else {
-                throw new InvalidArgumentException('Trying to add a date value with an unsupported type: '.\gettype($cell->getValue()));
             }
             $data .= '</table:table-cell>';
-        } elseif ($cell->isError() && \is_string($cell->getValueEvenIfError())) {
+        } elseif ($cell instanceof Cell\ErrorCell && \is_string($cell->getRawValue())) {
             // only writes the error value if it's a string
             $data .= ' office:value-type="string" calcext:value-type="error" office:value="">';
-            $data .= '<text:p>'.$cell->getValueEvenIfError().'</text:p>';
+            $data .= '<text:p>'.$cell->getRawValue().'</text:p>';
             $data .= '</table:table-cell>';
-        } elseif ($cell->isEmpty()) {
+        } elseif ($cell instanceof Cell\EmptyCell) {
             $data .= '/>';
         } else {
             throw new InvalidArgumentException('Trying to add a value with an unsupported type: '.\gettype($cell->getValue()));

@@ -14,7 +14,7 @@ use OpenSpout\Writer\ODS\Manager\WorksheetManager;
  * This class provides helper functions to help with the file system operations
  * like files/folders creation & deletion for ODS files.
  */
-final class FileSystemHelper extends CommonFileSystemHelper implements FileSystemWithRootFolderHelperInterface
+final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 {
     public const APP_NAME = 'Spout';
     public const MIMETYPE = 'application/vnd.oasis.opendocument.spreadsheet';
@@ -27,6 +27,9 @@ final class FileSystemHelper extends CommonFileSystemHelper implements FileSyste
     public const META_XML_FILE_NAME = 'meta.xml';
     public const MIMETYPE_FILE_NAME = 'mimetype';
     public const STYLES_XML_FILE_NAME = 'styles.xml';
+
+    private string $baseFolderRealPath;
+    private CommonFileSystemHelper $baseFileSystemHelper;
 
     /** @var string Path to the root folder inside the temp folder where the files to create the ODS will be stored */
     private string $rootFolder;
@@ -46,8 +49,29 @@ final class FileSystemHelper extends CommonFileSystemHelper implements FileSyste
      */
     public function __construct(string $baseFolderPath, ZipHelper $zipHelper)
     {
-        parent::__construct($baseFolderPath);
+        $this->baseFileSystemHelper = new CommonFileSystemHelper($baseFolderPath);
+        $this->baseFolderRealPath = $this->baseFileSystemHelper->getBaseFolderRealPath();
         $this->zipHelper = $zipHelper;
+    }
+
+    public function createFolder(string $parentFolderPath, string $folderName): string
+    {
+        return $this->baseFileSystemHelper->createFolder($parentFolderPath, $folderName);
+    }
+
+    public function createFileWithContents(string $parentFolderPath, string $fileName, string $fileContents): string
+    {
+        return $this->baseFileSystemHelper->createFileWithContents($parentFolderPath, $fileName, $fileContents);
+    }
+
+    public function deleteFile(string $filePath): void
+    {
+        $this->baseFileSystemHelper->deleteFile($filePath);
+    }
+
+    public function deleteFolderRecursively(string $folderPath): void
+    {
+        $this->baseFileSystemHelper->deleteFolderRecursively($folderPath);
     }
 
     public function getRootFolder(): string

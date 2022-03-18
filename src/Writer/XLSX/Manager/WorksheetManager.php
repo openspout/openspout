@@ -287,25 +287,25 @@ final class WorksheetManager implements WorksheetManagerInterface
         $cellXML = '<c r="'.$columnLetters.$rowIndexOneBased.'"';
         $cellXML .= ' s="'.$styleId.'"';
 
-        if ($cell->isString()) {
+        if ($cell instanceof Cell\StringCell) {
             $cellXML .= $this->getCellXMLFragmentForNonEmptyString($cell->getValue());
-        } elseif ($cell->isBoolean()) {
+        } elseif ($cell instanceof Cell\BooleanCell) {
             $cellXML .= ' t="b"><v>'.(int) ($cell->getValue()).'</v></c>';
-        } elseif ($cell->isNumeric()) {
+        } elseif ($cell instanceof Cell\NumericCell) {
             $cellXML .= '><v>'.$this->stringHelper->formatNumericValue($cell->getValue()).'</v></c>';
-        } elseif ($cell->isFormula()) {
+        } elseif ($cell instanceof Cell\FormulaCell) {
             $cellXML .= '><f>'.substr($cell->getValue(), 1).'</f></c>';
-        } elseif ($cell->isDate()) {
+        } elseif ($cell instanceof Cell\DateCell) {
             $value = $cell->getValue();
             if ($value instanceof \DateTimeInterface) {
                 $cellXML .= '><v>'.(string) DateHelper::toExcel($value).'</v></c>';
             } else {
                 throw new InvalidArgumentException('Trying to add a date value with an unsupported type: '.\gettype($value));
             }
-        } elseif ($cell->isError() && \is_string($cell->getValueEvenIfError())) {
+        } elseif ($cell instanceof Cell\ErrorCell && \is_string($cell->getRawValue())) {
             // only writes the error value if it's a string
-            $cellXML .= ' t="e"><v>'.$cell->getValueEvenIfError().'</v></c>';
-        } elseif ($cell->isEmpty()) {
+            $cellXML .= ' t="e"><v>'.$cell->getRawValue().'</v></c>';
+        } elseif ($cell instanceof Cell\EmptyCell) {
             if ($this->styleManager->shouldApplyStyleOnEmptyCell($styleId)) {
                 $cellXML .= '/>';
             } else {

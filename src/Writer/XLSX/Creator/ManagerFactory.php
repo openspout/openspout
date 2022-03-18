@@ -12,6 +12,7 @@ use OpenSpout\Writer\Common\Helper\ZipHelper;
 use OpenSpout\Writer\Common\Manager\RowManager;
 use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
 use OpenSpout\Writer\XLSX\Helper\FileSystemHelper;
+use OpenSpout\Writer\XLSX\Manager\OptionsManager;
 use OpenSpout\Writer\XLSX\Manager\SharedStringsManager;
 use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
 use OpenSpout\Writer\XLSX\Manager\Style\StyleRegistry;
@@ -19,10 +20,13 @@ use OpenSpout\Writer\XLSX\Manager\WorkbookManager;
 use OpenSpout\Writer\XLSX\Manager\WorksheetManager;
 
 /**
- * Factory for managers needed by the XLSX Writer.
+ * @implements ManagerFactoryInterface<OptionsManager, WorkbookManager>
  */
 final class ManagerFactory implements ManagerFactoryInterface
 {
+    /**
+     * @param OptionsManager $optionsManager
+     */
     public function createWorkbookManager(OptionsManagerInterface $optionsManager): WorkbookManager
     {
         $workbook = new Workbook();
@@ -46,7 +50,7 @@ final class ManagerFactory implements ManagerFactoryInterface
             $styleMerger,
             $sharedStringsManager,
             new XLSX(),
-            new StringHelper()
+            StringHelper::factory()
         );
 
         return new WorkbookManager(

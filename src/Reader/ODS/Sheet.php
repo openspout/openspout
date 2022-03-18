@@ -2,11 +2,10 @@
 
 namespace OpenSpout\Reader\ODS;
 
-use OpenSpout\Reader\RowIteratorInterface;
 use OpenSpout\Reader\SheetInterface;
 
 /**
- * Represents a sheet within a ODS file.
+ * @implements SheetInterface<RowIterator>
  */
 final class Sheet implements SheetInterface
 {
@@ -41,7 +40,7 @@ final class Sheet implements SheetInterface
         $this->isVisible = $isSheetVisible;
     }
 
-    public function getRowIterator(): RowIteratorInterface
+    public function getRowIterator(): RowIterator
     {
         return $this->rowIterator;
     }

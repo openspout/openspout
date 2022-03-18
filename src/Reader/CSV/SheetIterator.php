@@ -5,7 +5,7 @@ namespace OpenSpout\Reader\CSV;
 use OpenSpout\Reader\SheetIteratorInterface;
 
 /**
- * Iterate over CSV unique "sheet".
+ * @implements SheetIteratorInterface<Sheet>
  */
 final class SheetIterator implements SheetIteratorInterface
 {

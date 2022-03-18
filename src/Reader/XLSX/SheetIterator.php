@@ -7,11 +7,11 @@ use OpenSpout\Reader\SheetIteratorInterface;
 use OpenSpout\Reader\XLSX\Manager\SheetManager;
 
 /**
- * Iterate over XLSX sheet.
+ * @implements SheetIteratorInterface<Sheet>
  */
 final class SheetIterator implements SheetIteratorInterface
 {
-    /** @var \OpenSpout\Reader\XLSX\Sheet[] The list of sheet present in the file */
+    /** @var Sheet[] The list of sheet present in the file */
     private array $sheets;
 
     /** @var int The index of the sheet being read (zero-based) */
@@ -20,7 +20,7 @@ final class SheetIterator implements SheetIteratorInterface
     /**
      * @param SheetManager $sheetManager Manages sheets
      *
-     * @throws \OpenSpout\Reader\Exception\NoSheetsFoundException If there are no sheets in the file
+     * @throws NoSheetsFoundException If there are no sheets in the file
      */
     public function __construct(SheetManager $sheetManager)
     {

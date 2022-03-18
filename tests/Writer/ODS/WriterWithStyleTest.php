@@ -2,15 +2,15 @@
 
 namespace OpenSpout\Writer\ODS;
 
+use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\Border;
+use OpenSpout\Common\Entity\Style\BorderPart;
 use OpenSpout\Common\Entity\Style\CellAlignment;
 use OpenSpout\Common\Entity\Style\Color;
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Reader\Wrapper\XMLReader;
 use OpenSpout\TestUsingResource;
-use OpenSpout\Writer\Common\Creator\Style\BorderBuilder;
-use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
 use OpenSpout\Writer\ODS\Helper\BorderHelper;
 use OpenSpout\Writer\RowCreationHelper;
@@ -35,16 +35,16 @@ final class WriterWithStyleTest extends TestCase
     {
         $this->expectException(WriterNotOpenedException::class);
 
-        $writer = WriterEntityFactory::createODSWriter();
-        $writer->addRow($this->createStyledRowFromValues(['ods--11', 'ods--12'], $this->defaultStyle));
+        $writer = Writer::factory();
+        $writer->addRow(Row::fromValues(['ods--11', 'ods--12'], $this->defaultStyle));
     }
 
     public function testAddRowShouldThrowExceptionIfCalledBeforeOpeningWriter(): void
     {
         $this->expectException(WriterNotOpenedException::class);
 
-        $writer = WriterEntityFactory::createODSWriter();
-        $writer->addRow($this->createStyledRowFromValues(['ods--11', 'ods--12'], $this->defaultStyle));
+        $writer = Writer::factory();
+        $writer->addRow(Row::fromValues(['ods--11', 'ods--12'], $this->defaultStyle));
     }
 
     public function testAddRowShouldListAllUsedStylesInCreatedContentXmlFile(): void
@@ -67,8 +67,8 @@ final class WriterWithStyleTest extends TestCase
         ;
 
         $dataRows = [
-            $this->createStyledRowFromValues(['ods--11', 'ods--12'], $style),
-            $this->createStyledRowFromValues(['ods--21', 'ods--22'], $style2),
+            Row::fromValues(['ods--11', 'ods--12'], $style),
+            Row::fromValues(['ods--21', 'ods--22'], $style2),
         ];
 
         $this->writeToODSFile($dataRows, $fileName);
@@ -96,7 +96,7 @@ final class WriterWithStyleTest extends TestCase
     public function testAddRowShouldWriteDefaultStyleSettings(): void
     {
         $fileName = 'test_add_row_should_write_default_style_settings.ods';
-        $dataRow = $this->createStyledRowFromValues(['ods--11', 'ods--12'], $this->defaultStyle);
+        $dataRow = Row::fromValues(['ods--11', 'ods--12'], $this->defaultStyle);
 
         $this->writeToODSFile([$dataRow], $fileName);
 
@@ -113,9 +113,9 @@ final class WriterWithStyleTest extends TestCase
         $style = (new Style())->setFontBold();
         $style2 = (new Style())->setFontSize(15);
         $dataRows = [
-            $this->createStyledRowFromValues(['ods--11'], $style),
-            $this->createStyledRowFromValues(['ods--21'], $style2),
-            $this->createRowFromValues(['ods--31']),
+            Row::fromValues(['ods--11'], $style),
+            Row::fromValues(['ods--21'], $style2),
+            Row::fromValues(['ods--31']),
         ];
 
         $this->writeToODSFile($dataRows, $fileName);
@@ -204,10 +204,10 @@ final class WriterWithStyleTest extends TestCase
         $boldStyle = (new Style())->setFontBold();
         $underlineStyle = (new Style())->setFontUnderline();
 
-        $dataRow = WriterEntityFactory::createRow([
-            WriterEntityFactory::createCell('ods--11', $boldStyle),
-            WriterEntityFactory::createCell('ods--12', $underlineStyle),
-            WriterEntityFactory::createCell('ods--13', $underlineStyle),
+        $dataRow = new Row([
+            Cell::fromValue('ods--11', $boldStyle),
+            Cell::fromValue('ods--12', $underlineStyle),
+            Cell::fromValue('ods--13', $underlineStyle),
         ]);
 
         $this->writeToODSFile([$dataRow], $fileName);
@@ -242,11 +242,8 @@ final class WriterWithStyleTest extends TestCase
     {
         $fileName = 'test_borders.ods';
 
-        $borderBottomGreenThickSolid = (new BorderBuilder())
-            ->setBorderBottom(Color::GREEN, Border::WIDTH_THICK, Border::STYLE_SOLID)->build();
-
-        $borderTopRedThinDashed = (new BorderBuilder())
-            ->setBorderTop(Color::RED, Border::WIDTH_THIN, Border::STYLE_DASHED)->build();
+        $borderBottomGreenThickSolid = new Border(new BorderPart(Border::BOTTOM, Color::GREEN, Border::WIDTH_THICK, Border::STYLE_SOLID));
+        $borderTopRedThinDashed = new Border(new BorderPart(Border::TOP, Color::RED, Border::WIDTH_THIN, Border::STYLE_DASHED));
 
         $styles = [
             (new Style())->setBorder($borderBottomGreenThickSolid),
@@ -255,9 +252,9 @@ final class WriterWithStyleTest extends TestCase
         ];
 
         $dataRows = [
-            $this->createStyledRowFromValues(['row-with-border-bottom-green-thick-solid'], $styles[0]),
-            $this->createStyledRowFromValues(['row-without-border'], $styles[1]),
-            $this->createStyledRowFromValues(['row-with-border-top-red-thin-dashed'], $styles[2]),
+            Row::fromValues(['row-with-border-bottom-green-thick-solid'], $styles[0]),
+            Row::fromValues(['row-without-border'], $styles[1]),
+            Row::fromValues(['row-with-border-top-red-thin-dashed'], $styles[2]),
         ];
 
         $this->writeToODSFile($dataRows, $fileName);
@@ -326,7 +323,7 @@ final class WriterWithStyleTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = WriterEntityFactory::createODSWriter();
+        $writer = Writer::factory();
 
         $writer->openToFile($resourcePath);
         $writer->addRows($allRows);
@@ -343,7 +340,7 @@ final class WriterWithStyleTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = WriterEntityFactory::createODSWriter();
+        $writer = Writer::factory();
         $writer->setDefaultRowStyle($defaultStyle);
 
         $writer->openToFile($resourcePath);

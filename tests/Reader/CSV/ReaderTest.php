@@ -6,7 +6,6 @@ use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\EncodingHelper;
 use OpenSpout\Reader\CSV\Manager\OptionsManager;
 use OpenSpout\Reader\Exception\ReaderNotOpenedException;
-use OpenSpout\Reader\ReaderInterface;
 use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
@@ -224,7 +223,6 @@ final class ReaderTest extends TestCase
         $allRows = [];
         $resourcePath = $this->getResourcePath($fileName);
 
-        /** @var \OpenSpout\Reader\CSV\Reader $reader */
         $reader = $this->createCSVReader(null, new EncodingHelper($shouldUseIconv, !$shouldUseIconv));
         $reader
             ->setEncoding($fileEncoding)
@@ -345,7 +343,6 @@ final class ReaderTest extends TestCase
         // register stream wrapper
         stream_wrapper_register('spout', SpoutTestStream::CLASS_NAME);
 
-        /** @var \OpenSpout\Reader\CSV\Reader $reader */
         $reader = $this->createCSVReader(null, null);
         $reader->open($resourcePath);
 
@@ -372,12 +369,11 @@ final class ReaderTest extends TestCase
     {
         $this->expectException(IOException::class);
 
-        /** @var \OpenSpout\Reader\CSV\Reader $reader */
         $reader = $this->createCSVReader(null, null);
         $reader->open('unsupported://foobar');
     }
 
-    private function createCSVReader(?OptionsManager $optionsManager, ?EncodingHelper $encodingHelper): ReaderInterface
+    private function createCSVReader(?OptionsManager $optionsManager, ?EncodingHelper $encodingHelper): Reader
     {
         return new Reader(
             $optionsManager ?? new OptionsManager(),
@@ -398,7 +394,6 @@ final class ReaderTest extends TestCase
         $allRows = [];
         $resourcePath = $this->getResourcePath($fileName);
 
-        /** @var \OpenSpout\Reader\CSV\Reader $reader */
         $reader = $this->createCSVReader(null, null);
         $reader
             ->setFieldDelimiter($fieldDelimiter)

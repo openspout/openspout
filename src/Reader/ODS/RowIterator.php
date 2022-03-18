@@ -7,7 +7,6 @@ use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Manager\OptionsManagerInterface;
 use OpenSpout\Reader\Common\Entity\Options;
-use OpenSpout\Reader\Common\Manager\RowManager;
 use OpenSpout\Reader\Common\XMLProcessor;
 use OpenSpout\Reader\Exception\InvalidValueException;
 use OpenSpout\Reader\Exception\IteratorNotRewindableException;
@@ -28,20 +27,17 @@ final class RowIterator implements RowIteratorInterface
     public const XML_ATTRIBUTE_NUM_ROWS_REPEATED = 'table:number-rows-repeated';
     public const XML_ATTRIBUTE_NUM_COLUMNS_REPEATED = 'table:number-columns-repeated';
 
-    /** @var \OpenSpout\Reader\Wrapper\XMLReader The XMLReader object that will help read sheet's XML data */
-    private \OpenSpout\Reader\Wrapper\XMLReader $xmlReader;
+    /** @var XMLReader The XMLReader object that will help read sheet's XML data */
+    private XMLReader $xmlReader;
 
-    /** @var \OpenSpout\Reader\Common\XMLProcessor Helper Object to process XML nodes */
-    private \OpenSpout\Reader\Common\XMLProcessor $xmlProcessor;
+    /** @var XMLProcessor Helper Object to process XML nodes */
+    private XMLProcessor $xmlProcessor;
 
     /** @var bool Whether empty rows should be returned or skipped */
     private bool $shouldPreserveEmptyRows;
 
     /** @var Helper\CellValueFormatter Helper to format cell values */
     private Helper\CellValueFormatter $cellValueFormatter;
-
-    /** @var RowManager Manages rows */
-    private RowManager $rowManager;
 
     /** @var bool Whether the iterator has already been rewound once */
     private bool $hasAlreadyBeenRewound = false;
@@ -78,19 +74,16 @@ final class RowIterator implements RowIteratorInterface
      * @param OptionsManagerInterface $optionsManager     Reader's options manager
      * @param CellValueFormatter      $cellValueFormatter Helper to format cell values
      * @param XMLProcessor            $xmlProcessor       Helper to process XML files
-     * @param RowManager              $rowManager         Manages rows
      */
     public function __construct(
         XMLReader $xmlReader,
         OptionsManagerInterface $optionsManager,
         CellValueFormatter $cellValueFormatter,
-        XMLProcessor $xmlProcessor,
-        RowManager $rowManager
+        XMLProcessor $xmlProcessor
     ) {
         $this->xmlReader = $xmlReader;
         $this->shouldPreserveEmptyRows = $optionsManager->getOption(Options::SHOULD_PRESERVE_EMPTY_ROWS);
         $this->cellValueFormatter = $cellValueFormatter;
-        $this->rowManager = $rowManager;
 
         // Register all callbacks to process different nodes when reading the XML file
         $this->xmlProcessor = $xmlProcessor;
@@ -218,7 +211,7 @@ final class RowIterator implements RowIteratorInterface
     }
 
     /**
-     * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader XMLReader object, positioned on a "<table:table-row>" starting node
+     * @param XMLReader $xmlReader XMLReader object, positioned on a "<table:table-row>" starting node
      *
      * @return int A return code that indicates what action should the processor take next
      */
@@ -234,7 +227,7 @@ final class RowIterator implements RowIteratorInterface
     }
 
     /**
-     * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader XMLReader object, positioned on a "<table:table-cell>" starting node
+     * @param XMLReader $xmlReader XMLReader object, positioned on a "<table:table-cell>" starting node
      *
      * @return int A return code that indicates what action should the processor take next
      */
@@ -311,7 +304,7 @@ final class RowIterator implements RowIteratorInterface
     }
 
     /**
-     * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader XMLReader object, positioned on a "<table:table-row>" starting node
+     * @param XMLReader $xmlReader XMLReader object, positioned on a "<table:table-row>" starting node
      *
      * @return int The value of "table:number-rows-repeated" attribute of the current node, or 1 if attribute missing
      */
@@ -323,7 +316,7 @@ final class RowIterator implements RowIteratorInterface
     }
 
     /**
-     * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader XMLReader object, positioned on a "<table:table-cell>" starting node
+     * @param XMLReader $xmlReader XMLReader object, positioned on a "<table:table-cell>" starting node
      *
      * @return int The value of "table:number-columns-repeated" attribute of the current node, or 1 if attribute missing
      */
@@ -343,10 +336,9 @@ final class RowIterator implements RowIteratorInterface
     {
         try {
             $cellValue = $this->cellValueFormatter->extractAndFormatNodeValue($node);
-            $cell = new Cell($cellValue);
+            $cell = Cell::fromValue($cellValue);
         } catch (InvalidValueException $exception) {
-            $cell = new Cell($exception->getInvalidValue());
-            $cell->setType(Cell::TYPE_ERROR);
+            $cell = new Cell\ErrorCell($exception->getInvalidValue(), null);
         }
 
         return $cell;
@@ -365,8 +357,8 @@ final class RowIterator implements RowIteratorInterface
     private function isEmptyRow(Row $currentRow, ?Cell $lastReadCell): bool
     {
         return
-            $this->rowManager->isEmpty($currentRow)
-            && (!isset($lastReadCell) || $lastReadCell->isEmpty())
+            $currentRow->isEmpty()
+            && (null === $lastReadCell || $lastReadCell instanceof Cell\EmptyCell)
         ;
     }
 }

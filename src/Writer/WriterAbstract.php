@@ -5,19 +5,22 @@ namespace OpenSpout\Writer;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Common\Exception\IOException;
-use OpenSpout\Common\Exception\SpoutException;
+use OpenSpout\Common\Exception\OpenSpoutException;
 use OpenSpout\Common\Helper\FileSystemHelper;
 use OpenSpout\Common\Manager\OptionsManagerInterface;
 use OpenSpout\Writer\Common\Entity\Options;
 use OpenSpout\Writer\Exception\WriterAlreadyOpenedException;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
 
+/**
+ * @template O of OptionsManagerInterface
+ */
 abstract class WriterAbstract implements WriterInterface
 {
     /** @var resource Pointer to the file/stream we will write to */
     protected $filePointer;
 
-    /** @var OptionsManagerInterface Writer options manager */
+    /** @var O Writer options manager */
     protected OptionsManagerInterface $optionsManager;
 
     /** @var string Content-Type value for the header - to be defined by child class */
@@ -29,6 +32,9 @@ abstract class WriterAbstract implements WriterInterface
     /** @var bool Indicates whether the writer has been opened or not */
     private bool $isWriterOpened = false;
 
+    /**
+     * @param O $optionsManager
+     */
     public function __construct(
         OptionsManagerInterface $optionsManager
     ) {
@@ -124,7 +130,7 @@ abstract class WriterAbstract implements WriterInterface
 
         try {
             $this->addRowToWriter($row);
-        } catch (SpoutException $e) {
+        } catch (OpenSpoutException $e) {
             // if an exception occurs while writing data,
             // close the writer and remove all files created so far.
             $this->closeAndAttemptToCleanupAllFiles();

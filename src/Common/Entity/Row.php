@@ -19,21 +19,28 @@ final class Row
     private Style $style;
 
     /**
-     * Row height (default is 15).
-     */
-    private string $height = '15';
-
-    /**
      * Row constructor.
      *
      * @param Cell[] $cells
      */
-    public function __construct(array $cells, ?Style $style)
+    public function __construct(array $cells, ?Style $style = null)
     {
         $this
             ->setCells($cells)
             ->setStyle($style)
         ;
+    }
+
+    /**
+     * @param mixed[] $cellValues
+     */
+    public static function fromValues(array $cellValues = [], ?Style $rowStyle = null): self
+    {
+        $cells = array_map(static function (mixed $cellValue): Cell {
+            return Cell::fromValue($cellValue);
+        }, $cellValues);
+
+        return new self($cells, $rowStyle);
     }
 
     /**
@@ -110,20 +117,17 @@ final class Row
     }
 
     /**
-     * Set row height.
+     * Detect whether a row is considered empty.
+     * An empty row has all of its cells empty.
      */
-    public function setHeight(string $height): self
+    public function isEmpty(): bool
     {
-        $this->height = $height;
+        foreach ($this->cells as $cell) {
+            if (!$cell instanceof Cell\EmptyCell) {
+                return false;
+            }
+        }
 
-        return $this;
-    }
-
-    /**
-     * Returns row height.
-     */
-    public function getHeight(): string
-    {
-        return $this->height;
+        return true;
     }
 }

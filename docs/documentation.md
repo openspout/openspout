@@ -5,9 +5,9 @@
 It is possible to configure both the CSV reader and writer to adapt them to your requirements:
 
 ```php
-use OpenSpout\Reader\Common\Creator\ReaderEntityFactory;
+use OpenSpout\Reader\Common\Creator\ReaderFactory;
 
-$reader = ReaderEntityFactory::createReaderFromFile('/path/to/file.csv');
+$reader = ReaderFactory::createFromFile('/path/to/file.csv');
 /** All of these methods have to be called before opening the reader. */
 $reader->setFieldDelimiter('|');
 $reader->setFieldEnclosure('@');
@@ -24,9 +24,7 @@ By default, the writer generates CSV files encoded in UTF-8, with a BOM.
 It is however possible to not include the BOM:
 
 ```php
-use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
-
-$writer = WriterEntityFactory::createWriterFromFile('/path/to/file.csv');
+$writer = \OpenSpout\Writer\CSV\Writer::factory();
 $writer->setShouldAddBOM(false);
 ```
 
@@ -38,10 +36,7 @@ $writer->setShouldAddBOM(false);
 It is possible to change the behavior of the writers when the maximum number of rows (*1,048,576*) has been written in the current sheet. By default, a new sheet is automatically created so that writing can keep going but that may not always be preferable.
 
 ```php
-
-use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
-
-$writer = WriterEntityFactory::createODSWriter();
+$writer = \OpenSpout\Writer\ODS\Writer::factory();
 $writer->setShouldCreateNewSheetsAutomatically(true); // default value
 $writer->setShouldCreateNewSheetsAutomatically(false); // will stop writing new data when limit is reached
 ```
@@ -51,7 +46,6 @@ $writer->setShouldCreateNewSheetsAutomatically(false); // will stop writing new 
 Sheet view settings must be configured before any rows are added to the sheet.
 
 ```php
-use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 use OpenSpout\Writer\XLSX\Entity\SheetView;
 
 $sheetView = (new SheetView())
@@ -59,7 +53,7 @@ $sheetView = (new SheetView())
     ->setFreezeColumn('D') // Columns A to C will be fixed
     ->setZoomScale(150); // And other options
 
-$writer = WriterEntityFactory::createXLSXWriter();
+$writer = \OpenSpout\Writer\XLSX\Writer::factory();
 $writer->getCurrentSheet()->setSheetView($sheetView);
 ```
 
@@ -68,9 +62,7 @@ $writer->getCurrentSheet()->setSheetView($sheetView);
 Processing XLSX and ODS files requires temporary files to be created. By default, OpenSpout will use the system default temporary folder (as returned by `sys_get_temp_dir()`). It is possible to override this by explicitly setting it on the reader or writer:
 
 ```php
-use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
-
-$writer = WriterEntityFactory::createXLSXWriter();
+$writer = \OpenSpout\Writer\XLSX\Writer::factory();
 $writer->setTempFolder($customTempFolderPath);
 ```
 
@@ -83,9 +75,7 @@ XLSX files support different ways to store the string values:
 In order to keep the memory usage really low, OpenSpout does not de-duplicate strings when using shared strings. It is nevertheless possible to use this mode.
 
 ```php
-use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
-
-$writer = WriterEntityFactory::createXLSXWriter();
+$writer = \OpenSpout\Writer\XLSX\Writer::factory();
 $writer->setShouldUseInlineStrings(true); // default (and recommended) value
 $writer->setShouldUseInlineStrings(false); // will use shared strings
 ```
@@ -100,9 +90,9 @@ When reading a spreadsheet containing dates or times, OpenSpout returns the valu
 It is possible to change this behavior and have a formatted date returned instead (e.g. "2016-11-29 1:22 AM"). The format of the date corresponds to what is specified in the spreadsheet.
 
 ```php
-use OpenSpout\Reader\Common\Creator\ReaderEntityFactory;
+use OpenSpout\Reader\XLSX\Reader;
 
-$reader = ReaderEntityFactory::createXLSXReader();
+$reader = OpenSpout\Reader\XLSX\Reader::factory();
 $reader->setShouldFormatDates(false); // default value
 $reader->setShouldFormatDates(true); // will return formatted dates
 ```
@@ -114,9 +104,9 @@ By default, when OpenSpout reads a spreadsheet it skips empty rows and only retu
 This behavior can be changed so that OpenSpout returns all rows:
 
 ```php
-use OpenSpout\Reader\Common\Creator\ReaderEntityFactory;
+use OpenSpout\Reader\CSV\Reader;
 
-$reader = ReaderEntityFactory::createReaderFromFile('/path/to/file.ext');
+$reader = Reader::factory('/path/to/file.ext');
 $reader->setShouldPreserveEmptyRows(true);
 ```
 
@@ -148,12 +138,12 @@ For fonts and alignments, OpenSpout does not support all the possible formatting
 It is possible to apply some formatting options to a row. In this case, all cells of the row will have the same style:
 
 ```php
-use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
+use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
 use OpenSpout\Common\Entity\Style\CellAlignment;
 use OpenSpout\Common\Entity\Style\Color;
 
-$writer = WriterEntityFactory::createXLSXWriter();
+$writer = \OpenSpout\Writer\XLSX\Writer::factory();
 $writer->openToFile($filePath);
 
 /** Create a style with the StyleBuilder */
@@ -167,7 +157,7 @@ $style = (new Style())
 ;
 
 /** Create a row with cells and apply the style to all cells */
-$row = WriterEntityFactory::createRowFromArray(['Carl', 'is', 'great'], $style);
+$row = Row::fromValues(['Carl', 'is', 'great'], $style);
 
 /** Add the row to the writer */
 $writer->addRow($row);
@@ -177,25 +167,26 @@ $writer->close();
 Adding borders to a row requires a ```Border``` object.
 
 ```php
+use OpenSpout\Common\Entity\Cell;
+use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\Border;
-use OpenSpout\Writer\Common\Creator\Style\BorderBuilder;
+use OpenSpout\Common\Entity\Style\BorderPart;
 use OpenSpout\Common\Entity\Style\Color;
 use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
-use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 
-$border = (new BorderBuilder())
-    ->setBorderBottom(Color::GREEN, Border::WIDTH_THIN, Border::STYLE_DASHED)
-    ->build();
+$border = new Border(
+    new BorderPart(Border::BOTTOM, Color::GREEN, Border::WIDTH_THIN, Border::STYLE_DASHED)
+);
 
 $style = (new Style())
     ->setBorder($border)
 ;
 
-$writer = WriterEntityFactory::createXLSXWriter();
+$writer = \OpenSpout\Writer\XLSX\Writer::factory();
 $writer->openToFile($filePath);
 
-$cells = WriterEntityFactory::createCell('Border Bottom Green Thin Dashed');
-$row = WriterEntityFactory::createRow($cells);
+$cells = Cell::fromValue('Border Bottom Green Thin Dashed');
+$row = new Row([$cells]);
 $row->setStyle($style);
 $writer->addRow($row);
 
@@ -213,15 +204,16 @@ The styles applied to a specific cell will override any parent styles if present
 Example:
 
 ```php
+use OpenSpout\Common\Entity\Cell;
+use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\Color;
 use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
-use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 
 $defaultStyle = (new Style())
     ->setFontSize(8)
 ;
 
-$writer = WriterEntityFactory::createXLSXWriter();
+$writer = \OpenSpout\Writer\XLSX\Writer::factory();
 $writer->setDefaultRowStyle($defaultStyle)
     ->openToFile($filePath);
 
@@ -238,15 +230,15 @@ $zebraWhiteStyle = (new Style())
 ;  
 
 $cells = [
-    WriterEntityFactory::createCell('Ze', $zebraBlackStyle),
-    WriterEntityFactory::createCell('bra', $zebraWhiteStyle)
+    Cell::fromValue('Ze', $zebraBlackStyle),
+    Cell::fromValue('bra', $zebraWhiteStyle)
 ];
 
 $rowStyle = (new Style())
     ->setFontBold()
 ;
 
-$row = WriterEntityFactory::createRow($cells, $rowStyle);
+$row = new Row($cells, $rowStyle);
 
 $writer->addRow($row);
 $writer->close();
@@ -262,7 +254,7 @@ $defaultStyle = (new Style())
     ->setFontSize(11)
 ;
 
-$writer = WriterEntityFactory::createXLSXWriter();
+$writer = \OpenSpout\Writer\XLSX\Writer::factory();
 $writer->setDefaultRowStyle($defaultStyle)
        ->openToFile($filePath);
 ```

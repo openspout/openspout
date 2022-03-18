@@ -2,8 +2,6 @@
 
 namespace OpenSpout\Reader\XLSX;
 
-use OpenSpout\Reader\Common\Creator\ReaderEntityFactory;
-use OpenSpout\Reader\SheetInterface;
 use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
@@ -37,12 +35,12 @@ final class SheetTest extends TestCase
     }
 
     /**
-     * @return SheetInterface[]
+     * @return Sheet[]
      */
     private function openFileAndReturnSheets(string $fileName): array
     {
         $resourcePath = $this->getResourcePath($fileName);
-        $reader = ReaderEntityFactory::createXLSXReader();
+        $reader = Reader::factory();
         $reader->open($resourcePath);
 
         $sheets = [];

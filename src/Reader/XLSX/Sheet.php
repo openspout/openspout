@@ -2,16 +2,15 @@
 
 namespace OpenSpout\Reader\XLSX;
 
-use OpenSpout\Reader\RowIteratorInterface;
 use OpenSpout\Reader\SheetInterface;
 
 /**
- * Represents a sheet within a XLSX file.
+ * @implements SheetInterface<RowIterator>
  */
 final class Sheet implements SheetInterface
 {
-    /** @var \OpenSpout\Reader\XLSX\RowIterator To iterate over sheet's rows */
-    private \OpenSpout\Reader\XLSX\RowIterator $rowIterator;
+    /** @var RowIterator To iterate over sheet's rows */
+    private RowIterator $rowIterator;
 
     /** @var int Index of the sheet, based on order in the workbook (zero-based) */
     private int $index;
@@ -41,10 +40,7 @@ final class Sheet implements SheetInterface
         $this->isVisible = $isSheetVisible;
     }
 
-    /**
-     * @return \OpenSpout\Reader\XLSX\RowIterator
-     */
-    public function getRowIterator(): RowIteratorInterface
+    public function getRowIterator(): RowIterator
     {
         return $this->rowIterator;
     }

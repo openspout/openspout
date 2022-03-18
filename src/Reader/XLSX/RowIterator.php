@@ -34,17 +34,17 @@ final class RowIterator implements RowIteratorInterface
     /** @var string Path of the sheet data XML file as in [Content_Types].xml */
     private string $sheetDataXMLFilePath;
 
-    /** @var \OpenSpout\Reader\Wrapper\XMLReader The XMLReader object that will help read sheet's XML data */
-    private \OpenSpout\Reader\Wrapper\XMLReader $xmlReader;
+    /** @var XMLReader The XMLReader object that will help read sheet's XML data */
+    private XMLReader $xmlReader;
 
-    /** @var \OpenSpout\Reader\Common\XMLProcessor Helper Object to process XML nodes */
-    private \OpenSpout\Reader\Common\XMLProcessor $xmlProcessor;
+    /** @var XMLProcessor Helper Object to process XML nodes */
+    private XMLProcessor $xmlProcessor;
 
     /** @var Helper\CellValueFormatter Helper to format cell values */
     private Helper\CellValueFormatter $cellValueFormatter;
 
-    /** @var \OpenSpout\Reader\Common\Manager\RowManager Manages rows */
-    private \OpenSpout\Reader\Common\Manager\RowManager $rowManager;
+    /** @var RowManager Manages rows */
+    private RowManager $rowManager;
 
     /**
      * TODO: This variable can be deleted when row indices get preserved.
@@ -264,7 +264,7 @@ final class RowIterator implements RowIteratorInterface
     }
 
     /**
-     * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader XMLReader object, positioned on a "<dimension>" starting node
+     * @param XMLReader $xmlReader XMLReader object, positioned on a "<dimension>" starting node
      *
      * @return int A return code that indicates what action should the processor take next
      */
@@ -280,7 +280,7 @@ final class RowIterator implements RowIteratorInterface
     }
 
     /**
-     * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader XMLReader object, positioned on a "<row>" starting node
+     * @param XMLReader $xmlReader XMLReader object, positioned on a "<row>" starting node
      *
      * @return int A return code that indicates what action should the processor take next
      */
@@ -300,14 +300,14 @@ final class RowIterator implements RowIteratorInterface
             $numberOfColumnsForRow = (int) $numberOfColumnsForRow;
         }
 
-        $cells = array_fill(0, $numberOfColumnsForRow, new Cell(''));
+        $cells = array_fill(0, $numberOfColumnsForRow, Cell::fromValue(''));
         $this->currentlyProcessedRow->setCells($cells);
 
         return XMLProcessor::PROCESSING_CONTINUE;
     }
 
     /**
-     * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader XMLReader object, positioned on a "<cell>" starting node
+     * @param XMLReader $xmlReader XMLReader object, positioned on a "<cell>" starting node
      *
      * @return int A return code that indicates what action should the processor take next
      */
@@ -332,7 +332,7 @@ final class RowIterator implements RowIteratorInterface
     private function processRowEndingNode(): int
     {
         // if the fetched row is empty and we don't want to preserve it..,
-        if (!$this->shouldPreserveEmptyRows && $this->rowManager->isEmpty($this->currentlyProcessedRow)) {
+        if (!$this->shouldPreserveEmptyRows && $this->currentlyProcessedRow->isEmpty()) {
             // ... skip it
             return XMLProcessor::PROCESSING_CONTINUE;
         }
@@ -341,7 +341,7 @@ final class RowIterator implements RowIteratorInterface
 
         // If needed, we fill the empty cells
         if (0 === $this->numColumns) {
-            $this->currentlyProcessedRow = $this->rowManager->fillMissingIndexesWithEmptyCells($this->currentlyProcessedRow);
+            $this->rowManager->fillMissingIndexesWithEmptyCells($this->currentlyProcessedRow);
         }
 
         // at this point, we have all the data we need for the row
@@ -361,9 +361,9 @@ final class RowIterator implements RowIteratorInterface
     }
 
     /**
-     * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader XMLReader object, positioned on a "<row>" node
+     * @param XMLReader $xmlReader XMLReader object, positioned on a "<row>" node
      *
-     * @throws \OpenSpout\Common\Exception\InvalidArgumentException When the given cell index is invalid
+     *@throws \OpenSpout\Common\Exception\InvalidArgumentException When the given cell index is invalid
      *
      * @return int Row index
      */
@@ -378,9 +378,9 @@ final class RowIterator implements RowIteratorInterface
     }
 
     /**
-     * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader XMLReader object, positioned on a "<c>" node
+     * @param XMLReader $xmlReader XMLReader object, positioned on a "<c>" node
      *
-     * @throws \OpenSpout\Common\Exception\InvalidArgumentException When the given cell index is invalid
+     *@throws \OpenSpout\Common\Exception\InvalidArgumentException When the given cell index is invalid
      *
      * @return int Column index
      */
@@ -403,10 +403,9 @@ final class RowIterator implements RowIteratorInterface
     {
         try {
             $cellValue = $this->cellValueFormatter->extractAndFormatNodeValue($node);
-            $cell = new Cell($cellValue);
+            $cell = Cell::fromValue($cellValue);
         } catch (InvalidValueException $exception) {
-            $cell = new Cell($exception->getInvalidValue());
-            $cell->setType(Cell::TYPE_ERROR);
+            $cell = new Cell\ErrorCell($exception->getInvalidValue(), null);
         }
 
         return $cell;

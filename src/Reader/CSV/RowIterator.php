@@ -156,7 +156,7 @@ final class RowIterator implements RowIteratorInterface
             // array_map will replace NULL values by empty strings
             $rowDataBufferAsArray = array_map('\\strval', $rowData);
             $this->rowBuffer = new Row(array_map(static function ($cellValue) {
-                return new Cell($cellValue);
+                return Cell::fromValue($cellValue);
             }, $rowDataBufferAsArray), null);
             ++$this->numReadRows;
         } else {

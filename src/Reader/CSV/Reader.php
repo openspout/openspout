@@ -3,12 +3,12 @@
 namespace OpenSpout\Reader\CSV;
 
 use OpenSpout\Common\Helper\EncodingHelper;
-use OpenSpout\Common\Manager\OptionsManagerInterface;
 use OpenSpout\Reader\Common\Entity\Options;
+use OpenSpout\Reader\CSV\Manager\OptionsManager;
 use OpenSpout\Reader\ReaderAbstract;
 
 /**
- * This class provides support to read data from a CSV file.
+ * @extends ReaderAbstract<SheetIterator>
  */
 final class Reader extends ReaderAbstract
 {
@@ -27,12 +27,17 @@ final class Reader extends ReaderAbstract
     private EncodingHelper $encodingHelper;
 
     public function __construct(
-        OptionsManagerInterface $optionsManager,
+        OptionsManager $optionsManager,
         EncodingHelper $encodingHelper
     ) {
         parent::__construct($optionsManager);
-        $this->isRunningAtLeastPhp81 = version_compare(PHP_VERSION, '8.1.0') >= 0;
+        $this->isRunningAtLeastPhp81 = \PHP_VERSION_ID >= 80100;
         $this->encodingHelper = $encodingHelper;
+    }
+
+    public static function factory(): self
+    {
+        return new self(new OptionsManager(), EncodingHelper::factory());
     }
 
     /**

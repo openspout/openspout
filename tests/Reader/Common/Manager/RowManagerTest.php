@@ -13,12 +13,12 @@ final class RowManagerTest extends TestCase
 {
     public function dataProviderForTestFillMissingIndexesWithEmptyCells(): array
     {
-        $cell1 = new Cell(1);
-        $cell3 = new Cell(3);
+        $cell1 = Cell::fromValue(1);
+        $cell3 = Cell::fromValue(3);
 
         return [
             [[], []],
-            [[1 => $cell1, 3 => $cell3], [new Cell(''), $cell1, new Cell(''), $cell3]],
+            [[1 => $cell1, 3 => $cell3], [Cell::fromValue(''), $cell1, Cell::fromValue(''), $cell3]],
         ];
     }
 
@@ -37,31 +37,8 @@ final class RowManagerTest extends TestCase
             $rowToFill->setCellAtIndex($cell, $cellIndex);
         }
 
-        $filledRow = $rowManager->fillMissingIndexesWithEmptyCells($rowToFill);
-        static::assertEquals($expectedFilledCells, $filledRow->getCells());
-    }
+        $rowManager->fillMissingIndexesWithEmptyCells($rowToFill);
 
-    public function dataProviderForTestIsEmptyRow(): array
-    {
-        return [
-            // cells, expected isEmpty
-            [[], true],
-            [[new Cell('')], true],
-            [[new Cell(''), new Cell('')], true],
-            [[new Cell(''), new Cell(''), new Cell('Okay')], false],
-        ];
-    }
-
-    /**
-     * @dataProvider dataProviderForTestIsEmptyRow
-     *
-     * @param Cell[] $cells
-     */
-    public function testIsEmptyRow(array $cells, bool $expectedIsEmpty): void
-    {
-        $rowManager = new RowManager();
-        $row = new Row($cells, null);
-
-        static::assertSame($expectedIsEmpty, $rowManager->isEmpty($row));
+        static::assertEquals($expectedFilledCells, $rowToFill->getCells());
     }
 }

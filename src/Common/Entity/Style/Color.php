@@ -7,7 +7,7 @@ use OpenSpout\Common\Exception\InvalidColorException;
 /**
  * This class provides constants and functions to work with colors.
  */
-abstract class Color
+final class Color
 {
     /** Standard colors - based on Office Online */
     public const BLACK = '000000';

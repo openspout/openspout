@@ -5,7 +5,6 @@ namespace OpenSpout\Reader\ODS;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\Escaper\ODS;
 use OpenSpout\Reader\Common\Entity\Options;
-use OpenSpout\Reader\Common\Manager\RowManager;
 use OpenSpout\Reader\Common\XMLProcessor;
 use OpenSpout\Reader\Exception\XMLProcessingException;
 use OpenSpout\Reader\ODS\Helper\CellValueFormatter;
@@ -14,7 +13,7 @@ use OpenSpout\Reader\SheetIteratorInterface;
 use OpenSpout\Reader\Wrapper\XMLReader;
 
 /**
- * Iterate over ODS sheet.
+ * @implements SheetIteratorInterface<Sheet>
  */
 final class SheetIterator implements SheetIteratorInterface
 {
@@ -140,8 +139,7 @@ final class SheetIterator implements SheetIteratorInterface
                 $this->xmlReader,
                 $this->optionsManager,
                 new CellValueFormatter($this->optionsManager->getOption(Options::SHOULD_FORMAT_DATES), new ODS()),
-                new XMLProcessor($this->xmlReader),
-                new RowManager()
+                new XMLProcessor($this->xmlReader)
             ),
             $this->currentSheetIndex,
             $sheetName,

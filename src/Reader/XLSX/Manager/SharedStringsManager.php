@@ -137,7 +137,7 @@ final class SharedStringsManager
     /**
      * Returns the shared strings unique count, as specified in <sst> tag.
      *
-     * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader XMLReader instance
+     * @param XMLReader $xmlReader XMLReader instance
      *
      * @throws \OpenSpout\Common\Exception\IOException If sharedStrings.xml is invalid and can't be read
      *
@@ -178,8 +178,8 @@ final class SharedStringsManager
     /**
      * Processes the shared strings item XML node which the given XML reader is positioned on.
      *
-     * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader         XML Reader positioned on a "<si>" node
-     * @param int                                 $sharedStringIndex Index of the processed shared strings item
+     * @param XMLReader $xmlReader         XML Reader positioned on a "<si>" node
+     * @param int       $sharedStringIndex Index of the processed shared strings item
      */
     private function processSharedStringsItem(XMLReader $xmlReader, int $sharedStringIndex): void
     {

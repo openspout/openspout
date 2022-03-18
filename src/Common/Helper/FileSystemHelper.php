@@ -8,10 +8,10 @@ use OpenSpout\Common\Exception\IOException;
  * This class provides helper functions to help with the file system operations
  * like files/folders creation & deletion.
  */
-class FileSystemHelper implements FileSystemHelperInterface
+final class FileSystemHelper implements FileSystemHelperInterface
 {
     /** @var string Real path of the base folder where all the I/O can occur */
-    protected string $baseFolderRealPath;
+    private string $baseFolderRealPath;
 
     /**
      * @param string $baseFolderPath The path of the base folder where all the I/O can occur
@@ -21,6 +21,11 @@ class FileSystemHelper implements FileSystemHelperInterface
         $realpath = realpath($baseFolderPath);
         \assert(false !== $realpath);
         $this->baseFolderRealPath = $realpath;
+    }
+
+    public function getBaseFolderRealPath(): string
+    {
+        return $this->baseFolderRealPath;
     }
 
     /**

@@ -20,19 +20,20 @@ For this example, let's assume we have an existing ODS spreadsheet called "my-mu
 We'd like to update the missing album for "Yellow Submarine", remove the Bob Marley's songs and add a new song: "Hotel California" from "The Eagles", released in 1976. Here is how this can be done:
 
 ```php
+use OpenSpout\Common\Entity\Cell;
+use OpenSpout\Common\Entity\Row;
 use OpenSpout\Reader\Common\Creator\ReaderEntityFactory;
-use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 
 $existingFilePath = '/path/to/my-music.ods';
 $newFilePath = '/path/to/my-new-music.ods';
 
 // we need a reader to read the existing file...
-$reader = ReaderEntityFactory::createReaderFromFile($existingFilePath);
+$reader = \OpenSpout\Reader\ODS\Reader::factory();
 $reader->open($existingFilePath);
 $reader->setShouldFormatDates(true); // this is to be able to copy dates
 
 // ... and a writer to create the new file
-$writer = WriterEntityFactory::createWriterFromFile($newFilePath);
+$writer = \OpenSpout\Writer\ODS\Writer::factory();
 $writer->openToFile($newFilePath);
 
 // let's read the entire spreadsheet
@@ -48,7 +49,7 @@ foreach ($reader->getSheetIterator() as $sheetIndex => $sheet) {
 
         // Change the album name for "Yellow Submarine"
         if ($songTitle === 'Yellow Submarine') {
-            $row->setCellAtIndex(WriterEntityFactory::createCell('The White Album'), 2);
+            $row->setCellAtIndex(Cell::fromValue('The White Album'), 2);
         }
 
         // skip Bob Marley's songs
@@ -62,7 +63,7 @@ foreach ($reader->getSheetIterator() as $sheetIndex => $sheet) {
         // insert new song at the right position, between the 3rd and 4th rows
         if ($rowIndex === 3) {
             $writer->addRow(
-                WriterEntityFactory::createRowFromArray(['Hotel California', 'The Eagles', 'Hotel California', 1976])
+                Row::fromValues(['Hotel California', 'The Eagles', 'Hotel California', 1976])
             );
         }
     }

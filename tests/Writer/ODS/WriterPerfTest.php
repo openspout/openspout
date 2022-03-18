@@ -2,8 +2,8 @@
 
 namespace OpenSpout\Writer\ODS;
 
+use OpenSpout\Common\Entity\Row;
 use OpenSpout\TestUsingResource;
-use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -36,13 +36,13 @@ final class WriterPerfTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = WriterEntityFactory::createODSWriter();
+        $writer = Writer::factory();
         $writer->setShouldCreateNewSheetsAutomatically(true);
 
         $writer->openToFile($resourcePath);
 
         for ($i = 1; $i <= $numRows; ++$i) {
-            $writer->addRow(WriterEntityFactory::createRowFromArray(["ods--{$i}-1", "ods--{$i}-2", "ods--{$i}-3"]));
+            $writer->addRow(Row::fromValues(["ods--{$i}-1", "ods--{$i}-2", "ods--{$i}-3"]));
         }
 
         $writer->close();

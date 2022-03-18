@@ -2,13 +2,15 @@
 
 namespace OpenSpout\Reader\CSV;
 
-use OpenSpout\Reader\RowIteratorInterface;
 use OpenSpout\Reader\SheetInterface;
 
+/**
+ * @implements SheetInterface<RowIterator>
+ */
 final class Sheet implements SheetInterface
 {
-    /** @var \OpenSpout\Reader\CSV\RowIterator To iterate over the CSV's rows */
-    private \OpenSpout\Reader\CSV\RowIterator $rowIterator;
+    /** @var RowIterator To iterate over the CSV's rows */
+    private RowIterator $rowIterator;
 
     /**
      * @param RowIterator $rowIterator Corresponding row iterator
@@ -18,10 +20,7 @@ final class Sheet implements SheetInterface
         $this->rowIterator = $rowIterator;
     }
 
-    /**
-     * @return \OpenSpout\Reader\CSV\RowIterator
-     */
-    public function getRowIterator(): RowIteratorInterface
+    public function getRowIterator(): RowIterator
     {
         return $this->rowIterator;
     }

@@ -17,7 +17,7 @@ final class StyleManagerTest extends TestCase
         static::assertFalse($style->shouldWrapText());
 
         $styleManager = $this->getStyleManager();
-        $possiblyUpdatedStyle = $styleManager->applyExtraStylesIfNeeded(new Cell("multi\nlines", $style));
+        $possiblyUpdatedStyle = $styleManager->applyExtraStylesIfNeeded(Cell::fromValue("multi\nlines", $style));
 
         static::assertTrue($possiblyUpdatedStyle->isUpdated());
         static::assertTrue($possiblyUpdatedStyle->getStyle()->shouldWrapText());
@@ -29,7 +29,7 @@ final class StyleManagerTest extends TestCase
         static::assertFalse($style->shouldWrapText());
 
         $styleManager = $this->getStyleManager();
-        $possiblyUpdatedStyle = $styleManager->applyExtraStylesIfNeeded(new Cell('oneline', $style));
+        $possiblyUpdatedStyle = $styleManager->applyExtraStylesIfNeeded(Cell::fromValue('oneline', $style));
 
         static::assertFalse($possiblyUpdatedStyle->isUpdated());
     }
@@ -40,7 +40,7 @@ final class StyleManagerTest extends TestCase
         static::assertTrue($style->shouldWrapText());
 
         $styleManager = $this->getStyleManager();
-        $possiblyUpdatedStyle = $styleManager->applyExtraStylesIfNeeded(new Cell("multi\nlines", $style));
+        $possiblyUpdatedStyle = $styleManager->applyExtraStylesIfNeeded(Cell::fromValue("multi\nlines", $style));
 
         static::assertFalse($possiblyUpdatedStyle->isUpdated());
     }

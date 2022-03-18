@@ -2,6 +2,6 @@
 
 namespace OpenSpout\Common\Exception;
 
-final class InvalidArgumentException extends SpoutException
+final class InvalidArgumentException extends OpenSpoutException
 {
 }

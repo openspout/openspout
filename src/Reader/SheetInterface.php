@@ -3,12 +3,12 @@
 namespace OpenSpout\Reader;
 
 /**
- * Interface SheetInterface.
+ * @template T of RowIteratorInterface
  */
 interface SheetInterface
 {
     /**
-     * @return RowIteratorInterface iterator to iterate over the sheet's rows
+     * @return T iterator to iterate over the sheet's rows
      */
     public function getRowIterator(): RowIteratorInterface;
 

@@ -3,6 +3,7 @@
 namespace OpenSpout\Writer\Common\Creator\Style;
 
 use OpenSpout\Common\Entity\Style\Border;
+use OpenSpout\Common\Entity\Style\BorderPart;
 use OpenSpout\Common\Entity\Style\CellAlignment;
 use OpenSpout\Common\Entity\Style\Color;
 use OpenSpout\Common\Entity\Style\Style;
@@ -17,17 +18,14 @@ final class StyleTest extends TestCase
 {
     public function testStyleBuilderShouldApplyBorders(): void
     {
-        $border = (new BorderBuilder())
-            ->setBorderBottom()
-            ->build()
-        ;
+        $border = new Border(new BorderPart(Border::BOTTOM));
         $style = (new Style())->setBorder($border);
         static::assertTrue($style->shouldApplyBorder());
     }
 
     public function testStyleBuilderShouldMergeBorders(): void
     {
-        $border = (new BorderBuilder())->setBorderBottom(Color::RED, Border::WIDTH_THIN, Border::STYLE_DASHED)->build();
+        $border = new Border(new BorderPart(Border::BOTTOM, Color::RED, Border::WIDTH_THIN, Border::STYLE_DASHED));
 
         $baseStyle = (new Style())->setBorder($border);
         $currentStyle = (new Style());
