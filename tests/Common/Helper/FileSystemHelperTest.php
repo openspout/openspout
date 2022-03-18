@@ -36,6 +36,9 @@ final class FileSystemHelperTest extends TestCase
         $this->fileSystemHelper->createFolder('/tmp/folder_outside_base_folder', 'folder_name');
     }
 
+    /**
+     * @requires OSFAMILY Linux
+     */
     public function testCreateFolderShouldThrowExceptionWhenFails(): void
     {
         self::assertTrue(chmod($this->baseFolder, 0));
@@ -51,6 +54,9 @@ final class FileSystemHelperTest extends TestCase
         $this->fileSystemHelper->createFileWithContents('/tmp/folder_outside_base_folder', 'file_name', 'contents');
     }
 
+    /**
+     * @requires OSFAMILY Linux
+     */
     public function testCreateFileWithContentsShouldThrowExceptionIfFails(): void
     {
         self::assertTrue(chmod($this->baseFolder, 0));
