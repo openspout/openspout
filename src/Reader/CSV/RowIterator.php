@@ -7,8 +7,6 @@ namespace OpenSpout\Reader\CSV;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Helper\EncodingHelper;
-use OpenSpout\Common\Manager\OptionsManagerInterface;
-use OpenSpout\Reader\Common\Entity\Options;
 use OpenSpout\Reader\RowIteratorInterface;
 
 /**
@@ -33,34 +31,21 @@ final class RowIterator implements RowIteratorInterface
     /** @var bool Indicates whether all rows have been read */
     private bool $hasReachedEndOfFile = false;
 
-    /** @var string Defines the character used to delimit fields (one character only) */
-    private string $fieldDelimiter;
+    private Options $options;
 
-    /** @var string Defines the character used to enclose fields (one character only) */
-    private string $fieldEnclosure;
-
-    /** @var string Encoding of the CSV file to be read */
-    private string $encoding;
-
-    /** @var bool Whether empty rows should be returned or skipped */
-    private bool $shouldPreserveEmptyRows;
-
-    /** @var \OpenSpout\Common\Helper\EncodingHelper Helper to work with different encodings */
-    private \OpenSpout\Common\Helper\EncodingHelper $encodingHelper;
+    /** @var EncodingHelper Helper to work with different encodings */
+    private EncodingHelper $encodingHelper;
 
     /**
      * @param resource $filePointer Pointer to the CSV file to read
      */
     public function __construct(
         $filePointer,
-        OptionsManagerInterface $optionsManager,
+        Options $options,
         EncodingHelper $encodingHelper
     ) {
         $this->filePointer = $filePointer;
-        $this->fieldDelimiter = $optionsManager->getOption(Options::FIELD_DELIMITER);
-        $this->fieldEnclosure = $optionsManager->getOption(Options::FIELD_ENCLOSURE);
-        $this->encoding = $optionsManager->getOption(Options::ENCODING);
-        $this->shouldPreserveEmptyRows = $optionsManager->getOption(Options::SHOULD_PRESERVE_EMPTY_ROWS);
+        $this->options = $options;
         $this->encodingHelper = $encodingHelper;
     }
 
@@ -139,7 +124,7 @@ final class RowIterator implements RowIteratorInterface
      */
     private function rewindAndSkipBom(): void
     {
-        $byteOffsetToSkipBom = $this->encodingHelper->getBytesOffsetToSkipBOM($this->filePointer, $this->encoding);
+        $byteOffsetToSkipBom = $this->encodingHelper->getBytesOffsetToSkipBOM($this->filePointer, $this->options->ENCODING);
 
         // sets the cursor after the BOM (0 means no BOM, so rewind it)
         fseek($this->filePointer, $byteOffsetToSkipBom);
@@ -181,7 +166,7 @@ final class RowIterator implements RowIteratorInterface
 
         return
             (!$hasSuccessfullyFetchedRowData && !$hasNowReachedEndOfFile)
-            || (!$this->shouldPreserveEmptyRows && $isEmptyLine)
+            || (!$this->options->SHOULD_PRESERVE_EMPTY_ROWS && $isEmptyLine)
         ;
     }
 
@@ -196,13 +181,19 @@ final class RowIterator implements RowIteratorInterface
      */
     private function getNextUTF8EncodedRow(): array|false
     {
-        $encodedRowData = fgetcsv($this->filePointer, self::MAX_READ_BYTES_PER_LINE, $this->fieldDelimiter, $this->fieldEnclosure, '');
+        $encodedRowData = fgetcsv(
+            $this->filePointer,
+            self::MAX_READ_BYTES_PER_LINE,
+            $this->options->FIELD_DELIMITER,
+            $this->options->FIELD_ENCLOSURE,
+            ''
+        );
         if (false === $encodedRowData) {
             return false;
         }
 
         foreach ($encodedRowData as $cellIndex => $cellValue) {
-            switch ($this->encoding) {
+            switch ($this->options->ENCODING) {
                 case EncodingHelper::ENCODING_UTF16_LE:
                 case EncodingHelper::ENCODING_UTF32_LE:
                     // remove whitespace from the beginning of a string as fgetcsv() add extra whitespace when it try to explode non UTF-8 data
@@ -218,7 +209,7 @@ final class RowIterator implements RowIteratorInterface
                     break;
             }
 
-            $encodedRowData[$cellIndex] = $this->encodingHelper->attemptConversionToUTF8($cellValue, $this->encoding);
+            $encodedRowData[$cellIndex] = $this->encodingHelper->attemptConversionToUTF8($cellValue, $this->options->ENCODING);
         }
 
         return $encodedRowData;

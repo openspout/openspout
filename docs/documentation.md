@@ -5,12 +5,13 @@
 It is possible to configure both the CSV reader and writer to adapt them to your requirements:
 
 ```php
-use OpenSpout\Reader\Common\Creator\ReaderFactory;
+use OpenSpout\Reader\CSV\Reader;
+use OpenSpout\Reader\CSV\Options;
 
-$reader = ReaderFactory::createFromFile('/path/to/file.csv');
-/** All of these methods have to be called before opening the reader. */
-$reader->setFieldDelimiter('|');
-$reader->setFieldEnclosure('@');
+$options = new Options();
+$options->FIELD_DELIMITER = '|';
+$options->FIELD_ENCLOSURE = '@';
+$reader = new Reader($options);
 
 ```
 
@@ -106,7 +107,7 @@ This behavior can be changed so that OpenSpout returns all rows:
 ```php
 use OpenSpout\Reader\CSV\Reader;
 
-$reader = Reader::factory('/path/to/file.ext');
+$reader = new Reader('/path/to/file.ext');
 $reader->setShouldPreserveEmptyRows(true);
 ```
 

@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace OpenSpout\Reader\CSV;
 
 use OpenSpout\Common\Helper\EncodingHelper;
-use OpenSpout\Reader\Common\Entity\Options;
-use OpenSpout\Reader\CSV\Manager\OptionsManager;
 use OpenSpout\Reader\ReaderAbstract;
 
 /**
@@ -26,59 +24,16 @@ final class Reader extends ReaderAbstract
     /** @var bool Whether the code is running with PHP >= 8.1 */
     private bool $isRunningAtLeastPhp81;
 
+    private Options $options;
     private EncodingHelper $encodingHelper;
 
     public function __construct(
-        OptionsManager $optionsManager,
-        EncodingHelper $encodingHelper
+        ?Options $options = null,
+        ?EncodingHelper $encodingHelper = null
     ) {
-        parent::__construct($optionsManager);
+        $this->options = $options ?? new Options();
+        $this->encodingHelper = $encodingHelper ?? EncodingHelper::factory();
         $this->isRunningAtLeastPhp81 = \PHP_VERSION_ID >= 80100;
-        $this->encodingHelper = $encodingHelper;
-    }
-
-    public static function factory(): self
-    {
-        return new self(new OptionsManager(), EncodingHelper::factory());
-    }
-
-    /**
-     * Sets the field delimiter for the CSV.
-     * Needs to be called before opening the reader.
-     *
-     * @param string $fieldDelimiter Character that delimits fields
-     */
-    public function setFieldDelimiter(string $fieldDelimiter): self
-    {
-        $this->optionsManager->setOption(Options::FIELD_DELIMITER, $fieldDelimiter);
-
-        return $this;
-    }
-
-    /**
-     * Sets the field enclosure for the CSV.
-     * Needs to be called before opening the reader.
-     *
-     * @param string $fieldEnclosure Character that enclose fields
-     */
-    public function setFieldEnclosure(string $fieldEnclosure): self
-    {
-        $this->optionsManager->setOption(Options::FIELD_ENCLOSURE, $fieldEnclosure);
-
-        return $this;
-    }
-
-    /**
-     * Sets the encoding of the CSV file to be read.
-     * Needs to be called before opening the reader.
-     *
-     * @param string $encoding Encoding of the CSV file to be read
-     */
-    public function setEncoding(string $encoding): self
-    {
-        $this->optionsManager->setOption(Options::ENCODING, $encoding);
-
-        return $this;
     }
 
     /**
@@ -115,7 +70,7 @@ final class Reader extends ReaderAbstract
             new Sheet(
                 new RowIterator(
                     $this->filePointer,
-                    $this->optionsManager,
+                    $this->options,
                     $this->encodingHelper
                 )
             )

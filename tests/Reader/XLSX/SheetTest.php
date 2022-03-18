@@ -42,7 +42,7 @@ final class SheetTest extends TestCase
     private function openFileAndReturnSheets(string $fileName): array
     {
         $resourcePath = $this->getResourcePath($fileName);
-        $reader = Reader::factory();
+        $reader = new Reader();
         $reader->open($resourcePath);
 
         $sheets = [];

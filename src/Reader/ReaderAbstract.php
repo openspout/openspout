@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace OpenSpout\Reader;
 
 use OpenSpout\Common\Exception\IOException;
-use OpenSpout\Common\Manager\OptionsManagerInterface;
-use OpenSpout\Reader\Common\Entity\Options;
 use OpenSpout\Reader\Exception\ReaderException;
 use OpenSpout\Reader\Exception\ReaderNotOpenedException;
 
@@ -16,37 +14,8 @@ use OpenSpout\Reader\Exception\ReaderNotOpenedException;
  */
 abstract class ReaderAbstract implements ReaderInterface
 {
-    /** @var OptionsManagerInterface Writer options manager */
-    protected OptionsManagerInterface $optionsManager;
-
     /** @var bool Indicates whether the stream is currently open */
     private bool $isStreamOpened = false;
-
-    public function __construct(
-        OptionsManagerInterface $optionsManager
-    ) {
-        $this->optionsManager = $optionsManager;
-    }
-
-    /**
-     * Sets whether date/time values should be returned as PHP objects or be formatted as strings.
-     */
-    public function setShouldFormatDates(bool $shouldFormatDates): static
-    {
-        $this->optionsManager->setOption(Options::SHOULD_FORMAT_DATES, $shouldFormatDates);
-
-        return $this;
-    }
-
-    /**
-     * Sets whether empty rows should be returned or skipped.
-     */
-    public function setShouldPreserveEmptyRows(bool $shouldPreserveEmptyRows): static
-    {
-        $this->optionsManager->setOption(Options::SHOULD_PRESERVE_EMPTY_ROWS, $shouldPreserveEmptyRows);
-
-        return $this;
-    }
 
     /**
      * Prepares the reader to read the given file. It also makes sure

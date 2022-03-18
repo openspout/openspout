@@ -13,22 +13,6 @@ use OpenSpout\Writer\Common\Entity\Worksheet;
  */
 interface WorksheetManagerInterface
 {
-    public function setDefaultColumnWidth(?float $width): void;
-
-    public function setDefaultRowHeight(?float $height): void;
-
-    /**
-     * @param int ...$columns One or more columns with this width
-     */
-    public function setColumnWidth(float $width, int ...$columns): void;
-
-    /**
-     * @param float $width The width to set
-     * @param int   $start First column index of the range
-     * @param int   $end   Last column index of the range
-     */
-    public function setColumnWidthForRange(float $width, int $start, int $end): void;
-
     /**
      * Adds a row to the worksheet.
      *

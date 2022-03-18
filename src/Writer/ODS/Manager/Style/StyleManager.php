@@ -7,10 +7,8 @@ namespace OpenSpout\Writer\ODS\Manager\Style;
 use OpenSpout\Common\Entity\Style\BorderPart;
 use OpenSpout\Common\Entity\Style\CellAlignment;
 use OpenSpout\Common\Entity\Style\Style;
-use OpenSpout\Common\Manager\OptionsManagerInterface;
-use OpenSpout\Writer\Common\Entity\Options;
+use OpenSpout\Writer\Common\AbstractOptions;
 use OpenSpout\Writer\Common\Entity\Worksheet;
-use OpenSpout\Writer\Common\Manager\ManagesCellSize;
 use OpenSpout\Writer\Common\Manager\Style\StyleManager as CommonStyleManager;
 use OpenSpout\Writer\ODS\Helper\BorderHelper;
 
@@ -21,14 +19,12 @@ use OpenSpout\Writer\ODS\Helper\BorderHelper;
  */
 final class StyleManager extends CommonStyleManager
 {
-    use ManagesCellSize;
+    private AbstractOptions $options;
 
-    public function __construct(StyleRegistry $styleRegistry, OptionsManagerInterface $optionsManager)
+    public function __construct(StyleRegistry $styleRegistry, AbstractOptions $options)
     {
         parent::__construct($styleRegistry);
-        $this->setDefaultColumnWidth($optionsManager->getOption(Options::DEFAULT_COLUMN_WIDTH));
-        $this->setDefaultRowHeight($optionsManager->getOption(Options::DEFAULT_ROW_HEIGHT));
-        $this->columnWidths = $optionsManager->getOption(Options::COLUMN_WIDTHS) ?? [];
+        $this->options = $options;
     }
 
     /**
@@ -82,9 +78,9 @@ final class StyleManager extends CommonStyleManager
             $content .= $this->getStyleSectionContent($style);
         }
 
-        $useOptimalRowHeight = null === $this->defaultRowHeight ? 'true' : 'false';
-        $defaultRowHeight = null === $this->defaultRowHeight ? '15pt' : "{$this->defaultRowHeight}pt";
-        $defaultColumnWidth = null === $this->defaultColumnWidth ? '' : "style:column-width=\"{$this->defaultColumnWidth}pt\"";
+        $useOptimalRowHeight = null === $this->options->DEFAULT_ROW_HEIGHT ? 'true' : 'false';
+        $defaultRowHeight = null === $this->options->DEFAULT_ROW_HEIGHT ? '15pt' : "{$this->options->DEFAULT_ROW_HEIGHT}pt";
+        $defaultColumnWidth = null === $this->options->DEFAULT_COLUMN_WIDTH ? '' : "style:column-width=\"{$this->options->DEFAULT_COLUMN_WIDTH}pt\"";
 
         $content .= <<<EOD
             <style:style style:family="table-column" style:name="default-column-style">
@@ -107,7 +103,7 @@ final class StyleManager extends CommonStyleManager
         }
 
         // Sort column widths since ODS cares about order
-        usort($this->columnWidths, function ($a, $b) {
+        usort($this->options->COLUMN_WIDTHS, function ($a, $b) {
             if ($a[0] === $b[0]) {
                 return 0;
             }
@@ -123,12 +119,12 @@ final class StyleManager extends CommonStyleManager
 
     public function getTableColumnStylesXMLContent(): string
     {
-        if ([] === $this->columnWidths) {
+        if ([] === $this->options->COLUMN_WIDTHS) {
             return '';
         }
 
         $content = '';
-        foreach ($this->columnWidths as $styleIndex => $entry) {
+        foreach ($this->options->COLUMN_WIDTHS as $styleIndex => $entry) {
             $content .= <<<EOD
                 <style:style style:family="table-column" style:name="co{$styleIndex}">
                     <style:table-column-properties fo:break-before="auto" style:use-optimal-column-width="false" style:column-width="{$entry[2]}pt"/>
@@ -141,12 +137,12 @@ final class StyleManager extends CommonStyleManager
 
     public function getStyledTableColumnXMLContent(int $maxNumColumns): string
     {
-        if ([] === $this->columnWidths) {
+        if ([] === $this->options->COLUMN_WIDTHS) {
             return '';
         }
 
         $content = '';
-        foreach ($this->columnWidths as $styleIndex => $entry) {
+        foreach ($this->options->COLUMN_WIDTHS as $styleIndex => $entry) {
             $numCols = $entry[1] - $entry[0] + 1;
             $content .= <<<EOD
                 <table:table-column table:default-cell-style-name='Default' table:style-name="co{$styleIndex}" table:number-columns-repeated="{$numCols}"/>

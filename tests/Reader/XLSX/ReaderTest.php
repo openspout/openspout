@@ -496,7 +496,7 @@ final class ReaderTest extends TestCase
         $allRows = [];
         $resourcePath = $this->getResourcePath('two_sheets_with_inline_strings.xlsx');
 
-        $reader = Reader::factory();
+        $reader = new Reader();
         $reader->open($resourcePath);
 
         foreach ($reader->getSheetIterator() as $sheet);
@@ -546,7 +546,7 @@ final class ReaderTest extends TestCase
 
     public function testReadWithUnsupportedCustomStreamWrapper(): void
     {
-        $reader = Reader::factory();
+        $reader = new Reader();
 
         $this->expectException(IOException::class);
         $reader->open('unsupported://foobar');
@@ -554,7 +554,7 @@ final class ReaderTest extends TestCase
 
     public function testReadWithSupportedCustomStreamWrapper(): void
     {
-        $reader = Reader::factory();
+        $reader = new Reader();
 
         $this->expectException(IOException::class);
         $reader->open('php://memory');
@@ -635,18 +635,26 @@ final class ReaderTest extends TestCase
     /**
      * @return mixed[][] All the read rows the given file
      */
-    private function getAllRowsForFile(string $fileName, bool $shouldFormatDates = false, bool $shouldPreserveEmptyRows = false): array
-    {
+    private function getAllRowsForFile(
+        string $fileName,
+        ?bool $shouldFormatDates = null,
+        ?bool $shouldPreserveEmptyRows = null
+    ): array {
         $allRows = [];
         $resourcePath = $this->getResourcePath($fileName);
 
-        $reader = Reader::factory();
-        $reader->setShouldFormatDates($shouldFormatDates);
-        $reader->setShouldPreserveEmptyRows($shouldPreserveEmptyRows);
+        $options = new Options();
+        if (null !== $shouldFormatDates) {
+            $options->SHOULD_FORMAT_DATES = $shouldFormatDates;
+        }
+        if (null !== $shouldPreserveEmptyRows) {
+            $options->SHOULD_PRESERVE_EMPTY_ROWS = $shouldPreserveEmptyRows;
+        }
+        $reader = new Reader($options);
         $reader->open($resourcePath);
 
-        foreach ($reader->getSheetIterator() as $sheetIndex => $sheet) {
-            foreach ($sheet->getRowIterator() as $rowIndex => $row) {
+        foreach ($reader->getSheetIterator() as $sheet) {
+            foreach ($sheet->getRowIterator() as $row) {
                 $allRows[] = $row->toArray();
             }
         }

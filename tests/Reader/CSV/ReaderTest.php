@@ -6,7 +6,6 @@ namespace OpenSpout\Reader\CSV;
 
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\EncodingHelper;
-use OpenSpout\Reader\CSV\Manager\OptionsManager;
 use OpenSpout\Reader\Exception\ReaderNotOpenedException;
 use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
@@ -225,11 +224,10 @@ final class ReaderTest extends TestCase
         $allRows = [];
         $resourcePath = $this->getResourcePath($fileName);
 
-        $reader = $this->createCSVReader(null, new EncodingHelper($shouldUseIconv, !$shouldUseIconv));
-        $reader
-            ->setEncoding($fileEncoding)
-            ->open($resourcePath)
-        ;
+        $options = new Options();
+        $options->ENCODING = $fileEncoding;
+        $reader = $this->createCSVReader($options, new EncodingHelper($shouldUseIconv, !$shouldUseIconv));
+        $reader->open($resourcePath);
 
         foreach ($reader->getSheetIterator() as $sheet) {
             foreach ($sheet->getRowIterator() as $row) {
@@ -375,10 +373,10 @@ final class ReaderTest extends TestCase
         $reader->open('unsupported://foobar');
     }
 
-    private function createCSVReader(?OptionsManager $optionsManager, ?EncodingHelper $encodingHelper): Reader
+    private function createCSVReader(?Options $optionsManager, ?EncodingHelper $encodingHelper): Reader
     {
         return new Reader(
-            $optionsManager ?? new OptionsManager(),
+            $optionsManager ?? new Options(),
             $encodingHelper ?? EncodingHelper::factory()
         );
     }
@@ -388,22 +386,30 @@ final class ReaderTest extends TestCase
      */
     private function getAllRowsForFile(
         string $fileName,
-        string $fieldDelimiter = ',',
-        string $fieldEnclosure = '"',
-        string $encoding = EncodingHelper::ENCODING_UTF8,
-        bool $shouldPreserveEmptyRows = false
+        ?string $fieldDelimiter = null,
+        ?string $fieldEnclosure = null,
+        ?string $encoding = null,
+        ?bool $shouldPreserveEmptyRows = null
     ): array {
         $allRows = [];
         $resourcePath = $this->getResourcePath($fileName);
 
-        $reader = $this->createCSVReader(null, null);
-        $reader
-            ->setFieldDelimiter($fieldDelimiter)
-            ->setFieldEnclosure($fieldEnclosure)
-            ->setEncoding($encoding)
-            ->setShouldPreserveEmptyRows($shouldPreserveEmptyRows)
-            ->open($resourcePath)
-        ;
+        $options = new Options();
+        if (null !== $fieldDelimiter) {
+            $options->FIELD_DELIMITER = $fieldDelimiter;
+        }
+        if (null !== $fieldEnclosure) {
+            $options->FIELD_ENCLOSURE = $fieldEnclosure;
+        }
+        if (null !== $encoding) {
+            $options->ENCODING = $encoding;
+        }
+        if (null !== $shouldPreserveEmptyRows) {
+            $options->SHOULD_PRESERVE_EMPTY_ROWS = $shouldPreserveEmptyRows;
+        }
+
+        $reader = $this->createCSVReader($options, null);
+        $reader->open($resourcePath);
 
         foreach ($reader->getSheetIterator() as $sheetIndex => $sheet) {
             foreach ($sheet->getRowIterator() as $rowIndex => $row) {

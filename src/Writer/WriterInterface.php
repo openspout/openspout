@@ -5,12 +5,9 @@ declare(strict_types=1);
 namespace OpenSpout\Writer;
 
 use OpenSpout\Common\Entity\Row;
-use OpenSpout\Common\Entity\Style\Style;
 
 interface WriterInterface
 {
-    public static function factory(): self;
-
     /**
      * Initializes the writer and opens it to accept data.
      * By using this method, the data will be written to a file.
@@ -30,14 +27,6 @@ interface WriterInterface
      * @throws \OpenSpout\Common\Exception\IOException If the writer cannot be opened
      */
     public function openToBrowser(string $outputFileName): void;
-
-    /**
-     * Sets the default styles for all rows added with "addRow".
-     * Overriding the default style instead of using "addRowWithStyle" improves performance by 20%.
-     *
-     * @see https://github.com/box/spout/issues/272
-     */
-    public function setDefaultRowStyle(Style $defaultStyle): void;
 
     /**
      * Appends a row to the end of the stream.

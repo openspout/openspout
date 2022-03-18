@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer\XLSX\Manager;
 
-use OpenSpout\Common\Manager\OptionsManagerInterface;
 use OpenSpout\Writer\Common\Entity\Sheet;
 use OpenSpout\Writer\Common\Entity\Workbook;
 use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
 use OpenSpout\Writer\Common\Manager\WorkbookManagerAbstract;
 use OpenSpout\Writer\XLSX\Helper\FileSystemHelper;
 use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
+use OpenSpout\Writer\XLSX\Options;
 
 /**
  * XLSX workbook manager, providing the interfaces to work with workbook.
@@ -30,7 +30,7 @@ final class WorkbookManager extends WorkbookManagerAbstract
 
     public function __construct(
         Workbook $workbook,
-        OptionsManagerInterface $optionsManager,
+        Options $options,
         WorksheetManager $worksheetManager,
         StyleManager $styleManager,
         StyleMerger $styleMerger,
@@ -38,7 +38,7 @@ final class WorkbookManager extends WorkbookManagerAbstract
     ) {
         parent::__construct(
             $workbook,
-            $optionsManager,
+            $options,
             $worksheetManager,
             $styleManager,
             $styleMerger,

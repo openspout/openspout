@@ -7,7 +7,6 @@ namespace OpenSpout\Reader\ODS;
 use DOMElement;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\Escaper\ODS;
-use OpenSpout\Reader\Common\Entity\Options;
 use OpenSpout\Reader\Common\XMLProcessor;
 use OpenSpout\Reader\Exception\XMLProcessingException;
 use OpenSpout\Reader\ODS\Helper\CellValueFormatter;
@@ -38,14 +37,13 @@ final class SheetIterator implements SheetIteratorInterface
     /** @var string Path of the file to be read */
     private string $filePath;
 
-    /** @var \OpenSpout\Common\Manager\OptionsManagerInterface Reader's options manager */
-    private \OpenSpout\Common\Manager\OptionsManagerInterface $optionsManager;
+    private Options $options;
 
     /** @var XMLReader The XMLReader object that will help read sheet's XML data */
     private XMLReader $xmlReader;
 
-    /** @var \OpenSpout\Common\Helper\Escaper\ODS Used to unescape XML data */
-    private \OpenSpout\Common\Helper\Escaper\ODS $escaper;
+    /** @var ODS Used to unescape XML data */
+    private ODS $escaper;
 
     /** @var bool Whether there are still at least a sheet to be read */
     private bool $hasFoundSheet;
@@ -59,15 +57,14 @@ final class SheetIterator implements SheetIteratorInterface
     /** @var array<string, bool> Associative array [STYLE_NAME] => [IS_SHEET_VISIBLE] */
     private array $sheetsVisibility;
 
-    /**
-     * @param string                               $filePath       Path of the file to be read
-     * @param \OpenSpout\Common\Helper\Escaper\ODS $escaper        Used to unescape XML data
-     * @param SettingsHelper                       $settingsHelper Helper to get data from "settings.xml"
-     */
-    public function __construct(string $filePath, \OpenSpout\Common\Manager\OptionsManagerInterface $optionsManager, ODS $escaper, SettingsHelper $settingsHelper)
-    {
+    public function __construct(
+        string $filePath,
+        Options $options,
+        ODS $escaper,
+        SettingsHelper $settingsHelper
+    ) {
         $this->filePath = $filePath;
-        $this->optionsManager = $optionsManager;
+        $this->options = $options;
         $this->xmlReader = new XMLReader();
         $this->escaper = $escaper;
         $this->activeSheetName = $settingsHelper->getActiveSheetName($filePath);
@@ -142,8 +139,8 @@ final class SheetIterator implements SheetIteratorInterface
         return new Sheet(
             new RowIterator(
                 $this->xmlReader,
-                $this->optionsManager,
-                new CellValueFormatter($this->optionsManager->getOption(Options::SHOULD_FORMAT_DATES), new ODS()),
+                $this->options,
+                new CellValueFormatter($this->options->SHOULD_FORMAT_DATES, new ODS()),
                 new XMLProcessor($this->xmlReader)
             ),
             $this->currentSheetIndex,

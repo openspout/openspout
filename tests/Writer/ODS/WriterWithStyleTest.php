@@ -38,7 +38,7 @@ final class WriterWithStyleTest extends TestCase
     {
         $this->expectException(WriterNotOpenedException::class);
 
-        $writer = Writer::factory();
+        $writer = new Writer();
         $writer->addRow(Row::fromValues(['ods--11', 'ods--12'], $this->defaultStyle));
     }
 
@@ -46,7 +46,7 @@ final class WriterWithStyleTest extends TestCase
     {
         $this->expectException(WriterNotOpenedException::class);
 
-        $writer = Writer::factory();
+        $writer = new Writer();
         $writer->addRow(Row::fromValues(['ods--11', 'ods--12'], $this->defaultStyle));
     }
 
@@ -326,7 +326,7 @@ final class WriterWithStyleTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = Writer::factory();
+        $writer = new Writer();
 
         $writer->openToFile($resourcePath);
         $writer->addRows($allRows);
@@ -343,8 +343,9 @@ final class WriterWithStyleTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = Writer::factory();
-        $writer->setDefaultRowStyle($defaultStyle);
+        $options = new Options();
+        $options->DEFAULT_ROW_STYLE = $defaultStyle;
+        $writer = new Writer($options);
 
         $writer->openToFile($resourcePath);
         $writer->addRows($allRows);

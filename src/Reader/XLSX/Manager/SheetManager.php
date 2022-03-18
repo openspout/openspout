@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace OpenSpout\Reader\XLSX\Manager;
 
 use OpenSpout\Common\Helper\Escaper\XLSX;
-use OpenSpout\Common\Manager\OptionsManagerInterface;
-use OpenSpout\Reader\Common\Entity\Options;
 use OpenSpout\Reader\Common\Manager\RowManager;
 use OpenSpout\Reader\Common\XMLProcessor;
 use OpenSpout\Reader\Wrapper\XMLReader;
 use OpenSpout\Reader\XLSX\Helper\CellValueFormatter;
+use OpenSpout\Reader\XLSX\Options;
 use OpenSpout\Reader\XLSX\RowIterator;
 use OpenSpout\Reader\XLSX\Sheet;
 
@@ -53,14 +52,13 @@ final class SheetManager
     /** @var string Path of the XLSX file being read */
     private string $filePath;
 
-    /** @var OptionsManagerInterface Reader's options manager */
-    private OptionsManagerInterface $optionsManager;
+    private Options $options;
 
-    /** @var \OpenSpout\Reader\XLSX\Manager\SharedStringsManager Manages shared strings */
-    private \OpenSpout\Reader\XLSX\Manager\SharedStringsManager $sharedStringsManager;
+    /** @var SharedStringsManager Manages shared strings */
+    private SharedStringsManager $sharedStringsManager;
 
-    /** @var \OpenSpout\Common\Helper\Escaper\XLSX Used to unescape XML data */
-    private \OpenSpout\Common\Helper\Escaper\XLSX $escaper;
+    /** @var XLSX Used to unescape XML data */
+    private XLSX $escaper;
 
     /** @var Sheet[] List of sheets */
     private array $sheets;
@@ -73,12 +71,12 @@ final class SheetManager
 
     public function __construct(
         string $filePath,
-        OptionsManagerInterface $optionsManager,
+        Options $options,
         SharedStringsManager $sharedStringsManager,
         XLSX $escaper
     ) {
         $this->filePath = $filePath;
-        $this->optionsManager = $optionsManager;
+        $this->options = $options;
         $this->sharedStringsManager = $sharedStringsManager;
         $this->escaper = $escaper;
     }
@@ -121,7 +119,7 @@ final class SheetManager
         // Using "filter_var($x, FILTER_VALIDATE_BOOLEAN)" here because the value of the "date1904" attribute
         // may be the string "false", that is not mapped to the boolean "false" by default...
         $shouldUse1904Dates = filter_var($xmlReader->getAttribute(self::XML_ATTRIBUTE_DATE_1904), FILTER_VALIDATE_BOOLEAN);
-        $this->optionsManager->setOption(Options::SHOULD_USE_1904_DATES, $shouldUse1904Dates);
+        $this->options->SHOULD_USE_1904_DATES = $shouldUse1904Dates;
 
         return XMLProcessor::PROCESSING_CONTINUE;
     }
@@ -186,7 +184,7 @@ final class SheetManager
         $sheetDataXMLFilePath = $this->getSheetDataXMLFilePathForSheetId($sheetId);
 
         return new Sheet(
-            $this->createRowIterator($this->filePath, $sheetDataXMLFilePath, $this->optionsManager, $this->sharedStringsManager),
+            $this->createRowIterator($this->filePath, $sheetDataXMLFilePath, $this->options, $this->sharedStringsManager),
             $sheetIndexZeroBased,
             $sheetName,
             $isSheetActive,
@@ -231,16 +229,13 @@ final class SheetManager
         return $sheetDataXMLFilePath;
     }
 
-    /**
-     * @param string                  $filePath             Path of the XLSX file being read
-     * @param string                  $sheetDataXMLFilePath Path of the sheet data XML file as in [Content_Types].xml
-     * @param OptionsManagerInterface $optionsManager       Reader's options manager
-     * @param SharedStringsManager    $sharedStringsManager Manages shared strings
-     */
-    private function createRowIterator(string $filePath, string $sheetDataXMLFilePath, OptionsManagerInterface $optionsManager, SharedStringsManager $sharedStringsManager): RowIterator
-    {
+    private function createRowIterator(
+        string $filePath,
+        string $sheetDataXMLFilePath,
+        Options $options,
+        SharedStringsManager $sharedStringsManager
+    ): RowIterator {
         $xmlReader = new XMLReader();
-        $xmlProcessor = new XMLProcessor($xmlReader);
 
         $workbookRelationshipsManager = new WorkbookRelationshipsManager($filePath);
         $styleManager = new StyleManager(
@@ -249,28 +244,23 @@ final class SheetManager
                 ? $workbookRelationshipsManager->getStylesXMLFilePath()
                 : null
         );
-        $rowManager = new RowManager();
-        $shouldFormatDates = $optionsManager->getOption(Options::SHOULD_FORMAT_DATES);
-        $shouldUse1904Dates = $optionsManager->getOption(Options::SHOULD_USE_1904_DATES);
 
         $cellValueFormatter = new CellValueFormatter(
             $sharedStringsManager,
             $styleManager,
-            $shouldFormatDates,
-            $shouldUse1904Dates,
+            $options->SHOULD_FORMAT_DATES,
+            $options->SHOULD_USE_1904_DATES,
             new XLSX()
         );
-
-        $shouldPreserveEmptyRows = $optionsManager->getOption(Options::SHOULD_PRESERVE_EMPTY_ROWS);
 
         return new RowIterator(
             $filePath,
             $sheetDataXMLFilePath,
-            $shouldPreserveEmptyRows,
+            $options->SHOULD_PRESERVE_EMPTY_ROWS,
             $xmlReader,
-            $xmlProcessor,
+            new XMLProcessor($xmlReader),
             $cellValueFormatter,
-            $rowManager
+            new RowManager()
         );
     }
 }

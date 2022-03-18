@@ -21,7 +21,7 @@ Regardless of the file type, the interface to read a file is always the same:
 
 use OpenSpout\Reader\CSV\Reader;
 
-$reader = Reader::factory('/path/to/file.ext');
+$reader = new Reader('/path/to/file.ext');
 
 $reader->open($filePath);
 

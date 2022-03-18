@@ -35,7 +35,7 @@ final class ReaderPerfTest extends Testcase
         $fileName = 'ods_with_one_million_rows.ods';
         $resourcePath = $this->getResourcePath($fileName);
 
-        $reader = Reader::factory();
+        $reader = new Reader();
         $reader->open($resourcePath);
 
         $numReadRows = 0;

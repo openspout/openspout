@@ -8,13 +8,8 @@ use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\EncodingHelper;
-use OpenSpout\Writer\Common\Entity\Options;
-use OpenSpout\Writer\CSV\Manager\OptionsManager;
 use OpenSpout\Writer\WriterAbstract;
 
-/**
- * @extends WriterAbstract<OptionsManager>
- */
 final class Writer extends WriterAbstract
 {
     /**
@@ -25,44 +20,13 @@ final class Writer extends WriterAbstract
     /** @var string Content-Type value for the header */
     protected static string $headerContentType = 'text/csv; charset=UTF-8';
 
+    private Options $options;
+
     private int $lastWrittenRowIndex = 0;
 
-    public function __construct(OptionsManager $optionsManager)
+    public function __construct(?Options $options = null)
     {
-        parent::__construct($optionsManager);
-    }
-
-    public static function factory(): self
-    {
-        return new self(new OptionsManager());
-    }
-
-    /**
-     * Sets the field delimiter for the CSV.
-     *
-     * @param string $fieldDelimiter Character that delimits fields
-     */
-    public function setFieldDelimiter(string $fieldDelimiter): void
-    {
-        $this->optionsManager->setOption(Options::FIELD_DELIMITER, $fieldDelimiter);
-    }
-
-    /**
-     * Sets the field enclosure for the CSV.
-     *
-     * @param string $fieldEnclosure Character that enclose fields
-     */
-    public function setFieldEnclosure(string $fieldEnclosure): void
-    {
-        $this->optionsManager->setOption(Options::FIELD_ENCLOSURE, $fieldEnclosure);
-    }
-
-    /**
-     * Set if a BOM has to be added to the file.
-     */
-    public function setShouldAddBOM(bool $shouldAddBOM): void
-    {
-        $this->optionsManager->setOption(Options::SHOULD_ADD_BOM, $shouldAddBOM);
+        $this->options = $options ?? new Options();
     }
 
     /**
@@ -70,7 +34,7 @@ final class Writer extends WriterAbstract
      */
     protected function openWriter(): void
     {
-        if ((bool) $this->optionsManager->getOption(Options::SHOULD_ADD_BOM)) {
+        if ($this->options->SHOULD_ADD_BOM) {
             // Adds UTF-8 BOM for Unicode compatibility
             fwrite($this->filePointer, EncodingHelper::BOM_UTF8);
         }
@@ -85,13 +49,17 @@ final class Writer extends WriterAbstract
      */
     protected function addRowToWriter(Row $row): void
     {
-        $fieldDelimiter = $this->optionsManager->getOption(Options::FIELD_DELIMITER);
-        $fieldEnclosure = $this->optionsManager->getOption(Options::FIELD_ENCLOSURE);
-
         $cells = array_map(static function (Cell $value): string {
             return (string) $value->getValue();
         }, $row->getCells());
-        $wasWriteSuccessful = fputcsv($this->filePointer, $cells, $fieldDelimiter, $fieldEnclosure, '');
+
+        $wasWriteSuccessful = fputcsv(
+            $this->filePointer,
+            $cells,
+            $this->options->FIELD_DELIMITER,
+            $this->options->FIELD_ENCLOSURE,
+            ''
+        );
         if (false === $wasWriteSuccessful) {
             throw new IOException('Unable to write data');
         }

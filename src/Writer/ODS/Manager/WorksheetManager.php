@@ -24,8 +24,8 @@ use OpenSpout\Writer\ODS\Manager\Style\StyleManager;
  */
 final class WorksheetManager implements WorksheetManagerInterface
 {
-    /** @var \OpenSpout\Common\Helper\Escaper\ODS Strings escaper */
-    private \OpenSpout\Common\Helper\Escaper\ODS $stringsEscaper;
+    /** @var ODSEscaper Strings escaper */
+    private ODSEscaper $stringsEscaper;
 
     /** @var StringHelper String helper */
     private StringHelper $stringHelper;
@@ -143,34 +143,6 @@ final class WorksheetManager implements WorksheetManagerInterface
         $worksheetFilePointer = $worksheet->getFilePointer();
 
         fclose($worksheetFilePointer);
-    }
-
-    public function setDefaultColumnWidth(?float $width): void
-    {
-        $this->styleManager->setDefaultColumnWidth($width);
-    }
-
-    public function setDefaultRowHeight(?float $height): void
-    {
-        $this->styleManager->setDefaultRowHeight($height);
-    }
-
-    /**
-     * @param int ...$columns One or more columns with this width
-     */
-    public function setColumnWidth(float $width, int ...$columns): void
-    {
-        $this->styleManager->setColumnWidth($width, ...$columns);
-    }
-
-    /**
-     * @param float $width The width to set
-     * @param int   $start First column index of the range
-     * @param int   $end   Last column index of the range
-     */
-    public function setColumnWidthForRange(float $width, int $start, int $end): void
-    {
-        $this->styleManager->setColumnWidthForRange($width, $start, $end);
     }
 
     /**
