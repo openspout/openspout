@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Writer\XLSX\Manager\Style;
 
 use PHPUnit\Framework\TestCase;
@@ -49,6 +51,6 @@ final class StyleManagerTest extends TestCase
         $styleManager = new StyleManager($styleRegistryMock);
         $shouldApply = $styleManager->shouldApplyStyleOnEmptyCell(99);
 
-        static::assertSame($expectedResult, $shouldApply);
+        self::assertSame($expectedResult, $shouldApply);
     }
 }

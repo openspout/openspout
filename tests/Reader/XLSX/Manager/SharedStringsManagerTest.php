@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Reader\XLSX\Manager;
 
 use OpenSpout\Reader\Exception\SharedStringNotFoundException;
@@ -9,6 +11,7 @@ use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\InMemoryStrategy;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\MemoryLimit;
 use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
+use ReflectionHelper;
 
 /**
  * @internal
@@ -46,13 +49,13 @@ final class SharedStringsManagerTest extends TestCase
         $sharedStringsManager->extractSharedStrings();
 
         $sharedString = $sharedStringsManager->getStringAtIndex(0);
-        static::assertSame('s1--A1', $sharedString);
+        self::assertSame('s1--A1', $sharedString);
 
         $sharedString = $sharedStringsManager->getStringAtIndex(24);
-        static::assertSame('s1--E5', $sharedString);
+        self::assertSame('s1--E5', $sharedString);
 
-        $usedCachingStrategy = \ReflectionHelper::getValueOnObject($sharedStringsManager, 'cachingStrategy');
-        static::assertInstanceOf(InMemoryStrategy::class, $usedCachingStrategy);
+        $usedCachingStrategy = ReflectionHelper::getValueOnObject($sharedStringsManager, 'cachingStrategy');
+        self::assertInstanceOf(InMemoryStrategy::class, $usedCachingStrategy);
     }
 
     public function testGetStringAtIndexShouldWorkWithMultilineStrings(): void
@@ -62,10 +65,10 @@ final class SharedStringsManagerTest extends TestCase
         $sharedStringsManager->extractSharedStrings();
 
         $sharedString = $sharedStringsManager->getStringAtIndex(0);
-        static::assertSame("s1\nA1", $sharedString);
+        self::assertSame("s1\nA1", $sharedString);
 
         $sharedString = $sharedStringsManager->getStringAtIndex(24);
-        static::assertSame("s1\nE5", $sharedString);
+        self::assertSame("s1\nE5", $sharedString);
     }
 
     public function testGetStringAtIndexShouldWorkWithStringsContainingTextAndHyperlinkInSameCell(): void
@@ -75,7 +78,7 @@ final class SharedStringsManagerTest extends TestCase
         $sharedStringsManager->extractSharedStrings();
 
         $sharedString = $sharedStringsManager->getStringAtIndex(0);
-        static::assertSame('go to https://github.com please', $sharedString);
+        self::assertSame('go to https://github.com please', $sharedString);
     }
 
     public function testGetStringAtIndexShouldNotDoubleDecodeHTMLEntities(): void
@@ -85,14 +88,14 @@ final class SharedStringsManagerTest extends TestCase
         $sharedStringsManager->extractSharedStrings();
 
         $sharedString = $sharedStringsManager->getStringAtIndex(0);
-        static::assertSame('quote: &#34; - ampersand: &amp;', $sharedString);
+        self::assertSame('quote: &#34; - ampersand: &amp;', $sharedString);
     }
 
     public function testGetStringAtIndexWithFileBasedStrategy(): void
     {
         // force the file-based strategy by setting no memory limit
         $originalMemoryLimit = \ini_get('memory_limit');
-        static::assertNotFalse($originalMemoryLimit);
+        self::assertNotFalse($originalMemoryLimit);
         ini_set('memory_limit', '-1');
 
         $sharedStringsManager = $this->createSharedStringsManager('sheet_with_lots_of_shared_strings.xlsx');
@@ -100,13 +103,13 @@ final class SharedStringsManagerTest extends TestCase
         $sharedStringsManager->extractSharedStrings();
 
         $sharedString = $sharedStringsManager->getStringAtIndex(0);
-        static::assertSame('str', $sharedString);
+        self::assertSame('str', $sharedString);
 
         $sharedString = $sharedStringsManager->getStringAtIndex(CachingStrategyFactory::MAX_NUM_STRINGS_PER_TEMP_FILE + 1);
-        static::assertSame('str', $sharedString);
+        self::assertSame('str', $sharedString);
 
-        $usedCachingStrategy = \ReflectionHelper::getValueOnObject($sharedStringsManager, 'cachingStrategy');
-        static::assertInstanceOf(FileBasedStrategy::class, $usedCachingStrategy);
+        $usedCachingStrategy = ReflectionHelper::getValueOnObject($sharedStringsManager, 'cachingStrategy');
+        self::assertInstanceOf(FileBasedStrategy::class, $usedCachingStrategy);
 
         ini_set('memory_limit', $originalMemoryLimit);
     }

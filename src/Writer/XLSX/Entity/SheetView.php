@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Writer\XLSX\Entity;
 
 use OpenSpout\Common\Exception\InvalidArgumentException;

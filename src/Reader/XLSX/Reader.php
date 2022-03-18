@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Reader\XLSX;
 
 use OpenSpout\Common\Exception\IOException;
@@ -12,13 +14,14 @@ use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\MemoryLimit;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsManager;
 use OpenSpout\Reader\XLSX\Manager\SheetManager;
 use OpenSpout\Reader\XLSX\Manager\WorkbookRelationshipsManager;
+use ZipArchive;
 
 /**
  * @extends ReaderAbstract<SheetIterator>
  */
 final class Reader extends ReaderAbstract
 {
-    private \ZipArchive $zip;
+    private ZipArchive $zip;
 
     /** @var SharedStringsManager Manages shared strings */
     private SharedStringsManager $sharedStringsManager;
@@ -81,7 +84,7 @@ final class Reader extends ReaderAbstract
      */
     protected function openReader(string $filePath): void
     {
-        $this->zip = new \ZipArchive();
+        $this->zip = new ZipArchive();
 
         if (true !== $this->zip->open($filePath)) {
             throw new IOException("Could not open {$filePath} for reading.");

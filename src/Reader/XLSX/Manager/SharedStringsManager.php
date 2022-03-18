@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Reader\XLSX\Manager;
 
+use DOMElement;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Reader\Exception\XMLProcessingException;
 use OpenSpout\Reader\Wrapper\XMLReader;
@@ -13,13 +16,17 @@ use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyInterface;
  */
 final class SharedStringsManager
 {
-    /** Definition of XML nodes names used to parse data */
+    /**
+     * Definition of XML nodes names used to parse data.
+     */
     public const XML_NODE_SST = 'sst';
     public const XML_NODE_SI = 'si';
     public const XML_NODE_R = 'r';
     public const XML_NODE_T = 't';
 
-    /** Definition of XML attributes used to parse data */
+    /**
+     * Definition of XML attributes used to parse data.
+     */
     public const XML_ATTRIBUTE_COUNT = 'count';
     public const XML_ATTRIBUTE_UNIQUE_COUNT = 'uniqueCount';
     public const XML_ATTRIBUTE_XML_SPACE = 'xml:space';
@@ -186,7 +193,7 @@ final class SharedStringsManager
         $sharedStringValue = '';
 
         // NOTE: expand() will automatically decode all XML entities of the child nodes
-        /** @var \DOMElement $siNode */
+        /** @var DOMElement $siNode */
         $siNode = $xmlReader->expand();
         $textNodes = $siNode->getElementsByTagName(self::XML_NODE_T);
 
@@ -207,11 +214,11 @@ final class SharedStringsManager
      * Some text nodes are part of a node describing the pronunciation for instance.
      * We'll only consider the nodes whose parents are "<si>" or "<r>".
      *
-     * @param \DOMElement $textNode Text node to check
+     * @param DOMElement $textNode Text node to check
      *
      * @return bool Whether the given text node's value must be extracted
      */
-    private function shouldExtractTextNodeValue(\DOMElement $textNode): bool
+    private function shouldExtractTextNodeValue(DOMElement $textNode): bool
     {
         $parentTagName = $textNode->parentNode->localName;
 
@@ -221,11 +228,11 @@ final class SharedStringsManager
     /**
      * If the text node has the attribute 'xml:space="preserve"', then preserve whitespace.
      *
-     * @param \DOMElement $textNode The text node element (<t>) whose whitespace may be preserved
+     * @param DOMElement $textNode The text node element (<t>) whose whitespace may be preserved
      *
      * @return bool Whether whitespace should be preserved
      */
-    private function shouldPreserveWhitespace(\DOMElement $textNode): bool
+    private function shouldPreserveWhitespace(DOMElement $textNode): bool
     {
         $spaceValue = $textNode->getAttribute(self::XML_ATTRIBUTE_XML_SPACE);
 

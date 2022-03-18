@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Writer\ODS;
 
 use OpenSpout\Common\Entity\Row;
@@ -21,18 +23,18 @@ final class SheetTest extends TestCase
     {
         $sheets = $this->writeDataToMulitpleSheetsAndReturnSheets('test_get_sheet_index.ods');
 
-        static::assertCount(2, $sheets, '2 sheets should have been created');
-        static::assertSame(0, $sheets[0]->getIndex(), 'The first sheet should be index 0');
-        static::assertSame(1, $sheets[1]->getIndex(), 'The second sheet should be index 1');
+        self::assertCount(2, $sheets, '2 sheets should have been created');
+        self::assertSame(0, $sheets[0]->getIndex(), 'The first sheet should be index 0');
+        self::assertSame(1, $sheets[1]->getIndex(), 'The second sheet should be index 1');
     }
 
     public function testGetSheetName(): void
     {
         $sheets = $this->writeDataToMulitpleSheetsAndReturnSheets('test_get_sheet_name.ods');
 
-        static::assertCount(2, $sheets, '2 sheets should have been created');
-        static::assertSame('Sheet1', $sheets[0]->getName(), 'Invalid name for the first sheet');
-        static::assertSame('Sheet2', $sheets[1]->getName(), 'Invalid name for the second sheet');
+        self::assertCount(2, $sheets, '2 sheets should have been created');
+        self::assertSame('Sheet1', $sheets[0]->getName(), 'Invalid name for the first sheet');
+        self::assertSame('Sheet2', $sheets[1]->getName(), 'Invalid name for the second sheet');
     }
 
     public function testSetSheetNameShouldCreateSheetWithCustomName(): void
@@ -74,8 +76,8 @@ final class SheetTest extends TestCase
         $pathToContentFile = $resourcePath.'#content.xml';
         $xmlContents = file_get_contents('zip://'.$pathToContentFile);
 
-        static::assertNotFalse($xmlContents);
-        static::assertStringContainsString(' table:display="false"', $xmlContents, 'The sheet visibility should have been changed to "hidden"');
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString(' table:display="false"', $xmlContents, 'The sheet visibility should have been changed to "hidden"');
     }
 
     private function writerForFile(string $fileName): Writer
@@ -141,7 +143,7 @@ final class SheetTest extends TestCase
         $pathToWorkbookFile = $resourcePath.'#content.xml';
         $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
 
-        static::assertNotFalse($xmlContents);
-        static::assertStringContainsString("table:name=\"{$expectedName}\"", $xmlContents, $message);
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString("table:name=\"{$expectedName}\"", $xmlContents, $message);
     }
 }

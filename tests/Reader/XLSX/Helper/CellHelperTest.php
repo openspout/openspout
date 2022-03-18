@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Reader\XLSX\Helper;
 
 use OpenSpout\Common\Exception\InvalidArgumentException;
@@ -27,7 +29,7 @@ final class CellHelperTest extends TestCase
      */
     public function testGetColumnIndexFromCellIndex(string $cellIndex, int $expectedColumnIndex): void
     {
-        static::assertSame($expectedColumnIndex, CellHelper::getColumnIndexFromCellIndex($cellIndex));
+        self::assertSame($expectedColumnIndex, CellHelper::getColumnIndexFromCellIndex($cellIndex));
     }
 
     public function testGetColumnIndexFromCellIndexShouldThrowIfInvalidCellIndex(): void

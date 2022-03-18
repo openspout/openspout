@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Writer\CSV\Manager;
 
 use OpenSpout\Common\Manager\OptionsManagerAbstract;

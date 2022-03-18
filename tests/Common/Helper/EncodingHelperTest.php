@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Common\Helper;
 
 use OpenSpout\Common\Exception\EncodingConversionException;
@@ -31,12 +33,12 @@ final class EncodingHelperTest extends TestCase
     {
         $resourcePath = $this->getResourcePath($fileName);
         $filePointer = fopen($resourcePath, 'r');
-        static::assertNotFalse($filePointer);
+        self::assertNotFalse($filePointer);
 
         $encodingHelper = new EncodingHelper(false, false);
         $bytesOffset = $encodingHelper->getBytesOffsetToSkipBOM($filePointer, $encoding);
 
-        static::assertSame($expectedBytesOffset, $bytesOffset);
+        self::assertSame($expectedBytesOffset, $bytesOffset);
     }
 
     public function dataProviderForIconvOrMbstringUsage(): array
@@ -76,17 +78,17 @@ final class EncodingHelperTest extends TestCase
         $encodingHelper = new EncodingHelper($shouldUseIconv, !$shouldUseIconv);
 
         $encodedString = iconv(EncodingHelper::ENCODING_UTF8, EncodingHelper::ENCODING_UTF16_LE, 'input');
-        static::assertNotFalse($encodedString);
+        self::assertNotFalse($encodedString);
         $decodedString = $encodingHelper->attemptConversionToUTF8($encodedString, EncodingHelper::ENCODING_UTF16_LE);
 
-        static::assertSame('input', $decodedString);
+        self::assertSame('input', $decodedString);
     }
 
     public function testAttemptConversionToUTF8ShouldBeNoopWhenTargetIsUTF8(): void
     {
         $encodingHelper = new EncodingHelper(false, false);
 
-        static::assertSame('input', $encodingHelper->attemptConversionToUTF8('input', EncodingHelper::ENCODING_UTF8));
+        self::assertSame('input', $encodingHelper->attemptConversionToUTF8('input', EncodingHelper::ENCODING_UTF8));
     }
 
     /**
@@ -120,13 +122,13 @@ final class EncodingHelperTest extends TestCase
         $encodedString = $encodingHelper->attemptConversionFromUTF8('input', EncodingHelper::ENCODING_UTF16_LE);
         $encodedStringWithIconv = iconv(EncodingHelper::ENCODING_UTF8, EncodingHelper::ENCODING_UTF16_LE, 'input');
 
-        static::assertSame($encodedStringWithIconv, $encodedString);
+        self::assertSame($encodedStringWithIconv, $encodedString);
     }
 
     public function testAttemptConversionFromUTF8ShouldBeNoopWhenTargetIsUTF8(): void
     {
         $encodingHelper = new EncodingHelper(false, false);
 
-        static::assertSame('input', $encodingHelper->attemptConversionFromUTF8('input', EncodingHelper::ENCODING_UTF8));
+        self::assertSame('input', $encodingHelper->attemptConversionFromUTF8('input', EncodingHelper::ENCODING_UTF8));
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Reader\XLSX\Manager;
 
 use OpenSpout\Common\Helper\Escaper\XLSX;
@@ -17,18 +19,24 @@ use OpenSpout\Reader\XLSX\Sheet;
  */
 final class SheetManager
 {
-    /** Paths of XML files relative to the XLSX file root */
+    /**
+     * Paths of XML files relative to the XLSX file root.
+     */
     public const WORKBOOK_XML_RELS_FILE_PATH = 'xl/_rels/workbook.xml.rels';
     public const WORKBOOK_XML_FILE_PATH = 'xl/workbook.xml';
 
-    /** Definition of XML node names used to parse data */
+    /**
+     * Definition of XML node names used to parse data.
+     */
     public const XML_NODE_WORKBOOK_PROPERTIES = 'workbookPr';
     public const XML_NODE_WORKBOOK_VIEW = 'workbookView';
     public const XML_NODE_SHEET = 'sheet';
     public const XML_NODE_SHEETS = 'sheets';
     public const XML_NODE_RELATIONSHIP = 'Relationship';
 
-    /** Definition of XML attributes used to parse data */
+    /**
+     * Definition of XML attributes used to parse data.
+     */
     public const XML_ATTRIBUTE_DATE_1904 = 'date1904';
     public const XML_ATTRIBUTE_ACTIVE_TAB = 'activeTab';
     public const XML_ATTRIBUTE_R_ID = 'r:id';
@@ -37,7 +45,9 @@ final class SheetManager
     public const XML_ATTRIBUTE_ID = 'Id';
     public const XML_ATTRIBUTE_TARGET = 'Target';
 
-    /** State value to represent a hidden sheet */
+    /**
+     * State value to represent a hidden sheet.
+     */
     public const SHEET_STATE_HIDDEN = 'hidden';
 
     /** @var string Path of the XLSX file being read */
@@ -206,7 +216,7 @@ final class SheetManager
                         $sheetDataXMLFilePath = $xmlReader->getAttribute(self::XML_ATTRIBUTE_TARGET);
 
                         // sometimes, the sheet data file path already contains "/xl/"...
-                        if (0 !== strpos($sheetDataXMLFilePath, '/xl/')) {
+                        if (!str_starts_with($sheetDataXMLFilePath, '/xl/')) {
                             $sheetDataXMLFilePath = '/xl/'.$sheetDataXMLFilePath;
 
                             break;

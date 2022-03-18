@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Writer\Common\Entity;
 
 use OpenSpout\Common\Helper\StringHelper;
@@ -23,8 +25,8 @@ final class SheetTest extends TestCase
     {
         $sheets = [$this->createSheet(0, 'workbookId1'), $this->createSheet(1, 'workbookId1')];
 
-        static::assertSame('Sheet1', $sheets[0]->getName(), 'Invalid name for the first sheet');
-        static::assertSame('Sheet2', $sheets[1]->getName(), 'Invalid name for the second sheet');
+        self::assertSame('Sheet1', $sheets[0]->getName(), 'Invalid name for the first sheet');
+        self::assertSame('Sheet2', $sheets[1]->getName(), 'Invalid name for the second sheet');
     }
 
     public function testSetSheetNameShouldCreateSheetWithCustomName(): void
@@ -33,7 +35,7 @@ final class SheetTest extends TestCase
         $sheet = $this->createSheet(0, 'workbookId1');
         $sheet->setName($customSheetName);
 
-        static::assertSame($customSheetName, $sheet->getName(), "The sheet name should have been changed to '{$customSheetName}'");
+        self::assertSame($customSheetName, $sheet->getName(), "The sheet name should have been changed to '{$customSheetName}'");
     }
 
     public function dataProviderForInvalidSheetNames(): array

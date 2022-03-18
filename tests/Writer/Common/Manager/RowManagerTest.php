@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spout\Writer\Common\Manager;
 
 use OpenSpout\Common\Entity\Cell;
@@ -33,6 +35,6 @@ final class RowManagerTest extends TestCase
         $rowManager = new RowManager();
 
         $row = new Row($cells, null);
-        static::assertSame($expectedIsEmpty, $rowManager->isEmpty($row));
+        self::assertSame($expectedIsEmpty, $rowManager->isEmpty($row));
     }
 }

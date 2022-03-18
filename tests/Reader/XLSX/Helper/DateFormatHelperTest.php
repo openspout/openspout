@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Reader\XLSX\Helper;
 
 use PHPUnit\Framework\TestCase;
@@ -37,6 +39,6 @@ final class DateFormatHelperTest extends TestCase
     public function testToPHPDateFormat(string $excelDateFormat, string $expectedPHPDateFormat): void
     {
         $phpDateFormat = DateFormatHelper::toPHPDateFormat($excelDateFormat);
-        static::assertSame($expectedPHPDateFormat, $phpDateFormat);
+        self::assertSame($expectedPHPDateFormat, $phpDateFormat);
     }
 }

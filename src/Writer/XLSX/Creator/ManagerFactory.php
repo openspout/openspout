@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Writer\XLSX\Creator;
 
 use OpenSpout\Common\Helper\Escaper\XLSX;

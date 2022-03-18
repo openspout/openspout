@@ -1,9 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Writer\ODS;
 
 use DateInterval;
 use DateTimeImmutable;
+use DateTimeZone;
+use DOMElement;
+use DOMNode;
+use FilesystemIterator;
+use finfo;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\InvalidArgumentException;
@@ -16,6 +23,8 @@ use OpenSpout\Writer\Exception\WriterNotOpenedException;
 use OpenSpout\Writer\ODS\Manager\WorkbookManager;
 use OpenSpout\Writer\RowCreationHelper;
 use PHPUnit\Framework\TestCase;
+use ReflectionHelper;
+use stdClass;
 
 /**
  * @internal
@@ -85,7 +94,7 @@ final class WriterTest extends TestCase
 
         $fileName = 'test_add_row_should_throw_exception_if_unsupported_data_type_passed_in.ods';
         $dataRows = [
-            Row::fromValues([new \stdClass()]),
+            Row::fromValues([new stdClass()]),
         ];
 
         $this->writeToODSFile($dataRows, $fileName);
@@ -96,7 +105,7 @@ final class WriterTest extends TestCase
         $fileName = 'test_add_row_should_cleanup_all_files_if_exception_thrown.ods';
         $dataRows = [
             Row::fromValues(['wrong']),
-            Row::fromValues([new \stdClass()]),
+            Row::fromValues([new stdClass()]),
         ];
 
         $this->createGeneratedFolderIfNeeded($fileName);
@@ -111,12 +120,12 @@ final class WriterTest extends TestCase
 
         try {
             $writer->addRows($dataRows);
-            static::fail('Exception should have been thrown');
+            self::fail('Exception should have been thrown');
         } catch (OpenSpoutException $e) {
-            static::assertFileDoesNotExist($fileName, 'Output file should have been deleted');
+            self::assertFileDoesNotExist($fileName, 'Output file should have been deleted');
 
-            $numFiles = iterator_count(new \FilesystemIterator($tempFolderPath, \FilesystemIterator::SKIP_DOTS));
-            static::assertSame(0, $numFiles, 'All temp files should have been deleted');
+            $numFiles = iterator_count(new FilesystemIterator($tempFolderPath, FilesystemIterator::SKIP_DOTS));
+            self::assertSame(0, $numFiles, 'All temp files should have been deleted');
         }
     }
 
@@ -132,8 +141,8 @@ final class WriterTest extends TestCase
         $writer->close();
 
         $sheets = $writer->getSheets();
-        static::assertCount(2, $sheets, 'There should be 2 sheets');
-        static::assertSame($sheets[1], $writer->getCurrentSheet(), 'The current sheet should be the second one.');
+        self::assertCount(2, $sheets, 'There should be 2 sheets');
+        self::assertSame($sheets[1], $writer->getCurrentSheet(), 'The current sheet should be the second one.');
     }
 
     public function testSetCurrentSheet(): void
@@ -153,7 +162,7 @@ final class WriterTest extends TestCase
 
         $writer->close();
 
-        static::assertSame($firstSheet, $writer->getCurrentSheet(), 'The current sheet should be the first one.');
+        self::assertSame($firstSheet, $writer->getCurrentSheet(), 'The current sheet should be the first one.');
     }
 
     public function testCloseShouldNoopWhenWriterIsNotOpened(): void
@@ -235,7 +244,7 @@ final class WriterTest extends TestCase
                 0,
                 10.2,
                 null,
-                new DateTimeImmutable('2020-03-04 05:06:07', new \DateTimeZone('UTC')),
+                new DateTimeImmutable('2020-03-04 05:06:07', new DateTimeZone('UTC')),
                 new DateInterval('P1DT23S'),
             ],
         ]);
@@ -253,14 +262,14 @@ final class WriterTest extends TestCase
     public function testAddRowShouldSupportFloatValuesInDifferentLocale(): void
     {
         $previousLocale = setlocale(LC_ALL, '0');
-        static::assertNotFalse($previousLocale);
+        self::assertNotFalse($previousLocale);
 
         try {
             // Pick a supported locale whose decimal point is a comma.
             // Installed locales differ from one system to another, so we can't pick
             // a given locale.
             $shell_exec = shell_exec('locale -a');
-            static::assertIsString($shell_exec);
+            self::assertIsString($shell_exec);
             $supportedLocales = explode("\n", $shell_exec);
             $foundCommaLocale = false;
             foreach ($supportedLocales as $supportedLocale) {
@@ -273,10 +282,10 @@ final class WriterTest extends TestCase
             }
 
             if (!$foundCommaLocale) {
-                static::markTestSkipped('No locale with comma decimal separator');
+                self::markTestSkipped('No locale with comma decimal separator');
             }
 
-            static::assertSame(',', localeconv()['decimal_point']);
+            self::assertSame(',', localeconv()['decimal_point']);
 
             $fileName = 'test_add_row_should_support_float_values_in_different_locale.xlsx';
             $dataRows = $this->createRowsFromValues([
@@ -314,19 +323,19 @@ final class WriterTest extends TestCase
         $fileName = 'test_add_row_should_use_number_columns_repeated.ods';
         $this->writeToODSFile($this->createRowsFromValues([$dataRow]), $fileName);
 
-        /** @var \DOMElement $sheetXmlNode */
+        /** @var DOMElement $sheetXmlNode */
         $sheetXmlNode = $this->getSheetXmlNode($fileName, 1);
         $tableCellNodes = $sheetXmlNode->getElementsByTagName('table-cell');
 
-        static::assertSame($expectedNumTableCells, $tableCellNodes->length);
+        self::assertSame($expectedNumTableCells, $tableCellNodes->length);
 
         if (1 === $expectedNumTableCells) {
             $tableCellNode = $tableCellNodes->item(0);
             $numColumnsRepeated = (int) ($tableCellNode->getAttribute('table:number-columns-repeated'));
-            static::assertSame($expectedNumColumnsRepeated, $numColumnsRepeated);
+            self::assertSame($expectedNumColumnsRepeated, $numColumnsRepeated);
         } else {
             foreach ($tableCellNodes as $tableCellNode) {
-                static::assertFalse($tableCellNode->hasAttribute('table:number-columns-repeated'));
+                self::assertFalse($tableCellNode->hasAttribute('table:number-columns-repeated'));
             }
         }
     }
@@ -406,15 +415,15 @@ final class WriterTest extends TestCase
         ]);
 
         // set the maxRowsPerSheet limit to 2
-        \ReflectionHelper::setStaticValue(WorkbookManager::class, 'maxRowsPerWorksheet', 2);
+        ReflectionHelper::setStaticValue(WorkbookManager::class, 'maxRowsPerWorksheet', 2);
 
         $writer = $this->writeToODSFile($dataRows, $fileName, $shouldCreateSheetsAutomatically = true);
-        static::assertCount(2, $writer->getSheets(), '2 sheets should have been created.');
+        self::assertCount(2, $writer->getSheets(), '2 sheets should have been created.');
 
         $this->assertValueWasNotWrittenToSheet($fileName, 1, 'ods--sheet2--11');
         $this->assertValueWasWrittenToSheet($fileName, 2, 'ods--sheet2--11');
 
-        \ReflectionHelper::reset();
+        ReflectionHelper::reset();
     }
 
     public function testAddRowShouldNotCreateNewSheetsIfMaxRowsReachedAndOptionTurnedOff(): void
@@ -427,14 +436,14 @@ final class WriterTest extends TestCase
         ]);
 
         // set the maxRowsPerSheet limit to 2
-        \ReflectionHelper::setStaticValue(WorkbookManager::class, 'maxRowsPerWorksheet', 2);
+        ReflectionHelper::setStaticValue(WorkbookManager::class, 'maxRowsPerWorksheet', 2);
 
         $writer = $this->writeToODSFile($dataRows, $fileName, $shouldCreateSheetsAutomatically = false);
-        static::assertCount(1, $writer->getSheets(), 'Only 1 sheet should have been created.');
+        self::assertCount(1, $writer->getSheets(), 'Only 1 sheet should have been created.');
 
         $this->assertValueWasNotWrittenToSheet($fileName, 1, 'ods--sheet1--31');
 
-        \ReflectionHelper::reset();
+        ReflectionHelper::reset();
     }
 
     public function testAddRowShouldEscapeHtmlSpecialCharacters(): void
@@ -464,7 +473,7 @@ final class WriterTest extends TestCase
     public function testGeneratedFileShouldHaveTheCorrectMimeType(): void
     {
         if (!\function_exists('finfo')) {
-            static::markTestSkipped('finfo is not available on this system (possibly running on Windows where the DLL needs to be added explicitly to the php.ini)');
+            self::markTestSkipped('finfo is not available on this system (possibly running on Windows where the DLL needs to be added explicitly to the php.ini)');
         }
 
         $fileName = 'test_mime_type.ods';
@@ -473,8 +482,8 @@ final class WriterTest extends TestCase
 
         $this->writeToODSFile($this->createRowsFromValues([$dataRow]), $fileName);
 
-        $finfo = new \finfo(FILEINFO_MIME_TYPE);
-        static::assertSame('application/vnd.oasis.opendocument.spreadsheet', $finfo->file($resourcePath));
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        self::assertSame('application/vnd.oasis.opendocument.spreadsheet', $finfo->file($resourcePath));
     }
 
     /**
@@ -525,8 +534,8 @@ final class WriterTest extends TestCase
         $pathToContentFile = $resourcePath.'#content.xml';
         $xmlContents = file_get_contents('zip://'.$pathToContentFile);
 
-        static::assertNotFalse($xmlContents);
-        static::assertStringContainsString($value, $xmlContents, $message);
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString($value, $xmlContents, $message);
     }
 
     /**
@@ -537,7 +546,7 @@ final class WriterTest extends TestCase
         $sheetXmlAsString = $this->getSheetXmlNodeAsString($fileName, $sheetIndex);
         $valueAsXmlString = "<text:p>{$value}</text:p>";
 
-        static::assertStringContainsString($valueAsXmlString, $sheetXmlAsString, $message);
+        self::assertStringContainsString($valueAsXmlString, $sheetXmlAsString, $message);
     }
 
     /**
@@ -548,15 +557,15 @@ final class WriterTest extends TestCase
         $sheetXmlAsString = $this->getSheetXmlNodeAsString($fileName, $sheetIndex);
         $valueAsXmlString = "<text:p>{$value}</text:p>";
 
-        static::assertStringNotContainsString($valueAsXmlString, $sheetXmlAsString, $message);
+        self::assertStringNotContainsString($valueAsXmlString, $sheetXmlAsString, $message);
     }
 
-    private function getSheetXmlNode(string $fileName, int $sheetIndex): \DOMNode
+    private function getSheetXmlNode(string $fileName, int $sheetIndex): DOMNode
     {
         $xmlReader = $this->moveReaderToCorrectTableNode($fileName, $sheetIndex);
 
         $DOMNode = $xmlReader->expand();
-        static::assertNotFalse($DOMNode);
+        self::assertNotFalse($DOMNode);
 
         return $DOMNode;
     }

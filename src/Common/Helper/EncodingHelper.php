@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Common\Helper;
 
+use Error;
 use OpenSpout\Common\Exception\EncodingConversionException;
 
 /**
@@ -9,14 +12,18 @@ use OpenSpout\Common\Exception\EncodingConversionException;
  */
 final class EncodingHelper
 {
-    /** Definition of the encodings that can have a BOM */
+    /**
+     * Definition of the encodings that can have a BOM.
+     */
     public const ENCODING_UTF8 = 'UTF-8';
     public const ENCODING_UTF16_LE = 'UTF-16LE';
     public const ENCODING_UTF16_BE = 'UTF-16BE';
     public const ENCODING_UTF32_LE = 'UTF-32LE';
     public const ENCODING_UTF32_BE = 'UTF-32BE';
 
-    /** Definition of the BOMs for the different encodings */
+    /**
+     * Definition of the BOMs for the different encodings.
+     */
     public const BOM_UTF8 = "\xEF\xBB\xBF";
     public const BOM_UTF16_LE = "\xFF\xFE";
     public const BOM_UTF16_BE = "\xFE\xFF";
@@ -167,7 +174,7 @@ final class EncodingHelper
 
             try {
                 $convertedString = mb_convert_encoding($string, $targetEncoding, $sourceEncoding);
-            } catch (\Error $error) {
+            } catch (Error $error) {
                 $errorMessage = $error->getMessage();
             }
 

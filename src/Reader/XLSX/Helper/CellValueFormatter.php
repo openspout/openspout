@@ -1,8 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Reader\XLSX\Helper;
 
 use DateTimeImmutable;
+use DOMElement;
+use Exception;
 use OpenSpout\Common\Helper\Escaper\XLSX;
 use OpenSpout\Reader\Common\Manager\StyleManagerInterface;
 use OpenSpout\Reader\Exception\InvalidValueException;
@@ -13,7 +17,9 @@ use OpenSpout\Reader\XLSX\Manager\SharedStringsManager;
  */
 final class CellValueFormatter
 {
-    /** Definition of all possible cell types */
+    /**
+     * Definition of all possible cell types.
+     */
     public const CELL_TYPE_INLINE_STRING = 'inlineStr';
     public const CELL_TYPE_STR = 'str';
     public const CELL_TYPE_SHARED_STRING = 's';
@@ -22,15 +28,21 @@ final class CellValueFormatter
     public const CELL_TYPE_DATE = 'd';
     public const CELL_TYPE_ERROR = 'e';
 
-    /** Definition of XML nodes names used to parse data */
+    /**
+     * Definition of XML nodes names used to parse data.
+     */
     public const XML_NODE_VALUE = 'v';
     public const XML_NODE_INLINE_STRING_VALUE = 't';
 
-    /** Definition of XML attributes used to parse data */
+    /**
+     * Definition of XML attributes used to parse data.
+     */
     public const XML_ATTRIBUTE_TYPE = 't';
     public const XML_ATTRIBUTE_STYLE_ID = 's';
 
-    /** Constants used for date formatting */
+    /**
+     * Constants used for date formatting.
+     */
     public const NUM_SECONDS_IN_ONE_DAY = 86400;
 
     /** @var SharedStringsManager Manages shared strings */
@@ -74,9 +86,9 @@ final class CellValueFormatter
      *
      * @throws InvalidValueException If the value is not valid
      *
-     * @return bool|\DateTimeImmutable|float|int|string The value associated with the cell
+     * @return bool|DateTimeImmutable|float|int|string The value associated with the cell
      */
-    public function extractAndFormatNodeValue(\DOMElement $node): bool|DateTimeImmutable|float|int|string
+    public function extractAndFormatNodeValue(DOMElement $node): bool|DateTimeImmutable|float|int|string
     {
         // Default cell type is "n"
         $cellType = $node->getAttribute(self::XML_ATTRIBUTE_TYPE) ?: self::CELL_TYPE_NUMERIC;
@@ -103,13 +115,13 @@ final class CellValueFormatter
      *
      * @return string The value associated with the cell
      */
-    private function getVNodeValue(\DOMElement $node): string
+    private function getVNodeValue(DOMElement $node): string
     {
         // for cell types having a "v" tag containing the value.
         // if not, the returned value should be empty string.
         $vNode = $node->getElementsByTagName(self::XML_NODE_VALUE)->item(0);
 
-        return (null !== $vNode) ? $vNode->nodeValue : '';
+        return (string) $vNode?->nodeValue;
     }
 
     /**
@@ -117,7 +129,7 @@ final class CellValueFormatter
      *
      * @return string The value associated with the cell
      */
-    private function formatInlineStringCellValue(\DOMElement $node): string
+    private function formatInlineStringCellValue(DOMElement $node): string
     {
         // inline strings are formatted this way (they can contain any number of <t> nodes):
         // <c r="A1" t="inlineStr"><is><t>[INLINE_STRING]</t><t>[INLINE_STRING_2]</t></is></c>
@@ -272,7 +284,7 @@ final class CellValueFormatter
         // Mitigate thrown Exception on invalid date-time format (http://php.net/manual/en/datetime.construct.php)
         try {
             $cellValue = ($this->shouldFormatDates) ? $nodeValue : new DateTimeImmutable($nodeValue);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             throw new InvalidValueException($nodeValue, '', 0, $exception);
         }
 

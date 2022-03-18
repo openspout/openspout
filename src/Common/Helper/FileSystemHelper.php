@@ -1,8 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Common\Helper;
 
 use OpenSpout\Common\Exception\IOException;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 
 /**
  * This class provides helper functions to help with the file system operations
@@ -105,9 +109,9 @@ final class FileSystemHelper implements FileSystemHelperInterface
     {
         $this->throwIfOperationNotInBaseFolder($folderPath);
 
-        $itemIterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($folderPath, \RecursiveDirectoryIterator::SKIP_DOTS),
-            \RecursiveIteratorIterator::CHILD_FIRST
+        $itemIterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($folderPath, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST
         );
 
         foreach ($itemIterator as $item) {
@@ -137,7 +141,7 @@ final class FileSystemHelper implements FileSystemHelperInterface
         if (false === $operationFolderRealPath) {
             throw new IOException("Folder not found: {$operationFolderRealPath}");
         }
-        $isInBaseFolder = (0 === strpos($operationFolderRealPath, $this->baseFolderRealPath));
+        $isInBaseFolder = (str_starts_with($operationFolderRealPath, $this->baseFolderRealPath));
         if (!$isInBaseFolder) {
             throw new IOException("Cannot perform I/O operation outside of the base folder: {$this->baseFolderRealPath}");
         }

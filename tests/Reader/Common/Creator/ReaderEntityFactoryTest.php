@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Reader\Common\Creator;
 
 use OpenSpout\Common\Exception\UnsupportedTypeException;
@@ -17,28 +19,28 @@ final class ReaderEntityFactoryTest extends TestCase
     {
         $validCsv = $this->getResourcePath('csv_test_create_from_file.csv');
         $reader = ReaderFactory::createFromFile($validCsv);
-        static::assertInstanceOf(\OpenSpout\Reader\CSV\Reader::class, $reader);
+        self::assertInstanceOf(\OpenSpout\Reader\CSV\Reader::class, $reader);
     }
 
     public function testCreateFromFileCSVAllCaps(): void
     {
         $validCsv = $this->getResourcePath('csv_test_create_from_file.CSV');
         $reader = ReaderFactory::createFromFile($validCsv);
-        static::assertInstanceOf(\OpenSpout\Reader\CSV\Reader::class, $reader);
+        self::assertInstanceOf(\OpenSpout\Reader\CSV\Reader::class, $reader);
     }
 
     public function testCreateFromFileODS(): void
     {
         $validOds = $this->getResourcePath('csv_test_create_from_file.ods');
         $reader = ReaderFactory::createFromFile($validOds);
-        static::assertInstanceOf(\OpenSpout\Reader\ODS\Reader::class, $reader);
+        self::assertInstanceOf(\OpenSpout\Reader\ODS\Reader::class, $reader);
     }
 
     public function testCreateFromFileXLSX(): void
     {
         $validXlsx = $this->getResourcePath('csv_test_create_from_file.xlsx');
         $reader = ReaderFactory::createFromFile($validXlsx);
-        static::assertInstanceOf(\OpenSpout\Reader\XLSX\Reader::class, $reader);
+        self::assertInstanceOf(\OpenSpout\Reader\XLSX\Reader::class, $reader);
     }
 
     public function testCreateFromFileUnsupported(): void
@@ -52,6 +54,6 @@ final class ReaderEntityFactoryTest extends TestCase
     {
         $notExistingFile = 'thereisnosuchfile.csv';
         $reader = ReaderFactory::createFromFile($notExistingFile);
-        static::assertInstanceOf(\OpenSpout\Reader\CSV\Reader::class, $reader);
+        self::assertInstanceOf(\OpenSpout\Reader\CSV\Reader::class, $reader);
     }
 }

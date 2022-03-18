@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Writer\Common\Manager\Style;
 
 use OpenSpout\Common\Entity\Cell;
@@ -71,7 +73,7 @@ class StyleManager implements StyleManagerInterface
         $cellStyle = $cell->getStyle();
 
         // if the "wrap text" option is already set, no-op
-        if (!$cellStyle->hasSetWrapText() && $cell instanceof Cell\StringCell && false !== strpos($cell->getValue(), "\n")) {
+        if (!$cellStyle->hasSetWrapText() && $cell instanceof Cell\StringCell && str_contains($cell->getValue(), "\n")) {
             $cellStyle->setShouldWrapText();
 
             return new PossiblyUpdatedStyle($cellStyle, true);

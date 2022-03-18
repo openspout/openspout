@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Writer\Common\Manager\Style;
 
 use OpenSpout\Common\Entity\Style\Style;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Reader\ODS;
 
 use OpenSpout\TestUsingResource;
@@ -48,12 +50,12 @@ final class ReaderPerfTest extends Testcase
         $reader->close();
 
         $expectedNumRows = 1000000;
-        static::assertSame($expectedNumRows, $numReadRows, "{$expectedNumRows} rows should have been read");
+        self::assertSame($expectedNumRows, $numReadRows, "{$expectedNumRows} rows should have been read");
 
         $executionTime = time() - $startTime;
-        static::assertTrue($executionTime < $expectedMaxExecutionTime, "Reading 1 million rows should take less than {$expectedMaxExecutionTime} seconds (took {$executionTime} seconds)");
+        self::assertTrue($executionTime < $expectedMaxExecutionTime, "Reading 1 million rows should take less than {$expectedMaxExecutionTime} seconds (took {$executionTime} seconds)");
 
         $memoryPeakUsage = memory_get_peak_usage(true) - $beforeMemoryPeakUsage;
-        static::assertTrue($memoryPeakUsage < $expectedMaxMemoryPeakUsage, 'Reading 1 million rows should require less than '.($expectedMaxMemoryPeakUsage / 1024 / 1024).' MB of memory (required '.round($memoryPeakUsage / 1024 / 1024, 2).' MB)');
+        self::assertTrue($memoryPeakUsage < $expectedMaxMemoryPeakUsage, 'Reading 1 million rows should require less than '.($expectedMaxMemoryPeakUsage / 1024 / 1024).' MB of memory (required '.round($memoryPeakUsage / 1024 / 1024, 2).' MB)');
     }
 }

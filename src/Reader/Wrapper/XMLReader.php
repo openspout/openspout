@@ -1,6 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Reader\Wrapper;
+
+use ZipArchive;
 
 /**
  * Wrapper around the built-in XMLReader.
@@ -150,7 +154,7 @@ final class XMLReader extends \XMLReader
             $zipFilePath = $matches[1];
             $innerFilePath = $matches[2];
 
-            $zip = new \ZipArchive();
+            $zip = new ZipArchive();
             if (true === $zip->open($zipFilePath)) {
                 $doesFileExists = (false !== $zip->locateName($innerFilePath));
                 $zip->close();
@@ -171,7 +175,7 @@ final class XMLReader extends \XMLReader
          *
          * @see https://github.com/box/spout/issues/233
          */
-        $hasPrefix = (false !== strpos($nodeName, ':'));
+        $hasPrefix = (str_contains($nodeName, ':'));
         $currentNodeName = ($hasPrefix) ? $this->name : $this->localName;
 
         return $this->nodeType === $nodeType && $currentNodeName === $nodeName;

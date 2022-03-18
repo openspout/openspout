@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Writer;
 
 use OpenSpout\Common\Entity\Row;
@@ -21,9 +23,7 @@ use OpenSpout\Writer\Exception\WriterNotOpenedException;
  */
 abstract class WriterMultiSheetsAbstract extends WriterAbstract
 {
-    /**
-     * @var M
-     */
+    /** @var M */
     private ManagerFactoryInterface $managerFactory;
 
     private ?WorkbookManagerInterface $workbookManager = null;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spout\Writer\Common\Manager;
 
 use OpenSpout\Common\Entity\Cell;
@@ -18,11 +20,11 @@ final class CellManagerTest extends TestCase
         $cellManager = new CellManager(new StyleMerger());
         $cell = Cell::fromValue('test');
 
-        static::assertFalse($cell->getStyle()->isFontBold());
+        self::assertFalse($cell->getStyle()->isFontBold());
 
         $style = (new Style())->setFontBold();
         $cellManager->applyStyle($cell, $style);
 
-        static::assertTrue($cell->getStyle()->isFontBold());
+        self::assertTrue($cell->getStyle()->isFontBold());
     }
 }

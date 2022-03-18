@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Writer\CSV;
 
 use OpenSpout\Common\Entity\Row;
@@ -72,7 +74,7 @@ final class WriterTest extends TestCase
         ]);
         $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_utf8_bom.csv');
 
-        static::assertStringStartsWith(EncodingHelper::BOM_UTF8, $writtenContent, 'The CSV file should contain a UTF-8 BOM');
+        self::assertStringStartsWith(EncodingHelper::BOM_UTF8, $writtenContent, 'The CSV file should contain a UTF-8 BOM');
     }
 
     public function testWriteShouldNotAddUtf8Bom(): void
@@ -82,7 +84,7 @@ final class WriterTest extends TestCase
         ]);
         $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_no_bom.csv', ',', '"', false);
 
-        static::assertStringNotContainsString(EncodingHelper::BOM_UTF8, $writtenContent, 'The CSV file should not contain a UTF-8 BOM');
+        self::assertStringNotContainsString(EncodingHelper::BOM_UTF8, $writtenContent, 'The CSV file should not contain a UTF-8 BOM');
     }
 
     public function testWriteShouldSupportNullValues(): void
@@ -93,7 +95,7 @@ final class WriterTest extends TestCase
         $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_null_values.csv');
         $writtenContent = $this->trimWrittenContent($writtenContent);
 
-        static::assertSame('csv--11,,csv--13', $writtenContent, 'The null values should be replaced by empty values');
+        self::assertSame('csv--11,,csv--13', $writtenContent, 'The null values should be replaced by empty values');
     }
 
     public function testWriteShouldNotSkipEmptyRows(): void
@@ -106,7 +108,7 @@ final class WriterTest extends TestCase
         $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_empty_rows.csv');
         $writtenContent = $this->trimWrittenContent($writtenContent);
 
-        static::assertSame("csv--11,csv--12\n\ncsv--31,csv--32", $writtenContent, 'Empty rows should be skipped');
+        self::assertSame("csv--11,csv--12\n\ncsv--31,csv--32", $writtenContent, 'Empty rows should be skipped');
     }
 
     public function testWriteShouldSupportCustomFieldDelimiter(): void
@@ -118,7 +120,7 @@ final class WriterTest extends TestCase
         $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_pipe_delimiters.csv', '|');
         $writtenContent = $this->trimWrittenContent($writtenContent);
 
-        static::assertSame("csv--11|csv--12|csv--13\ncsv--21|csv--22|csv--23", $writtenContent, 'The fields should be delimited with |');
+        self::assertSame("csv--11|csv--12|csv--13\ncsv--21|csv--22|csv--23", $writtenContent, 'The fields should be delimited with |');
     }
 
     public function testWriteShouldSupportCustomFieldEnclosure(): void
@@ -129,7 +131,7 @@ final class WriterTest extends TestCase
         $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_pound_enclosures.csv', ',', '#');
         $writtenContent = $this->trimWrittenContent($writtenContent);
 
-        static::assertSame('#This is, a comma#,csv--12,csv--13', $writtenContent, 'The fields should be enclosed with #');
+        self::assertSame('#This is, a comma#,csv--12,csv--13', $writtenContent, 'The fields should be enclosed with #');
     }
 
     public function testWriteShouldSupportedEscapedCharacters(): void
@@ -140,7 +142,7 @@ final class WriterTest extends TestCase
         $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_escaped_characters.csv');
         $writtenContent = $this->trimWrittenContent($writtenContent);
 
-        static::assertSame('"""csv--11""",csv--12\\,csv--13\\\\,csv--14\\\\\\', $writtenContent, 'The \'"\' and \'\\\' characters should be properly escaped');
+        self::assertSame('"""csv--11""",csv--12\\,csv--13\\\\,csv--14\\\\\\', $writtenContent, 'The \'"\' and \'\\\' characters should be properly escaped');
     }
 
     /**
@@ -166,7 +168,7 @@ final class WriterTest extends TestCase
         $writer->close();
 
         $file_get_contents = file_get_contents($resourcePath);
-        static::assertNotFalse($file_get_contents);
+        self::assertNotFalse($file_get_contents);
 
         return $file_get_contents;
     }

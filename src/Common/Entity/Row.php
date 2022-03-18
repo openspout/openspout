@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Common\Entity;
 
 use OpenSpout\Common\Entity\Style\Style;
@@ -13,9 +15,7 @@ final class Row
      */
     private array $cells = [];
 
-    /**
-     * The row style.
-     */
+    /** The row style. */
     private Style $style;
 
     /**

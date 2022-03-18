@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Writer\XLSX\Manager\Style;
 
 use OpenSpout\Common\Entity\Style\Style;
@@ -65,14 +67,10 @@ class StyleRegistry extends CommonStyleRegistry
         't# ??/??' => 70,
     ];
 
-    /**
-     * @var array<string, int>
-     */
+    /** @var array<string, int> */
     private array $registeredFormats = [];
 
-    /**
-     * @var array<int, int> [STYLE_ID] => [FORMAT_ID] maps a style to a format declaration
-     */
+    /** @var array<int, int> [STYLE_ID] => [FORMAT_ID] maps a style to a format declaration */
     private array $styleIdToFormatsMappingTable = [];
 
     /**
@@ -84,14 +82,10 @@ class StyleRegistry extends CommonStyleRegistry
      */
     private int $formatIndex = 164;
 
-    /**
-     * @var array<string, int>
-     */
+    /** @var array<string, int> */
     private array $registeredFills = [];
 
-    /**
-     * @var array<int, int> [STYLE_ID] => [FILL_ID] maps a style to a fill declaration
-     */
+    /** @var array<int, int> [STYLE_ID] => [FILL_ID] maps a style to a fill declaration */
     private array $styleIdToFillMappingTable = [];
 
     /**
@@ -102,14 +96,10 @@ class StyleRegistry extends CommonStyleRegistry
      */
     private int $fillIndex = 2;
 
-    /**
-     * @var array<string, int>
-     */
+    /** @var array<string, int> */
     private array $registeredBorders = [];
 
-    /**
-     * @var array<int, int> [STYLE_ID] => [BORDER_ID] maps a style to a border declaration
-     */
+    /** @var array<int, int> [STYLE_ID] => [BORDER_ID] maps a style to a border declaration */
     private array $styleIdToBorderMappingTable = [];
 
     /**

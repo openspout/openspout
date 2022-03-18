@@ -1,6 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout;
+
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 
 /**
  * Trait TestUsingResource.
@@ -105,9 +110,9 @@ trait TestUsingResource
 
     private function deleteFolderRecursively(string $folderPath): void
     {
-        $itemIterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($folderPath, \RecursiveDirectoryIterator::SKIP_DOTS),
-            \RecursiveIteratorIterator::CHILD_FIRST
+        $itemIterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($folderPath, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST
         );
 
         foreach ($itemIterator as $item) {

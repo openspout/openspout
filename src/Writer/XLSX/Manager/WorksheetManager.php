@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Writer\XLSX\Manager;
 
+use DateTimeInterface;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\Style;
@@ -297,7 +300,7 @@ final class WorksheetManager implements WorksheetManagerInterface
             $cellXML .= '><f>'.substr($cell->getValue(), 1).'</f></c>';
         } elseif ($cell instanceof Cell\DateCell) {
             $value = $cell->getValue();
-            if ($value instanceof \DateTimeInterface) {
+            if ($value instanceof DateTimeInterface) {
                 $cellXML .= '><v>'.(string) DateHelper::toExcel($value).'</v></c>';
             } else {
                 throw new InvalidArgumentException('Trying to add a date value with an unsupported type: '.\gettype($value));

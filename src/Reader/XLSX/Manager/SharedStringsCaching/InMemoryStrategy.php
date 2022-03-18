@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Reader\XLSX\Manager\SharedStringsCaching;
 
 use OpenSpout\Reader\Exception\SharedStringNotFoundException;
+use RuntimeException;
 use SplFixedArray;
 
 /**
@@ -61,7 +64,7 @@ final class InMemoryStrategy implements CachingStrategyInterface
     {
         try {
             return $this->inMemoryCache->offsetGet($sharedStringIndex);
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             throw new SharedStringNotFoundException("Shared string not found for index: {$sharedStringIndex}");
         }
     }

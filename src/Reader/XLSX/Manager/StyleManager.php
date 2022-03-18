@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Reader\XLSX\Manager;
 
 use OpenSpout\Reader\Common\Manager\StyleManagerInterface;
@@ -7,18 +9,24 @@ use OpenSpout\Reader\Wrapper\XMLReader;
 
 class StyleManager implements StyleManagerInterface
 {
-    /** Nodes used to find relevant information in the styles XML file */
+    /**
+     * Nodes used to find relevant information in the styles XML file.
+     */
     public const XML_NODE_NUM_FMTS = 'numFmts';
     public const XML_NODE_NUM_FMT = 'numFmt';
     public const XML_NODE_CELL_XFS = 'cellXfs';
     public const XML_NODE_XF = 'xf';
 
-    /** Attributes used to find relevant information in the styles XML file */
+    /**
+     * Attributes used to find relevant information in the styles XML file.
+     */
     public const XML_ATTRIBUTE_NUM_FMT_ID = 'numFmtId';
     public const XML_ATTRIBUTE_FORMAT_CODE = 'formatCode';
     public const XML_ATTRIBUTE_APPLY_NUMBER_FORMAT = 'applyNumberFormat';
 
-    /** By convention, default style ID is 0 */
+    /**
+     * By convention, default style ID is 0.
+     */
     public const DEFAULT_STYLE_ID = 0;
 
     public const NUMBER_FORMAT_GENERAL = 'General';

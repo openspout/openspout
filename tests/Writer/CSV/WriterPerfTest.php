@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Writer\CSV;
 
 use OpenSpout\Common\Entity\Row;
@@ -45,13 +47,13 @@ final class WriterPerfTest extends TestCase
 
         $writer->close();
 
-        static::assertSame($numRows, $this->getNumWrittenRows($resourcePath), "The created CSV should contain {$numRows} rows");
+        self::assertSame($numRows, $this->getNumWrittenRows($resourcePath), "The created CSV should contain {$numRows} rows");
 
         $executionTime = time() - $startTime;
-        static::assertTrue($executionTime < $expectedMaxExecutionTime, "Writing 1 million rows should take less than {$expectedMaxExecutionTime} seconds (took {$executionTime} seconds)");
+        self::assertTrue($executionTime < $expectedMaxExecutionTime, "Writing 1 million rows should take less than {$expectedMaxExecutionTime} seconds (took {$executionTime} seconds)");
 
         $memoryPeakUsage = memory_get_peak_usage(true) - $beforeMemoryPeakUsage;
-        static::assertTrue($memoryPeakUsage < $expectedMaxMemoryPeakUsage, 'Writing 1 million rows should require less than '.($expectedMaxMemoryPeakUsage / 1024 / 1024).' MB of memory (required '.round($memoryPeakUsage / 1024 / 1024, 2).' MB)');
+        self::assertTrue($memoryPeakUsage < $expectedMaxMemoryPeakUsage, 'Writing 1 million rows should require less than '.($expectedMaxMemoryPeakUsage / 1024 / 1024).' MB of memory (required '.round($memoryPeakUsage / 1024 / 1024, 2).' MB)');
     }
 
     private function getNumWrittenRows(string $resourcePath): int

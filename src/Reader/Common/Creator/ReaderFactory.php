@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Reader\Common\Creator;
 
 use OpenSpout\Common\Exception\UnsupportedTypeException;

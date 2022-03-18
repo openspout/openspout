@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Reader\XLSX\Manager;
 
 use OpenSpout\Common\Exception\IOException;
@@ -12,16 +14,22 @@ final class WorkbookRelationshipsManager
 {
     public const BASE_PATH = 'xl/';
 
-    /** Path of workbook relationships XML file inside the XLSX file */
+    /**
+     * Path of workbook relationships XML file inside the XLSX file.
+     */
     public const WORKBOOK_RELS_XML_FILE_PATH = 'xl/_rels/workbook.xml.rels';
 
-    /** Relationships types - For Transitional and Strict OOXML */
+    /**
+     * Relationships types - For Transitional and Strict OOXML.
+     */
     public const RELATIONSHIP_TYPE_SHARED_STRINGS = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings';
     public const RELATIONSHIP_TYPE_STYLES = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles';
     public const RELATIONSHIP_TYPE_SHARED_STRINGS_STRICT = 'http://purl.oclc.org/ooxml/officeDocument/relationships/sharedStrings';
     public const RELATIONSHIP_TYPE_STYLES_STRICT = 'http://purl.oclc.org/ooxml/officeDocument/relationships/styles';
 
-    /** Nodes and attributes used to find relevant information in the workbook relationships XML file */
+    /**
+     * Nodes and attributes used to find relevant information in the workbook relationships XML file.
+     */
     public const XML_NODE_RELATIONSHIP = 'Relationship';
     public const XML_ATTRIBUTE_TYPE = 'Type';
     public const XML_ATTRIBUTE_TARGET = 'Target';
@@ -50,7 +58,7 @@ final class WorkbookRelationshipsManager
             ?? $workbookRelationships[self::RELATIONSHIP_TYPE_SHARED_STRINGS_STRICT];
 
         // the file path can be relative (e.g. "styles.xml") or absolute (e.g. "/xl/styles.xml")
-        $doesContainBasePath = (false !== strpos($sharedStringsXMLFilePath, self::BASE_PATH));
+        $doesContainBasePath = (str_contains($sharedStringsXMLFilePath, self::BASE_PATH));
         if (!$doesContainBasePath) {
             // make sure we return an absolute file path
             $sharedStringsXMLFilePath = self::BASE_PATH.$sharedStringsXMLFilePath;
@@ -91,7 +99,7 @@ final class WorkbookRelationshipsManager
             ?? $workbookRelationships[self::RELATIONSHIP_TYPE_STYLES_STRICT];
 
         // the file path can be relative (e.g. "styles.xml") or absolute (e.g. "/xl/styles.xml")
-        $doesContainBasePath = (false !== strpos($stylesXMLFilePath, self::BASE_PATH));
+        $doesContainBasePath = (str_contains($stylesXMLFilePath, self::BASE_PATH));
         if (!$doesContainBasePath) {
             // make sure we return a full path
             $stylesXMLFilePath = self::BASE_PATH.$stylesXMLFilePath;

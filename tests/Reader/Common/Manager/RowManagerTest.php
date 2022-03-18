@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Reader\Common\Manager;
 
 use OpenSpout\Common\Entity\Cell;
@@ -39,6 +41,6 @@ final class RowManagerTest extends TestCase
 
         $rowManager->fillMissingIndexesWithEmptyCells($rowToFill);
 
-        static::assertEquals($expectedFilledCells, $rowToFill->getCells());
+        self::assertEquals($expectedFilledCells, $rowToFill->getCells());
     }
 }
