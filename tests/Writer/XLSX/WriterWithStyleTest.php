@@ -37,7 +37,7 @@ final class WriterWithStyleTest extends TestCase
         $writer = Writer::factory();
 
         $this->expectException(WriterNotOpenedException::class);
-        $writer->addRow($this->createStyledRowFromValues(['xlsx--11', 'xlsx--12'], $this->defaultStyle));
+        $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12'], $this->defaultStyle));
     }
 
     public function testAddRowShouldThrowExceptionIfCalledBeforeOpeningWriter(): void
@@ -45,7 +45,7 @@ final class WriterWithStyleTest extends TestCase
         $writer = Writer::factory();
 
         $this->expectException(WriterNotOpenedException::class);
-        $writer->addRow($this->createStyledRowFromValues(['xlsx--11', 'xlsx--12'], $this->defaultStyle));
+        $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12'], $this->defaultStyle));
     }
 
     public function testAddRowShouldListAllUsedFontsInCreatedStylesXmlFile(): void
@@ -67,8 +67,8 @@ final class WriterWithStyleTest extends TestCase
         ;
 
         $dataRows = [
-            $this->createStyledRowFromValues(['xlsx--11', 'xlsx--12'], $style),
-            $this->createStyledRowFromValues(['xlsx--21', 'xlsx--22'], $style2),
+            Row::fromValues(['xlsx--11', 'xlsx--12'], $style),
+            Row::fromValues(['xlsx--21', 'xlsx--22'], $style2),
         ];
 
         $this->writeToXLSXFile($dataRows, $fileName);
@@ -116,9 +116,9 @@ final class WriterWithStyleTest extends TestCase
         $style2 = (new Style())->setFontSize(15);
 
         $dataRows = [
-            $this->createStyledRowFromValues(['xlsx--11'], $style),
-            $this->createStyledRowFromValues(['xlsx--21'], $style2),
-            $this->createRowFromValues(['xlsx--31']),
+            Row::fromValues(['xlsx--11'], $style),
+            Row::fromValues(['xlsx--21'], $style2),
+            Row::fromValues(['xlsx--31']),
         ];
 
         $this->writeToXLSXFile($dataRows, $fileName);
@@ -142,10 +142,10 @@ final class WriterWithStyleTest extends TestCase
         $styleWithBorder = (new Style())->setBorder($border);
 
         $dataRows = [
-            $this->createRowFromValues(['xlsx--11', '', 'xlsx--13']),
-            $this->createStyledRowFromValues(['xlsx--21', '', 'xlsx--23'], $styleWithFont),
-            $this->createStyledRowFromValues(['xlsx--31', '', 'xlsx--33'], $styleWithBackground),
-            $this->createStyledRowFromValues(['xlsx--41', '', 'xlsx--43'], $styleWithBorder),
+            Row::fromValues(['xlsx--11', '', 'xlsx--13']),
+            Row::fromValues(['xlsx--21', '', 'xlsx--23'], $styleWithFont),
+            Row::fromValues(['xlsx--31', '', 'xlsx--33'], $styleWithBackground),
+            Row::fromValues(['xlsx--41', '', 'xlsx--43'], $styleWithBorder),
         ];
 
         $this->writeToXLSXFile($dataRows, $fileName);
@@ -208,8 +208,8 @@ final class WriterWithStyleTest extends TestCase
         ;
 
         $dataRows = [
-            $this->createStyledRowFromValues([1.123456789], $style),
-            $this->createStyledRowFromValues([12.1], $style2),
+            Row::fromValues([1.123456789], $style),
+            Row::fromValues([12.1], $style2),
         ];
 
         $this->writeToXLSXFile($dataRows, $fileName);
@@ -352,8 +352,8 @@ final class WriterWithStyleTest extends TestCase
         $style2 = (new Style())->setBackgroundColor(Color::RED);
 
         $dataRows = [
-            $this->createStyledRowFromValues(['row-bold-background-red'], $style),
-            $this->createStyledRowFromValues(['row-background-red'], $style2),
+            Row::fromValues(['row-bold-background-red'], $style),
+            Row::fromValues(['row-background-red'], $style2),
         ];
 
         $this->writeToXLSXFile($dataRows, $fileName);
@@ -397,9 +397,9 @@ final class WriterWithStyleTest extends TestCase
         ];
 
         $dataRows = [
-            $this->createStyledRowFromValues(['row-with-border-bottom-green-thick-solid'], $styles[0]),
-            $this->createStyledRowFromValues(['row-without-border'], $styles[1]),
-            $this->createStyledRowFromValues(['row-with-border-top-red-thin-dashed'], $styles[2]),
+            Row::fromValues(['row-with-border-bottom-green-thick-solid'], $styles[0]),
+            Row::fromValues(['row-without-border'], $styles[1]),
+            Row::fromValues(['row-with-border-top-red-thin-dashed'], $styles[2]),
         ];
 
         $this->writeToXLSXFile($dataRows, $fileName);
@@ -485,11 +485,11 @@ final class WriterWithStyleTest extends TestCase
         $borderRightFontBoldStyle = (new StyleMerger())->merge($borderRightStyle, $fontStyle);
 
         $dataRows = [
-            $this->createStyledRowFromValues(['Border-Left'], $borderLeftStyle),
-            $this->createStyledRowFromValues(['Empty'], $emptyStyle),
-            $this->createStyledRowFromValues(['Font-Bold'], $fontStyle),
-            $this->createStyledRowFromValues(['Border-Right'], $borderRightStyle),
-            $this->createStyledRowFromValues(['Border-Right-Font-Bold'], $borderRightFontBoldStyle),
+            Row::fromValues(['Border-Left'], $borderLeftStyle),
+            Row::fromValues(['Empty'], $emptyStyle),
+            Row::fromValues(['Font-Bold'], $fontStyle),
+            Row::fromValues(['Border-Right'], $borderRightStyle),
+            Row::fromValues(['Border-Right-Font-Bold'], $borderRightFontBoldStyle),
         ];
 
         $this->writeToXLSXFile($dataRows, $fileName);

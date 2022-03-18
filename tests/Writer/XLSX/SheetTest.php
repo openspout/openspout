@@ -2,6 +2,7 @@
 
 namespace OpenSpout\Writer\XLSX;
 
+use OpenSpout\Common\Entity\Row;
 use OpenSpout\TestUsingResource;
 use OpenSpout\Writer\Common\Entity\Sheet;
 use OpenSpout\Writer\Exception\InvalidSheetNameException;
@@ -84,7 +85,7 @@ final class SheetTest extends TestCase
         $this->expectException(WriterNotOpenedException::class);
         $writer = Writer::factory();
 
-        $writer->addRow($this->createRowFromValues([]));
+        $writer->addRow(Row::fromValues([]));
     }
 
     public function testWritesDefaultCellSizesIfSet(): void
@@ -97,7 +98,7 @@ final class SheetTest extends TestCase
         $writer->setDefaultColumnWidth(10.0);
         $writer->setDefaultRowHeight(20.0);
         $writer->openToFile($resourcePath);
-        $writer->addRow($this->createRowFromValues(['xlsx--11', 'xlsx--12']));
+        $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12']));
         $writer->close();
 
         $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
@@ -120,7 +121,7 @@ final class SheetTest extends TestCase
         $writer->setDefaultColumnWidth(10.0);
         $writer->openToFile($resourcePath);
 
-        $writer->addRow($this->createRowFromValues(['xlsx--11', 'xlsx--12']));
+        $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12']));
         $writer->close();
 
         $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
@@ -141,7 +142,7 @@ final class SheetTest extends TestCase
         $writer = Writer::factory();
         $writer->openToFile($resourcePath);
         $writer->setColumnWidth(100.0, 1);
-        $writer->addRow($this->createRowFromValues(['xlsx--11', 'xlsx--12']));
+        $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12']));
         $writer->close();
 
         $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
@@ -161,7 +162,7 @@ final class SheetTest extends TestCase
         $writer = Writer::factory();
         $writer->openToFile($resourcePath);
         $writer->setColumnWidth(100.0, 1, 2, 3);
-        $writer->addRow($this->createRowFromValues(['xlsx--11', 'xlsx--12', 'xlsx--13']));
+        $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12', 'xlsx--13']));
         $writer->close();
 
         $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
@@ -182,7 +183,7 @@ final class SheetTest extends TestCase
         $writer->openToFile($resourcePath);
         $writer->setColumnWidth(50.0, 1, 3, 4, 6);
         $writer->setColumnWidth(100.0, 2, 5);
-        $writer->addRow($this->createRowFromValues(['xlsx--11', 'xlsx--12', 'xlsx--13', 'xlsx--14', 'xlsx--15', 'xlsx--16']));
+        $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12', 'xlsx--13', 'xlsx--14', 'xlsx--15', 'xlsx--16']));
         $writer->close();
 
         $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
@@ -206,7 +207,7 @@ final class SheetTest extends TestCase
         $writer = Writer::factory();
         $writer->openToFile($resourcePath);
         $writer->setColumnWidthForRange(50.0, 1, 3);
-        $writer->addRow($this->createRowFromValues(['xlsx--11', 'xlsx--12', 'xlsx--13']));
+        $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12', 'xlsx--13']));
         $writer->close();
 
         $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
@@ -225,9 +226,9 @@ final class SheetTest extends TestCase
 
         $writer = Writer::factory();
         $writer->openToFile($resourcePath);
-        $writer->addRow($this->createRowFromValues([1]));
-        $writer->addRow($this->createRowFromValues([2]));
-        $writer->addRow($this->createRowFromValues(['=SUM(A1:A2)']));
+        $writer->addRow(Row::fromValues([1]));
+        $writer->addRow(Row::fromValues([2]));
+        $writer->addRow(Row::fromValues(['=SUM(A1:A2)']));
         $writer->close();
 
         $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
@@ -259,9 +260,9 @@ final class SheetTest extends TestCase
                 ->setFreezeRow(2)
         );
 
-        $writer->addRow($this->createRowFromValues([1]));
-        $writer->addRow($this->createRowFromValues([2]));
-        $writer->addRow($this->createRowFromValues(['=SUM(A1:A2)']));
+        $writer->addRow(Row::fromValues([1]));
+        $writer->addRow(Row::fromValues([2]));
+        $writer->addRow(Row::fromValues(['=SUM(A1:A2)']));
         $writer->close();
 
         $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
@@ -283,7 +284,7 @@ final class SheetTest extends TestCase
         $sheet = $writer->getCurrentSheet();
         $sheet->setName($sheetName);
 
-        $writer->addRow($this->createRowFromValues(['xlsx--11', 'xlsx--12']));
+        $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12']));
         $writer->close();
 
         return $sheet;
@@ -300,9 +301,9 @@ final class SheetTest extends TestCase
         $writer = Writer::factory();
         $writer->openToFile($resourcePath);
 
-        $writer->addRow($this->createRowFromValues(['xlsx--sheet1--11', 'xlsx--sheet1--12']));
+        $writer->addRow(Row::fromValues(['xlsx--sheet1--11', 'xlsx--sheet1--12']));
         $writer->addNewSheetAndMakeItCurrent();
-        $writer->addRow($this->createRowFromValues(['xlsx--sheet2--11', 'xlsx--sheet2--12', 'xlsx--sheet2--13']));
+        $writer->addRow(Row::fromValues(['xlsx--sheet2--11', 'xlsx--sheet2--12', 'xlsx--sheet2--13']));
 
         $writer->close();
 
@@ -320,7 +321,7 @@ final class SheetTest extends TestCase
         $sheet = $writer->getCurrentSheet();
         $sheet->setIsVisible(false);
 
-        $writer->addRow($this->createRowFromValues(['xlsx--11', 'xlsx--12']));
+        $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12']));
         $writer->close();
     }
 

@@ -32,6 +32,18 @@ final class Row
     }
 
     /**
+     * @param mixed[] $cellValues
+     */
+    public static function fromValues(array $cellValues = [], ?Style $rowStyle = null): self
+    {
+        $cells = array_map(static function (mixed $cellValue): Cell {
+            return Cell::fromValue($cellValue);
+        }, $cellValues);
+
+        return new self($cells, $rowStyle);
+    }
+
+    /**
      * @return Cell[] $cells
      */
     public function getCells(): array

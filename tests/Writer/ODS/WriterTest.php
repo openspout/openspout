@@ -42,7 +42,7 @@ final class WriterTest extends TestCase
         $this->expectException(WriterNotOpenedException::class);
 
         $writer = Writer::factory();
-        $writer->addRow($this->createRowFromValues(['ods--11', 'ods--12']));
+        $writer->addRow(Row::fromValues(['ods--11', 'ods--12']));
     }
 
     public function testAddRowShouldThrowExceptionIfCalledBeforeOpeningWriter(): void
@@ -50,7 +50,7 @@ final class WriterTest extends TestCase
         $this->expectException(WriterNotOpenedException::class);
 
         $writer = Writer::factory();
-        $writer->addRows([$this->createRowFromValues(['ods--11', 'ods--12'])]);
+        $writer->addRows([Row::fromValues(['ods--11', 'ods--12'])]);
     }
 
     public function testSetTempFolderShouldThrowExceptionIfCalledAfterOpeningWriter(): void
@@ -85,7 +85,7 @@ final class WriterTest extends TestCase
 
         $fileName = 'test_add_row_should_throw_exception_if_unsupported_data_type_passed_in.ods';
         $dataRows = [
-            $this->createRowFromValues([new \stdClass()]),
+            Row::fromValues([new \stdClass()]),
         ];
 
         $this->writeToODSFile($dataRows, $fileName);
@@ -95,8 +95,8 @@ final class WriterTest extends TestCase
     {
         $fileName = 'test_add_row_should_cleanup_all_files_if_exception_thrown.ods';
         $dataRows = [
-            $this->createRowFromValues(['wrong']),
-            $this->createRowFromValues([new \stdClass()]),
+            Row::fromValues(['wrong']),
+            Row::fromValues([new \stdClass()]),
         ];
 
         $this->createGeneratedFolderIfNeeded($fileName);

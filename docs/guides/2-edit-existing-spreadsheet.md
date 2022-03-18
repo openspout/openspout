@@ -21,8 +21,8 @@ We'd like to update the missing album for "Yellow Submarine", remove the Bob Mar
 
 ```php
 use OpenSpout\Common\Entity\Cell;
+use OpenSpout\Common\Entity\Row;
 use OpenSpout\Reader\Common\Creator\ReaderEntityFactory;
-use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 
 $existingFilePath = '/path/to/my-music.ods';
 $newFilePath = '/path/to/my-new-music.ods';
@@ -63,7 +63,7 @@ foreach ($reader->getSheetIterator() as $sheetIndex => $sheet) {
         // insert new song at the right position, between the 3rd and 4th rows
         if ($rowIndex === 3) {
             $writer->addRow(
-                WriterEntityFactory::createRowFromArray(['Hotel California', 'The Eagles', 'Hotel California', 1976])
+                Row::fromValues(['Hotel California', 'The Eagles', 'Hotel California', 1976])
             );
         }
     }

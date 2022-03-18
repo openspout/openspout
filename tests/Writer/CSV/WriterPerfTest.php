@@ -2,8 +2,8 @@
 
 namespace OpenSpout\Writer\CSV;
 
+use OpenSpout\Common\Entity\Row;
 use OpenSpout\TestUsingResource;
-use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -40,7 +40,7 @@ final class WriterPerfTest extends TestCase
         $writer->openToFile($resourcePath);
 
         for ($i = 1; $i <= $numRows; ++$i) {
-            $writer->addRow(WriterEntityFactory::createRowFromArray(["csv--{$i}1", "csv--{$i}2", "csv--{$i}3"]));
+            $writer->addRow(Row::fromValues(["csv--{$i}1", "csv--{$i}2", "csv--{$i}3"]));
         }
 
         $writer->close();

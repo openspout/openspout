@@ -2,6 +2,7 @@
 
 namespace OpenSpout\Writer\ODS;
 
+use OpenSpout\Common\Entity\Row;
 use OpenSpout\TestUsingResource;
 use OpenSpout\Writer\Common\Entity\Sheet;
 use OpenSpout\Writer\Exception\InvalidSheetNameException;
@@ -95,7 +96,7 @@ final class SheetTest extends TestCase
         $sheet = $writer->getCurrentSheet();
         $sheet->setName($sheetName);
 
-        $writer->addRow($this->createRowFromValues(['ods--11', 'ods--12']));
+        $writer->addRow(Row::fromValues(['ods--11', 'ods--12']));
         $writer->close();
     }
 
@@ -110,9 +111,9 @@ final class SheetTest extends TestCase
         $writer = Writer::factory();
         $writer->openToFile($resourcePath);
 
-        $writer->addRow($this->createRowFromValues(['ods--sheet1--11', 'ods--sheet1--12']));
+        $writer->addRow(Row::fromValues(['ods--sheet1--11', 'ods--sheet1--12']));
         $writer->addNewSheetAndMakeItCurrent();
-        $writer->addRow($this->createRowFromValues(['ods--sheet2--11', 'ods--sheet2--12', 'ods--sheet2--13']));
+        $writer->addRow(Row::fromValues(['ods--sheet2--11', 'ods--sheet2--12', 'ods--sheet2--13']));
 
         $writer->close();
 
@@ -130,7 +131,7 @@ final class SheetTest extends TestCase
         $sheet = $writer->getCurrentSheet();
         $sheet->setIsVisible(false);
 
-        $writer->addRow($this->createRowFromValues(['ods--11', 'ods--12']));
+        $writer->addRow(Row::fromValues(['ods--11', 'ods--12']));
         $writer->close();
     }
 

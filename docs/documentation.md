@@ -138,7 +138,7 @@ For fonts and alignments, OpenSpout does not support all the possible formatting
 It is possible to apply some formatting options to a row. In this case, all cells of the row will have the same style:
 
 ```php
-use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
+use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
 use OpenSpout\Common\Entity\Style\CellAlignment;
 use OpenSpout\Common\Entity\Style\Color;
@@ -157,7 +157,7 @@ $style = (new Style())
 ;
 
 /** Create a row with cells and apply the style to all cells */
-$row = WriterEntityFactory::createRowFromArray(['Carl', 'is', 'great'], $style);
+$row = Row::fromValues(['Carl', 'is', 'great'], $style);
 
 /** Add the row to the writer */
 $writer->addRow($row);
@@ -173,7 +173,6 @@ use OpenSpout\Common\Entity\Style\Border;
 use OpenSpout\Common\Entity\Style\BorderPart;
 use OpenSpout\Common\Entity\Style\Color;
 use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
-use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 
 $border = new Border(
     new BorderPart(Border::BOTTOM, Color::GREEN, Border::WIDTH_THIN, Border::STYLE_DASHED)
@@ -209,7 +208,6 @@ use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\Color;
 use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
-use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 
 $defaultStyle = (new Style())
     ->setFontSize(8)

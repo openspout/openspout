@@ -54,8 +54,6 @@ As with the reader, there is one common interface to write data to a file:
 ```php
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
-use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
-use OpenSpout\Common\Entity\Row;
 
 $writer = \OpenSpout\Writer\XLSX\Writer::factory();
 // $writer = \OpenSpout\Writer\ODS\Writer::factory();
@@ -83,7 +81,7 @@ $writer->addRows($multipleRows);
 
 /** Shortcut: add a row from an array of values */
 $values = ['Carl', 'is', 'great!'];
-$rowFromValues = WriterEntityFactory::createRowFromArray($values);
+$rowFromValues = Row::fromValues($values);
 $writer->addRow($rowFromValues);
 
 $writer->close();

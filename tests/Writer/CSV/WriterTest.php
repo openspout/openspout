@@ -28,7 +28,7 @@ final class WriterTest extends TestCase
 
         $writer = Writer::factory();
         @$writer->openToFile($filePath);
-        $writer->addRow($this->createRowFromValues(['csv--11', 'csv--12']));
+        $writer->addRow(Row::fromValues(['csv--11', 'csv--12']));
         $writer->close();
     }
 
@@ -37,7 +37,7 @@ final class WriterTest extends TestCase
         $this->expectException(WriterNotOpenedException::class);
 
         $writer = Writer::factory();
-        $writer->addRow($this->createRowFromValues(['csv--11', 'csv--12']));
+        $writer->addRow(Row::fromValues(['csv--11', 'csv--12']));
         $writer->close();
     }
 
@@ -46,7 +46,7 @@ final class WriterTest extends TestCase
         $this->expectException(WriterNotOpenedException::class);
 
         $writer = Writer::factory();
-        $writer->addRow($this->createRowFromValues(['csv--11', 'csv--12']));
+        $writer->addRow(Row::fromValues(['csv--11', 'csv--12']));
         $writer->close();
     }
 

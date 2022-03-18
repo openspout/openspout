@@ -7,8 +7,7 @@ We'll start with a file called "orders.xlsx" and add a new row, containing the l
 In order to avoid memory issues when dealing with large spreadsheets, OpenSpout does not hold the whole representation of the spreadsheet in memory. So to alter an existing spreadsheet, we'll have to create a new one that is similar to the existing one and add the new data in the new one.
 
 ```php
-use OpenSpout\Reader\Common\Creator\ReaderEntityFactory;
-use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
+use OpenSpout\Common\Entity\Row;
 
 $existingFilePath = 'path/to/orders.xlsx';
 $newFilePath = 'path/to/new-orders.xlsx';
@@ -38,7 +37,7 @@ foreach ($reader->getSheetIterator() as $sheetIndex => $sheet) {
 // At this point, the new spreadsheet contains the same data as the existing one.
 // So let's add the new data:
 $writer->addRow(
-    WriterEntityFactory::createRowFromArray(['2015-12-25', 'Christmas gift', 29, 'USD'])
+    Row::fromValues(['2015-12-25', 'Christmas gift', 29, 'USD'])
 );
 
 $reader->close();

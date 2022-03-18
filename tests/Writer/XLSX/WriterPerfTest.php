@@ -2,8 +2,8 @@
 
 namespace OpenSpout\Writer\XLSX;
 
+use OpenSpout\Common\Entity\Row;
 use OpenSpout\TestUsingResource;
-use OpenSpout\Writer\Common\Creator\WriterEntityFactory;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -52,7 +52,7 @@ final class WriterPerfTest extends TestCase
         $writer->openToFile($resourcePath);
 
         for ($i = 1; $i <= $numRows; ++$i) {
-            $writer->addRow(WriterEntityFactory::createRowFromArray(["xlsx--{$i}-1", "xlsx--{$i}-2", "xlsx--{$i}-3"]));
+            $writer->addRow(Row::fromValues(["xlsx--{$i}-1", "xlsx--{$i}-2", "xlsx--{$i}-3"]));
         }
 
         $writer->close();

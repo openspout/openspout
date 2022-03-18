@@ -41,7 +41,7 @@ final class WriterTest extends TestCase
         $this->expectException(WriterNotOpenedException::class);
 
         $writer = Writer::factory();
-        $writer->addRow($this->createRowFromValues(['xlsx--11', 'xlsx--12']));
+        $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12']));
     }
 
     public function testAddRowShouldThrowExceptionIfCalledBeforeOpeningWriter(): void
@@ -95,7 +95,7 @@ final class WriterTest extends TestCase
     {
         $fileName = 'test_add_row_should_throw_exception_if_unsupported_data_type_passed_in.xlsx';
         $dataRows = [
-            $this->createRowFromValues([new \stdClass()]),
+            Row::fromValues([new \stdClass()]),
         ];
 
         $this->expectException(InvalidArgumentException::class);

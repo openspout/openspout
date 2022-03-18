@@ -36,7 +36,7 @@ final class WriterWithStyleTest extends TestCase
         $this->expectException(WriterNotOpenedException::class);
 
         $writer = Writer::factory();
-        $writer->addRow($this->createStyledRowFromValues(['ods--11', 'ods--12'], $this->defaultStyle));
+        $writer->addRow(Row::fromValues(['ods--11', 'ods--12'], $this->defaultStyle));
     }
 
     public function testAddRowShouldThrowExceptionIfCalledBeforeOpeningWriter(): void
@@ -44,7 +44,7 @@ final class WriterWithStyleTest extends TestCase
         $this->expectException(WriterNotOpenedException::class);
 
         $writer = Writer::factory();
-        $writer->addRow($this->createStyledRowFromValues(['ods--11', 'ods--12'], $this->defaultStyle));
+        $writer->addRow(Row::fromValues(['ods--11', 'ods--12'], $this->defaultStyle));
     }
 
     public function testAddRowShouldListAllUsedStylesInCreatedContentXmlFile(): void
@@ -67,8 +67,8 @@ final class WriterWithStyleTest extends TestCase
         ;
 
         $dataRows = [
-            $this->createStyledRowFromValues(['ods--11', 'ods--12'], $style),
-            $this->createStyledRowFromValues(['ods--21', 'ods--22'], $style2),
+            Row::fromValues(['ods--11', 'ods--12'], $style),
+            Row::fromValues(['ods--21', 'ods--22'], $style2),
         ];
 
         $this->writeToODSFile($dataRows, $fileName);
@@ -96,7 +96,7 @@ final class WriterWithStyleTest extends TestCase
     public function testAddRowShouldWriteDefaultStyleSettings(): void
     {
         $fileName = 'test_add_row_should_write_default_style_settings.ods';
-        $dataRow = $this->createStyledRowFromValues(['ods--11', 'ods--12'], $this->defaultStyle);
+        $dataRow = Row::fromValues(['ods--11', 'ods--12'], $this->defaultStyle);
 
         $this->writeToODSFile([$dataRow], $fileName);
 
@@ -113,9 +113,9 @@ final class WriterWithStyleTest extends TestCase
         $style = (new Style())->setFontBold();
         $style2 = (new Style())->setFontSize(15);
         $dataRows = [
-            $this->createStyledRowFromValues(['ods--11'], $style),
-            $this->createStyledRowFromValues(['ods--21'], $style2),
-            $this->createRowFromValues(['ods--31']),
+            Row::fromValues(['ods--11'], $style),
+            Row::fromValues(['ods--21'], $style2),
+            Row::fromValues(['ods--31']),
         ];
 
         $this->writeToODSFile($dataRows, $fileName);
@@ -252,9 +252,9 @@ final class WriterWithStyleTest extends TestCase
         ];
 
         $dataRows = [
-            $this->createStyledRowFromValues(['row-with-border-bottom-green-thick-solid'], $styles[0]),
-            $this->createStyledRowFromValues(['row-without-border'], $styles[1]),
-            $this->createStyledRowFromValues(['row-with-border-top-red-thin-dashed'], $styles[2]),
+            Row::fromValues(['row-with-border-bottom-green-thick-solid'], $styles[0]),
+            Row::fromValues(['row-without-border'], $styles[1]),
+            Row::fromValues(['row-with-border-top-red-thin-dashed'], $styles[2]),
         ];
 
         $this->writeToODSFile($dataRows, $fileName);
