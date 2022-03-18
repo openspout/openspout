@@ -7,7 +7,6 @@ namespace OpenSpout\Reader\ODS;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\Escaper\ODS;
 use OpenSpout\Reader\ODS\Helper\SettingsHelper;
-use OpenSpout\Reader\ODS\Manager\OptionsManager;
 use OpenSpout\Reader\ReaderAbstract;
 use ZipArchive;
 
@@ -18,17 +17,14 @@ final class Reader extends ReaderAbstract
 {
     private ZipArchive $zip;
 
+    private Options $options;
+
     /** @var SheetIterator To iterator over the ODS sheets */
     private SheetIterator $sheetIterator;
 
-    public function __construct(OptionsManager $optionsManager)
+    public function __construct(?Options $options = null)
     {
-        parent::__construct($optionsManager);
-    }
-
-    public static function factory(): self
-    {
-        return new self(new OptionsManager());
+        $this->options = $options ?? new Options();
     }
 
     /**
@@ -55,7 +51,7 @@ final class Reader extends ReaderAbstract
             throw new IOException("Could not open {$filePath} for reading.");
         }
 
-        $this->sheetIterator = new SheetIterator($filePath, $this->optionsManager, new ODS(), new SettingsHelper());
+        $this->sheetIterator = new SheetIterator($filePath, $this->options, new ODS(), new SettingsHelper());
     }
 
     /**

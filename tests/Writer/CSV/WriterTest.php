@@ -28,7 +28,7 @@ final class WriterTest extends TestCase
         $this->createUnwritableFolderIfNeeded();
         $filePath = $this->getGeneratedUnwritableResourcePath($fileName);
 
-        $writer = Writer::factory();
+        $writer = new Writer();
         @$writer->openToFile($filePath);
         $writer->addRow(Row::fromValues(['csv--11', 'csv--12']));
         $writer->close();
@@ -38,7 +38,7 @@ final class WriterTest extends TestCase
     {
         $this->expectException(WriterNotOpenedException::class);
 
-        $writer = Writer::factory();
+        $writer = new Writer();
         $writer->addRow(Row::fromValues(['csv--11', 'csv--12']));
         $writer->close();
     }
@@ -47,7 +47,7 @@ final class WriterTest extends TestCase
     {
         $this->expectException(WriterNotOpenedException::class);
 
-        $writer = Writer::factory();
+        $writer = new Writer();
         $writer->addRow(Row::fromValues(['csv--11', 'csv--12']));
         $writer->close();
     }
@@ -58,7 +58,7 @@ final class WriterTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = Writer::factory();
+        $writer = new Writer();
         $writer->close(); // This call should not cause any error
 
         $writer->openToFile($resourcePath);
@@ -151,18 +151,24 @@ final class WriterTest extends TestCase
     private function writeToCsvFileAndReturnWrittenContent(
         array $allRows,
         string $fileName,
-        string $fieldDelimiter = ',',
-        string $fieldEnclosure = '"',
-        bool $shouldAddBOM = true
+        ?string $fieldDelimiter = null,
+        ?string $fieldEnclosure = null,
+        ?bool $shouldAddBOM = null
     ): string {
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = Writer::factory();
-        $writer->setFieldDelimiter($fieldDelimiter);
-        $writer->setFieldEnclosure($fieldEnclosure);
-        $writer->setShouldAddBOM($shouldAddBOM);
-
+        $options = new Options();
+        if (null !== $fieldDelimiter) {
+            $options->FIELD_DELIMITER = $fieldDelimiter;
+        }
+        if (null !== $fieldEnclosure) {
+            $options->FIELD_ENCLOSURE = $fieldEnclosure;
+        }
+        if (null !== $shouldAddBOM) {
+            $options->SHOULD_ADD_BOM = $shouldAddBOM;
+        }
+        $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->addRows($allRows);
         $writer->close();

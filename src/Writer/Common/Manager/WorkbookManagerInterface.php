@@ -47,22 +47,6 @@ interface WorkbookManagerInterface
      */
     public function startCurrentSheet(): void;
 
-    public function setDefaultColumnWidth(float $width): void;
-
-    public function setDefaultRowHeight(float $height): void;
-
-    /**
-     * @param int ...$columns One or more columns with this width
-     */
-    public function setColumnWidth(float $width, int ...$columns): void;
-
-    /**
-     * @param float $width The width to set
-     * @param int   $start First column index of the range
-     * @param int   $end   Last column index of the range
-     */
-    public function setColumnWidthForRange(float $width, int $start, int $end): void;
-
     /**
      * Sets the given sheet as the current one. New data will be written to this sheet.
      * The writing will resume where it stopped (i.e. data won't be truncated).

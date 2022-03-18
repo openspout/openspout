@@ -10,6 +10,7 @@ use OpenSpout\Reader\Exception\XMLProcessingException;
 use OpenSpout\Reader\Wrapper\XMLReader;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyInterface;
+use OpenSpout\Reader\XLSX\Options;
 
 /**
  * This class manages the shared strings defined in the associated XML file.
@@ -35,8 +36,7 @@ final class SharedStringsManager
     /** @var string Path of the XLSX file being read */
     private string $filePath;
 
-    /** @var string Temporary folder where the temporary files to store shared strings will be stored */
-    private string $tempFolder;
+    private Options $options;
 
     /** @var WorkbookRelationshipsManager Helps retrieving workbook relationships */
     private WorkbookRelationshipsManager $workbookRelationshipsManager;
@@ -47,20 +47,14 @@ final class SharedStringsManager
     /** @var null|CachingStrategyInterface The best caching strategy for storing shared strings */
     private ?CachingStrategyInterface $cachingStrategy = null;
 
-    /**
-     * @param string                       $filePath                     Path of the XLSX file being read
-     * @param string                       $tempFolder                   Temporary folder where the temporary files to store shared strings will be stored
-     * @param WorkbookRelationshipsManager $workbookRelationshipsManager Helps retrieving workbook relationships
-     * @param CachingStrategyFactory       $cachingStrategyFactory       Factory to create shared strings caching strategies
-     */
     public function __construct(
         string $filePath,
-        string $tempFolder,
+        Options $options,
         WorkbookRelationshipsManager $workbookRelationshipsManager,
         CachingStrategyFactory $cachingStrategyFactory
     ) {
         $this->filePath = $filePath;
-        $this->tempFolder = $tempFolder;
+        $this->options = $options;
         $this->workbookRelationshipsManager = $workbookRelationshipsManager;
         $this->cachingStrategyFactory = $cachingStrategyFactory;
     }
@@ -178,7 +172,7 @@ final class SharedStringsManager
     private function getBestSharedStringsCachingStrategy(?int $sharedStringsUniqueCount): CachingStrategyInterface
     {
         return $this->cachingStrategyFactory
-            ->createBestCachingStrategy($sharedStringsUniqueCount, $this->tempFolder)
+            ->createBestCachingStrategy($sharedStringsUniqueCount, $this->options->TEMP_FOLDER)
         ;
     }
 

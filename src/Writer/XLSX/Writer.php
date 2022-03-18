@@ -4,71 +4,76 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer\XLSX;
 
-use OpenSpout\Writer\Common\Entity\Options;
+use OpenSpout\Common\Helper\Escaper\XLSX;
+use OpenSpout\Common\Helper\StringHelper;
+use OpenSpout\Writer\Common\Entity\Workbook;
+use OpenSpout\Writer\Common\Helper\ZipHelper;
+use OpenSpout\Writer\Common\Manager\RowManager;
+use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
 use OpenSpout\Writer\WriterMultiSheetsAbstract;
-use OpenSpout\Writer\XLSX\Creator\ManagerFactory;
-use OpenSpout\Writer\XLSX\Manager\OptionsManager;
+use OpenSpout\Writer\XLSX\Helper\FileSystemHelper;
+use OpenSpout\Writer\XLSX\Manager\SharedStringsManager;
+use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
+use OpenSpout\Writer\XLSX\Manager\Style\StyleRegistry;
+use OpenSpout\Writer\XLSX\Manager\WorkbookManager;
+use OpenSpout\Writer\XLSX\Manager\WorksheetManager;
 
-/**
- * @extends WriterMultiSheetsAbstract<OptionsManager, ManagerFactory>
- */
 final class Writer extends WriterMultiSheetsAbstract
 {
     /** @var string Content-Type value for the header */
     protected static string $headerContentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 
-    public function __construct(OptionsManager $optionsManager, ManagerFactory $managerFactory)
-    {
-        parent::__construct($optionsManager, $managerFactory);
-    }
+    private Options $options;
 
-    public static function factory(): self
+    public function __construct(?Options $options = null)
     {
-        return new self(new OptionsManager(), new ManagerFactory());
+        $this->options = $options ?? new Options();
     }
 
     /**
-     * Sets a custom temporary folder for creating intermediate files/folders.
-     * This must be set before opening the writer.
-     *
-     * @param string $tempFolder Temporary folder where the files to create the XLSX will be stored
-     *
-     * @throws \OpenSpout\Writer\Exception\WriterAlreadyOpenedException If the writer was already opened
+     * @param float $width The width to set
+     * @param int   $start First column index of the range
+     * @param int   $end   Last column index of the range
      */
-    public function setTempFolder(string $tempFolder): void
+    public function setColumnWidthForRange(float $width, int $start, int $end): void
     {
-        $this->throwIfWriterAlreadyOpened('Writer must be configured before opening it.');
-
-        $this->optionsManager->setOption(Options::TEMP_FOLDER, $tempFolder);
+        $this->options->COLUMN_WIDTHS[] = [$start, $end, $width];
     }
 
-    /**
-     * Use inline string to be more memory efficient. If set to false, it will use shared strings.
-     * This must be set before opening the writer.
-     *
-     * @param bool $shouldUseInlineStrings Whether inline or shared strings should be used
-     *
-     * @throws \OpenSpout\Writer\Exception\WriterAlreadyOpenedException If the writer was already opened
-     */
-    public function setShouldUseInlineStrings(bool $shouldUseInlineStrings): void
+    protected function createWorkbookManager(): WorkbookManager
     {
-        $this->throwIfWriterAlreadyOpened('Writer must be configured before opening it.');
+        $workbook = new Workbook();
 
-        $this->optionsManager->setOption(Options::SHOULD_USE_INLINE_STRINGS, $shouldUseInlineStrings);
-    }
+        $fileSystemHelper = new FileSystemHelper(
+            $this->options->TEMP_FOLDER,
+            new ZipHelper(),
+            new XLSX()
+        );
+        $fileSystemHelper->createBaseFilesAndFolders();
 
-    /**
-     * Merge cells.
-     * Row coordinates are indexed from 1, columns from 0 (A = 0),
-     * so a merge B2:G2 looks like $writer->mergeCells([1,2], [6, 2]);.
-     *
-     * You may use CellHelper::getColumnLettersFromColumnIndex() to convert from "B2" to "[1,2]"
-     *
-     * @param int[] $range1 - top left cell's coordinate [column, row]
-     * @param int[] $range2 - bottom right cell's coordinate [column, row]
-     */
-    public function mergeCells(array $range1, array $range2): void
-    {
-        $this->optionsManager->addOption(Options::MERGE_CELLS, [$range1, $range2]);
+        $xlFolder = $fileSystemHelper->getXlFolder();
+        $sharedStringsManager = new SharedStringsManager($xlFolder, new XLSX());
+
+        $styleMerger = new StyleMerger();
+        $styleManager = new StyleManager(new StyleRegistry($this->options->DEFAULT_ROW_STYLE));
+
+        $worksheetManager = new WorksheetManager(
+            $this->options,
+            new RowManager(),
+            $styleManager,
+            $styleMerger,
+            $sharedStringsManager,
+            new XLSX(),
+            StringHelper::factory()
+        );
+
+        return new WorkbookManager(
+            $workbook,
+            $this->options,
+            $worksheetManager,
+            $styleManager,
+            $styleMerger,
+            $fileSystemHelper
+        );
     }
 }

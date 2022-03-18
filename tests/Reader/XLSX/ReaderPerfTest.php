@@ -44,7 +44,7 @@ final class ReaderPerfTest extends TestCase
         $fileName = ($shouldUseInlineStrings) ? 'xlsx_with_300k_rows_and_inline_strings.xlsx' : 'xlsx_with_300k_rows_and_shared_strings.xlsx';
         $resourcePath = $this->getResourcePath($fileName);
 
-        $reader = Reader::factory();
+        $reader = new Reader();
         $reader->open($resourcePath);
 
         $numReadRows = 0;

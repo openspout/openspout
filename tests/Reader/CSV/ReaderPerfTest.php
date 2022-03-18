@@ -35,12 +35,11 @@ final class ReaderPerfTest extends TestCase
         $fileName = 'csv_with_one_million_rows.csv';
         $resourcePath = $this->getResourcePath($fileName);
 
-        $reader = Reader::factory();
+        $reader = new Reader();
         $reader->open($resourcePath);
 
         $numReadRows = 0;
 
-        /** @var Sheet $sheet */
         foreach ($reader->getSheetIterator() as $sheet) {
             foreach ($sheet->getRowIterator() as $row) {
                 ++$numReadRows;

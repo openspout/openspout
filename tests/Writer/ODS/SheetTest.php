@@ -54,7 +54,7 @@ final class SheetTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = Writer::factory();
+        $writer = new Writer();
         $writer->openToFile($resourcePath);
 
         $customSheetName = 'Sheet name';
@@ -85,7 +85,7 @@ final class SheetTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = Writer::factory();
+        $writer = new Writer();
         $writer->openToFile($resourcePath);
 
         return $writer;
@@ -110,7 +110,7 @@ final class SheetTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = Writer::factory();
+        $writer = new Writer();
         $writer->openToFile($resourcePath);
 
         $writer->addRow(Row::fromValues(['ods--sheet1--11', 'ods--sheet1--12']));
@@ -127,7 +127,7 @@ final class SheetTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = Writer::factory();
+        $writer = new Writer();
         $writer->openToFile($resourcePath);
 
         $sheet = $writer->getCurrentSheet();

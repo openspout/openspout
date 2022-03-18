@@ -5,25 +5,15 @@ declare(strict_types=1);
 namespace OpenSpout\Writer;
 
 use OpenSpout\Common\Entity\Row;
-use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Exception\OpenSpoutException;
 use OpenSpout\Common\Helper\FileSystemHelper;
-use OpenSpout\Common\Manager\OptionsManagerInterface;
-use OpenSpout\Writer\Common\Entity\Options;
-use OpenSpout\Writer\Exception\WriterAlreadyOpenedException;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
 
-/**
- * @template O of OptionsManagerInterface
- */
 abstract class WriterAbstract implements WriterInterface
 {
     /** @var resource Pointer to the file/stream we will write to */
     protected $filePointer;
-
-    /** @var O Writer options manager */
-    protected OptionsManagerInterface $optionsManager;
 
     /** @var string Content-Type value for the header - to be defined by child class */
     protected static string $headerContentType;
@@ -33,23 +23,6 @@ abstract class WriterAbstract implements WriterInterface
 
     /** @var bool Indicates whether the writer has been opened or not */
     private bool $isWriterOpened = false;
-
-    /**
-     * @param O $optionsManager
-     */
-    public function __construct(
-        OptionsManagerInterface $optionsManager
-    ) {
-        $this->optionsManager = $optionsManager;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setDefaultRowStyle(Style $defaultStyle): void
-    {
-        $this->optionsManager->setOption(Options::DEFAULT_ROW_STYLE, $defaultStyle);
-    }
 
     /**
      * {@inheritdoc}
@@ -189,21 +162,6 @@ abstract class WriterAbstract implements WriterInterface
      * Closes the streamer, preventing any additional writing.
      */
     abstract protected function closeWriter(): void;
-
-    /**
-     * Checks if the writer has already been opened, since some actions must be done before it gets opened.
-     * Throws an exception if already opened.
-     *
-     * @param string $message Error message
-     *
-     * @throws WriterAlreadyOpenedException if the writer was already opened and must not be
-     */
-    protected function throwIfWriterAlreadyOpened(string $message): void
-    {
-        if ($this->isWriterOpened) {
-            throw new WriterAlreadyOpenedException($message);
-        }
-    }
 
     /**
      * Closes the writer and attempts to cleanup all files that were

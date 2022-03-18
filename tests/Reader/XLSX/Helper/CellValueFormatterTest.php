@@ -14,6 +14,7 @@ use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\MemoryLimit;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsManager;
 use OpenSpout\Reader\XLSX\Manager\WorkbookRelationshipsManager;
+use OpenSpout\Reader\XLSX\Options;
 use PHPUnit\Framework\TestCase;
 use ReflectionHelper;
 
@@ -107,7 +108,7 @@ final class CellValueFormatterTest extends TestCase
         $formatter = new CellValueFormatter(
             new SharedStringsManager(
                 uniqid(),
-                sys_get_temp_dir(),
+                new Options(),
                 new WorkbookRelationshipsManager(uniqid()),
                 new CachingStrategyFactory(new MemoryLimit('1'))
             ),
@@ -172,7 +173,7 @@ final class CellValueFormatterTest extends TestCase
         $formatter = new CellValueFormatter(
             new SharedStringsManager(
                 uniqid(),
-                sys_get_temp_dir(),
+                new Options(),
                 new WorkbookRelationshipsManager(uniqid()),
                 new CachingStrategyFactory(new MemoryLimit('1'))
             ),
@@ -226,7 +227,7 @@ final class CellValueFormatterTest extends TestCase
         $formatter = new CellValueFormatter(
             new SharedStringsManager(
                 uniqid(),
-                sys_get_temp_dir(),
+                new Options(),
                 new WorkbookRelationshipsManager(uniqid()),
                 new CachingStrategyFactory(new MemoryLimit('1'))
             ),

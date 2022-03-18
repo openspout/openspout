@@ -9,6 +9,7 @@ use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\FileBasedStrategy;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\InMemoryStrategy;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\MemoryLimit;
+use OpenSpout\Reader\XLSX\Options;
 use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 use ReflectionHelper;
@@ -117,13 +118,12 @@ final class SharedStringsManagerTest extends TestCase
     private function createSharedStringsManager(string $resourceName = 'one_sheet_with_shared_strings.xlsx'): SharedStringsManager
     {
         $resourcePath = $this->getResourcePath($resourceName);
-        $tempFolder = sys_get_temp_dir();
         $cachingStrategyFactory = new CachingStrategyFactory(new MemoryLimit('1'));
         $workbookRelationshipsManager = new WorkbookRelationshipsManager($resourcePath);
 
         $this->sharedStringsManager = new SharedStringsManager(
             $resourcePath,
-            $tempFolder,
+            new Options(),
             $workbookRelationshipsManager,
             $cachingStrategyFactory
         );

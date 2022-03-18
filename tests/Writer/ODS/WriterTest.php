@@ -18,7 +18,6 @@ use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Exception\OpenSpoutException;
 use OpenSpout\Reader\Wrapper\XMLReader;
 use OpenSpout\TestUsingResource;
-use OpenSpout\Writer\Exception\WriterAlreadyOpenedException;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
 use OpenSpout\Writer\ODS\Manager\WorkbookManager;
 use OpenSpout\Writer\RowCreationHelper;
@@ -42,7 +41,7 @@ final class WriterTest extends TestCase
         $this->createUnwritableFolderIfNeeded();
         $filePath = $this->getGeneratedUnwritableResourcePath($fileName);
 
-        $writer = Writer::factory();
+        $writer = new Writer();
         @$writer->openToFile($filePath);
     }
 
@@ -50,7 +49,7 @@ final class WriterTest extends TestCase
     {
         $this->expectException(WriterNotOpenedException::class);
 
-        $writer = Writer::factory();
+        $writer = new Writer();
         $writer->addRow(Row::fromValues(['ods--11', 'ods--12']));
     }
 
@@ -58,34 +57,8 @@ final class WriterTest extends TestCase
     {
         $this->expectException(WriterNotOpenedException::class);
 
-        $writer = Writer::factory();
+        $writer = new Writer();
         $writer->addRows([Row::fromValues(['ods--11', 'ods--12'])]);
-    }
-
-    public function testSetTempFolderShouldThrowExceptionIfCalledAfterOpeningWriter(): void
-    {
-        $this->expectException(WriterAlreadyOpenedException::class);
-
-        $fileName = 'file_that_wont_be_written.ods';
-        $filePath = $this->getGeneratedResourcePath($fileName);
-
-        $writer = Writer::factory();
-        $writer->openToFile($filePath);
-
-        $writer->setTempFolder('');
-    }
-
-    public function testSetShouldCreateNewSheetsAutomaticallyShouldThrowExceptionIfCalledAfterOpeningWriter(): void
-    {
-        $this->expectException(WriterAlreadyOpenedException::class);
-
-        $fileName = 'file_that_wont_be_written.ods';
-        $filePath = $this->getGeneratedResourcePath($fileName);
-
-        $writer = Writer::factory();
-        $writer->openToFile($filePath);
-
-        $writer->setShouldCreateNewSheetsAutomatically(true);
     }
 
     public function testAddRowShouldThrowExceptionIfUnsupportedDataTypePassedIn(): void
@@ -114,8 +87,9 @@ final class WriterTest extends TestCase
         $this->recreateTempFolder();
         $tempFolderPath = $this->getTempFolderPath();
 
-        $writer = Writer::factory();
-        $writer->setTempFolder($tempFolderPath);
+        $options = new Options();
+        $options->TEMP_FOLDER = $tempFolderPath;
+        $writer = new Writer($options);
         $writer->openToFile($resourcePath);
 
         try {
@@ -135,7 +109,7 @@ final class WriterTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = Writer::factory();
+        $writer = new Writer();
         $writer->openToFile($resourcePath);
         $writer->addNewSheetAndMakeItCurrent();
         $writer->close();
@@ -151,7 +125,7 @@ final class WriterTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = Writer::factory();
+        $writer = new Writer();
         $writer->openToFile($resourcePath);
 
         $writer->addNewSheetAndMakeItCurrent();
@@ -171,7 +145,7 @@ final class WriterTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = Writer::factory();
+        $writer = new Writer();
         $writer->close(); // This call should not cause any error
 
         $writer->openToFile($resourcePath);
@@ -373,7 +347,7 @@ final class WriterTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = Writer::factory();
+        $writer = new Writer();
         $writer->openToFile($resourcePath);
 
         $writer->addRows($dataRowsSheet1);
@@ -489,13 +463,19 @@ final class WriterTest extends TestCase
     /**
      * @param Row[] $allRows
      */
-    private function writeToODSFile(array $allRows, string $fileName, bool $shouldCreateSheetsAutomatically = true): Writer
-    {
+    private function writeToODSFile(
+        array $allRows,
+        string $fileName,
+        ?bool $shouldCreateSheetsAutomatically = null
+    ): Writer {
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = Writer::factory();
-        $writer->setShouldCreateNewSheetsAutomatically($shouldCreateSheetsAutomatically);
+        $options = new Options();
+        if (null !== $shouldCreateSheetsAutomatically) {
+            $options->SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY = $shouldCreateSheetsAutomatically;
+        }
+        $writer = new Writer($options);
 
         $writer->openToFile($resourcePath);
         $writer->addRows($allRows);
@@ -507,13 +487,20 @@ final class WriterTest extends TestCase
     /**
      * @param Row[] $allRows
      */
-    private function writeToMultipleSheetsInODSFile(array $allRows, int $numSheets, string $fileName, bool $shouldCreateSheetsAutomatically = true): Writer
-    {
+    private function writeToMultipleSheetsInODSFile(
+        array $allRows,
+        int $numSheets,
+        string $fileName,
+        ?bool $shouldCreateSheetsAutomatically = null
+    ): Writer {
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = Writer::factory();
-        $writer->setShouldCreateNewSheetsAutomatically($shouldCreateSheetsAutomatically);
+        $options = new Options();
+        if (null !== $shouldCreateSheetsAutomatically) {
+            $options->SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY = $shouldCreateSheetsAutomatically;
+        }
+        $writer = new Writer($options);
 
         $writer->openToFile($resourcePath);
         $writer->addRows($allRows);

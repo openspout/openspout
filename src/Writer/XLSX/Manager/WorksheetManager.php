@@ -12,25 +12,21 @@ use OpenSpout\Common\Exception\InvalidArgumentException;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\Escaper\XLSX as XLSXEscaper;
 use OpenSpout\Common\Helper\StringHelper;
-use OpenSpout\Common\Manager\OptionsManagerInterface;
-use OpenSpout\Writer\Common\Entity\Options;
 use OpenSpout\Writer\Common\Entity\Worksheet;
 use OpenSpout\Writer\Common\Helper\CellHelper;
-use OpenSpout\Writer\Common\Manager\ManagesCellSize;
 use OpenSpout\Writer\Common\Manager\RegisteredStyle;
 use OpenSpout\Writer\Common\Manager\RowManager;
 use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
 use OpenSpout\Writer\Common\Manager\WorksheetManagerInterface;
 use OpenSpout\Writer\XLSX\Helper\DateHelper;
 use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
+use OpenSpout\Writer\XLSX\Options;
 
 /**
  * XLSX worksheet manager, providing the interfaces to work with XLSX worksheets.
  */
 final class WorksheetManager implements WorksheetManagerInterface
 {
-    use ManagesCellSize;
-
     /**
      * Maximum number of characters a cell can contain.
      *
@@ -45,10 +41,7 @@ final class WorksheetManager implements WorksheetManagerInterface
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
         EOD;
 
-    /** @var bool Whether inline or shared strings should be used */
-    private bool $shouldUseInlineStrings;
-
-    private OptionsManagerInterface $optionsManager;
+    private Options $options;
 
     /** @var RowManager Manages rows */
     private RowManager $rowManager;
@@ -72,7 +65,7 @@ final class WorksheetManager implements WorksheetManagerInterface
      * WorksheetManager constructor.
      */
     public function __construct(
-        OptionsManagerInterface $optionsManager,
+        Options $options,
         RowManager $rowManager,
         StyleManager $styleManager,
         StyleMerger $styleMerger,
@@ -80,11 +73,7 @@ final class WorksheetManager implements WorksheetManagerInterface
         XLSXEscaper $stringsEscaper,
         StringHelper $stringHelper
     ) {
-        $this->optionsManager = $optionsManager;
-        $this->shouldUseInlineStrings = $optionsManager->getOption(Options::SHOULD_USE_INLINE_STRINGS);
-        $this->setDefaultColumnWidth($optionsManager->getOption(Options::DEFAULT_COLUMN_WIDTH));
-        $this->setDefaultRowHeight($optionsManager->getOption(Options::DEFAULT_ROW_HEIGHT));
-        $this->columnWidths = $optionsManager->getOption(Options::COLUMN_WIDTHS) ?? [];
+        $this->options = $options;
         $this->rowManager = $rowManager;
         $this->styleManager = $styleManager;
         $this->styleMerger = $styleMerger;
@@ -128,11 +117,11 @@ final class WorksheetManager implements WorksheetManagerInterface
      */
     public function getXMLFragmentForColumnWidths(): string
     {
-        if ([] === $this->columnWidths) {
+        if ([] === $this->options->COLUMN_WIDTHS) {
             return '';
         }
         $xml = '<cols>';
-        foreach ($this->columnWidths as $entry) {
+        foreach ($this->options->COLUMN_WIDTHS as $entry) {
             $xml .= '<col min="'.$entry[0].'" max="'.$entry[1].'" width="'.$entry[2].'" customWidth="true"/>';
         }
         $xml .= '</cols>';
@@ -145,8 +134,8 @@ final class WorksheetManager implements WorksheetManagerInterface
      */
     public function getXMLFragmentForDefaultCellSizing(): string
     {
-        $rowHeightXml = null === $this->defaultRowHeight ? '' : " defaultRowHeight=\"{$this->defaultRowHeight}\"";
-        $colWidthXml = null === $this->defaultColumnWidth ? '' : " defaultColWidth=\"{$this->defaultColumnWidth}\"";
+        $rowHeightXml = null === $this->options->DEFAULT_ROW_HEIGHT ? '' : " defaultRowHeight=\"{$this->options->DEFAULT_ROW_HEIGHT}\"";
+        $colWidthXml = null === $this->options->DEFAULT_COLUMN_WIDTH ? '' : " defaultColWidth=\"{$this->options->DEFAULT_COLUMN_WIDTH}\"";
         if ('' === $colWidthXml && '' === $rowHeightXml) {
             return '';
         }
@@ -166,7 +155,7 @@ final class WorksheetManager implements WorksheetManagerInterface
         fwrite($worksheetFilePointer, '</sheetData>');
 
         // create nodes for merge cells
-        $mergeCellsOption = $this->optionsManager->getOption(Options::MERGE_CELLS);
+        $mergeCellsOption = $this->options->MERGE_CELLS;
         if ([] !== $mergeCellsOption) {
             $mergeCellString = '<mergeCells count="'.\count($mergeCellsOption).'">';
             foreach ($mergeCellsOption as $values) {
@@ -222,7 +211,7 @@ final class WorksheetManager implements WorksheetManagerInterface
         $rowIndexOneBased = $worksheet->getLastWrittenRowIndex() + 1;
         $numCells = $row->getNumCells();
 
-        $hasCustomHeight = $this->defaultRowHeight > 0 ? '1' : '0';
+        $hasCustomHeight = $this->options->DEFAULT_ROW_HEIGHT > 0 ? '1' : '0';
         $rowXML = "<row r=\"{$rowIndexOneBased}\" spans=\"1:{$numCells}\" customHeight=\"{$hasCustomHeight}\">";
 
         foreach ($row->getCells() as $columnIndexZeroBased => $cell) {
@@ -338,7 +327,7 @@ final class WorksheetManager implements WorksheetManagerInterface
             throw new InvalidArgumentException('Trying to add a value that exceeds the maximum number of characters allowed in a cell (32,767)');
         }
 
-        if ($this->shouldUseInlineStrings) {
+        if ($this->options->SHOULD_USE_INLINE_STRINGS) {
             $cellXMLFragment = ' t="inlineStr"><is><t>'.$this->stringsEscaper->escape($cellValue).'</t></is></c>';
         } else {
             $sharedStringId = $this->sharedStringsManager->writeString($cellValue);

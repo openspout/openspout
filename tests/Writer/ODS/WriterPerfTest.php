@@ -38,8 +38,9 @@ final class WriterPerfTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = Writer::factory();
-        $writer->setShouldCreateNewSheetsAutomatically(true);
+        $options = new Options();
+        $options->SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY = true;
+        $writer = new Writer($options);
 
         $writer->openToFile($resourcePath);
 

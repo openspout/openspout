@@ -17,7 +17,6 @@ use OpenSpout\TestUsingResource;
 use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
 use OpenSpout\Writer\RowCreationHelper;
-use OpenSpout\Writer\XLSX\Manager\OptionsManager;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -37,7 +36,7 @@ final class WriterWithStyleTest extends TestCase
 
     public function testAddRowShouldThrowExceptionIfCallAddRowBeforeOpeningWriter(): void
     {
-        $writer = Writer::factory();
+        $writer = new Writer();
 
         $this->expectException(WriterNotOpenedException::class);
         $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12'], $this->defaultStyle));
@@ -45,7 +44,7 @@ final class WriterWithStyleTest extends TestCase
 
     public function testAddRowShouldThrowExceptionIfCalledBeforeOpeningWriter(): void
     {
-        $writer = Writer::factory();
+        $writer = new Writer();
 
         $this->expectException(WriterNotOpenedException::class);
         $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12'], $this->defaultStyle));
@@ -86,9 +85,9 @@ final class WriterWithStyleTest extends TestCase
         /** @var DOMElement $defaultFontElement */
         $defaultFontElement = $fontElements->item(0);
         $this->assertChildrenNumEquals(3, $defaultFontElement, 'The default font should only have 3 properties.');
-        $this->assertFirstChildHasAttributeEquals((string) OptionsManager::DEFAULT_FONT_SIZE, $defaultFontElement, 'sz', 'val');
+        $this->assertFirstChildHasAttributeEquals((string) Options::DEFAULT_FONT_SIZE, $defaultFontElement, 'sz', 'val');
         $this->assertFirstChildHasAttributeEquals(Color::toARGB(Style::DEFAULT_FONT_COLOR), $defaultFontElement, 'color', 'rgb');
-        $this->assertFirstChildHasAttributeEquals(OptionsManager::DEFAULT_FONT_NAME, $defaultFontElement, 'name', 'val');
+        $this->assertFirstChildHasAttributeEquals(Options::DEFAULT_FONT_NAME, $defaultFontElement, 'name', 'val');
 
         // Second font should contain data from the first created style
         /** @var DOMElement $secondFontElement */
@@ -98,9 +97,9 @@ final class WriterWithStyleTest extends TestCase
         $this->assertChildExists($secondFontElement, 'i');
         $this->assertChildExists($secondFontElement, 'u');
         $this->assertChildExists($secondFontElement, 'strike');
-        $this->assertFirstChildHasAttributeEquals((string) OptionsManager::DEFAULT_FONT_SIZE, $secondFontElement, 'sz', 'val');
+        $this->assertFirstChildHasAttributeEquals((string) Options::DEFAULT_FONT_SIZE, $secondFontElement, 'sz', 'val');
         $this->assertFirstChildHasAttributeEquals(Color::toARGB(Style::DEFAULT_FONT_COLOR), $secondFontElement, 'color', 'rgb');
-        $this->assertFirstChildHasAttributeEquals(OptionsManager::DEFAULT_FONT_NAME, $secondFontElement, 'name', 'val');
+        $this->assertFirstChildHasAttributeEquals(Options::DEFAULT_FONT_NAME, $secondFontElement, 'name', 'val');
 
         // Third font should contain data from the second created style
         /** @var DOMElement $thirdFontElement */
@@ -540,8 +539,9 @@ final class WriterWithStyleTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = Writer::factory();
-        $writer->setShouldUseInlineStrings(true);
+        $options = new Options();
+        $options->SHOULD_USE_INLINE_STRINGS = true;
+        $writer = new Writer($options);
 
         $writer->openToFile($resourcePath);
         $writer->addRows($allRows);
@@ -558,9 +558,10 @@ final class WriterWithStyleTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = Writer::factory();
-        $writer->setShouldUseInlineStrings(true);
-        $writer->setDefaultRowStyle($defaultStyle);
+        $options = new Options();
+        $options->SHOULD_USE_INLINE_STRINGS = true;
+        $options->DEFAULT_ROW_STYLE = $defaultStyle;
+        $writer = new Writer($options);
 
         $writer->openToFile($resourcePath);
         $writer->addRows($allRows);

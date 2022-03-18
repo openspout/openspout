@@ -33,7 +33,13 @@
     </include>
     <report>
       <text outputFile="php://stdout" showOnlySummary="true"/>
+      <html outputDirectory="coverage/html"/>
+      <xml outputDirectory="coverage/xml"/>
     </report>
   </coverage>
+
+  <logging>
+    <junit outputFile="coverage/junit.xml"/>
+  </logging>
 
 </phpunit>

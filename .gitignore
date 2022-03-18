@@ -1,5 +1,5 @@
+/coverage
 /tests/**/resources/generated
-/tests/coverage
 /vendor
 /composer.lock
 /.php-cs-fixer.cache

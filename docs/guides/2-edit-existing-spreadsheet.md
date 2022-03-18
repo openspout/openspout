@@ -28,12 +28,12 @@ $existingFilePath = '/path/to/my-music.ods';
 $newFilePath = '/path/to/my-new-music.ods';
 
 // we need a reader to read the existing file...
-$reader = \OpenSpout\Reader\ODS\Reader::factory();
-$reader->open($existingFilePath);
-$reader->setShouldFormatDates(true); // this is to be able to copy dates
+$readerOptions = new \OpenSpout\Reader\ODS\Options();
+$readerOptions->SHOULD_FORMAT_DATES = true; // this is to be able to copy dates
+$reader = new \OpenSpout\Reader\ODS\Reader($readerOptions);
 
 // ... and a writer to create the new file
-$writer = \OpenSpout\Writer\ODS\Writer::factory();
+$writer = new \OpenSpout\Writer\ODS\Writer();
 $writer->openToFile($newFilePath);
 
 // let's read the entire spreadsheet

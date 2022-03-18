@@ -28,9 +28,9 @@ final class WriterFactory
         $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
 
         return match ($extension) {
-            'csv' => CSVWriter::factory(),
-            'xlsx' => XLSXWriter::factory(),
-            'ods' => ODSWriter::factory(),
+            'csv' => new CSVWriter(),
+            'xlsx' => new XLSXWriter(),
+            'ods' => new ODSWriter(),
             default => throw new UnsupportedTypeException('No writers supporting the given type: '.$extension),
         };
     }

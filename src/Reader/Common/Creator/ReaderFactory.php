@@ -28,9 +28,9 @@ final class ReaderFactory
         $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
 
         return match ($extension) {
-            'csv' => CSVReader::factory(),
-            'xlsx' => XLSXReader::factory(),
-            'ods' => ODSReader::factory(),
+            'csv' => new CSVReader(),
+            'xlsx' => new XLSXReader(),
+            'ods' => new ODSReader(),
             default => throw new UnsupportedTypeException('No readers supporting the given type: '.$extension),
         };
     }

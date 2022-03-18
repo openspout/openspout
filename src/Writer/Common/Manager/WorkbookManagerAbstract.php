@@ -7,8 +7,7 @@ namespace OpenSpout\Writer\Common\Manager;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\StringHelper;
-use OpenSpout\Common\Manager\OptionsManagerInterface;
-use OpenSpout\Writer\Common\Entity\Options;
+use OpenSpout\Writer\Common\AbstractOptions;
 use OpenSpout\Writer\Common\Entity\Sheet;
 use OpenSpout\Writer\Common\Entity\Workbook;
 use OpenSpout\Writer\Common\Entity\Worksheet;
@@ -33,7 +32,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
     /** @var null|Workbook The workbook to manage */
     private ?Workbook $workbook;
 
-    private OptionsManagerInterface $optionsManager;
+    private AbstractOptions $options;
 
     /** @var StyleMerger Helper to merge styles */
     private StyleMerger $styleMerger;
@@ -43,14 +42,14 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
 
     public function __construct(
         Workbook $workbook,
-        OptionsManagerInterface $optionsManager,
+        AbstractOptions $options,
         WorksheetManagerInterface $worksheetManager,
         StyleManagerInterface $styleManager,
         StyleMerger $styleMerger,
         FileSystemWithRootFolderHelperInterface $fileSystemHelper
     ) {
         $this->workbook = $workbook;
-        $this->optionsManager = $optionsManager;
+        $this->options = $options;
         $this->worksheetManager = $worksheetManager;
         $this->styleManager = $styleManager;
         $this->styleMerger = $styleMerger;
@@ -140,7 +139,7 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
         // if we reached the maximum number of rows for the current sheet...
         if ($hasReachedMaxRows) {
             // ... continue writing in a new sheet if option set
-            if ((bool) $this->optionsManager->getOption(Options::SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY)) {
+            if ($this->options->SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY) {
                 $currentWorksheet = $this->addNewSheetAndMakeItCurrent();
 
                 $this->addRowToWorksheet($currentWorksheet, $row);
@@ -149,34 +148,6 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
         } else {
             $this->addRowToWorksheet($currentWorksheet, $row);
         }
-    }
-
-    public function setDefaultColumnWidth(float $width): void
-    {
-        $this->worksheetManager->setDefaultColumnWidth($width);
-    }
-
-    public function setDefaultRowHeight(float $height): void
-    {
-        $this->worksheetManager->setDefaultRowHeight($height);
-    }
-
-    /**
-     * @param int ...$columns One or more columns with this width
-     */
-    public function setColumnWidth(float $width, int ...$columns): void
-    {
-        $this->worksheetManager->setColumnWidth($width, ...$columns);
-    }
-
-    /**
-     * @param float $width The width to set
-     * @param int   $start First column index of the range
-     * @param int   $end   Last column index of the range
-     */
-    public function setColumnWidthForRange(float $width, int $start, int $end): void
-    {
-        $this->worksheetManager->setColumnWidthForRange($width, $start, $end);
     }
 
     /**
@@ -311,12 +282,11 @@ abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
 
     private function applyDefaultRowStyle(Row $row): void
     {
-        $defaultRowStyle = $this->optionsManager->getOption(Options::DEFAULT_ROW_STYLE);
-
-        if (null !== $defaultRowStyle) {
-            $mergedStyle = $this->styleMerger->merge($row->getStyle(), $defaultRowStyle);
-            $row->setStyle($mergedStyle);
-        }
+        $mergedStyle = $this->styleMerger->merge(
+            $row->getStyle(),
+            $this->options->DEFAULT_ROW_STYLE
+        );
+        $row->setStyle($mergedStyle);
     }
 
     /**

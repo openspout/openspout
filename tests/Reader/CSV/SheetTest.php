@@ -26,7 +26,7 @@ final class SheetTest extends TestCase
     private function openFileAndReturnSheet(string $fileName): Sheet
     {
         $resourcePath = $this->getResourcePath($fileName);
-        $reader = Reader::factory();
+        $reader = new Reader();
         $reader->open($resourcePath);
 
         $sheet = $reader->getSheetIterator()->current();

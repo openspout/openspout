@@ -8,8 +8,6 @@ use DOMElement;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\IOException;
-use OpenSpout\Common\Manager\OptionsManagerInterface;
-use OpenSpout\Reader\Common\Entity\Options;
 use OpenSpout\Reader\Common\XMLProcessor;
 use OpenSpout\Reader\Exception\InvalidValueException;
 use OpenSpout\Reader\Exception\IteratorNotRewindableException;
@@ -37,11 +35,10 @@ final class RowIterator implements RowIteratorInterface
     /** @var XMLReader The XMLReader object that will help read sheet's XML data */
     private XMLReader $xmlReader;
 
+    private Options $options;
+
     /** @var XMLProcessor Helper Object to process XML nodes */
     private XMLProcessor $xmlProcessor;
-
-    /** @var bool Whether empty rows should be returned or skipped */
-    private bool $shouldPreserveEmptyRows;
 
     /** @var Helper\CellValueFormatter Helper to format cell values */
     private Helper\CellValueFormatter $cellValueFormatter;
@@ -76,20 +73,13 @@ final class RowIterator implements RowIteratorInterface
     /** @var bool Whether at least one cell has been read for the row currently being processed */
     private bool $hasAlreadyReadOneCellInCurrentRow = false;
 
-    /**
-     * @param XMLReader               $xmlReader          XML Reader, positioned on the "<table:table>" element
-     * @param OptionsManagerInterface $optionsManager     Reader's options manager
-     * @param CellValueFormatter      $cellValueFormatter Helper to format cell values
-     * @param XMLProcessor            $xmlProcessor       Helper to process XML files
-     */
     public function __construct(
         XMLReader $xmlReader,
-        OptionsManagerInterface $optionsManager,
+        Options $options,
         CellValueFormatter $cellValueFormatter,
         XMLProcessor $xmlProcessor
     ) {
         $this->xmlReader = $xmlReader;
-        $this->shouldPreserveEmptyRows = $optionsManager->getOption(Options::SHOULD_PRESERVE_EMPTY_ROWS);
         $this->cellValueFormatter = $cellValueFormatter;
 
         // Register all callbacks to process different nodes when reading the XML file
@@ -98,6 +88,7 @@ final class RowIterator implements RowIteratorInterface
         $this->xmlProcessor->registerCallback(self::XML_NODE_CELL, XMLProcessor::NODE_TYPE_START, [$this, 'processCellStartingNode']);
         $this->xmlProcessor->registerCallback(self::XML_NODE_ROW, XMLProcessor::NODE_TYPE_END, [$this, 'processRowEndingNode']);
         $this->xmlProcessor->registerCallback(self::XML_NODE_TABLE, XMLProcessor::NODE_TYPE_END, [$this, 'processTableEndingNode']);
+        $this->options = $options;
     }
 
     /**
@@ -269,7 +260,7 @@ final class RowIterator implements RowIteratorInterface
         $isEmptyRow = $this->isEmptyRow($this->currentlyProcessedRow, $this->lastProcessedCell);
 
         // if the fetched row is empty and we don't want to preserve it...
-        if (!$this->shouldPreserveEmptyRows && $isEmptyRow) {
+        if (!$this->options->SHOULD_PRESERVE_EMPTY_ROWS && $isEmptyRow) {
             // ... skip it
             return XMLProcessor::PROCESSING_CONTINUE;
         }
