@@ -7,7 +7,6 @@ namespace OpenSpout\Writer;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Manager\OptionsManagerInterface;
-use OpenSpout\Writer\Common\Creator\ManagerFactoryInterface;
 use OpenSpout\Writer\Common\Entity\Options;
 use OpenSpout\Writer\Common\Entity\Sheet;
 use OpenSpout\Writer\Common\Manager\WorkbookManagerInterface;
@@ -17,27 +16,20 @@ use OpenSpout\Writer\Exception\WriterNotOpenedException;
 
 /**
  * @template O of OptionsManagerInterface
- * @template M of ManagerFactoryInterface
  *
  * @extends WriterAbstract<O>
  */
 abstract class WriterMultiSheetsAbstract extends WriterAbstract
 {
-    /** @var M */
-    private ManagerFactoryInterface $managerFactory;
-
     private ?WorkbookManagerInterface $workbookManager = null;
 
     /**
      * @param O $optionsManager
-     * @param M $managerFactory
      */
     public function __construct(
-        OptionsManagerInterface $optionsManager,
-        ManagerFactoryInterface $managerFactory
+        OptionsManagerInterface $optionsManager
     ) {
         parent::__construct($optionsManager);
-        $this->managerFactory = $managerFactory;
     }
 
     /**
@@ -173,12 +165,17 @@ abstract class WriterMultiSheetsAbstract extends WriterAbstract
     }
 
     /**
+     * @param O $optionsManager
+     */
+    abstract protected function createWorkbookManager(OptionsManagerInterface $optionsManager): WorkbookManagerInterface;
+
+    /**
      * {@inheritdoc}
      */
     protected function openWriter(): void
     {
         if (null === $this->workbookManager) {
-            $this->workbookManager = $this->managerFactory->createWorkbookManager($this->optionsManager);
+            $this->workbookManager = $this->createWorkbookManager($this->optionsManager);
             $this->workbookManager->addNewSheetAndMakeItCurrent();
         }
     }
