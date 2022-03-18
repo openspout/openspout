@@ -7,11 +7,10 @@ namespace OpenSpout\Writer;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\Style;
 
-/**
- * Interface WriterInterface.
- */
 interface WriterInterface
 {
+    public static function factory(): self;
+
     /**
      * Initializes the writer and opens it to accept data.
      * By using this method, the data will be written to a file.

@@ -10,6 +10,11 @@ namespace OpenSpout\Reader;
 interface ReaderInterface
 {
     /**
+     * @return self<T>
+     */
+    public static function factory(): self;
+
+    /**
      * Prepares the reader to read the given file. It also makes sure
      * that the file exists and is readable.
      *
