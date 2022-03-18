@@ -22,7 +22,7 @@ class MyRegularController extends Controller
         // before it can be sent to the browser.
         $content = '';
 
-        $reader = \OpenSpout\Reader\XLSX\Reader::factory();
+        $reader = new \OpenSpout\Reader\XLSX\Reader();
         $reader->open($filePath);
 
         foreach ($reader->getSheetIterator() as $sheet) {
@@ -72,7 +72,7 @@ class MyStreamController extends Controller
         // a callback function to retrieve data chunks.
         $response->setCallback(function() use ($filePath) {
             // Same code goes inside the callback.
-            $reader = \OpenSpout\Reader\XLSX\Reader::factory();
+            $reader = new \OpenSpout\Reader\XLSX\Reader();
             $reader->open($filePath);
 
             $i = 0;

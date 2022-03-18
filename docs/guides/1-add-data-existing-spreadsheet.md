@@ -13,12 +13,13 @@ $existingFilePath = 'path/to/orders.xlsx';
 $newFilePath = 'path/to/new-orders.xlsx';
 
 // we need a reader to read the existing file...
-$reader = \OpenSpout\Reader\XLSX\Reader::factory();
-$reader->setShouldFormatDates(true); // this is to be able to copy dates
+$readerOptions = new \OpenSpout\Reader\XLSX\Options();
+$readerOptions->SHOULD_FORMAT_DATES = true; // this is to be able to copy dates
+$reader = new \OpenSpout\Reader\XLSX\Reader($readerOptions);
 $reader->open($existingFilePath);
 
 // ... and a writer to create the new file
-$writer = \OpenSpout\Writer\XLSX\Writer::factory();
+$writer = new \OpenSpout\Writer\XLSX\Writer();
 $writer->openToFile($newFilePath);
 
 // let's read the entire spreadsheet...

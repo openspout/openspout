@@ -5,7 +5,7 @@ Even though a spreadsheet contains multiple sheets, you may be interested in rea
 * If you know the name of the sheet
 
 ```php
-$reader = \OpenSpout\Reader\XLSX\Reader::factory();
+$reader = new \OpenSpout\Reader\XLSX\Reader();
 $reader->open($filePath);
 
 foreach ($reader->getSheetIterator() as $sheet) {
@@ -24,7 +24,7 @@ $reader->close();
 * If you know the position of the sheet
 
 ```php
-$reader = \OpenSpout\Reader\XLSX\Reader::factory();
+$reader = new \OpenSpout\Reader\XLSX\Reader();
 $reader->open($filePath);
 
 foreach ($reader->getSheetIterator() as $sheet) {
