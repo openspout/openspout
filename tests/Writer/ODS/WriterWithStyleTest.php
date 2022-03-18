@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Writer\ODS;
 
+use DOMElement;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\Border;
@@ -74,10 +77,10 @@ final class WriterWithStyleTest extends TestCase
         $this->writeToODSFile($dataRows, $fileName);
 
         $cellStyleElements = $this->getCellStyleElementsFromContentXmlFile($fileName);
-        static::assertCount(3, $cellStyleElements, 'There should be 3 separate cell styles, including the default one.');
+        self::assertCount(3, $cellStyleElements, 'There should be 3 separate cell styles, including the default one.');
 
         // Second font should contain data from the first created style
-        /** @var \DOMElement $customFont1Element */
+        /** @var DOMElement $customFont1Element */
         $customFont1Element = $cellStyleElements[1];
         $this->assertFirstChildHasAttributeEquals('bold', $customFont1Element, 'text-properties', 'fo:font-weight');
         $this->assertFirstChildHasAttributeEquals('italic', $customFont1Element, 'text-properties', 'fo:font-style');
@@ -85,7 +88,7 @@ final class WriterWithStyleTest extends TestCase
         $this->assertFirstChildHasAttributeEquals('solid', $customFont1Element, 'text-properties', 'style:text-line-through-style');
 
         // Third font should contain data from the second created style
-        /** @var \DOMElement $customFont2Element */
+        /** @var DOMElement $customFont2Element */
         $customFont2Element = $cellStyleElements[2];
         $this->assertFirstChildHasAttributeEquals('15pt', $customFont2Element, 'text-properties', 'fo:font-size');
         $this->assertFirstChildHasAttributeEquals('#'.Color::RED, $customFont2Element, 'text-properties', 'fo:color');
@@ -101,9 +104,9 @@ final class WriterWithStyleTest extends TestCase
         $this->writeToODSFile([$dataRow], $fileName);
 
         $textPropertiesElement = $this->getXmlSectionFromStylesXmlFile($fileName, 'style:text-properties');
-        static::assertSame(Style::DEFAULT_FONT_SIZE.'pt', $textPropertiesElement->getAttribute('fo:font-size'));
-        static::assertSame('#'.Style::DEFAULT_FONT_COLOR, $textPropertiesElement->getAttribute('fo:color'));
-        static::assertSame(Style::DEFAULT_FONT_NAME, $textPropertiesElement->getAttribute('style:font-name'));
+        self::assertSame(Style::DEFAULT_FONT_SIZE.'pt', $textPropertiesElement->getAttribute('fo:font-size'));
+        self::assertSame('#'.Style::DEFAULT_FONT_COLOR, $textPropertiesElement->getAttribute('fo:color'));
+        self::assertSame(Style::DEFAULT_FONT_NAME, $textPropertiesElement->getAttribute('style:font-name'));
     }
 
     public function testAddRowShouldApplyStyleToCells(): void
@@ -121,11 +124,11 @@ final class WriterWithStyleTest extends TestCase
         $this->writeToODSFile($dataRows, $fileName);
 
         $cellDomElements = $this->getCellElementsFromContentXmlFile($fileName);
-        static::assertCount(3, $cellDomElements, 'There should be 3 cells with content');
+        self::assertCount(3, $cellDomElements, 'There should be 3 cells with content');
 
-        static::assertSame('ce2', $cellDomElements[0]->getAttribute('table:style-name'));
-        static::assertSame('ce3', $cellDomElements[1]->getAttribute('table:style-name'));
-        static::assertSame('ce1', $cellDomElements[2]->getAttribute('table:style-name'));
+        self::assertSame('ce2', $cellDomElements[0]->getAttribute('table:style-name'));
+        self::assertSame('ce3', $cellDomElements[1]->getAttribute('table:style-name'));
+        self::assertSame('ce1', $cellDomElements[2]->getAttribute('table:style-name'));
     }
 
     public function testAddRowShouldReuseDuplicateStyles(): void
@@ -141,10 +144,10 @@ final class WriterWithStyleTest extends TestCase
         $this->writeToODSFile($dataRows, $fileName);
 
         $cellDomElements = $this->getCellElementsFromContentXmlFile($fileName);
-        static::assertCount(2, $cellDomElements, 'There should be 2 cells with content');
+        self::assertCount(2, $cellDomElements, 'There should be 2 cells with content');
 
-        static::assertSame('ce2', $cellDomElements[0]->getAttribute('table:style-name'));
-        static::assertSame('ce2', $cellDomElements[1]->getAttribute('table:style-name'));
+        self::assertSame('ce2', $cellDomElements[0]->getAttribute('table:style-name'));
+        self::assertSame('ce2', $cellDomElements[1]->getAttribute('table:style-name'));
     }
 
     public function testAddRowShouldAddWrapTextAlignmentInfoInStylesXmlFileIfSpecified(): void
@@ -159,7 +162,7 @@ final class WriterWithStyleTest extends TestCase
         $this->writeToODSFile($dataRows, $fileName);
 
         $styleElements = $this->getCellStyleElementsFromContentXmlFile($fileName);
-        static::assertCount(2, $styleElements, 'There should be 2 styles (default and custom)');
+        self::assertCount(2, $styleElements, 'There should be 2 styles (default and custom)');
 
         $customStyleElement = $styleElements[1];
         $this->assertFirstChildHasAttributeEquals('wrap', $customStyleElement, 'table-cell-properties', 'fo:wrap-option');
@@ -175,7 +178,7 @@ final class WriterWithStyleTest extends TestCase
         $this->writeToODSFile($dataRows, $fileName);
 
         $styleElements = $this->getCellStyleElementsFromContentXmlFile($fileName);
-        static::assertCount(2, $styleElements, 'There should be 2 styles (default and custom)');
+        self::assertCount(2, $styleElements, 'There should be 2 styles (default and custom)');
 
         $customStyleElement = $styleElements[1];
         $this->assertFirstChildHasAttributeEquals('wrap', $customStyleElement, 'table-cell-properties', 'fo:wrap-option');
@@ -191,7 +194,7 @@ final class WriterWithStyleTest extends TestCase
         $this->writeToODSFile($dataRows, $fileName);
 
         $styleElements = $this->getCellStyleElementsFromContentXmlFile($fileName);
-        static::assertCount(2, $styleElements, 'There should be 2 styles (default and custom)');
+        self::assertCount(2, $styleElements, 'There should be 2 styles (default and custom)');
 
         $customStyleElement = $styleElements[1];
         $this->assertFirstChildHasAttributeEquals('end', $customStyleElement, 'paragraph-properties', 'fo:text-align');
@@ -215,9 +218,9 @@ final class WriterWithStyleTest extends TestCase
         $cellDomElements = $this->getCellElementsFromContentXmlFile($fileName);
 
         // First row should have 3 styled cells, with cell 2 and 3 sharing the same style
-        static::assertSame('ce2', $cellDomElements[0]->getAttribute('table:style-name'));
-        static::assertSame('ce3', $cellDomElements[1]->getAttribute('table:style-name'));
-        static::assertSame('ce3', $cellDomElements[2]->getAttribute('table:style-name'));
+        self::assertSame('ce2', $cellDomElements[0]->getAttribute('table:style-name'));
+        self::assertSame('ce3', $cellDomElements[1]->getAttribute('table:style-name'));
+        self::assertSame('ce3', $cellDomElements[2]->getAttribute('table:style-name'));
     }
 
     public function testAddBackgroundColor(): void
@@ -232,7 +235,7 @@ final class WriterWithStyleTest extends TestCase
         $this->writeToODSFile($dataRows, $fileName);
 
         $styleElements = $this->getCellStyleElementsFromContentXmlFile($fileName);
-        static::assertCount(2, $styleElements, 'There should be 2 styles (default and custom)');
+        self::assertCount(2, $styleElements, 'There should be 2 styles (default and custom)');
 
         $customStyleElement = $styleElements[1];
         $this->assertFirstChildHasAttributeEquals('#'.Color::WHITE, $customStyleElement, 'table-cell-properties', 'fo:background-color');
@@ -261,7 +264,7 @@ final class WriterWithStyleTest extends TestCase
 
         $styleElements = $this->getCellStyleElementsFromContentXmlFile($fileName);
 
-        static::assertCount(3, $styleElements, 'There should be 3 styles)');
+        self::assertCount(3, $styleElements, 'There should be 3 styles)');
 
         // Use reflection for protected members here
         $widthMap = BorderHelper::widthMap;
@@ -280,7 +283,7 @@ final class WriterWithStyleTest extends TestCase
             ->getAttribute('fo:border-bottom')
         ;
 
-        static::assertSame($expectedFirst, $actualFirst);
+        self::assertSame($expectedFirst, $actualFirst);
 
         $expectedThird = sprintf(
             '%s %s #%s',
@@ -295,7 +298,7 @@ final class WriterWithStyleTest extends TestCase
             ->getAttribute('fo:border-top')
         ;
 
-        static::assertSame($expectedThird, $actualThird);
+        self::assertSame($expectedThird, $actualThird);
     }
 
     public function testSetDefaultRowStyle(): void
@@ -312,7 +315,7 @@ final class WriterWithStyleTest extends TestCase
         $this->writeToODSFileWithDefaultStyle($dataRows, $fileName, $defaultStyle);
 
         $textPropertiesElement = $this->getXmlSectionFromStylesXmlFile($fileName, 'style:text-properties');
-        static::assertSame($defaultFontSize.'pt', $textPropertiesElement->getAttribute('fo:font-size'));
+        self::assertSame($defaultFontSize.'pt', $textPropertiesElement->getAttribute('fo:font-size'));
     }
 
     /**
@@ -351,7 +354,7 @@ final class WriterWithStyleTest extends TestCase
     }
 
     /**
-     * @return \DOMElement[]
+     * @return DOMElement[]
      */
     private function getCellElementsFromContentXmlFile(string $fileName): array
     {
@@ -364,7 +367,7 @@ final class WriterWithStyleTest extends TestCase
 
         while ($xmlReader->read()) {
             if ($xmlReader->isPositionedOnStartingNode('table:table-cell') && null !== $xmlReader->getAttribute('office:value-type')) {
-                /** @var \DOMElement $cellElement */
+                /** @var DOMElement $cellElement */
                 $cellElement = $xmlReader->expand();
                 $cellElements[] = $cellElement;
             }
@@ -376,7 +379,7 @@ final class WriterWithStyleTest extends TestCase
     }
 
     /**
-     * @return \DOMElement[]
+     * @return DOMElement[]
      */
     private function getCellStyleElementsFromContentXmlFile(string $fileName): array
     {
@@ -389,7 +392,7 @@ final class WriterWithStyleTest extends TestCase
 
         while ($xmlReader->read()) {
             if ($xmlReader->isPositionedOnStartingNode('style:style') && 'table-cell' === $xmlReader->getAttribute('style:family')) {
-                /** @var \DOMElement $cellStyleElement */
+                /** @var DOMElement $cellStyleElement */
                 $cellStyleElement = $xmlReader->expand();
                 $cellStyleElements[] = $cellStyleElement;
             }
@@ -400,7 +403,7 @@ final class WriterWithStyleTest extends TestCase
         return $cellStyleElements;
     }
 
-    private function getXmlSectionFromStylesXmlFile(string $fileName, string $section): \DOMElement
+    private function getXmlSectionFromStylesXmlFile(string $fileName, string $section): DOMElement
     {
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
@@ -409,13 +412,13 @@ final class WriterWithStyleTest extends TestCase
         $xmlReader->readUntilNodeFound($section);
 
         $element = $xmlReader->expand();
-        static::assertInstanceOf(\DOMElement::class, $element);
+        self::assertInstanceOf(DOMElement::class, $element);
 
         return $element;
     }
 
-    private function assertFirstChildHasAttributeEquals(string $expectedValue, \DOMElement $parentElement, string $childTagName, string $attributeName): void
+    private function assertFirstChildHasAttributeEquals(string $expectedValue, DOMElement $parentElement, string $childTagName, string $attributeName): void
     {
-        static::assertSame($expectedValue, $parentElement->getElementsByTagName($childTagName)->item(0)->getAttribute($attributeName));
+        self::assertSame($expectedValue, $parentElement->getElementsByTagName($childTagName)->item(0)->getAttribute($attributeName));
     }
 }

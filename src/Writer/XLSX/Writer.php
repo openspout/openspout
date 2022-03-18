@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Writer\XLSX;
 
 use OpenSpout\Writer\Common\Entity\Options;

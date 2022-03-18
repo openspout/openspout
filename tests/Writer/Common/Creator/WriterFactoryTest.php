@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Writer\Common\Creator;
 
 use OpenSpout\Common\Exception\UnsupportedTypeException;
@@ -17,28 +19,28 @@ final class WriterFactoryTest extends TestCase
     {
         $validCsv = $this->getResourcePath('csv_test_create_from_file.csv');
         $writer = WriterFactory::createFromFile($validCsv);
-        static::assertInstanceOf(\OpenSpout\Writer\CSV\Writer::class, $writer);
+        self::assertInstanceOf(\OpenSpout\Writer\CSV\Writer::class, $writer);
     }
 
     public function testCreateFromFileCSVAllCaps(): void
     {
         $validCsv = $this->getResourcePath('csv_test_create_from_file.CSV');
         $writer = WriterFactory::createFromFile($validCsv);
-        static::assertInstanceOf(\OpenSpout\Writer\CSV\Writer::class, $writer);
+        self::assertInstanceOf(\OpenSpout\Writer\CSV\Writer::class, $writer);
     }
 
     public function testCreateFromFileODS(): void
     {
         $validOds = $this->getResourcePath('csv_test_create_from_file.ods');
         $writer = WriterFactory::createFromFile($validOds);
-        static::assertInstanceOf(\OpenSpout\Writer\ODS\Writer::class, $writer);
+        self::assertInstanceOf(\OpenSpout\Writer\ODS\Writer::class, $writer);
     }
 
     public function testCreateFromFileXLSX(): void
     {
         $validXlsx = $this->getResourcePath('csv_test_create_from_file.xlsx');
         $writer = WriterFactory::createFromFile($validXlsx);
-        static::assertInstanceOf(\OpenSpout\Writer\XLSX\Writer::class, $writer);
+        self::assertInstanceOf(\OpenSpout\Writer\XLSX\Writer::class, $writer);
     }
 
     public function testCreateFromFileUnsupported(): void

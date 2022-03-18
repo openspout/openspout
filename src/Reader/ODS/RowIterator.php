@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Reader\ODS;
 
+use DOMElement;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\IOException;
@@ -17,13 +20,17 @@ use OpenSpout\Reader\Wrapper\XMLReader;
 
 final class RowIterator implements RowIteratorInterface
 {
-    /** Definition of XML nodes names used to parse data */
+    /**
+     * Definition of XML nodes names used to parse data.
+     */
     public const XML_NODE_TABLE = 'table:table';
     public const XML_NODE_ROW = 'table:table-row';
     public const XML_NODE_CELL = 'table:table-cell';
     public const MAX_COLUMNS_EXCEL = 16384;
 
-    /** Definition of XML attribute used to parse data */
+    /**
+     * Definition of XML attribute used to parse data.
+     */
     public const XML_ATTRIBUTE_NUM_ROWS_REPEATED = 'table:number-rows-repeated';
     public const XML_ATTRIBUTE_NUM_COLUMNS_REPEATED = 'table:number-columns-repeated';
 
@@ -236,7 +243,7 @@ final class RowIterator implements RowIteratorInterface
         $currentNumColumnsRepeated = $this->getNumColumnsRepeatedForCurrentNode($xmlReader);
 
         // NOTE: expand() will automatically decode all XML entities of the child nodes
-        /** @var \DOMElement $node */
+        /** @var DOMElement $node */
         $node = $xmlReader->expand();
         $currentCell = $this->getCell($node);
 
@@ -332,7 +339,7 @@ final class RowIterator implements RowIteratorInterface
      *
      * @return Cell The cell set with the associated with the cell
      */
-    private function getCell(\DOMElement $node): Cell
+    private function getCell(DOMElement $node): Cell
     {
         try {
             $cellValue = $this->cellValueFormatter->extractAndFormatNodeValue($node);

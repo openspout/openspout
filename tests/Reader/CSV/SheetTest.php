@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Reader\CSV;
 
 use OpenSpout\TestUsingResource;
@@ -16,9 +18,9 @@ final class SheetTest extends TestCase
     {
         $sheet = $this->openFileAndReturnSheet('csv_standard.csv');
 
-        static::assertSame('', $sheet->getName());
-        static::assertSame(0, $sheet->getIndex());
-        static::assertTrue($sheet->isActive());
+        self::assertSame('', $sheet->getName());
+        self::assertSame(0, $sheet->getIndex());
+        self::assertTrue($sheet->isActive());
     }
 
     private function openFileAndReturnSheet(string $fileName): Sheet

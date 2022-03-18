@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Writer\ODS\Creator;
 
 use OpenSpout\Common\Helper\Escaper\ODS;

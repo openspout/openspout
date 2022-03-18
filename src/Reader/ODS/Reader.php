@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Reader\ODS;
 
 use OpenSpout\Common\Exception\IOException;
@@ -7,13 +9,14 @@ use OpenSpout\Common\Helper\Escaper\ODS;
 use OpenSpout\Reader\ODS\Helper\SettingsHelper;
 use OpenSpout\Reader\ODS\Manager\OptionsManager;
 use OpenSpout\Reader\ReaderAbstract;
+use ZipArchive;
 
 /**
  * @extends ReaderAbstract<SheetIterator>
  */
 final class Reader extends ReaderAbstract
 {
-    private \ZipArchive $zip;
+    private ZipArchive $zip;
 
     /** @var SheetIterator To iterator over the ODS sheets */
     private SheetIterator $sheetIterator;
@@ -46,7 +49,7 @@ final class Reader extends ReaderAbstract
      */
     protected function openReader(string $filePath): void
     {
-        $this->zip = new \ZipArchive();
+        $this->zip = new ZipArchive();
 
         if (true !== $this->zip->open($filePath)) {
             throw new IOException("Could not open {$filePath} for reading.");

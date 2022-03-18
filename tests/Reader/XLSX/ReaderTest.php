@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Reader\XLSX;
 
 use DateTimeImmutable;
@@ -52,9 +54,9 @@ final class ReaderTest extends TestCase
     {
         $allRows = $this->getAllRowsForFile($resourceName);
 
-        static::assertCount($expectedNumOfRows, $allRows, "There should be {$expectedNumOfRows} rows");
+        self::assertCount($expectedNumOfRows, $allRows, "There should be {$expectedNumOfRows} rows");
         foreach ($allRows as $row) {
-            static::assertCount($expectedNumOfCellsPerRow, $row, "There should be {$expectedNumOfCellsPerRow} cells for every row");
+            self::assertCount($expectedNumOfCellsPerRow, $row, "There should be {$expectedNumOfCellsPerRow} cells for every row");
         }
     }
 
@@ -65,7 +67,7 @@ final class ReaderTest extends TestCase
         $expectedRows = [
             ['VALUE 1 VALUE 2 VALUE 3 VALUE 4', 's1 - B1'],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadShouldSupportSheetsDefinitionInRandomOrder(): void
@@ -84,7 +86,7 @@ final class ReaderTest extends TestCase
             ['s2 - A4', 's2 - B4', 's2 - C4', 's2 - D4', 's2 - E4'],
             ['s2 - A5', 's2 - B5', 's2 - C5', 's2 - D5', 's2 - E5'],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadShouldSupportPrefixedXMLFiles(): void
@@ -98,7 +100,7 @@ final class ReaderTest extends TestCase
             ['s1 - A2', 's1 - B2', 's1 - C2'],
             ['s1 - A3', 's1 - B3', 's1 - C3'],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadShouldSupportPrefixedSharedStringsXML(): void
@@ -111,7 +113,7 @@ final class ReaderTest extends TestCase
             ['s1--A1', 's1--B1', 's1--C1', 's1--D1', 's1--E1'],
             ['s1--A2', 's1--B2', 's1--C2', 's1--D2', 's1--E2'],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadShouldSupportSheetWithSharedStringsMissingUniqueCountAttribute(): void
@@ -122,7 +124,7 @@ final class ReaderTest extends TestCase
             ['s1--A1', 's1--B1'],
             ['s1--A2', 's1--B2'],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadShouldSupportSheetWithSharedStringsMissingUniqueCountAndCountAttributes(): void
@@ -133,7 +135,7 @@ final class ReaderTest extends TestCase
             ['s1--A1', 's1--B1'],
             ['s1--A2', 's1--B2'],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadShouldSupportFilesWithoutSharedStringsFile(): void
@@ -144,7 +146,7 @@ final class ReaderTest extends TestCase
             [10, 11],
             [20, 21],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadShouldSupportFilesWithCapitalSharedStringsFileName(): void
@@ -158,7 +160,7 @@ final class ReaderTest extends TestCase
             ['s1--A4', 's1--B4', 's1--C4', 's1--D4', 's1--E4'],
             ['s1--A5', 's1--B5', 's1--C5', 's1--D5', 's1--E5'],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadShouldSupportFilesWithoutCellReference(): void
@@ -170,7 +172,7 @@ final class ReaderTest extends TestCase
         $expectedRows = [
             ['s1--A1'],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadShouldSupportFilesWithRowsNotStartingAtColumnA(): void
@@ -182,7 +184,7 @@ final class ReaderTest extends TestCase
         $expectedRows = [
             ['', '', 's1--C1', 's1--D1', 's1--E1'],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadShouldSupportAllCellTypes(): void
@@ -204,7 +206,7 @@ final class ReaderTest extends TestCase
                 null, // invalid date
             ],
         ];
-        static::assertEquals($expectedRows, $allRows);
+        self::assertEquals($expectedRows, $allRows);
     }
 
     public function testReadShouldSupportNumericTimestampFormattedDifferentlyAsDate(): void
@@ -222,7 +224,7 @@ final class ReaderTest extends TestCase
             array_merge(array_fill(0, 7, $expectedDate), ['', '', '']),
         ];
 
-        static::assertEquals($expectedRows, $allRows);
+        self::assertEquals($expectedRows, $allRows);
     }
 
     public function testReadShouldSupportDifferentDatesAsNumericTimestamp(): void
@@ -244,7 +246,7 @@ final class ReaderTest extends TestCase
                 DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '1900-02-28 11:00:00'),
             ],
         ];
-        static::assertEquals($expectedRows, $allRows);
+        self::assertEquals($expectedRows, $allRows);
     }
 
     public function testReadShouldSupportDifferentDatesAsNumericTimestampWith1904Calendar(): void
@@ -266,7 +268,7 @@ final class ReaderTest extends TestCase
                 DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '1904-03-01 11:00:00'),
             ],
         ];
-        static::assertEquals($expectedRows, $allRows);
+        self::assertEquals($expectedRows, $allRows);
     }
 
     public function testReadShouldSupportDifferentTimesAsNumericTimestamp(): void
@@ -285,7 +287,7 @@ final class ReaderTest extends TestCase
                 DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '1899-12-30 13:42:25'),
             ],
         ];
-        static::assertEquals($expectedRows, $allRows);
+        self::assertEquals($expectedRows, $allRows);
     }
 
     public function testReadShouldSupportFormatDatesAndTimesIfSpecified(): void
@@ -298,7 +300,7 @@ final class ReaderTest extends TestCase
             ['4:43:25', '04:43', '4:43', '4:43:25 AM', '4:43:25 PM'],
             ['1976-11-22T08:30:00.000', '1976-11-22T08:30', '1582-10-15', '08:30:00', '08:30'],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadShouldApplyCustomDateFormatNumberEvenIfApplyNumberFormatNotSpecified(): void
@@ -310,60 +312,60 @@ final class ReaderTest extends TestCase
             // "General", "GENERAL", "MM/DD/YYYY", "MM/dd/YYYY", "H:MM:SS"
             [42382, 42382, '01/13/2016', '01/13/2016', '4:43:25'],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadShouldKeepEmptyCellsAtTheEndIfDimensionsSpecified(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_without_dimensions_but_spans_and_empty_cells.xlsx');
 
-        static::assertCount(2, $allRows, 'There should be 2 rows');
+        self::assertCount(2, $allRows, 'There should be 2 rows');
         foreach ($allRows as $row) {
-            static::assertCount(5, $row, 'There should be 5 cells for every row, because empty rows should be preserved');
+            self::assertCount(5, $row, 'There should be 5 cells for every row, because empty rows should be preserved');
         }
 
         $expectedRows = [
             ['s1--A1', 's1--B1', 's1--C1', 's1--D1', 's1--E1'],
             ['s1--A2', 's1--B2', 's1--C2', '', ''],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadShouldKeepEmptyCellsAtTheEndIfNoDimensionsButSpansSpecified(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_without_dimensions_and_empty_cells.xlsx');
 
-        static::assertCount(2, $allRows, 'There should be 2 rows');
-        static::assertCount(5, $allRows[0], 'There should be 5 cells in the first row');
-        static::assertCount(3, $allRows[1], 'There should be only 3 cells in the second row, because empty rows at the end should be skip');
+        self::assertCount(2, $allRows, 'There should be 2 rows');
+        self::assertCount(5, $allRows[0], 'There should be 5 cells in the first row');
+        self::assertCount(3, $allRows[1], 'There should be only 3 cells in the second row, because empty rows at the end should be skip');
 
         $expectedRows = [
             ['s1--A1', 's1--B1', 's1--C1', 's1--D1', 's1--E1'],
             ['s1--A2', 's1--B2', 's1--C2'],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadShouldSkipEmptyCellsAtTheEndIfDimensionsNotSpecified(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_without_dimensions_and_empty_cells.xlsx');
 
-        static::assertCount(2, $allRows, 'There should be 2 rows');
-        static::assertCount(5, $allRows[0], 'There should be 5 cells in the first row');
-        static::assertCount(3, $allRows[1], 'There should be only 3 cells in the second row, because empty rows at the end should be skip');
+        self::assertCount(2, $allRows, 'There should be 2 rows');
+        self::assertCount(5, $allRows[0], 'There should be 5 cells in the first row');
+        self::assertCount(3, $allRows[1], 'There should be only 3 cells in the second row, because empty rows at the end should be skip');
 
         $expectedRows = [
             ['s1--A1', 's1--B1', 's1--C1', 's1--D1', 's1--E1'],
             ['s1--A2', 's1--B2', 's1--C2'],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadShouldSkipEmptyRowsIfShouldPreserveEmptyRowsNotSet(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_with_empty_rows_and_missing_row_index.xlsx');
 
-        static::assertCount(3, $allRows, 'There should be only 3 rows, because the empty rows are skipped');
+        self::assertCount(3, $allRows, 'There should be only 3 rows, because the empty rows are skipped');
 
         $expectedRows = [
             // skipped row here
@@ -373,14 +375,14 @@ final class ReaderTest extends TestCase
             ['s1--A5', 's1--B5', 's1--C5'],
             ['s1--A6', 's1--B6', 's1--C6'],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadShouldReturnEmptyLinesIfShouldPreserveEmptyRowsSet(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_with_empty_rows_and_missing_row_index.xlsx', false, true);
 
-        static::assertCount(6, $allRows, 'There should be 6 rows');
+        self::assertCount(6, $allRows, 'There should be 6 rows');
 
         $expectedRows = [
             [],
@@ -390,7 +392,7 @@ final class ReaderTest extends TestCase
             ['s1--A5', 's1--B5', 's1--C5'],
             ['s1--A6', 's1--B6', 's1--C6'],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadShouldSupportEmptySharedString(): void
@@ -400,7 +402,7 @@ final class ReaderTest extends TestCase
         $expectedRows = [
             ['s1--A1', '', 's1--C1'],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadShouldSupportMissingStylesXMLFile(): void
@@ -410,7 +412,7 @@ final class ReaderTest extends TestCase
         $expectedRows = [
             ['s1--A1', 's1--B1'],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadShouldPreserveSpaceIfSpecified(): void
@@ -420,7 +422,7 @@ final class ReaderTest extends TestCase
         $expectedRows = [
             ['  s1--A1', 's1--B1  ', '  s1--C1  '],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadShouldSkipPronunciationData(): void
@@ -428,7 +430,7 @@ final class ReaderTest extends TestCase
         $allRows = $this->getAllRowsForFile('sheet_with_pronunciation.xlsx');
 
         $expectedRow = ['名前', '一二三四'];
-        static::assertSame($expectedRow, $allRows[0], 'Pronunciation data should be removed.');
+        self::assertSame($expectedRow, $allRows[0], 'Pronunciation data should be removed.');
     }
 
     /**
@@ -441,13 +443,13 @@ final class ReaderTest extends TestCase
         try {
             // using @ to prevent warnings/errors from being displayed
             @$this->getAllRowsForFile('attack_billion_laughs.xlsx');
-            static::fail('An exception should have been thrown');
+            self::fail('An exception should have been thrown');
         } catch (IOException $exception) {
             $duration = microtime(true) - $startTime;
-            static::assertLessThan(10, $duration, 'Entities should not be expanded and therefore take more than 10 seconds to be parsed.');
+            self::assertLessThan(10, $duration, 'Entities should not be expanded and therefore take more than 10 seconds to be parsed.');
 
             $expectedMaxMemoryUsage = 40 * 1024 * 1024; // 40MB
-            static::assertLessThan($expectedMaxMemoryUsage, memory_get_peak_usage(true), 'Entities should not be expanded and therefore consume all the memory.');
+            self::assertLessThan($expectedMaxMemoryUsage, memory_get_peak_usage(true), 'Entities should not be expanded and therefore consume all the memory.');
         }
     }
 
@@ -457,7 +459,7 @@ final class ReaderTest extends TestCase
     public function testReadShouldBeProtectedAgainstQuadraticBlowupAttack(): void
     {
         if (\function_exists('xdebug_code_coverage_started') && xdebug_code_coverage_started()) {
-            static::markTestSkipped('test not compatible with code coverage');
+            self::markTestSkipped('test not compatible with code coverage');
         }
 
         $startTime = microtime(true);
@@ -465,16 +467,16 @@ final class ReaderTest extends TestCase
         $this->getAllRowsForFile('attack_quadratic_blowup.xlsx');
 
         $duration = microtime(true) - $startTime;
-        static::assertLessThan(10, $duration, 'Entities should not be expanded and therefore take more than 10 seconds to be parsed.');
+        self::assertLessThan(10, $duration, 'Entities should not be expanded and therefore take more than 10 seconds to be parsed.');
 
         $expectedMaxMemoryUsage = 40 * 1024 * 1024; // 40MB
-        static::assertLessThan($expectedMaxMemoryUsage, memory_get_peak_usage(true), 'Entities should not be expanded and therefore consume all the memory.');
+        self::assertLessThan($expectedMaxMemoryUsage, memory_get_peak_usage(true), 'Entities should not be expanded and therefore consume all the memory.');
     }
 
     public function testReadShouldBeAbleToProcessEmptySheets(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_with_no_cells.xlsx');
-        static::assertSame([], $allRows, 'Sheet with no cells should be correctly processed.');
+        self::assertSame([], $allRows, 'Sheet with no cells should be correctly processed.');
     }
 
     public function testReadShouldSkipFormulas(): void
@@ -486,7 +488,7 @@ final class ReaderTest extends TestCase
             [10, 20, 30, 21],
             [11, 21, 32, 41],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadMultipleTimesShouldRewindReader(): void
@@ -539,7 +541,7 @@ final class ReaderTest extends TestCase
             ['s1 - A1', 's1 - B1', 's1 - C1', 's1 - D1', 's1 - E1'],
             ['s2 - A1', 's2 - B1', 's2 - C1', 's2 - D1', 's2 - E1'],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadWithUnsupportedCustomStreamWrapper(): void
@@ -570,7 +572,7 @@ final class ReaderTest extends TestCase
             [1, 2, 3],
             [0, 0, 0],
         ];
-        static::assertSame($expectedRows, $allRows, 'There should be only 3 rows, because zeros (0) are valid values');
+        self::assertSame($expectedRows, $allRows, 'There should be only 3 rows, because zeros (0) are valid values');
     }
 
     /**
@@ -585,7 +587,7 @@ final class ReaderTest extends TestCase
             [0, '', ''],
             [1, 1, ''],
         ];
-        static::assertSame($expectedRows, $allRows, 'There should be 3 rows, with equal length');
+        self::assertSame($expectedRows, $allRows, 'There should be 3 rows, with equal length');
     }
 
     /**
@@ -600,7 +602,7 @@ final class ReaderTest extends TestCase
             [0],
             [1, 1],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     /**
@@ -616,7 +618,7 @@ final class ReaderTest extends TestCase
             ["\n\tA\n\t"],
         ];
 
-        static::assertSame($expectedRows, $allRows, 'Cell values should not be trimmed');
+        self::assertSame($expectedRows, $allRows, 'Cell values should not be trimmed');
     }
 
     /**
@@ -626,8 +628,8 @@ final class ReaderTest extends TestCase
     {
         $allRows = $this->getAllRowsForFile('sheet_with_strict_ooxml.xlsx');
 
-        static::assertSame('UNIQUE_ACCOUNT_IDENTIFIER', $allRows[0][0]);
-        static::assertSame('A2Z34NJA7N2ESJ', $allRows[1][0]);
+        self::assertSame('UNIQUE_ACCOUNT_IDENTIFIER', $allRows[0][0]);
+        self::assertSame('A2Z34NJA7N2ESJ', $allRows[1][0]);
     }
 
     /**

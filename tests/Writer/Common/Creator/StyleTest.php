@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Writer\Common\Creator\Style;
 
 use OpenSpout\Common\Entity\Style\Border;
@@ -20,7 +22,7 @@ final class StyleTest extends TestCase
     {
         $border = new Border(new BorderPart(Border::BOTTOM));
         $style = (new Style())->setBorder($border);
-        static::assertTrue($style->shouldApplyBorder());
+        self::assertTrue($style->shouldApplyBorder());
     }
 
     public function testStyleBuilderShouldMergeBorders(): void
@@ -33,15 +35,15 @@ final class StyleTest extends TestCase
         $styleMerger = new StyleMerger();
         $mergedStyle = $styleMerger->merge($currentStyle, $baseStyle);
 
-        static::assertNull($currentStyle->getBorder(), 'Current style has no border');
-        static::assertInstanceOf(Border::class, $baseStyle->getBorder(), 'Base style has a border');
-        static::assertInstanceOf(Border::class, $mergedStyle->getBorder(), 'Merged style has a border');
+        self::assertNull($currentStyle->getBorder(), 'Current style has no border');
+        self::assertInstanceOf(Border::class, $baseStyle->getBorder(), 'Base style has a border');
+        self::assertInstanceOf(Border::class, $mergedStyle->getBorder(), 'Merged style has a border');
     }
 
     public function testStyleBuilderShouldApplyCellAlignment(): void
     {
         $style = (new Style())->setCellAlignment(CellAlignment::CENTER);
-        static::assertTrue($style->shouldApplyCellAlignment());
+        self::assertTrue($style->shouldApplyCellAlignment());
     }
 
     public function testStyleBuilderShouldThrowOnInvalidCellAlignment(): void

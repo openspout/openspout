@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Writer\XLSX\Manager;
 
 use OpenSpout\Common\Entity\Style\Style;
@@ -11,7 +13,9 @@ use OpenSpout\Writer\Common\Entity\Options;
  */
 final class OptionsManager extends OptionsManagerAbstract
 {
-    /** Default style font values */
+    /**
+     * Default style font values.
+     */
     public const DEFAULT_FONT_SIZE = 12;
     public const DEFAULT_FONT_NAME = 'Calibri';
 

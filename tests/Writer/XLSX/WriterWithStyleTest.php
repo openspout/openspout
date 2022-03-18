@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Writer\XLSX;
 
+use DOMElement;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\Border;
@@ -74,13 +77,13 @@ final class WriterWithStyleTest extends TestCase
         $this->writeToXLSXFile($dataRows, $fileName);
 
         $fontsDomElement = $this->getXmlSectionFromStylesXmlFile($fileName, 'fonts');
-        static::assertSame('3', $fontsDomElement->getAttribute('count'), 'There should be 3 fonts, including the default one.');
+        self::assertSame('3', $fontsDomElement->getAttribute('count'), 'There should be 3 fonts, including the default one.');
 
         $fontElements = $fontsDomElement->getElementsByTagName('font');
-        static::assertSame(3, $fontElements->length, 'There should be 3 associated "font" elements, including the default one.');
+        self::assertSame(3, $fontElements->length, 'There should be 3 associated "font" elements, including the default one.');
 
         // First font should be the default one
-        /** @var \DOMElement $defaultFontElement */
+        /** @var DOMElement $defaultFontElement */
         $defaultFontElement = $fontElements->item(0);
         $this->assertChildrenNumEquals(3, $defaultFontElement, 'The default font should only have 3 properties.');
         $this->assertFirstChildHasAttributeEquals((string) OptionsManager::DEFAULT_FONT_SIZE, $defaultFontElement, 'sz', 'val');
@@ -88,7 +91,7 @@ final class WriterWithStyleTest extends TestCase
         $this->assertFirstChildHasAttributeEquals(OptionsManager::DEFAULT_FONT_NAME, $defaultFontElement, 'name', 'val');
 
         // Second font should contain data from the first created style
-        /** @var \DOMElement $secondFontElement */
+        /** @var DOMElement $secondFontElement */
         $secondFontElement = $fontElements->item(1);
         $this->assertChildrenNumEquals(7, $secondFontElement, 'The font should only have 7 properties (4 custom styles + 3 default styles).');
         $this->assertChildExists($secondFontElement, 'b');
@@ -100,7 +103,7 @@ final class WriterWithStyleTest extends TestCase
         $this->assertFirstChildHasAttributeEquals(OptionsManager::DEFAULT_FONT_NAME, $secondFontElement, 'name', 'val');
 
         // Third font should contain data from the second created style
-        /** @var \DOMElement $thirdFontElement */
+        /** @var DOMElement $thirdFontElement */
         $thirdFontElement = $fontElements->item(2);
         $this->assertChildrenNumEquals(3, $thirdFontElement, 'The font should only have 3 properties.');
         $this->assertFirstChildHasAttributeEquals('15', $thirdFontElement, 'sz', 'val');
@@ -124,11 +127,11 @@ final class WriterWithStyleTest extends TestCase
         $this->writeToXLSXFile($dataRows, $fileName);
 
         $cellDomElements = $this->getCellElementsFromSheetXmlFile($fileName);
-        static::assertCount(3, $cellDomElements, 'There should be 3 cells.');
+        self::assertCount(3, $cellDomElements, 'There should be 3 cells.');
 
-        static::assertSame('1', $cellDomElements[0]->getAttribute('s'));
-        static::assertSame('2', $cellDomElements[1]->getAttribute('s'));
-        static::assertSame('0', $cellDomElements[2]->getAttribute('s'));
+        self::assertSame('1', $cellDomElements[0]->getAttribute('s'));
+        self::assertSame('2', $cellDomElements[1]->getAttribute('s'));
+        self::assertSame('0', $cellDomElements[2]->getAttribute('s'));
     }
 
     public function testAddRowShouldApplyStyleToEmptyCellsIfNeeded(): void
@@ -155,25 +158,25 @@ final class WriterWithStyleTest extends TestCase
         // The first and second rows should not have a reference to the empty cell
         // The other rows should have the reference because style should be applied to them
         // So that's: 2 + 2 + 3 + 3 = 10 cells
-        static::assertCount(10, $cellDomElements);
+        self::assertCount(10, $cellDomElements);
 
         // First row has 2 styled cells
-        static::assertSame('0', $cellDomElements[0]->getAttribute('s'));
-        static::assertSame('0', $cellDomElements[1]->getAttribute('s'));
+        self::assertSame('0', $cellDomElements[0]->getAttribute('s'));
+        self::assertSame('0', $cellDomElements[1]->getAttribute('s'));
 
         // Second row has 2 styled cells
-        static::assertSame('1', $cellDomElements[2]->getAttribute('s'));
-        static::assertSame('1', $cellDomElements[3]->getAttribute('s'));
+        self::assertSame('1', $cellDomElements[2]->getAttribute('s'));
+        self::assertSame('1', $cellDomElements[3]->getAttribute('s'));
 
         // Third row has 3 styled cells
-        static::assertSame('2', $cellDomElements[4]->getAttribute('s'));
-        static::assertSame('2', $cellDomElements[5]->getAttribute('s'));
-        static::assertSame('2', $cellDomElements[6]->getAttribute('s'));
+        self::assertSame('2', $cellDomElements[4]->getAttribute('s'));
+        self::assertSame('2', $cellDomElements[5]->getAttribute('s'));
+        self::assertSame('2', $cellDomElements[6]->getAttribute('s'));
 
         // Third row has 3 styled cells
-        static::assertSame('3', $cellDomElements[7]->getAttribute('s'));
-        static::assertSame('3', $cellDomElements[8]->getAttribute('s'));
-        static::assertSame('3', $cellDomElements[9]->getAttribute('s'));
+        self::assertSame('3', $cellDomElements[7]->getAttribute('s'));
+        self::assertSame('3', $cellDomElements[8]->getAttribute('s'));
+        self::assertSame('3', $cellDomElements[9]->getAttribute('s'));
     }
 
     public function testAddRowShouldReuseDuplicateStyles(): void
@@ -189,8 +192,8 @@ final class WriterWithStyleTest extends TestCase
         $this->writeToXLSXFile($dataRows, $fileName);
 
         $cellDomElements = $this->getCellElementsFromSheetXmlFile($fileName);
-        static::assertSame('1', $cellDomElements[0]->getAttribute('s'));
-        static::assertSame('1', $cellDomElements[1]->getAttribute('s'));
+        self::assertSame('1', $cellDomElements[0]->getAttribute('s'));
+        self::assertSame('1', $cellDomElements[1]->getAttribute('s'));
     }
 
     public function testAddRowWithNumFmtStyles(): void
@@ -215,7 +218,7 @@ final class WriterWithStyleTest extends TestCase
         $this->writeToXLSXFile($dataRows, $fileName);
 
         $formatsDomElement = $this->getXmlSectionFromStylesXmlFile($fileName, 'numFmts');
-        static::assertSame(
+        self::assertSame(
             '1',
             $formatsDomElement->getAttribute('count'),
             'There should be 2 formats, including the default one'
@@ -225,7 +228,7 @@ final class WriterWithStyleTest extends TestCase
 
         foreach (['2', '164'] as $index => $expected) {
             $xfElement = $cellXfsDomElement->getElementsByTagName('xf')->item($index + 1);
-            static::assertSame($expected, $xfElement->getAttribute('numFmtId'));
+            self::assertSame($expected, $xfElement->getAttribute('numFmtId'));
         }
     }
 
@@ -242,7 +245,7 @@ final class WriterWithStyleTest extends TestCase
 
         $cellXfsDomElement = $this->getXmlSectionFromStylesXmlFile($fileName, 'cellXfs');
         $xfElement = $cellXfsDomElement->getElementsByTagName('xf')->item(1);
-        static::assertSame('1', $xfElement->getAttribute('applyAlignment'));
+        self::assertSame('1', $xfElement->getAttribute('applyAlignment'));
         $this->assertFirstChildHasAttributeEquals('1', $xfElement, 'alignment', 'wrapText');
     }
 
@@ -259,7 +262,7 @@ final class WriterWithStyleTest extends TestCase
 
         $cellXfsDomElement = $this->getXmlSectionFromStylesXmlFile($fileName, 'cellXfs');
         $xfElement = $cellXfsDomElement->getElementsByTagName('xf')->item(1);
-        static::assertSame('1', $xfElement->getAttribute('applyAlignment'));
+        self::assertSame('1', $xfElement->getAttribute('applyAlignment'));
         $this->assertFirstChildHasAttributeEquals('1', $xfElement, 'alignment', 'wrapText');
     }
 
@@ -274,7 +277,7 @@ final class WriterWithStyleTest extends TestCase
 
         $cellXfsDomElement = $this->getXmlSectionFromStylesXmlFile($fileName, 'cellXfs');
         $xfElement = $cellXfsDomElement->getElementsByTagName('xf')->item(1);
-        static::assertSame('1', $xfElement->getAttribute('applyAlignment'));
+        self::assertSame('1', $xfElement->getAttribute('applyAlignment'));
         $this->assertFirstChildHasAttributeEquals(CellAlignment::RIGHT, $xfElement, 'alignment', 'horizontal');
     }
 
@@ -289,7 +292,7 @@ final class WriterWithStyleTest extends TestCase
 
         $cellXfsDomElement = $this->getXmlSectionFromStylesXmlFile($fileName, 'cellXfs');
         $xfElement = $cellXfsDomElement->getElementsByTagName('xf')->item(1);
-        static::assertEquals(1, $xfElement->getAttribute('applyAlignment'));
+        self::assertEquals(1, $xfElement->getAttribute('applyAlignment'));
         $this->assertFirstChildHasAttributeEquals('true', $xfElement, 'alignment', 'shrinkToFit');
     }
 
@@ -311,9 +314,9 @@ final class WriterWithStyleTest extends TestCase
         $cellDomElements = $this->getCellElementsFromSheetXmlFile($fileName);
 
         // First row should have 3 styled cells, with cell 2 and 3 sharing the same style
-        static::assertSame('1', $cellDomElements[0]->getAttribute('s'));
-        static::assertSame('2', $cellDomElements[1]->getAttribute('s'));
-        static::assertSame('2', $cellDomElements[2]->getAttribute('s'));
+        self::assertSame('1', $cellDomElements[0]->getAttribute('s'));
+        self::assertSame('2', $cellDomElements[1]->getAttribute('s'));
+        self::assertSame('2', $cellDomElements[2]->getAttribute('s'));
     }
 
     public function testAddBackgroundColor(): void
@@ -328,20 +331,20 @@ final class WriterWithStyleTest extends TestCase
         $this->writeToXLSXFile($dataRows, $fileName);
 
         $fillsDomElement = $this->getXmlSectionFromStylesXmlFile($fileName, 'fills');
-        static::assertSame('3', $fillsDomElement->getAttribute('count'), 'There should be 3 fills, including the 2 default ones');
+        self::assertSame('3', $fillsDomElement->getAttribute('count'), 'There should be 3 fills, including the 2 default ones');
 
         $fillsElements = $fillsDomElement->getElementsByTagName('fill');
 
         $thirdFillElement = $fillsElements->item(2); // Zero based
         $fgColor = $thirdFillElement->getElementsByTagName('fgColor')->item(0)->getAttribute('rgb');
 
-        static::assertSame(Color::WHITE, $fgColor, 'The foreground color should equal white');
+        self::assertSame(Color::WHITE, $fgColor, 'The foreground color should equal white');
 
         $styleXfsElements = $this->getXmlSectionFromStylesXmlFile($fileName, 'cellXfs');
-        static::assertSame('2', $styleXfsElements->getAttribute('count'), '2 cell xfs present - a default one and a custom one');
+        self::assertSame('2', $styleXfsElements->getAttribute('count'), '2 cell xfs present - a default one and a custom one');
 
         $customFillId = $styleXfsElements->lastChild->getAttribute('fillId');
-        static::assertSame(2, (int) $customFillId, 'The custom fill id should have the index 2');
+        self::assertSame(2, (int) $customFillId, 'The custom fill id should have the index 2');
     }
 
     public function testReuseBackgroundColorSharedDefinition(): void
@@ -359,28 +362,28 @@ final class WriterWithStyleTest extends TestCase
         $this->writeToXLSXFile($dataRows, $fileName);
 
         $fillsDomElement = $this->getXmlSectionFromStylesXmlFile($fileName, 'fills');
-        static::assertSame(
+        self::assertSame(
             '3',
             $fillsDomElement->getAttribute('count'),
             'There should be 3 fills, including the 2 default ones'
         );
 
         $styleXfsElements = $this->getXmlSectionFromStylesXmlFile($fileName, 'cellXfs');
-        static::assertSame(
+        self::assertSame(
             '3',
             $styleXfsElements->getAttribute('count'),
             '3 cell xfs present - a default one and two custom ones'
         );
 
-        /** @var \DOMElement $styleXfsElementChild1 */
+        /** @var DOMElement $styleXfsElementChild1 */
         $styleXfsElementChild1 = $styleXfsElements->childNodes->item(1);
         $firstCustomId = $styleXfsElementChild1->getAttribute('fillId');
-        static::assertSame(2, (int) $firstCustomId, 'The first custom fill id should have the index 2');
+        self::assertSame(2, (int) $firstCustomId, 'The first custom fill id should have the index 2');
 
-        /** @var \DOMElement $styleXfsElementChild2 */
+        /** @var DOMElement $styleXfsElementChild2 */
         $styleXfsElementChild2 = $styleXfsElements->childNodes->item(2);
         $secondCustomId = $styleXfsElementChild2->getAttribute('fillId');
-        static::assertSame(2, (int) $secondCustomId, 'The second custom fill id should have the index 2');
+        self::assertSame(2, (int) $secondCustomId, 'The second custom fill id should have the index 2');
     }
 
     public function testBorders(): void
@@ -405,10 +408,10 @@ final class WriterWithStyleTest extends TestCase
         $this->writeToXLSXFile($dataRows, $fileName);
 
         $borderElements = $this->getXmlSectionFromStylesXmlFile($fileName, 'borders');
-        static::assertSame('3', $borderElements->getAttribute('count'), '3 borders present');
+        self::assertSame('3', $borderElements->getAttribute('count'), '3 borders present');
 
         $styleXfsElements = $this->getXmlSectionFromStylesXmlFile($fileName, 'cellXfs');
-        static::assertSame('3', $styleXfsElements->getAttribute('count'), '3 cell xfs present');
+        self::assertSame('3', $styleXfsElements->getAttribute('count'), '3 cell xfs present');
     }
 
     public function testBordersCorrectOrder(): void
@@ -436,18 +439,18 @@ final class WriterWithStyleTest extends TestCase
             'left', 'right', 'top', 'bottom',
         ];
 
-        /** @var \DOMElement $borderNode */
+        /** @var DOMElement $borderNode */
         foreach ($borderElements->childNodes as $borderNode) {
             $borderParts = $borderNode->childNodes;
             $ordering = [];
 
             foreach ($borderParts as $part) {
-                if ($part instanceof \DOMElement) {
+                if ($part instanceof DOMElement) {
                     $ordering[] = $part->nodeName;
                 }
             }
 
-            static::assertSame($correctOrdering, $ordering, 'The border parts are in correct ordering');
+            self::assertSame($correctOrdering, $ordering, 'The border parts are in correct ordering');
         }
     }
 
@@ -463,7 +466,7 @@ final class WriterWithStyleTest extends TestCase
 
         $fontsDomElement = $this->getXmlSectionFromStylesXmlFile($fileName, 'fonts');
         $fontElements = $fontsDomElement->getElementsByTagName('font');
-        static::assertSame(1, $fontElements->length, 'There should only be the default font.');
+        self::assertSame(1, $fontElements->length, 'There should only be the default font.');
 
         $defaultFontElement = $fontElements->item(0);
         $this->assertFirstChildHasAttributeEquals((string) $defaultFontSize, $defaultFontElement, 'sz', 'val');
@@ -496,18 +499,18 @@ final class WriterWithStyleTest extends TestCase
 
         $borderElements = $this->getXmlSectionFromStylesXmlFile($fileName, 'borders');
 
-        static::assertSame('3', $borderElements->getAttribute('count'), '3 borders in count attribute');
-        static::assertSame(3, $borderElements->childNodes->length, '3 border childnodes present');
+        self::assertSame('3', $borderElements->getAttribute('count'), '3 borders in count attribute');
+        self::assertSame(3, $borderElements->childNodes->length, '3 border childnodes present');
 
-        /** @var \DOMElement $firstBorder */
+        /** @var DOMElement $firstBorder */
         $firstBorder = $borderElements->childNodes->item(1); // 0  = default border
         $leftStyle = $firstBorder->getElementsByTagName('left')->item(0)->getAttribute('style');
-        static::assertSame('medium', $leftStyle, 'Style is medium');
+        self::assertSame('medium', $leftStyle, 'Style is medium');
 
-        /** @var \DOMElement $secondBorder */
+        /** @var DOMElement $secondBorder */
         $secondBorder = $borderElements->childNodes->item(2);
         $rightStyle = $secondBorder->getElementsByTagName('right')->item(0)->getAttribute('style');
-        static::assertSame('thick', $rightStyle, 'Style is thick');
+        self::assertSame('thick', $rightStyle, 'Style is thick');
 
         $styleXfsElements = $this->getXmlSectionFromStylesXmlFile($fileName, 'cellXfs');
 
@@ -515,18 +518,18 @@ final class WriterWithStyleTest extends TestCase
         // Where a border is applied - the borderId attribute has to be greater than 0
         $bordersApplied = 0;
 
-        /** @var \DOMElement $node */
+        /** @var DOMElement $node */
         foreach ($styleXfsElements->childNodes as $node) {
             $shouldApplyBorder = (1 === (int) $node->getAttribute('applyBorder'));
             if ($shouldApplyBorder) {
                 ++$bordersApplied;
-                static::assertGreaterThan(0, (int) $node->getAttribute('borderId'), 'BorderId is greater than 0');
+                self::assertGreaterThan(0, (int) $node->getAttribute('borderId'), 'BorderId is greater than 0');
             } else {
-                static::assertSame(0, (int) $node->getAttribute('borderId'), 'BorderId is 0');
+                self::assertSame(0, (int) $node->getAttribute('borderId'), 'BorderId is 0');
             }
         }
 
-        static::assertSame(3, $bordersApplied, 'Three borders have been applied');
+        self::assertSame(3, $bordersApplied, 'Three borders have been applied');
     }
 
     /**
@@ -566,7 +569,7 @@ final class WriterWithStyleTest extends TestCase
         return $writer;
     }
 
-    private function getXmlSectionFromStylesXmlFile(string $fileName, string $section): \DOMElement
+    private function getXmlSectionFromStylesXmlFile(string $fileName, string $section): DOMElement
     {
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
@@ -574,7 +577,7 @@ final class WriterWithStyleTest extends TestCase
         $xmlReader->openFileInZip($resourcePath, 'xl/styles.xml');
         $xmlReader->readUntilNodeFound($section);
 
-        /** @var \DOMElement $xmlSection */
+        /** @var DOMElement $xmlSection */
         $xmlSection = $xmlReader->expand();
 
         $xmlReader->close();
@@ -583,7 +586,7 @@ final class WriterWithStyleTest extends TestCase
     }
 
     /**
-     * @return \DOMElement[]
+     * @return DOMElement[]
      */
     private function getCellElementsFromSheetXmlFile(string $fileName): array
     {
@@ -596,7 +599,7 @@ final class WriterWithStyleTest extends TestCase
 
         while ($xmlReader->read()) {
             if ($xmlReader->isPositionedOnStartingNode('c')) {
-                /** @var \DOMElement $cellElement */
+                /** @var DOMElement $cellElement */
                 $cellElement = $xmlReader->expand();
                 $cellElements[] = $cellElement;
             }
@@ -607,18 +610,18 @@ final class WriterWithStyleTest extends TestCase
         return $cellElements;
     }
 
-    private function assertFirstChildHasAttributeEquals(string $expectedValue, \DOMElement $parentElement, string $childTagName, string $attributeName): void
+    private function assertFirstChildHasAttributeEquals(string $expectedValue, DOMElement $parentElement, string $childTagName, string $attributeName): void
     {
-        static::assertSame($expectedValue, $parentElement->getElementsByTagName($childTagName)->item(0)->getAttribute($attributeName));
+        self::assertSame($expectedValue, $parentElement->getElementsByTagName($childTagName)->item(0)->getAttribute($attributeName));
     }
 
-    private function assertChildrenNumEquals(int $expectedNumber, \DOMElement $parentElement, string $message): void
+    private function assertChildrenNumEquals(int $expectedNumber, DOMElement $parentElement, string $message): void
     {
-        static::assertSame($expectedNumber, $parentElement->getElementsByTagName('*')->length, $message);
+        self::assertSame($expectedNumber, $parentElement->getElementsByTagName('*')->length, $message);
     }
 
-    private function assertChildExists(\DOMElement $parentElement, string $childTagName): void
+    private function assertChildExists(DOMElement $parentElement, string $childTagName): void
     {
-        static::assertSame(1, $parentElement->getElementsByTagName($childTagName)->length);
+        self::assertSame(1, $parentElement->getElementsByTagName($childTagName)->length);
     }
 }

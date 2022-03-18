@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Reader\Wrapper;
 
 use OpenSpout\Reader\Exception\XMLProcessingException;
 use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
+use ReflectionHelper;
 
 /**
  * @internal
@@ -22,7 +25,7 @@ final class XMLReaderTest extends TestCase
         // using "@" to prevent errors/warning to be displayed
         $wasOpenSuccessful = @$xmlReader->openFileInZip($resourcePath, 'path/to/fake/file.xml');
 
-        static::assertFalse($wasOpenSuccessful);
+        self::assertFalse($wasOpenSuccessful);
     }
 
     /**
@@ -41,12 +44,12 @@ final class XMLReaderTest extends TestCase
             libxml_clear_errors();
             $initialUseInternalErrorsSetting = libxml_use_internal_errors(true);
 
-            static::assertNotFalse(\XMLReader::open($nonExistingXMLFilePath));
-            static::assertFalse(libxml_get_last_error());
+            self::assertNotFalse(\XMLReader::open($nonExistingXMLFilePath));
+            self::assertFalse(libxml_get_last_error());
 
             libxml_use_internal_errors($initialUseInternalErrorsSetting);
         } else {
-            static::markTestSkipped();
+            self::markTestSkipped();
         }
     }
 
@@ -58,7 +61,7 @@ final class XMLReaderTest extends TestCase
 
         $xmlReader = new XMLReader();
         if (false === $xmlReader->openFileInZip($resourcePath, 'xl/worksheets/sheet1.xml')) {
-            static::fail();
+            self::fail();
         }
 
         // using "@" to prevent errors/warning to be displayed
@@ -100,15 +103,15 @@ final class XMLReaderTest extends TestCase
         $zipStreamURI = 'zip://'.$resourcePath.'#'.$innerFilePath;
 
         $xmlReader = new XMLReader();
-        $isZipStream = \ReflectionHelper::callMethodOnObject($xmlReader, 'fileExistsWithinZip', $zipStreamURI);
+        $isZipStream = ReflectionHelper::callMethodOnObject($xmlReader, 'fileExistsWithinZip', $zipStreamURI);
 
-        static::assertSame($expectedResult, $isZipStream);
+        self::assertSame($expectedResult, $isZipStream);
     }
 
     public function dataProviderForTestGetRealPathURIForFileInZip(): array
     {
         $tempFolder = realpath(sys_get_temp_dir());
-        static::assertNotFalse($tempFolder);
+        self::assertNotFalse($tempFolder);
         $tempFolderName = basename($tempFolder);
         $expectedRealPathURI = 'zip://'.$tempFolder.'/test.xlsx#test.xml';
 
@@ -126,13 +129,13 @@ final class XMLReaderTest extends TestCase
         touch($tempFolder.'/test.xlsx');
 
         $xmlReader = new XMLReader();
-        $realPathURI = \ReflectionHelper::callMethodOnObject($xmlReader, 'getRealPathURIForFileInZip', $zipFilePath, $fileInsideZipPath);
+        $realPathURI = ReflectionHelper::callMethodOnObject($xmlReader, 'getRealPathURIForFileInZip', $zipFilePath, $fileInsideZipPath);
 
         // Normalizing path separators for Windows support
         $normalizedRealPathURI = str_replace('\\', '/', $realPathURI);
         $normalizedExpectedRealPathURI = str_replace('\\', '/', $expectedRealPathURI);
 
-        static::assertSame($normalizedExpectedRealPathURI, $normalizedRealPathURI);
+        self::assertSame($normalizedExpectedRealPathURI, $normalizedRealPathURI);
 
         unlink($tempFolder.'/test.xlsx');
     }
@@ -155,13 +158,13 @@ final class XMLReaderTest extends TestCase
 
         // the first read moves the pointer to "<test>"
         $xmlReader->read();
-        static::assertTrue($xmlReader->isPositionedOnStartingNode('test'));
-        static::assertFalse($xmlReader->isPositionedOnEndingNode('test'));
+        self::assertTrue($xmlReader->isPositionedOnStartingNode('test'));
+        self::assertFalse($xmlReader->isPositionedOnEndingNode('test'));
 
         // the seconds read moves the pointer to "</test>"
         $xmlReader->read();
-        static::assertFalse($xmlReader->isPositionedOnStartingNode('test'));
-        static::assertTrue($xmlReader->isPositionedOnEndingNode('test'));
+        self::assertFalse($xmlReader->isPositionedOnStartingNode('test'));
+        self::assertTrue($xmlReader->isPositionedOnEndingNode('test'));
 
         $xmlReader->close();
     }

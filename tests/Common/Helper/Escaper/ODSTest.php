@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Common\Helper\Escaper;
 
 use OpenSpout\Common\Helper\Escaper;
@@ -31,6 +33,6 @@ final class ODSTest extends TestCase
         $escaper = new Escaper\ODS();
         $escapedString = $escaper->escape($stringToEscape);
 
-        static::assertSame($expectedEscapedString, $escapedString, 'Incorrect escaped string');
+        self::assertSame($expectedEscapedString, $escapedString, 'Incorrect escaped string');
     }
 }

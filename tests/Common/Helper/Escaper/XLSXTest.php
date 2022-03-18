@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Common\Helper\Escaper;
 
 use OpenSpout\Common\Helper\Escaper;
@@ -35,7 +37,7 @@ final class XLSXTest extends TestCase
         $escaper = new Escaper\XLSX();
         $escapedString = $escaper->escape($stringToEscape);
 
-        static::assertSame($expectedEscapedString, $escapedString, 'Incorrect escaped string');
+        self::assertSame($expectedEscapedString, $escapedString, 'Incorrect escaped string');
     }
 
     public function dataProviderForTestUnescape(): array
@@ -63,6 +65,6 @@ final class XLSXTest extends TestCase
         $escaper = new Escaper\XLSX();
         $unescapedString = $escaper->unescape($stringToUnescape);
 
-        static::assertSame($expectedUnescapedString, $unescapedString, 'Incorrect escaped string');
+        self::assertSame($expectedUnescapedString, $unescapedString, 'Incorrect escaped string');
     }
 }

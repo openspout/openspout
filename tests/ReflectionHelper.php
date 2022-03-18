@@ -1,13 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Utility class for making PHP reflection easier to use.
  */
 final class ReflectionHelper
 {
-    /**
-     * @var array<class-string, array<string, mixed>>
-     */
+    /** @var array<class-string, array<string, mixed>> */
     private static array $privateVarsToReset = [];
 
     /**
@@ -75,7 +75,7 @@ final class ReflectionHelper
         array_shift($params); // object
         array_shift($params); // methodName
 
-        $className = get_class($object);
+        $className = $object::class;
         $class = new ReflectionClass($className);
         $method = $class->getMethod($methodName);
         $method->setAccessible(true);

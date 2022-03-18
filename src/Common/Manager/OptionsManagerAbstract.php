@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Common\Manager;
 
 abstract class OptionsManagerAbstract implements OptionsManagerInterface

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Reader\ODS\Manager;
 
 use OpenSpout\Common\Manager\OptionsManagerAbstract;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Reader\XLSX;
 
 use OpenSpout\TestUsingResource;
@@ -17,21 +19,21 @@ final class SheetTest extends TestCase
         // NOTE: This spreadsheet has its second tab defined as active
         $sheets = $this->openFileAndReturnSheets('two_sheets_with_custom_names_and_custom_active_tab.xlsx');
 
-        static::assertSame('CustomName1', $sheets[0]->getName());
-        static::assertSame(0, $sheets[0]->getIndex());
-        static::assertFalse($sheets[0]->isActive());
+        self::assertSame('CustomName1', $sheets[0]->getName());
+        self::assertSame(0, $sheets[0]->getIndex());
+        self::assertFalse($sheets[0]->isActive());
 
-        static::assertSame('CustomName2', $sheets[1]->getName());
-        static::assertSame(1, $sheets[1]->getIndex());
-        static::assertTrue($sheets[1]->isActive());
+        self::assertSame('CustomName2', $sheets[1]->getName());
+        self::assertSame(1, $sheets[1]->getIndex());
+        self::assertTrue($sheets[1]->isActive());
     }
 
     public function testReaderShouldReturnCorrectSheetVisibility(): void
     {
         $sheets = $this->openFileAndReturnSheets('two_sheets_one_hidden_one_not.xlsx');
 
-        static::assertFalse($sheets[0]->isVisible());
-        static::assertTrue($sheets[1]->isVisible());
+        self::assertFalse($sheets[0]->isVisible());
+        self::assertTrue($sheets[1]->isVisible());
     }
 
     /**

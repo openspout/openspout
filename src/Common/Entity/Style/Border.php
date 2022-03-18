@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Common\Entity\Style;
 
 final class Border
@@ -19,9 +21,7 @@ final class Border
     public const WIDTH_MEDIUM = 'medium';
     public const WIDTH_THICK = 'thick';
 
-    /**
-     * @var array<string, BorderPart>
-     */
+    /** @var array<string, BorderPart> */
     private array $parts;
 
     public function __construct(BorderPart ...$borderParts)

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Common\Entity\Style;
 
 use OpenSpout\Common\Exception\InvalidArgumentException;
@@ -9,7 +11,9 @@ use OpenSpout\Common\Exception\InvalidArgumentException;
  */
 final class Style
 {
-    /** Default values */
+    /**
+     * Default values.
+     */
     public const DEFAULT_FONT_SIZE = 11;
     public const DEFAULT_FONT_COLOR = Color::BLACK;
     public const DEFAULT_FONT_NAME = 'Arial';

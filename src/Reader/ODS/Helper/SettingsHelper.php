@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Reader\ODS\Helper;
 
 use OpenSpout\Reader\Exception\XMLProcessingException;
@@ -12,7 +14,9 @@ final class SettingsHelper
 {
     public const SETTINGS_XML_FILE_PATH = 'settings.xml';
 
-    /** Definition of XML nodes name and attribute used to parse settings data */
+    /**
+     * Definition of XML nodes name and attribute used to parse settings data.
+     */
     public const XML_NODE_CONFIG_ITEM = 'config:config-item';
     public const XML_ATTRIBUTE_CONFIG_NAME = 'config:name';
     public const XML_ATTRIBUTE_VALUE_ACTIVE_TABLE = 'ActiveTable';

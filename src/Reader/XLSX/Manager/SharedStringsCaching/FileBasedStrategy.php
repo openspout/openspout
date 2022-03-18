@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Reader\XLSX\Manager\SharedStringsCaching;
 
 use OpenSpout\Common\Helper\FileSystemHelper;
@@ -12,7 +14,9 @@ use OpenSpout\Reader\Exception\SharedStringNotFoundException;
  */
 final class FileBasedStrategy implements CachingStrategyInterface
 {
-    /** Value to use to escape the line feed character ("\n") */
+    /**
+     * Value to use to escape the line feed character ("\n").
+     */
     public const ESCAPED_LINE_FEED_CHARACTER = '_x000A_';
 
     /** @var FileSystemHelper Helper to perform file system operations */
@@ -171,7 +175,7 @@ final class FileBasedStrategy implements CachingStrategyInterface
     {
         $realFilePath = $filePath;
 
-        if (0 === strpos($filePath, 'zip://')) {
+        if (str_starts_with($filePath, 'zip://')) {
             if (1 === preg_match('/zip:\/\/(.*)#(.*)/', $filePath, $matches)) {
                 $documentPath = $matches[1];
                 $documentInsideZipPath = $matches[2];

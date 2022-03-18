@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Common\Entity\Style;
 
 use OpenSpout\Common\Exception\InvalidColorException;
@@ -9,7 +11,9 @@ use OpenSpout\Common\Exception\InvalidColorException;
  */
 final class Color
 {
-    /** Standard colors - based on Office Online */
+    /**
+     * Standard colors - based on Office Online.
+     */
     public const BLACK = '000000';
     public const WHITE = 'FFFFFF';
     public const RED = 'FF0000';

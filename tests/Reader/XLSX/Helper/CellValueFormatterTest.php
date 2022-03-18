@@ -1,8 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Reader\XLSX\Helper;
 
 use DateTimeImmutable;
+use DOMElement;
+use DOMNodeList;
 use OpenSpout\Common\Helper\Escaper;
 use OpenSpout\Reader\Common\Manager\StyleManagerInterface;
 use OpenSpout\Reader\Exception\InvalidValueException;
@@ -11,6 +15,7 @@ use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\MemoryLimit;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsManager;
 use OpenSpout\Reader\XLSX\Manager\WorkbookRelationshipsManager;
 use PHPUnit\Framework\TestCase;
+use ReflectionHelper;
 
 /**
  * @internal
@@ -63,19 +68,19 @@ final class CellValueFormatterTest extends TestCase
      */
     public function testExcelDate(bool $shouldUse1904Dates, $nodeValue, ?string $expectedDateAsString): void
     {
-        $nodeListMock = $this->createMock(\DOMNodeList::class);
+        $nodeListMock = $this->createMock(DOMNodeList::class);
 
         $nodeListMock
-            ->expects(static::atLeastOnce())
+            ->expects(self::atLeastOnce())
             ->method('item')
             ->with(0)
             ->willReturn((object) ['nodeValue' => $nodeValue])
         ;
 
-        $nodeMock = $this->createMock(\DOMElement::class);
+        $nodeMock = $this->createMock(DOMElement::class);
 
         $nodeMock
-            ->expects(static::atLeastOnce())
+            ->expects(self::atLeastOnce())
             ->method('getAttribute')
             ->willReturnMap([
                 [CellValueFormatter::XML_ATTRIBUTE_TYPE, CellValueFormatter::CELL_TYPE_NUMERIC],
@@ -84,7 +89,7 @@ final class CellValueFormatterTest extends TestCase
         ;
 
         $nodeMock
-            ->expects(static::atLeastOnce())
+            ->expects(self::atLeastOnce())
             ->method('getElementsByTagName')
             ->with(CellValueFormatter::XML_NODE_VALUE)
             ->willReturn($nodeListMock)
@@ -93,7 +98,7 @@ final class CellValueFormatterTest extends TestCase
         $styleManagerMock = $this->createMock(StyleManagerInterface::class);
 
         $styleManagerMock
-            ->expects(static::once())
+            ->expects(self::once())
             ->method('shouldFormatNumericValueAsDate')
             ->with(123)
             ->willReturn(true)
@@ -116,10 +121,10 @@ final class CellValueFormatterTest extends TestCase
             $result = $formatter->extractAndFormatNodeValue($nodeMock);
 
             if (null === $expectedDateAsString) {
-                static::fail('An exception should have been thrown');
+                self::fail('An exception should have been thrown');
             } else {
-                static::assertInstanceOf(DateTimeImmutable::class, $result);
-                static::assertSame($expectedDateAsString, $result->format('Y-m-d H:i:s'));
+                self::assertInstanceOf(DateTimeImmutable::class, $result);
+                self::assertSame($expectedDateAsString, $result->format('Y-m-d H:i:s'));
             }
         } catch (InvalidValueException $exception) {
             // do nothing
@@ -159,7 +164,7 @@ final class CellValueFormatterTest extends TestCase
     {
         $styleManagerMock = $this->createMock(StyleManagerInterface::class);
         $styleManagerMock
-            ->expects(static::once())
+            ->expects(self::once())
             ->method('shouldFormatNumericValueAsDate')
             ->willReturn(false)
         ;
@@ -176,10 +181,10 @@ final class CellValueFormatterTest extends TestCase
             false,
             new Escaper\XLSX()
         );
-        $formattedValue = \ReflectionHelper::callMethodOnObject($formatter, 'formatNumericCellValue', $value, 0);
+        $formattedValue = ReflectionHelper::callMethodOnObject($formatter, 'formatNumericCellValue', $value, 0);
 
-        static::assertSame($expectedFormattedValue, $formattedValue);
-        static::assertSame($expectedType, \gettype($formattedValue));
+        self::assertSame($expectedFormattedValue, $formattedValue);
+        self::assertSame($expectedType, \gettype($formattedValue));
     }
 
     public function dataProviderForTestFormatStringCellValue(): array
@@ -197,22 +202,22 @@ final class CellValueFormatterTest extends TestCase
      */
     public function testFormatInlineStringCellValue(string $value, string $expectedFormattedValue): void
     {
-        $nodeListMock = $this->createMock(\DOMNodeList::class);
+        $nodeListMock = $this->createMock(DOMNodeList::class);
         $nodeListMock
-            ->expects(static::atLeastOnce())
+            ->expects(self::atLeastOnce())
             ->method('count')
             ->willReturn(1)
         ;
         $nodeListMock
-            ->expects(static::atLeastOnce())
+            ->expects(self::atLeastOnce())
             ->method('item')
             ->with(0)
             ->willReturn((object) ['nodeValue' => $value])
         ;
 
-        $nodeMock = $this->createMock(\DOMElement::class);
+        $nodeMock = $this->createMock(DOMElement::class);
         $nodeMock
-            ->expects(static::atLeastOnce())
+            ->expects(self::atLeastOnce())
             ->method('getElementsByTagName')
             ->with(CellValueFormatter::XML_NODE_INLINE_STRING_VALUE)
             ->willReturn($nodeListMock)
@@ -230,8 +235,8 @@ final class CellValueFormatterTest extends TestCase
             false,
             new Escaper\XLSX()
         );
-        $formattedValue = \ReflectionHelper::callMethodOnObject($formatter, 'formatInlineStringCellValue', $nodeMock);
+        $formattedValue = ReflectionHelper::callMethodOnObject($formatter, 'formatInlineStringCellValue', $nodeMock);
 
-        static::assertSame($expectedFormattedValue, $formattedValue);
+        self::assertSame($expectedFormattedValue, $formattedValue);
     }
 }

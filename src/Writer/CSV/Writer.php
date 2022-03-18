@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Writer\CSV;
 
 use OpenSpout\Common\Entity\Cell;
@@ -15,7 +17,9 @@ use OpenSpout\Writer\WriterAbstract;
  */
 final class Writer extends WriterAbstract
 {
-    /** Number of rows to write before flushing */
+    /**
+     * Number of rows to write before flushing.
+     */
     public const FLUSH_THRESHOLD = 500;
 
     /** @var string Content-Type value for the header */

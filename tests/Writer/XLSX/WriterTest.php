@@ -1,8 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Writer\XLSX;
 
 use DateTimeImmutable;
+use DateTimeZone;
+use DOMElement;
+use FilesystemIterator;
+use finfo;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\InvalidArgumentException;
@@ -15,6 +21,8 @@ use OpenSpout\Writer\Exception\WriterNotOpenedException;
 use OpenSpout\Writer\RowCreationHelper;
 use OpenSpout\Writer\XLSX\Manager\WorkbookManager;
 use PHPUnit\Framework\TestCase;
+use ReflectionHelper;
+use stdClass;
 
 /**
  * @internal
@@ -95,7 +103,7 @@ final class WriterTest extends TestCase
     {
         $fileName = 'test_add_row_should_throw_exception_if_unsupported_data_type_passed_in.xlsx';
         $dataRows = [
-            Row::fromValues([new \stdClass()]),
+            Row::fromValues([new stdClass()]),
         ];
 
         $this->expectException(InvalidArgumentException::class);
@@ -108,7 +116,7 @@ final class WriterTest extends TestCase
 
         $fileName = 'test_add_row_should_throw_exception_if_string_exceeds_max_num_chars_allowed_per_cell.xlsx';
         $dataRows = $this->createRowsFromValues([
-            [new \stdClass()],
+            [new stdClass()],
         ]);
 
         $this->writeToXLSXFile($dataRows, $fileName);
@@ -119,7 +127,7 @@ final class WriterTest extends TestCase
         $fileName = 'test_add_row_should_cleanup_all_files_if_exception_thrown.xlsx';
         $dataRows = $this->createRowsFromValues([
             ['wrong'],
-            [new \stdClass()],
+            [new stdClass()],
         ]);
 
         $this->createGeneratedFolderIfNeeded($fileName);
@@ -134,12 +142,12 @@ final class WriterTest extends TestCase
 
         try {
             $writer->addRows($dataRows);
-            static::fail('Exception should have been thrown');
+            self::fail('Exception should have been thrown');
         } catch (OpenSpoutException $e) {
-            static::assertFileDoesNotExist($fileName, 'Output file should have been deleted');
+            self::assertFileDoesNotExist($fileName, 'Output file should have been deleted');
 
-            $numFiles = iterator_count(new \FilesystemIterator($tempFolderPath, \FilesystemIterator::SKIP_DOTS));
-            static::assertSame(0, $numFiles, 'All temp files should have been deleted');
+            $numFiles = iterator_count(new FilesystemIterator($tempFolderPath, FilesystemIterator::SKIP_DOTS));
+            self::assertSame(0, $numFiles, 'All temp files should have been deleted');
         }
     }
 
@@ -155,8 +163,8 @@ final class WriterTest extends TestCase
         $writer->close();
 
         $sheets = $writer->getSheets();
-        static::assertCount(2, $sheets, 'There should be 2 sheets');
-        static::assertSame($sheets[1], $writer->getCurrentSheet(), 'The current sheet should be the second one.');
+        self::assertCount(2, $sheets, 'There should be 2 sheets');
+        self::assertSame($sheets[1], $writer->getCurrentSheet(), 'The current sheet should be the second one.');
     }
 
     public function testSetCurrentSheet(): void
@@ -176,7 +184,7 @@ final class WriterTest extends TestCase
 
         $writer->close();
 
-        static::assertSame($firstSheet, $writer->getCurrentSheet(), 'The current sheet should be the first one.');
+        self::assertSame($firstSheet, $writer->getCurrentSheet(), 'The current sheet should be the first one.');
     }
 
     public function testCloseShouldNoopWhenWriterIsNotOpened(): void
@@ -315,7 +323,7 @@ final class WriterTest extends TestCase
                 0,
                 10.2,
                 null,
-                new DateTimeImmutable('2020-03-04 06:00:00', new \DateTimeZone('UTC')),
+                new DateTimeImmutable('2020-03-04 06:00:00', new DateTimeZone('UTC')),
             ],
         ]);
 
@@ -344,7 +352,7 @@ final class WriterTest extends TestCase
     public function testAddRowShouldSupportFloatValuesInDifferentLocale(): void
     {
         $previousLocale = setlocale(LC_ALL, '0');
-        static::assertNotFalse($previousLocale);
+        self::assertNotFalse($previousLocale);
         $valueToWrite = 1234.5; // needs to be defined before changing the locale as PHP8 would expect 1234,5
 
         try {
@@ -352,7 +360,7 @@ final class WriterTest extends TestCase
             // Installed locales differ from one system to another, so we can't pick
             // a given locale.
             $shell_exec = shell_exec('locale -a');
-            static::assertIsString($shell_exec);
+            self::assertIsString($shell_exec);
             $supportedLocales = explode("\n", $shell_exec);
             $foundCommaLocale = false;
             foreach ($supportedLocales as $supportedLocale) {
@@ -365,10 +373,10 @@ final class WriterTest extends TestCase
             }
 
             if (!$foundCommaLocale) {
-                static::markTestSkipped('No locale with comma decimal separator');
+                self::markTestSkipped('No locale with comma decimal separator');
             }
 
-            static::assertSame(',', localeconv()['decimal_point']);
+            self::assertSame(',', localeconv()['decimal_point']);
 
             $fileName = 'test_add_row_should_support_float_values_in_different_locale.xlsx';
             $dataRows = $this->createRowsFromValues([
@@ -448,15 +456,15 @@ final class WriterTest extends TestCase
         ]);
 
         // set the maxRowsPerSheet limit to 2
-        \ReflectionHelper::setStaticValue(WorkbookManager::class, 'maxRowsPerWorksheet', 2);
+        ReflectionHelper::setStaticValue(WorkbookManager::class, 'maxRowsPerWorksheet', 2);
 
         $writer = $this->writeToXLSXFile($dataRows, $fileName, true, $shouldCreateSheetsAutomatically = true);
-        static::assertCount(2, $writer->getSheets(), '2 sheets should have been created.');
+        self::assertCount(2, $writer->getSheets(), '2 sheets should have been created.');
 
         $this->assertInlineDataWasNotWrittenToSheet($fileName, 1, 'xlsx--sheet2--11');
         $this->assertInlineDataWasWrittenToSheet($fileName, 2, 'xlsx--sheet2--11');
 
-        \ReflectionHelper::reset();
+        ReflectionHelper::reset();
     }
 
     public function testAddRowShouldNotCreateNewSheetsIfMaxRowsReachedAndOptionTurnedOff(): void
@@ -469,14 +477,14 @@ final class WriterTest extends TestCase
         ]);
 
         // set the maxRowsPerSheet limit to 2
-        \ReflectionHelper::setStaticValue(WorkbookManager::class, 'maxRowsPerWorksheet', 2);
+        ReflectionHelper::setStaticValue(WorkbookManager::class, 'maxRowsPerWorksheet', 2);
 
         $writer = $this->writeToXLSXFile($dataRows, $fileName, true, $shouldCreateSheetsAutomatically = false);
-        static::assertCount(1, $writer->getSheets(), 'Only 1 sheet should have been created.');
+        self::assertCount(1, $writer->getSheets(), 'Only 1 sheet should have been created.');
 
         $this->assertInlineDataWasNotWrittenToSheet($fileName, 1, 'xlsx--sheet1--31');
 
-        \ReflectionHelper::reset();
+        ReflectionHelper::reset();
     }
 
     public function testAddRowShouldEscapeHtmlSpecialCharacters(): void
@@ -519,18 +527,18 @@ final class WriterTest extends TestCase
 
         $xmlReader = $this->getXmlReaderForSheetFromXmlFile($fileName, '1');
         $xmlReader->readUntilNodeFound('mergeCells');
-        static::assertEquals('mergeCells', $xmlReader->getCurrentNodeName(), 'Sheet does not have mergeCells tag');
+        self::assertEquals('mergeCells', $xmlReader->getCurrentNodeName(), 'Sheet does not have mergeCells tag');
         $DOMNode2 = $xmlReader->expand();
-        static::assertNotFalse($DOMNode2);
-        static::assertEquals(2, $DOMNode2->childNodes->length, 'Sheet does not have the specified number of mergeCell definitions');
+        self::assertNotFalse($DOMNode2);
+        self::assertEquals(2, $DOMNode2->childNodes->length, 'Sheet does not have the specified number of mergeCell definitions');
         $xmlReader->readUntilNodeFound('mergeCell');
         $DOMNode = $xmlReader->expand();
-        static::assertInstanceOf(\DOMElement::class, $DOMNode);
-        static::assertEquals('A1:D1', $DOMNode->getAttribute('ref'), 'Merge ref for first range is not valid.');
+        self::assertInstanceOf(DOMElement::class, $DOMNode);
+        self::assertEquals('A1:D1', $DOMNode->getAttribute('ref'), 'Merge ref for first range is not valid.');
         $xmlReader->readUntilNodeFound('mergeCell');
         $DOMNode1 = $xmlReader->expand();
-        static::assertInstanceOf(\DOMElement::class, $DOMNode1);
-        static::assertEquals('C3:K3', $DOMNode1->getAttribute('ref'), 'Merge ref for second range is not valid.');
+        self::assertInstanceOf(DOMElement::class, $DOMNode1);
+        self::assertEquals('C3:K3', $DOMNode1->getAttribute('ref'), 'Merge ref for second range is not valid.');
     }
 
     public function testGeneratedFileShouldBeValidForEmptySheets(): void
@@ -546,16 +554,16 @@ final class WriterTest extends TestCase
 
         $xmlReader = $this->getXmlReaderForSheetFromXmlFile($fileName, '1');
         $xmlReader->setParserProperty(XMLReader::VALIDATE, true);
-        static::assertTrue($xmlReader->isValid(), 'worksheet xml is not valid');
+        self::assertTrue($xmlReader->isValid(), 'worksheet xml is not valid');
         $xmlReader->setParserProperty(XMLReader::VALIDATE, false);
         $xmlReader->readUntilNodeFound('sheetData');
-        static::assertEquals('sheetData', $xmlReader->getCurrentNodeName(), 'worksheet xml does not have sheetData');
+        self::assertEquals('sheetData', $xmlReader->getCurrentNodeName(), 'worksheet xml does not have sheetData');
     }
 
     public function testGeneratedFileShouldHaveTheCorrectMimeType(): void
     {
         if (!\function_exists('finfo')) {
-            static::markTestSkipped('finfo is not available on this system (possibly running on Windows where the DLL needs to be added explicitly to the php.ini)');
+            self::markTestSkipped('finfo is not available on this system (possibly running on Windows where the DLL needs to be added explicitly to the php.ini)');
         }
 
         $fileName = 'test_mime_type.xlsx';
@@ -564,8 +572,8 @@ final class WriterTest extends TestCase
 
         $this->writeToXLSXFile($dataRows, $fileName);
 
-        $finfo = new \finfo(FILEINFO_MIME_TYPE);
-        static::assertSame('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', $finfo->file($resourcePath));
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        self::assertSame('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', $finfo->file($resourcePath));
     }
 
     /**
@@ -621,8 +629,8 @@ final class WriterTest extends TestCase
         $pathToSheetFile = $resourcePath.'#xl/worksheets/sheet'.$sheetIndex.'.xml';
         $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
 
-        static::assertNotFalse($xmlContents);
-        static::assertStringContainsString((string) $inlineData, $xmlContents, $message);
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString((string) $inlineData, $xmlContents, $message);
     }
 
     /**
@@ -634,8 +642,8 @@ final class WriterTest extends TestCase
         $pathToSheetFile = $resourcePath.'#xl/worksheets/sheet'.$sheetIndex.'.xml';
         $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
 
-        static::assertNotFalse($xmlContents);
-        static::assertStringNotContainsString((string) $inlineData, $xmlContents, $message);
+        self::assertNotFalse($xmlContents);
+        self::assertStringNotContainsString((string) $inlineData, $xmlContents, $message);
     }
 
     private function assertSharedStringWasWritten(string $fileName, string $sharedString, string $message = ''): void
@@ -644,8 +652,8 @@ final class WriterTest extends TestCase
         $pathToSharedStringsFile = $resourcePath.'#xl/sharedStrings.xml';
         $xmlContents = file_get_contents('zip://'.$pathToSharedStringsFile);
 
-        static::assertNotFalse($xmlContents);
-        static::assertStringContainsString($sharedString, $xmlContents, $message);
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString($sharedString, $xmlContents, $message);
     }
 
     /**

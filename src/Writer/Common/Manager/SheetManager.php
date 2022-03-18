@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Writer\Common\Manager;
 
 use OpenSpout\Common\Helper\StringHelper;
@@ -11,10 +13,14 @@ use OpenSpout\Writer\Exception\InvalidSheetNameException;
  */
 final class SheetManager
 {
-    /** Sheet name should not exceed 31 characters */
+    /**
+     * Sheet name should not exceed 31 characters.
+     */
     public const MAX_LENGTH_SHEET_NAME = 31;
 
-    /** Invalid characters that cannot be contained in the sheet name */
+    /**
+     * Invalid characters that cannot be contained in the sheet name.
+     */
     private const INVALID_CHARACTERS_IN_SHEET_NAME = ['\\', '/', '?', '*', ':', '[', ']'];
 
     /** @var array<string, array<int, string>> Associative array [WORKBOOK_ID] => [[SHEET_INDEX] => [SHEET_NAME]] keeping track of sheets' name to enforce uniqueness per workbook */

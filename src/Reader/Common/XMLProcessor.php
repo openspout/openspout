@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Reader\Common;
 
 use OpenSpout\Reader\Wrapper\XMLReader;

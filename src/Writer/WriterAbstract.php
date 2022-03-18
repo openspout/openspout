@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Writer;
 
 use OpenSpout\Common\Entity\Row;

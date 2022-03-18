@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Reader\ODS;
 
+use DOMElement;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\Escaper\ODS;
 use OpenSpout\Reader\Common\Entity\Options;
@@ -21,7 +24,9 @@ final class SheetIterator implements SheetIteratorInterface
 
     public const XML_STYLE_NAMESPACE = 'urn:oasis:names:tc:opendocument:xmlns:style:1.0';
 
-    /** Definition of XML nodes name and attribute used to parse sheet data */
+    /**
+     * Definition of XML nodes name and attribute used to parse sheet data.
+     */
     public const XML_NODE_AUTOMATIC_STYLES = 'office:automatic-styles';
     public const XML_NODE_STYLE_TABLE_PROPERTIES = 'table-properties';
     public const XML_NODE_TABLE = 'table:table';
@@ -177,12 +182,12 @@ final class SheetIterator implements SheetIteratorInterface
 
         $this->xmlReader->readUntilNodeFound(self::XML_NODE_AUTOMATIC_STYLES);
 
-        /** @var \DOMElement $automaticStylesNode */
+        /** @var DOMElement $automaticStylesNode */
         $automaticStylesNode = $this->xmlReader->expand();
 
         $tableStyleNodes = $automaticStylesNode->getElementsByTagNameNS(self::XML_STYLE_NAMESPACE, self::XML_NODE_STYLE_TABLE_PROPERTIES);
 
-        /** @var \DOMElement $tableStyleNode */
+        /** @var DOMElement $tableStyleNode */
         foreach ($tableStyleNodes as $tableStyleNode) {
             $isSheetVisible = ('false' !== $tableStyleNode->getAttribute(self::XML_ATTRIBUTE_TABLE_DISPLAY));
 

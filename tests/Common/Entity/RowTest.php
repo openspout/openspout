@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Common\Entity;
 
 /**
@@ -12,7 +14,7 @@ final class RowTest extends \PHPUnit\Framework\TestCase
         $row = new Row([], null);
         $row->setCells([Cell::fromValue(null), Cell::fromValue(null)]);
 
-        static::assertSame(2, $row->getNumCells());
+        self::assertSame(2, $row->getNumCells());
     }
 
     public function testSetCellsResets(): void
@@ -20,22 +22,22 @@ final class RowTest extends \PHPUnit\Framework\TestCase
         $row = new Row([], null);
         $row->setCells([Cell::fromValue(null), Cell::fromValue(null)]);
 
-        static::assertSame(2, $row->getNumCells());
+        self::assertSame(2, $row->getNumCells());
 
         $row->setCells([Cell::fromValue(null)]);
 
-        static::assertSame(1, $row->getNumCells());
+        self::assertSame(1, $row->getNumCells());
     }
 
     public function testGetCells(): void
     {
         $row = new Row([], null);
 
-        static::assertSame(0, $row->getNumCells());
+        self::assertSame(0, $row->getNumCells());
 
         $row->setCells([Cell::fromValue(null), Cell::fromValue(null)]);
 
-        static::assertSame(2, $row->getNumCells());
+        self::assertSame(2, $row->getNumCells());
     }
 
     public function testGetCellAtIndex(): void
@@ -44,8 +46,8 @@ final class RowTest extends \PHPUnit\Framework\TestCase
         $cellMock = Cell::fromValue(null);
         $row->setCellAtIndex($cellMock, 3);
 
-        static::assertSame($cellMock, $row->getCellAtIndex(3));
-        static::assertNull($row->getCellAtIndex(10));
+        self::assertSame($cellMock, $row->getCellAtIndex(3));
+        self::assertNull($row->getCellAtIndex(10));
     }
 
     public function testSetCellAtIndex(): void
@@ -54,8 +56,8 @@ final class RowTest extends \PHPUnit\Framework\TestCase
         $cellMock = Cell::fromValue(null);
         $row->setCellAtIndex($cellMock, 1);
 
-        static::assertSame(2, $row->getNumCells());
-        static::assertNull($row->getCellAtIndex(0));
+        self::assertSame(2, $row->getNumCells());
+        self::assertNull($row->getCellAtIndex(0));
     }
 
     public function testAddCell(): void
@@ -63,11 +65,11 @@ final class RowTest extends \PHPUnit\Framework\TestCase
         $row = new Row([], null);
         $row->setCells([Cell::fromValue(null), Cell::fromValue(null)]);
 
-        static::assertSame(2, $row->getNumCells());
+        self::assertSame(2, $row->getNumCells());
 
         $row->addCell(Cell::fromValue(null));
 
-        static::assertSame(3, $row->getNumCells());
+        self::assertSame(3, $row->getNumCells());
     }
 
     /**
@@ -79,7 +81,7 @@ final class RowTest extends \PHPUnit\Framework\TestCase
     {
         $row = new Row($cells, null);
 
-        static::assertSame($expectedIsEmpty, $row->isEmpty());
+        self::assertSame($expectedIsEmpty, $row->isEmpty());
     }
 
     public function dataProviderForTestIsEmptyRow(): array

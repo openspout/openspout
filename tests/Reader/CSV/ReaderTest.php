@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Reader\CSV;
 
 use OpenSpout\Common\Exception\IOException;
@@ -40,8 +42,8 @@ final class ReaderTest extends TestCase
         $this->createGeneratedFolderIfNeeded($testFilename);
         $testPath = $this->getGeneratedResourcePath($testFilename);
 
-        static::assertTrue(copy($resourcePath, $testPath));
-        static::assertTrue(chmod($testPath, 0));
+        self::assertTrue(copy($resourcePath, $testPath));
+        self::assertTrue(chmod($testPath, 0));
         $reader = $this->createCSVReader(null, null);
 
         $this->expectException(IOException::class);
@@ -57,13 +59,13 @@ final class ReaderTest extends TestCase
             ['csv--21', 'csv--22', 'csv--23'],
             ['csv--31', 'csv--32', 'csv--33'],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadShouldNotStopAtCommaIfEnclosed(): void
     {
         $allRows = $this->getAllRowsForFile('csv_with_comma_enclosed.csv');
-        static::assertSame('This is, a comma', $allRows[0][0]);
+        self::assertSame('This is, a comma', $allRows[0][0]);
     }
 
     public function testReadShouldKeepEmptyCells(): void
@@ -75,7 +77,7 @@ final class ReaderTest extends TestCase
             ['csv--21', '', 'csv--23'],
             ['csv--31', 'csv--32', ''],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadShouldSkipEmptyLinesIfShouldPreserveEmptyRowsNotSet(): void
@@ -90,7 +92,7 @@ final class ReaderTest extends TestCase
             // skipped row here
             // last row empty
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadShouldReturnEmptyLinesIfShouldPreserveEmptyRowsSet(): void
@@ -110,7 +112,7 @@ final class ReaderTest extends TestCase
             ['csv--41', 'csv--42', 'csv--43'],
             [''],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function dataProviderForTestReadShouldReadEmptyFile(): array
@@ -127,7 +129,7 @@ final class ReaderTest extends TestCase
     public function testReadShouldReadEmptyFile(string $fileName): void
     {
         $allRows = $this->getAllRowsForFile($fileName);
-        static::assertSame([], $allRows);
+        self::assertSame([], $allRows);
     }
 
     public function testReadShouldHaveTheRightNumberOfCells(): void
@@ -139,7 +141,7 @@ final class ReaderTest extends TestCase
             ['csv--21', 'csv--22'],
             ['csv--31'],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadShouldSupportCustomFieldDelimiter(): void
@@ -151,13 +153,13 @@ final class ReaderTest extends TestCase
             ['csv--21', 'csv--22', 'csv--23'],
             ['csv--31', 'csv--32', 'csv--33'],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadShouldSupportCustomFieldEnclosure(): void
     {
         $allRows = $this->getAllRowsForFile('csv_text_enclosed_with_pound.csv', ',', '#');
-        static::assertSame('This is, a comma', $allRows[0][0]);
+        self::assertSame('This is, a comma', $allRows[0][0]);
     }
 
     public function testReadShouldSupportEscapedCharacters(): void
@@ -165,7 +167,7 @@ final class ReaderTest extends TestCase
         $allRows = $this->getAllRowsForFile('csv_with_escaped_characters.csv');
 
         $expectedRow = ['"csv--11"', 'csv--12\\', 'csv--13\\\\', 'csv--14\\\\\\'];
-        static::assertSame([$expectedRow], $allRows);
+        self::assertSame([$expectedRow], $allRows);
     }
 
     public function testReadShouldNotTruncateLineBreak(): void
@@ -173,7 +175,7 @@ final class ReaderTest extends TestCase
         $allRows = $this->getAllRowsForFile('csv_with_line_breaks.csv');
 
         $newLine = PHP_EOL; // to support both Unix and Windows
-        static::assertSame("This is,{$newLine}a comma", $allRows[0][0]);
+        self::assertSame("This is,{$newLine}a comma", $allRows[0][0]);
     }
 
     public function dataProviderForTestReadShouldSkipBom(): array
@@ -199,7 +201,7 @@ final class ReaderTest extends TestCase
             ['csv--21', 'csv--22', 'csv--23'],
             ['csv--31', 'csv--32', 'csv--33'],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function dataProviderForTestReadShouldSupportNonUTF8FilesWithoutBOMs(): array
@@ -242,7 +244,7 @@ final class ReaderTest extends TestCase
             ['csv--21', 'csv--22', 'csv--23'],
             ['csv--31', 'csv--32', 'csv--33'],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadMultipleTimesShouldRewindReader(): void
@@ -285,7 +287,7 @@ final class ReaderTest extends TestCase
             ['csv--11', 'csv--12', 'csv--13'],
             ['csv--11', 'csv--12', 'csv--13'],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     /**
@@ -300,7 +302,7 @@ final class ReaderTest extends TestCase
             ['1', '2', '3'],
             ['0', '0', '0'],
         ];
-        static::assertSame($expectedRows, $allRows, 'There should be only 3 rows, because zeros (0) are valid values');
+        self::assertSame($expectedRows, $allRows, 'There should be only 3 rows, because zeros (0) are valid values');
     }
 
     /**
@@ -315,7 +317,7 @@ final class ReaderTest extends TestCase
             ['0', '', ''],
             ['1', '1', ''],
         ];
-        static::assertSame($expectedRows, $allRows, 'There should be 3 rows, with equal length');
+        self::assertSame($expectedRows, $allRows, 'There should be 3 rows, with equal length');
     }
 
     /**
@@ -332,7 +334,7 @@ final class ReaderTest extends TestCase
             ["{$newLine}\tA{$newLine}\t"],
         ];
 
-        static::assertSame($expectedRows, $allRows, 'Cell values should not be trimmed');
+        self::assertSame($expectedRows, $allRows, 'Cell values should not be trimmed');
     }
 
     public function testReadCustomStreamWrapper(): void
@@ -359,7 +361,7 @@ final class ReaderTest extends TestCase
             ['csv--21', 'csv--22', 'csv--23'],
             ['csv--31', 'csv--32', 'csv--33'],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
 
         // cleanup
         stream_wrapper_unregister('spout');

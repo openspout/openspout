@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Common\Entity\Style;
 
 use OpenSpout\Writer\Exception\Border\InvalidNameException;
@@ -43,7 +45,7 @@ final class BorderTest extends TestCase
             new BorderPart(Border::LEFT),
         );
 
-        static::assertCount(4, $border->getParts(), 'There should never be more than 4 border parts');
+        self::assertCount(4, $border->getParts(), 'There should never be more than 4 border parts');
     }
 
     /**
@@ -56,13 +58,13 @@ final class BorderTest extends TestCase
             foreach (BorderPart::allowedStyles as $allowedStyle) {
                 foreach (BorderPart::allowedWidths as $allowedWidth) {
                     $border = new Border(new BorderPart($allowedName, $color, $allowedWidth, $allowedStyle));
-                    static::assertCount(1, $border->getParts());
+                    self::assertCount(1, $border->getParts());
 
                     $part = $border->getParts()[$allowedName];
 
-                    static::assertSame($allowedStyle, $part->getStyle());
-                    static::assertSame($allowedWidth, $part->getWidth());
-                    static::assertSame($color, $part->getColor());
+                    self::assertSame($allowedStyle, $part->getStyle());
+                    self::assertSame($allowedWidth, $part->getWidth());
+                    self::assertSame($color, $part->getColor());
                 }
             }
         }

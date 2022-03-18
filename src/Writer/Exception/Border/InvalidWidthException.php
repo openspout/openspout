@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Writer\Exception\Border;
 
 use OpenSpout\Common\Entity\Style\BorderPart;

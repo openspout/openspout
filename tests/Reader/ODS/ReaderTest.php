@@ -1,8 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Reader\ODS;
 
+use DateInterval;
 use DateTimeImmutable;
+use DateTimeZone;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Reader\Exception\IteratorNotRewindableException;
 use OpenSpout\TestUsingResource;
@@ -49,16 +53,16 @@ final class ReaderTest extends TestCase
     {
         $allRows = $this->getAllRowsForFile($resourceName);
 
-        static::assertCount($expectedNumOfRows, $allRows, "There should be {$expectedNumOfRows} rows");
+        self::assertCount($expectedNumOfRows, $allRows, "There should be {$expectedNumOfRows} rows");
         foreach ($allRows as $row) {
-            static::assertCount($expectedNumOfCellsPerRow, $row, "There should be {$expectedNumOfCellsPerRow} cells for every row");
+            self::assertCount($expectedNumOfCellsPerRow, $row, "There should be {$expectedNumOfCellsPerRow} cells for every row");
         }
     }
 
     public function testReadShouldSupportRowWithOnlyOneCell(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_with_only_one_cell.ods');
-        static::assertSame([['foo']], $allRows);
+        self::assertSame([['foo']], $allRows);
     }
 
     public function testReadShouldSupportNumberRowsRepeated(): void
@@ -68,7 +72,7 @@ final class ReaderTest extends TestCase
             ['foo', 10.43],
             ['foo', 10.43],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadShouldSupportNumberColumnsRepeated(): void
@@ -82,7 +86,7 @@ final class ReaderTest extends TestCase
                 10.43, 10.43, 10.43, 10.43,
             ],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function dataProviderForTestReadWithFilesGeneratedByExternalSoftwares(): array
@@ -117,13 +121,13 @@ final class ReaderTest extends TestCase
             $expectedRows[3][] = '';
         }
 
-        static::assertEquals($expectedRows, $allRows);
+        self::assertEquals($expectedRows, $allRows);
     }
 
     public function testReadShouldSupportAllCellTypes(): void
     {
-        $utcTz = new \DateTimeZone('UTC');
-        $honoluluTz = new \DateTimeZone('Pacific/Honolulu'); // UTC-10
+        $utcTz = new DateTimeZone('UTC');
+        $honoluluTz = new DateTimeZone('Pacific/Honolulu'); // UTC-10
 
         $allRows = $this->getAllRowsForFile('sheet_with_all_cell_types.ods');
 
@@ -134,13 +138,13 @@ final class ReaderTest extends TestCase
                 0, 10.43,
                 new DateTimeImmutable('1987-11-29T00:00:00', $utcTz), new DateTimeImmutable('1987-11-29T13:37:00', $utcTz),
                 new DateTimeImmutable('1987-11-29T13:37:00', $utcTz), new DateTimeImmutable('1987-11-29T13:37:00', $honoluluTz),
-                new \DateInterval('PT13H37M00S'),
+                new DateInterval('PT13H37M00S'),
                 0, 0.42,
                 '42 USD', '9.99 EUR',
                 '',
             ],
         ];
-        static::assertEquals($expectedRows, $allRows);
+        self::assertEquals($expectedRows, $allRows);
     }
 
     public function testReadShouldSupportFormatDatesAndTimesIfSpecified(): void
@@ -152,19 +156,19 @@ final class ReaderTest extends TestCase
             ['05/19/2016', '5/19/16', '05/19/2016 16:39:00', '05/19/16 04:39 PM', '5/19/2016'],
             ['11:29', '13:23:45', '01:23:45', '01:23:45 AM', '01:23:45 PM'],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadShouldReturnEmptyStringOnUndefinedCellType(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_with_undefined_value_type.ods');
-        static::assertSame([['ods--11', '', 'ods--13']], $allRows);
+        self::assertSame([['ods--11', '', 'ods--13']], $allRows);
     }
 
     public function testReadShouldReturnNullOnInvalidDateOrTime(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_with_invalid_date_time.ods');
-        static::assertSame([[null, null]], $allRows);
+        self::assertSame([[null, null]], $allRows);
     }
 
     public function testReadShouldSupportMultilineStrings(): void
@@ -172,14 +176,14 @@ final class ReaderTest extends TestCase
         $allRows = $this->getAllRowsForFile('sheet_with_multiline_string.ods');
 
         $expectedRows = [["string\non multiple\nlines!"]];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadShouldSkipEmptyRowsIfShouldPreserveEmptyRowsNotSet(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_with_empty_rows.ods');
 
-        static::assertCount(3, $allRows, 'There should be only 3 rows, because the empty rows are skipped');
+        self::assertCount(3, $allRows, 'There should be only 3 rows, because the empty rows are skipped');
 
         $expectedRows = [
             // skipped row here
@@ -189,14 +193,14 @@ final class ReaderTest extends TestCase
             ['ods--51', 'ods--52', 'ods--53'],
             ['ods--61', 'ods--62', 'ods--63'],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadShouldReturnEmptyLinesIfShouldPreserveEmptyRowsSet(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_with_empty_rows.ods', false, true);
 
-        static::assertCount(6, $allRows, 'There should be 6 rows');
+        self::assertCount(6, $allRows, 'There should be 6 rows');
 
         $expectedRows = [
             [''],
@@ -206,7 +210,7 @@ final class ReaderTest extends TestCase
             ['ods--51', 'ods--52', 'ods--53'],
             ['ods--61', 'ods--62', 'ods--63'],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadShouldPreserveSpacing(): void
@@ -220,7 +224,7 @@ final class ReaderTest extends TestCase
             '  2 spaces before',
             "3 spaces   in the middle\nand 2 spaces  in the middle",
         ];
-        static::assertSame([$expectedRow], $allRows);
+        self::assertSame([$expectedRow], $allRows);
     }
 
     public function testReadShouldSupportWhitespaceAsXML(): void
@@ -228,7 +232,7 @@ final class ReaderTest extends TestCase
         $allRows = $this->getAllRowsForFile('sheet_with_whitespaces_as_xml.ods');
 
         $expectedRow = ["Lorem  ipsum\tdolor sit amet"];
-        static::assertSame([$expectedRow], $allRows);
+        self::assertSame([$expectedRow], $allRows);
     }
 
     /**
@@ -237,7 +241,7 @@ final class ReaderTest extends TestCase
     public function testReadShouldBeProtectedAgainstBillionLaughsAttack(): void
     {
         if (\function_exists('xdebug_code_coverage_started') && xdebug_code_coverage_started()) {
-            static::markTestSkipped('test not compatible with code coverage');
+            self::markTestSkipped('test not compatible with code coverage');
         }
 
         $startTime = microtime(true);
@@ -246,13 +250,13 @@ final class ReaderTest extends TestCase
         try {
             // using @ to prevent warnings/errors from being displayed
             @$this->getAllRowsForFile($fileName);
-            static::fail('An exception should have been thrown');
+            self::fail('An exception should have been thrown');
         } catch (IOException $exception) {
             $duration = microtime(true) - $startTime;
-            static::assertLessThan(10, $duration, 'Entities should not be expanded and therefore take more than 10 seconds to be parsed.');
+            self::assertLessThan(10, $duration, 'Entities should not be expanded and therefore take more than 10 seconds to be parsed.');
 
             $expectedMaxMemoryUsage = 35 * 1024 * 1024; // 35MB
-            static::assertLessThan($expectedMaxMemoryUsage, memory_get_peak_usage(true), 'Entities should not be expanded and therefore consume all the memory.');
+            self::assertLessThan($expectedMaxMemoryUsage, memory_get_peak_usage(true), 'Entities should not be expanded and therefore consume all the memory.');
         }
     }
 
@@ -262,7 +266,7 @@ final class ReaderTest extends TestCase
     public function testReadShouldBeProtectedAgainstQuadraticBlowupAttack(): void
     {
         if (\function_exists('xdebug_code_coverage_started') && xdebug_code_coverage_started()) {
-            static::markTestSkipped('test not compatible with code coverage');
+            self::markTestSkipped('test not compatible with code coverage');
         }
 
         $startTime = microtime(true);
@@ -270,19 +274,19 @@ final class ReaderTest extends TestCase
         $fileName = 'attack_quadratic_blowup.ods';
         $allRows = $this->getAllRowsForFile($fileName);
 
-        static::assertSame('', $allRows[0][0], 'Entities should not have been expanded');
+        self::assertSame('', $allRows[0][0], 'Entities should not have been expanded');
 
         $duration = microtime(true) - $startTime;
-        static::assertLessThan(10, $duration, 'Entities should not be expanded and therefore take more than 10 seconds to be parsed.');
+        self::assertLessThan(10, $duration, 'Entities should not be expanded and therefore take more than 10 seconds to be parsed.');
 
         $expectedMaxMemoryUsage = 35 * 1024 * 1024; // 35MB
-        static::assertLessThan($expectedMaxMemoryUsage, memory_get_peak_usage(true), 'Entities should not be expanded and therefore consume all the memory.');
+        self::assertLessThan($expectedMaxMemoryUsage, memory_get_peak_usage(true), 'Entities should not be expanded and therefore consume all the memory.');
     }
 
     public function testReadShouldBeAbleToProcessEmptySheets(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_with_no_cells.ods');
-        static::assertSame([], $allRows, 'Sheet with no cells should be correctly processed.');
+        self::assertSame([], $allRows, 'Sheet with no cells should be correctly processed.');
     }
 
     public function testReadShouldSkipFormulas(): void
@@ -294,7 +298,7 @@ final class ReaderTest extends TestCase
             [10, 20, 30, 21],
             [11, 21, 32, 41],
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadShouldThrowIfTryingToRewindRowIterator(): void
@@ -357,7 +361,7 @@ final class ReaderTest extends TestCase
             ['ods--sheet2--11', 'ods--sheet2--12', 'ods--sheet2--13'], // 1st row, 2nd sheet
             ['ods--sheet1--11', 'ods--sheet1--12', 'ods--sheet1--13'], // 1st row, 1st sheet
         ];
-        static::assertSame($expectedRows, $allRows);
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadWithUnsupportedCustomStreamWrapper(): void
@@ -388,7 +392,7 @@ final class ReaderTest extends TestCase
             [1, 2, 3],
             [0, 0, 0],
         ];
-        static::assertSame($expectedRows, $allRows, 'There should be only 3 rows, because zeros (0) are valid values');
+        self::assertSame($expectedRows, $allRows, 'There should be only 3 rows, because zeros (0) are valid values');
     }
 
     /**
@@ -403,7 +407,7 @@ final class ReaderTest extends TestCase
             [0, '', ''],
             [1, 1, ''],
         ];
-        static::assertSame($expectedRows, $allRows, 'There should be 3 rows, with equal length');
+        self::assertSame($expectedRows, $allRows, 'There should be 3 rows, with equal length');
     }
 
     /**
@@ -419,7 +423,7 @@ final class ReaderTest extends TestCase
             ["\n\tA\n\t"],
         ];
 
-        static::assertSame($expectedRows, $allRows, 'Cell values should not be trimmed');
+        self::assertSame($expectedRows, $allRows, 'Cell values should not be trimmed');
     }
 
     /**
@@ -435,7 +439,7 @@ final class ReaderTest extends TestCase
             ['2@example.com', 'text and https://github.com/box/spout/issues/218 and text'],
         ];
 
-        static::assertSame($expectedRows, $allRows, 'Text in hyperlinks should be read');
+        self::assertSame($expectedRows, $allRows, 'Text in hyperlinks should be read');
     }
 
     public function testReaderShouldReadInlineFontFormattingAsText(): void
@@ -446,7 +450,7 @@ final class ReaderTest extends TestCase
             ['I am a yellow bird'],
         ];
 
-        static::assertSame($expectedRows, $allRows, 'Text formatted inline should be read');
+        self::assertSame($expectedRows, $allRows, 'Text formatted inline should be read');
     }
 
     /**

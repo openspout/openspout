@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Writer\Common\Manager\Style;
 
 use OpenSpout\Common\Entity\Cell;
@@ -14,35 +16,35 @@ final class StyleManagerTest extends TestCase
     public function testApplyExtraStylesIfNeededShouldApplyWrapTextIfCellContainsNewLine(): void
     {
         $style = (new Style());
-        static::assertFalse($style->shouldWrapText());
+        self::assertFalse($style->shouldWrapText());
 
         $styleManager = $this->getStyleManager();
         $possiblyUpdatedStyle = $styleManager->applyExtraStylesIfNeeded(Cell::fromValue("multi\nlines", $style));
 
-        static::assertTrue($possiblyUpdatedStyle->isUpdated());
-        static::assertTrue($possiblyUpdatedStyle->getStyle()->shouldWrapText());
+        self::assertTrue($possiblyUpdatedStyle->isUpdated());
+        self::assertTrue($possiblyUpdatedStyle->getStyle()->shouldWrapText());
     }
 
     public function testApplyExtraStylesIfNeededShouldReturnNullIfWrapTextNotNeeded(): void
     {
         $style = (new Style());
-        static::assertFalse($style->shouldWrapText());
+        self::assertFalse($style->shouldWrapText());
 
         $styleManager = $this->getStyleManager();
         $possiblyUpdatedStyle = $styleManager->applyExtraStylesIfNeeded(Cell::fromValue('oneline', $style));
 
-        static::assertFalse($possiblyUpdatedStyle->isUpdated());
+        self::assertFalse($possiblyUpdatedStyle->isUpdated());
     }
 
     public function testApplyExtraStylesIfNeededShouldReturnNullIfWrapTextAlreadyApplied(): void
     {
         $style = (new Style())->setShouldWrapText();
-        static::assertTrue($style->shouldWrapText());
+        self::assertTrue($style->shouldWrapText());
 
         $styleManager = $this->getStyleManager();
         $possiblyUpdatedStyle = $styleManager->applyExtraStylesIfNeeded(Cell::fromValue("multi\nlines", $style));
 
-        static::assertFalse($possiblyUpdatedStyle->isUpdated());
+        self::assertFalse($possiblyUpdatedStyle->isUpdated());
     }
 
     private function getStyleManager(): StyleManager

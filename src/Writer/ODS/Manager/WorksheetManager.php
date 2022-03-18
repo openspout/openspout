@@ -1,7 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Writer\ODS\Manager;
 
+use DateTimeImmutable;
+use DateTimeInterface;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\Style;
@@ -254,8 +258,8 @@ final class WorksheetManager implements WorksheetManagerInterface
             $data .= '</table:table-cell>';
         } elseif ($cell instanceof Cell\DateCell) {
             $value = $cell->getValue();
-            if ($value instanceof \DateTimeInterface) {
-                $datevalue = substr((new \DateTimeImmutable('@'.$value->getTimestamp()))->format(\DateTimeInterface::W3C), 0, -6);
+            if ($value instanceof DateTimeInterface) {
+                $datevalue = substr((new DateTimeImmutable('@'.$value->getTimestamp()))->format(DateTimeInterface::W3C), 0, -6);
                 $data .= ' office:value-type="date" calcext:value-type="date" office:date-value="'.$datevalue.'Z">';
                 $data .= '<text:p>'.$datevalue.'Z</text:p>';
             } else {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Reader\XLSX;
 
 use OpenSpout\TestUsingResource;
@@ -57,12 +59,12 @@ final class ReaderPerfTest extends TestCase
         $reader->close();
 
         $expectedNumRows = 300000;
-        static::assertSame($expectedNumRows, $numReadRows, "{$expectedNumRows} rows should have been read");
+        self::assertSame($expectedNumRows, $numReadRows, "{$expectedNumRows} rows should have been read");
 
         $executionTime = time() - $startTime;
-        static::assertTrue($executionTime < $expectedMaxExecutionTime, "Reading 300,000 rows should take less than {$expectedMaxExecutionTime} seconds (took {$executionTime} seconds)");
+        self::assertTrue($executionTime < $expectedMaxExecutionTime, "Reading 300,000 rows should take less than {$expectedMaxExecutionTime} seconds (took {$executionTime} seconds)");
 
         $memoryPeakUsage = memory_get_peak_usage(true) - $beforeMemoryPeakUsage;
-        static::assertTrue($memoryPeakUsage < $expectedMaxMemoryPeakUsage, 'Reading 300,000 rows should require less than '.($expectedMaxMemoryPeakUsage / 1024 / 1024).' MB of memory (required '.($memoryPeakUsage / 1024 / 1024).' MB)');
+        self::assertTrue($memoryPeakUsage < $expectedMaxMemoryPeakUsage, 'Reading 300,000 rows should require less than '.($expectedMaxMemoryPeakUsage / 1024 / 1024).' MB of memory (required '.($memoryPeakUsage / 1024 / 1024).' MB)');
     }
 }
