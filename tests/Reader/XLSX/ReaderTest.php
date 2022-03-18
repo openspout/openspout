@@ -653,8 +653,8 @@ final class ReaderTest extends TestCase
         $reader = new Reader($options);
         $reader->open($resourcePath);
 
-        foreach ($reader->getSheetIterator() as $sheet) {
-            foreach ($sheet->getRowIterator() as $row) {
+        foreach ($reader->getSheetIterator() as $sheetIndex => $sheet) {
+            foreach ($sheet->getRowIterator() as $rowIndex => $row) {
                 $allRows[] = $row->toArray();
             }
         }

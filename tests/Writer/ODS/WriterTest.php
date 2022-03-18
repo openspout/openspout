@@ -16,8 +16,12 @@ use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\InvalidArgumentException;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Exception\OpenSpoutException;
+use OpenSpout\Common\Helper\StringHelper;
 use OpenSpout\Reader\Wrapper\XMLReader;
 use OpenSpout\TestUsingResource;
+use OpenSpout\Writer\Common\Entity\Sheet;
+use OpenSpout\Writer\Common\Manager\SheetManager;
+use OpenSpout\Writer\Exception\SheetNotFoundException;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
 use OpenSpout\Writer\ODS\Manager\WorkbookManager;
 use OpenSpout\Writer\RowCreationHelper;
@@ -137,6 +141,15 @@ final class WriterTest extends TestCase
         $writer->close();
 
         self::assertSame($firstSheet, $writer->getCurrentSheet(), 'The current sheet should be the first one.');
+
+        $dummySheet = new Sheet(
+            random_int(100, 199),
+            uniqid('foo_'),
+            new SheetManager(StringHelper::factory())
+        );
+
+        $this->expectException(SheetNotFoundException::class);
+        $writer->setCurrentSheet($dummySheet);
     }
 
     public function testCloseShouldNoopWhenWriterIsNotOpened(): void

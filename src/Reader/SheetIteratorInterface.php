@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace OpenSpout\Reader;
 
+use Iterator;
+
 /**
  * @template T of SheetInterface
- * @extends IteratorInterface<T>
+ * @extends Iterator<T>
  */
-interface SheetIteratorInterface extends IteratorInterface
+interface SheetIteratorInterface extends Iterator
 {
-    public function end(): void;
-
     /**
      * @return T of SheetInterface
      */

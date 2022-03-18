@@ -12,7 +12,6 @@ use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Common\Exception\InvalidArgumentException;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\Escaper\ODS as ODSEscaper;
-use OpenSpout\Common\Helper\StringHelper;
 use OpenSpout\Writer\Common\Entity\Worksheet;
 use OpenSpout\Writer\Common\Manager\RegisteredStyle;
 use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
@@ -27,9 +26,6 @@ final class WorksheetManager implements WorksheetManagerInterface
     /** @var ODSEscaper Strings escaper */
     private ODSEscaper $stringsEscaper;
 
-    /** @var StringHelper String helper */
-    private StringHelper $stringHelper;
-
     /** @var StyleManager Manages styles */
     private StyleManager $styleManager;
 
@@ -42,13 +38,11 @@ final class WorksheetManager implements WorksheetManagerInterface
     public function __construct(
         StyleManager $styleManager,
         StyleMerger $styleMerger,
-        ODSEscaper $stringsEscaper,
-        StringHelper $stringHelper
+        ODSEscaper $stringsEscaper
     ) {
         $this->styleManager = $styleManager;
         $this->styleMerger = $styleMerger;
         $this->stringsEscaper = $stringsEscaper;
-        $this->stringHelper = $stringHelper;
     }
 
     /**
@@ -224,7 +218,7 @@ final class WorksheetManager implements WorksheetManagerInterface
             $data .= '<text:p>'.$cell->getValue().'</text:p>';
             $data .= '</table:table-cell>';
         } elseif ($cell instanceof Cell\NumericCell) {
-            $cellValue = $this->stringHelper->formatNumericValue($cell->getValue());
+            $cellValue = $cell->getValue();
             $data .= ' office:value-type="float" calcext:value-type="float" office:value="'.$cellValue.'">';
             $data .= '<text:p>'.$cellValue.'</text:p>';
             $data .= '</table:table-cell>';

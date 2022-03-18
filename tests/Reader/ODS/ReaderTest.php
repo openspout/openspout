@@ -24,6 +24,7 @@ final class ReaderTest extends TestCase
         return [
             ['/path/to/fake/file.ods'],
             ['file_corrupted.ods'],
+            ['non_zip.ods'],
         ];
     }
 
@@ -34,8 +35,7 @@ final class ReaderTest extends TestCase
     {
         $this->expectException(IOException::class);
 
-        // using @ to prevent warnings/errors from being displayed
-        @$this->getAllRowsForFile($filePath);
+        $this->getAllRowsForFile($filePath);
     }
 
     public function dataProviderForTestReadForAllWorksheets(): array

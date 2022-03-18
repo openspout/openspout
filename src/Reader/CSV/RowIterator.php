@@ -111,14 +111,6 @@ final class RowIterator implements RowIteratorInterface
     }
 
     /**
-     * Cleans up what was created to iterate over the object.
-     */
-    public function end(): void
-    {
-        // do nothing
-    }
-
-    /**
      * This rewinds and skips the BOM if inserted at the beginning of the file
      * by moving the file pointer after it, so that it is not read.
      */

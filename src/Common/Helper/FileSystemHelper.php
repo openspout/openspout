@@ -48,9 +48,17 @@ final class FileSystemHelper implements FileSystemHelperInterface
 
         $folderPath = $parentFolderPath.'/'.$folderName;
 
+        $errorMessage = '';
+        set_error_handler(static function ($nr, $message) use (&$errorMessage): bool {
+            $errorMessage = $message;
+
+            return true;
+        });
         $wasCreationSuccessful = mkdir($folderPath, 0777, true);
+        restore_error_handler();
+
         if (!$wasCreationSuccessful) {
-            throw new IOException("Unable to create folder: {$folderPath}");
+            throw new IOException("Unable to create folder: {$folderPath} - {$errorMessage}");
         }
 
         return $folderPath;
@@ -74,9 +82,17 @@ final class FileSystemHelper implements FileSystemHelperInterface
 
         $filePath = $parentFolderPath.'/'.$fileName;
 
+        $errorMessage = '';
+        set_error_handler(static function ($nr, $message) use (&$errorMessage): bool {
+            $errorMessage = $message;
+
+            return true;
+        });
         $wasCreationSuccessful = file_put_contents($filePath, $fileContents);
+        restore_error_handler();
+
         if (false === $wasCreationSuccessful) {
-            throw new IOException("Unable to create file: {$filePath}");
+            throw new IOException("Unable to create file: {$filePath} - {$errorMessage}");
         }
 
         return $filePath;

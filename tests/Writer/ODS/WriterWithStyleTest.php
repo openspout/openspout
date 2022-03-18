@@ -247,24 +247,27 @@ final class WriterWithStyleTest extends TestCase
 
         $borderBottomGreenThickSolid = new Border(new BorderPart(Border::BOTTOM, Color::GREEN, Border::WIDTH_THICK, Border::STYLE_SOLID));
         $borderTopRedThinDashed = new Border(new BorderPart(Border::TOP, Color::RED, Border::WIDTH_THIN, Border::STYLE_DASHED));
+        $borderLeft = new Border(new BorderPart(Border::LEFT, Color::BLACK, Border::WIDTH_MEDIUM, Border::STYLE_NONE));
 
         $styles = [
             (new Style())->setBorder($borderBottomGreenThickSolid),
             (new Style()),
             (new Style())->setBorder($borderTopRedThinDashed),
+            (new Style())->setBorder($borderLeft),
         ];
 
         $dataRows = [
             Row::fromValues(['row-with-border-bottom-green-thick-solid'], $styles[0]),
             Row::fromValues(['row-without-border'], $styles[1]),
             Row::fromValues(['row-with-border-top-red-thin-dashed'], $styles[2]),
+            Row::fromValues(['row-with-border-left'], $styles[3]),
         ];
 
         $this->writeToODSFile($dataRows, $fileName);
 
         $styleElements = $this->getCellStyleElementsFromContentXmlFile($fileName);
 
-        self::assertCount(3, $styleElements, 'There should be 3 styles)');
+        self::assertCount(4, $styleElements);
 
         // Use reflection for protected members here
         $widthMap = BorderHelper::widthMap;

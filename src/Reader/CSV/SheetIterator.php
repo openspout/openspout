@@ -74,12 +74,4 @@ final class SheetIterator implements SheetIteratorInterface
     {
         return 1;
     }
-
-    /**
-     * Cleans up what was created to iterate over the object.
-     */
-    public function end(): void
-    {
-        // do nothing
-    }
 }

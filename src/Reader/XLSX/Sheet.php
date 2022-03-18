@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace OpenSpout\Reader\XLSX;
 
-use OpenSpout\Reader\SheetInterface;
+use OpenSpout\Reader\SheetWithVisibilityInterface;
 
 /**
- * @implements SheetInterface<RowIterator>
+ * @implements SheetWithVisibilityInterface<RowIterator>
  */
-final class Sheet implements SheetInterface
+final class Sheet implements SheetWithVisibilityInterface
 {
     /** @var RowIterator To iterate over sheet's rows */
     private RowIterator $rowIterator;

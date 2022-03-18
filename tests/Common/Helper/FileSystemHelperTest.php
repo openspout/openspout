@@ -13,18 +13,35 @@ use PHPUnit\Framework\TestCase;
 final class FileSystemHelperTest extends TestCase
 {
     private FileSystemHelper $fileSystemHelper;
+    private string $baseFolder;
 
     protected function setUp(): void
     {
-        $baseFolder = sys_get_temp_dir();
-        $this->fileSystemHelper = new FileSystemHelper($baseFolder);
+        $this->baseFolder = sys_get_temp_dir().\DIRECTORY_SEPARATOR.uniqid('tmp_');
+        self::assertTrue(mkdir($this->baseFolder, 0700, false));
+        $this->fileSystemHelper = new FileSystemHelper($this->baseFolder);
     }
 
     public function testCreateFolderShouldThrowExceptionIfOutsideOfBaseFolder(): void
     {
         $this->expectException(IOException::class);
+        $this->expectExceptionMessage('outside of the base folder');
+        $this->fileSystemHelper->createFolder(__DIR__, 'folder_name');
+    }
+
+    public function testCreateFolderShouldThrowExceptionIfParentDoesntExist(): void
+    {
+        $this->expectException(IOException::class);
         $this->expectExceptionMessage('Folder not found');
         $this->fileSystemHelper->createFolder('/tmp/folder_outside_base_folder', 'folder_name');
+    }
+
+    public function testCreateFolderShouldThrowExceptionWhenFails(): void
+    {
+        self::assertTrue(chmod($this->baseFolder, 0));
+        $this->expectException(IOException::class);
+        $this->expectExceptionMessage('Permission denied');
+        $this->fileSystemHelper->createFolder($this->baseFolder, 'folder_name');
     }
 
     public function testCreateFileWithContentsShouldThrowExceptionIfOutsideOfBaseFolder(): void
@@ -32,6 +49,14 @@ final class FileSystemHelperTest extends TestCase
         $this->expectException(IOException::class);
         $this->expectExceptionMessage('Folder not found');
         $this->fileSystemHelper->createFileWithContents('/tmp/folder_outside_base_folder', 'file_name', 'contents');
+    }
+
+    public function testCreateFileWithContentsShouldThrowExceptionIfFails(): void
+    {
+        self::assertTrue(chmod($this->baseFolder, 0));
+        $this->expectException(IOException::class);
+        $this->expectExceptionMessage('Permission denied');
+        $this->fileSystemHelper->createFileWithContents($this->baseFolder, 'folder_name', 'contents');
     }
 
     public function testDeleteFileShouldThrowExceptionIfOutsideOfBaseFolder(): void

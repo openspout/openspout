@@ -11,7 +11,6 @@ use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Reader\Common\Manager\RowManager;
 use OpenSpout\Reader\Common\XMLProcessor;
 use OpenSpout\Reader\Exception\InvalidValueException;
-use OpenSpout\Reader\Exception\XMLProcessingException;
 use OpenSpout\Reader\RowIteratorInterface;
 use OpenSpout\Reader\Wrapper\XMLReader;
 use OpenSpout\Reader\XLSX\Helper\CellHelper;
@@ -152,7 +151,12 @@ final class RowIterator implements RowIteratorInterface
      */
     public function valid(): bool
     {
-        return !$this->hasReachedEndOfFile;
+        $valid = !$this->hasReachedEndOfFile;
+        if (!$valid) {
+            $this->xmlReader->close();
+        }
+
+        return $valid;
     }
 
     /**
@@ -212,14 +216,6 @@ final class RowIterator implements RowIteratorInterface
     }
 
     /**
-     * Cleans up what was created to iterate over the object.
-     */
-    public function end(): void
-    {
-        $this->xmlReader->close();
-    }
-
-    /**
      * @param string $sheetDataXMLFilePath Path of the sheet data XML file as in [Content_Types].xml
      *
      * @return string path of the XML file containing the sheet data,
@@ -261,11 +257,7 @@ final class RowIterator implements RowIteratorInterface
     {
         $this->currentlyProcessedRow = new Row([], null);
 
-        try {
-            $this->xmlProcessor->readUntilStopped();
-        } catch (XMLProcessingException $exception) {
-            throw new IOException("The {$this->sheetDataXMLFilePath} file cannot be read. [{$exception->getMessage()}]");
-        }
+        $this->xmlProcessor->readUntilStopped();
 
         $this->rowBuffer = $this->currentlyProcessedRow;
     }

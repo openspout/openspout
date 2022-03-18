@@ -61,13 +61,7 @@ final class SheetIterator implements SheetIteratorInterface
      */
     public function next(): void
     {
-        // Using isset here because it is way faster than array_key_exists...
-        if (isset($this->sheets[$this->currentSheetIndex])) {
-            $currentSheet = $this->sheets[$this->currentSheetIndex];
-            $currentSheet->getRowIterator()->end();
-
-            ++$this->currentSheetIndex;
-        }
+        ++$this->currentSheetIndex;
     }
 
     /**
@@ -88,16 +82,5 @@ final class SheetIterator implements SheetIteratorInterface
     public function key(): int
     {
         return $this->currentSheetIndex + 1;
-    }
-
-    /**
-     * Cleans up what was created to iterate over the object.
-     */
-    public function end(): void
-    {
-        // make sure we are not leaking memory in case the iteration stopped before the end
-        foreach ($this->sheets as $sheet) {
-            $sheet->getRowIterator()->end();
-        }
     }
 }

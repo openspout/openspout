@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace OpenSpout\Reader;
 
+use Iterator;
 use OpenSpout\Common\Entity\Row;
 
 /**
- * @extends IteratorInterface<Row>
+ * @extends Iterator<Row>
  */
-interface RowIteratorInterface extends IteratorInterface
+interface RowIteratorInterface extends Iterator
 {
-    public function end(): void;
-
     public function current(): Row;
 }
