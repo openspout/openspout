@@ -6,49 +6,27 @@ namespace OpenSpout\Writer\XLSX;
 
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\TestUsingResource;
-use PHPUnit\Framework\TestCase;
+use PhpBench\Attributes as Bench;
 
 /**
- * Performance tests for XLSX Writer.
- *
  * @internal
  */
-final class WriterPerfTest extends TestCase
+final class XlsxWriterBench
 {
     use TestUsingResource;
 
-    public function dataProviderForTestPerfWhenWritingOneMillionRowsXLSX(): array
+    #[Bench\OutputTimeUnit('seconds')]
+    #[Bench\Assert('mode(variant.mem.peak) < 2097152')]
+    #[Bench\Assert('mode(variant.time.avg) < 60000000')]
+    public function benchWriting1MRowsXLSXWithInlineStrings(): void
     {
-        return [
-            [$shouldUseInlineStrings = true, $expectedMaxExecutionTime = 330], // 5.5 minutes in seconds
-            [$shouldUseInlineStrings = false, $expectedMaxExecutionTime = 360], // 6 minutes in seconds
-        ];
-    }
-
-    /**
-     * 1 million rows (each row containing 3 cells) should be written
-     * in less than 5.5 minutes for inline strings, 6 minutes for
-     * shared strings and the execution should not require
-     * more than 3MB of memory.
-     *
-     * @dataProvider dataProviderForTestPerfWhenWritingOneMillionRowsXLSX
-     * @group perf-tests
-     */
-    public function testPerfWhenWritingOneMillionRowsXLSX(bool $shouldUseInlineStrings, int $expectedMaxExecutionTime): void
-    {
-        // getting current memory peak to avoid taking into account the memory used by PHPUnit
-        $beforeMemoryPeakUsage = memory_get_peak_usage(true);
-
         $numRows = 1000000;
-        $expectedMaxMemoryPeakUsage = 3 * 1024 * 1024; // 3MB in bytes
-        $startTime = time();
-
-        $fileName = ($shouldUseInlineStrings) ? 'xlsx_with_one_million_rows_and_inline_strings.xlsx' : 'xlsx_with_one_million_rows_and_shared_strings.xlsx';
+        $fileName = 'xlsx_with_one_million_rows_and_inline_strings.xlsx';
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
         $options = new Options();
-        $options->SHOULD_USE_INLINE_STRINGS = $shouldUseInlineStrings;
+        $options->SHOULD_USE_INLINE_STRINGS = true;
         $options->SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY = true;
         $writer = new Writer($options);
 
@@ -60,18 +38,34 @@ final class WriterPerfTest extends TestCase
 
         $writer->close();
 
-        if ($shouldUseInlineStrings) {
-            $numSheets = \count($writer->getSheets());
-            self::assertSame($numRows, $this->getNumWrittenRowsUsingInlineStrings($resourcePath, $numSheets), "The created XLSX ({$fileName}) should contain {$numRows} rows");
-        } else {
-            self::assertSame($numRows, $this->getNumWrittenRowsUsingSharedStrings($resourcePath), "The created XLSX ({$fileName}) should contain {$numRows} rows");
+        $numSheets = \count($writer->getSheets());
+        \assert($numRows === $this->getNumWrittenRowsUsingInlineStrings($resourcePath, $numSheets));
+    }
+
+    #[Bench\OutputTimeUnit('seconds')]
+    #[Bench\Assert('mode(variant.mem.peak) < 2097152')]
+    #[Bench\Assert('mode(variant.time.avg) < 60000000')]
+    public function benchWriting1MRowsXLSXWithSharedStrings(): void
+    {
+        $numRows = 1000000;
+        $fileName = 'xlsx_with_one_million_rows_and_shared_strings.xlsx';
+        $this->createGeneratedFolderIfNeeded($fileName);
+        $resourcePath = $this->getGeneratedResourcePath($fileName);
+
+        $options = new Options();
+        $options->SHOULD_USE_INLINE_STRINGS = false;
+        $options->SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY = true;
+        $writer = new Writer($options);
+
+        $writer->openToFile($resourcePath);
+
+        for ($i = 1; $i <= $numRows; ++$i) {
+            $writer->addRow(Row::fromValues(["xlsx--{$i}-1", "xlsx--{$i}-2", "xlsx--{$i}-3"]));
         }
 
-        $executionTime = time() - $startTime;
-        self::assertTrue($executionTime < $expectedMaxExecutionTime, "Writing 1 million rows should take less than {$expectedMaxExecutionTime} seconds (took {$executionTime} seconds)");
+        $writer->close();
 
-        $memoryPeakUsage = memory_get_peak_usage(true) - $beforeMemoryPeakUsage;
-        self::assertTrue($memoryPeakUsage < $expectedMaxMemoryPeakUsage, 'Writing 1 million rows should require less than '.($expectedMaxMemoryPeakUsage / 1024 / 1024).' MB of memory (required '.($memoryPeakUsage / 1024 / 1024).' MB)');
+        \assert($numRows === $this->getNumWrittenRowsUsingSharedStrings($resourcePath));
     }
 
     private function getNumWrittenRowsUsingInlineStrings(string $resourcePath, int $numSheets): int
@@ -116,7 +110,7 @@ final class WriterPerfTest extends TestCase
 
         // Get the last 200 characters
         $lastCharacters = shell_exec("tail -c {$numCharacters} {$tmpFile}");
-        self::assertNotFalse($lastCharacters);
+        \assert(false !== $lastCharacters);
 
         // remove the temporary file
         unlink($tmpFile);

@@ -197,3 +197,49 @@ jobs:
 
       - name: "Run static analysis"
         run: "vendor/bin/phpstan analyse --no-progress --error-format=checkstyle | cs2pr"
+
+  benchmarks:
+    name: "Benchmarks"
+
+    runs-on: "ubuntu-latest"
+
+    strategy:
+      matrix:
+        php-version:
+          - "8.1"
+        bench:
+          - "CsvReaderBench"
+          - "CsvWriterBench"
+          - "OdsReaderBench"
+          - "OdsWriterBench"
+          - "XlsxReaderBench"
+          - "XlsxWriterBench"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v3"
+
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          coverage: "none"
+          php-version: ${{ matrix.php-version }}
+          extensions: zip, xmlreader, dom
+          ini-values: zend.assertions=1,error_reporting=-1
+
+      - name: "Get composer cache directory"
+        id: "composercache"
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: "Cache dependencies"
+        uses: "actions/cache@v2"
+        with:
+          path: ${{ steps.composercache.outputs.dir }}
+          key: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-
+
+      - name: "Install dependencies"
+        run: "composer update --no-interaction --no-progress"
+
+      - name: "Run benchmarks"
+        run: "vendor/bin/phpbench run --report=default --filter ${{ matrix.bench }}"

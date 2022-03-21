@@ -23,6 +23,7 @@ $config = (new PhpCsFixer\Config())
 ;
 
 $config->getFinder()
+    ->in(__DIR__.'/benchmarks')
     ->in(__DIR__.'/src')
     ->in(__DIR__.'/tests')
 ;

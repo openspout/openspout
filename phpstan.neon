@@ -6,6 +6,7 @@ includes:
 parameters:
     level: 7
     paths:
+        - benchmarks
         - src
         - tests
     ignoreErrors:
@@ -13,3 +14,7 @@ parameters:
             message: "#^Method .+Test::dataProvider.+\\(\\) return type has no value type specified in iterable type array\\.$#"
             paths:
                 - tests/
+        -
+            message: '#^Attribute class PhpBench\\Attributes\\Assert is not repeatable but is already present above the method\.$#'
+            paths:
+                - benchmarks/

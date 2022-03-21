@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OpenSpout;
 
+use PHPUnit\Framework\Assert;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
@@ -66,7 +67,7 @@ trait TestUsingResource
     {
         // On Windows, chmod() or the mkdir's mode is ignored
         if ($this->isWindows()) {
-            self::markTestSkipped('Skipping because Windows cannot create read-only folders through PHP');
+            Assert::markTestSkipped('Skipping because Windows cannot create read-only folders through PHP');
         }
 
         if (!file_exists($this->generatedUnwritableResourcesPath)) {
@@ -86,7 +87,7 @@ trait TestUsingResource
     private function getTempFolderPath(): string
     {
         $realpath = realpath($this->tempFolderPath);
-        self::assertNotFalse($realpath);
+        \assert(false !== $realpath);
 
         return $realpath;
     }
