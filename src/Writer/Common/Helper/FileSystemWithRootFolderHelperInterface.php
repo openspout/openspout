@@ -7,8 +7,7 @@ namespace OpenSpout\Writer\Common\Helper;
 use OpenSpout\Common\Helper\FileSystemHelperInterface;
 
 /**
- * This interface describes helper functions to help with the file system operations
- * like files/folders creation & deletion.
+ * @internal
  */
 interface FileSystemWithRootFolderHelperInterface extends FileSystemHelperInterface
 {

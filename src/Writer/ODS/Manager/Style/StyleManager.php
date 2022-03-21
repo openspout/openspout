@@ -9,11 +9,11 @@ use OpenSpout\Common\Entity\Style\CellAlignment;
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Writer\Common\AbstractOptions;
 use OpenSpout\Writer\Common\Entity\Worksheet;
-use OpenSpout\Writer\Common\Manager\Style\StyleManager as CommonStyleManager;
+use OpenSpout\Writer\Common\Manager\Style\AbstractStyleManager as CommonStyleManager;
 use OpenSpout\Writer\ODS\Helper\BorderHelper;
 
 /**
- * Manages styles to be applied to a cell.
+ * @internal
  *
  * @property StyleRegistry $styleRegistry
  */

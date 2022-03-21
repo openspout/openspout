@@ -13,7 +13,7 @@ use OpenSpout\Writer\ODS\Manager\Style\StyleManager;
 use OpenSpout\Writer\ODS\Options;
 
 /**
- * ODS workbook manager, providing the interfaces to work with workbook.
+ * @internal
  *
  * @property WorksheetManager $worksheetManager
  * @property FileSystemHelper $fileSystemHelper

@@ -11,6 +11,8 @@ use OpenSpout\Reader\Exception\SharedStringNotFoundException;
  * This class implements the file-based caching strategy for shared strings.
  * Shared strings are stored in small files (with a max number of strings per file).
  * This strategy is slower than an in-memory strategy but is used to avoid out of memory crashes.
+ *
+ * @internal
  */
 final class FileBasedStrategy implements CachingStrategyInterface
 {

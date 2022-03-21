@@ -8,7 +8,6 @@ use OpenSpout\Common\Helper\Escaper\XLSX;
 use OpenSpout\Common\Helper\StringHelper;
 use OpenSpout\Writer\Common\Entity\Workbook;
 use OpenSpout\Writer\Common\Helper\ZipHelper;
-use OpenSpout\Writer\Common\Manager\RowManager;
 use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
 use OpenSpout\Writer\WriterMultiSheetsAbstract;
 use OpenSpout\Writer\XLSX\Helper\FileSystemHelper;
@@ -59,7 +58,6 @@ final class Writer extends WriterMultiSheetsAbstract
 
         $worksheetManager = new WorksheetManager(
             $this->options,
-            new RowManager(),
             $styleManager,
             $styleMerger,
             $sharedStringsManager,

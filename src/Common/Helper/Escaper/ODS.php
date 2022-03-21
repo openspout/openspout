@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace OpenSpout\Common\Helper\Escaper;
 
 /**
- * Provides functions to escape and unescape data for ODS files.
+ * @internal
  */
 final class ODS implements EscaperInterface
 {

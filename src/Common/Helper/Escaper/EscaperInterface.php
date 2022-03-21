@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace OpenSpout\Common\Helper\Escaper;
 
 /**
- * Interface EscaperInterface.
+ * @internal
  */
 interface EscaperInterface
 {

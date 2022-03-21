@@ -15,12 +15,12 @@ final class StyleRegistryTest extends TestCase
 {
     private Style $defaultStyle;
 
-    private StyleRegistry $styleRegistry;
+    private AbstractStyleRegistry $styleRegistry;
 
     protected function setUp(): void
     {
         $this->defaultStyle = (new Style());
-        $this->styleRegistry = new StyleRegistry($this->defaultStyle);
+        $this->styleRegistry = new class($this->defaultStyle) extends AbstractStyleRegistry {};
     }
 
     public function testSerializeShouldNotTakeIntoAccountId(): void

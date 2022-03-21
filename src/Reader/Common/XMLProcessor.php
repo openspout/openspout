@@ -8,7 +8,7 @@ use OpenSpout\Reader\Wrapper\XMLReader;
 use ReflectionMethod;
 
 /**
- * Helps process XML files.
+ * @internal
  */
 final class XMLProcessor
 {

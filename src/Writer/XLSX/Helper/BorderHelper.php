@@ -7,6 +7,9 @@ namespace OpenSpout\Writer\XLSX\Helper;
 use OpenSpout\Common\Entity\Style\Border;
 use OpenSpout\Common\Entity\Style\BorderPart;
 
+/**
+ * @internal
+ */
 final class BorderHelper
 {
     private const xlsxStyleMap = [

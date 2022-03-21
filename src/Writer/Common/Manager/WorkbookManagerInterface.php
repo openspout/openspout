@@ -13,8 +13,7 @@ use OpenSpout\Writer\Exception\SheetNotFoundException;
 use OpenSpout\Writer\Exception\WriterException;
 
 /**
- * Interface WorkbookManagerInterface
- * workbook manager interface, providing the generic interfaces to work with workbook.
+ * @internal
  */
 interface WorkbookManagerInterface
 {

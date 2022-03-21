@@ -133,7 +133,7 @@ final class StyleMergerTest extends TestCase
     private function assertSameStyles(Style $style1, Style $style2): void
     {
         $fakeStyle = (new Style());
-        $styleRegistry = new StyleRegistry($fakeStyle);
+        $styleRegistry = new class($fakeStyle) extends AbstractStyleRegistry {};
 
         self::assertSame($styleRegistry->serialize($style1), $styleRegistry->serialize($style2));
     }

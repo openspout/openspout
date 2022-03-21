@@ -18,6 +18,8 @@ use OpenSpout\Common\Entity\Style\BorderPart;
  * fo:border-bottom="0.74pt solid #ffc000" style:diagonal-bl-tr="none"
  * style:diagonal-tl-br="none" fo:border-left="none" fo:border-right="none"
  * style:rotation-align="none" fo:border-top="none"/>
+ *
+ * @internal
  */
 final class BorderHelper
 {

@@ -7,11 +7,11 @@ namespace OpenSpout\Writer\XLSX\Manager\Style;
 use OpenSpout\Common\Entity\Style\BorderPart;
 use OpenSpout\Common\Entity\Style\Color;
 use OpenSpout\Common\Entity\Style\Style;
-use OpenSpout\Writer\Common\Manager\Style\StyleManager as CommonStyleManager;
+use OpenSpout\Writer\Common\Manager\Style\AbstractStyleManager as CommonStyleManager;
 use OpenSpout\Writer\XLSX\Helper\BorderHelper;
 
 /**
- * Manages styles to be applied to a cell.
+ * @internal
  *
  * @property StyleRegistry $styleRegistry
  */

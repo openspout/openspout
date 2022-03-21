@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace OpenSpout\Writer\Common\Helper;
 
 /**
- * This class provides helper functions when working with cells.
+ * @internal
  */
 final class CellHelper
 {

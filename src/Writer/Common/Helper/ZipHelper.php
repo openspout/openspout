@@ -9,7 +9,7 @@ use RecursiveIteratorIterator;
 use ZipArchive;
 
 /**
- * This class provides helper functions to create zip files.
+ * @internal
  */
 final class ZipHelper
 {

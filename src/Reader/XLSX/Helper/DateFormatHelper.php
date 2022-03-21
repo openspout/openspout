@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace OpenSpout\Reader\XLSX\Helper;
 
 /**
- * This class provides helper functions to format Excel dates.
+ * @internal
  */
 final class DateFormatHelper
 {

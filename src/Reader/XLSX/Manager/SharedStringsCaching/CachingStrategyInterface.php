@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace OpenSpout\Reader\XLSX\Manager\SharedStringsCaching;
 
 /**
- * Interface CachingStrategyInterface.
+ * @internal
  */
 interface CachingStrategyInterface
 {

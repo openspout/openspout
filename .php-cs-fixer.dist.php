@@ -12,6 +12,7 @@ $config = (new PhpCsFixer\Config())
         '@PhpCsFixer' => true,
         '@PhpCsFixer:risky' => true,
         'global_namespace_import' => true,
+        'final_internal_class' => false,
         'nullable_type_declaration_for_default_null_value' => true,
         'php_unit_strict' => false,
         'php_unit_test_class_requires_covers' => false,
