@@ -4,22 +4,21 @@ declare(strict_types=1);
 
 namespace OpenSpout\Common\Entity\Cell;
 
-use DateInterval;
 use DateTimeInterface;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Style\Style;
 
-final class DateCell extends Cell
+final class DateTimeCell extends Cell
 {
-    private DateTimeInterface|DateInterval $value;
+    private DateTimeInterface $value;
 
-    public function __construct(DateTimeInterface|DateInterval $value, ?Style $style)
+    public function __construct(DateTimeInterface $value, ?Style $style)
     {
         $this->value = $value;
         parent::__construct($style);
     }
 
-    public function getValue(): DateTimeInterface|DateInterval
+    public function getValue(): DateTimeInterface
     {
         return $this->value;
     }

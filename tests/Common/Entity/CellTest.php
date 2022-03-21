@@ -7,7 +7,8 @@ namespace OpenSpout\Common\Entity;
 use DateInterval;
 use DateTimeImmutable;
 use OpenSpout\Common\Entity\Cell\BooleanCell;
-use OpenSpout\Common\Entity\Cell\DateCell;
+use OpenSpout\Common\Entity\Cell\DateIntervalCell;
+use OpenSpout\Common\Entity\Cell\DateTimeCell;
 use OpenSpout\Common\Entity\Cell\EmptyCell;
 use OpenSpout\Common\Entity\Cell\ErrorCell;
 use OpenSpout\Common\Entity\Cell\FormulaCell;
@@ -55,8 +56,8 @@ final class CellTest extends TestCase
 
     public function testCellTypeDate(): void
     {
-        self::assertInstanceOf(DateCell::class, Cell::fromValue(new DateTimeImmutable()));
-        self::assertInstanceOf(DateCell::class, Cell::fromValue(new DateInterval('P2Y4DT6H8M')));
+        self::assertInstanceOf(DateTimeCell::class, Cell::fromValue(new DateTimeImmutable()));
+        self::assertInstanceOf(DateIntervalCell::class, Cell::fromValue(new DateInterval('P2Y4DT6H8M')));
     }
 
     public function testCellTypeFormula(): void
