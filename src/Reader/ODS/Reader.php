@@ -27,6 +27,13 @@ final class Reader extends AbstractReader
         $this->options = $options ?? new Options();
     }
 
+    public function getSheetIterator(): SheetIterator
+    {
+        $this->ensureStreamOpened();
+
+        return $this->sheetIterator;
+    }
+
     /**
      * Returns whether stream wrappers are supported.
      */
