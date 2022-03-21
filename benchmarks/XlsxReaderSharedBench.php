@@ -17,7 +17,7 @@ final class XlsxReaderSharedBench
 
     #[Bench\OutputTimeUnit('seconds')]
     #[Bench\Assert('mode(variant.mem.peak) < 4194304')]
-    #[Bench\Assert('mode(variant.time.avg) < 35000000')]
+    #[Bench\Assert('mode(variant.time.avg) < 60000000')]
     public function benchReading300KRowsXLSXWithSharedStrings(): void
     {
         $fileName = 'xlsx_with_300k_rows_and_shared_strings.xlsx';

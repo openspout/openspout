@@ -19,7 +19,7 @@ final class OdsWriterBench
 
     #[Bench\OutputTimeUnit('seconds')]
     #[Bench\Assert('mode(variant.mem.peak) < 2097152')]
-    #[Bench\Assert('mode(variant.time.avg) < 45000000')]
+    #[Bench\Assert('mode(variant.time.avg) < 60000000')]
     public function benchWriting1MRowsODS(): void
     {
         $numRows = 1000000;

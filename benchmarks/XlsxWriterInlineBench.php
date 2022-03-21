@@ -20,7 +20,7 @@ final class XlsxWriterInlineBench
 
     #[Bench\OutputTimeUnit('seconds')]
     #[Bench\Assert('mode(variant.mem.peak) < 2097152')]
-    #[Bench\Assert('mode(variant.time.avg) < 50000000')]
+    #[Bench\Assert('mode(variant.time.avg) < 60000000')]
     public function benchWriting1MRowsXLSXWithInlineStrings(): void
     {
         $numRows = 1000000;

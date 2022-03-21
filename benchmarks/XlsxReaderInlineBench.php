@@ -17,7 +17,7 @@ final class XlsxReaderInlineBench
 
     #[Bench\OutputTimeUnit('seconds')]
     #[Bench\Assert('mode(variant.mem.peak) < 2097152')]
-    #[Bench\Assert('mode(variant.time.avg) < 23000000')]
+    #[Bench\Assert('mode(variant.time.avg) < 30000000')]
     public function benchReading300KRowsXLSXWithInlineStrings(): void
     {
         $fileName = 'xlsx_with_300k_rows_and_inline_strings.xlsx';
