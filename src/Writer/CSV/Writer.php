@@ -8,9 +8,9 @@ use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\EncodingHelper;
-use OpenSpout\Writer\WriterAbstract;
+use OpenSpout\Writer\AbstractWriter;
 
-final class Writer extends WriterAbstract
+final class Writer extends AbstractWriter
 {
     /**
      * Number of rows to write before flushing.

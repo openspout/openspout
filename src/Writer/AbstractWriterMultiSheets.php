@@ -11,7 +11,7 @@ use OpenSpout\Writer\Common\Manager\WorkbookManagerInterface;
 use OpenSpout\Writer\Exception\SheetNotFoundException;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
 
-abstract class WriterMultiSheetsAbstract extends WriterAbstract
+abstract class AbstractWriterMultiSheets extends AbstractWriter
 {
     private ?WorkbookManagerInterface $workbookManager = null;
 

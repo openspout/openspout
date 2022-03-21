@@ -12,7 +12,7 @@ use OpenSpout\Reader\Exception\ReaderNotOpenedException;
  * @template T of SheetIteratorInterface
  * @implements ReaderInterface<T>
  */
-abstract class ReaderAbstract implements ReaderInterface
+abstract class AbstractReader implements ReaderInterface
 {
     /** @var bool Indicates whether the stream is currently open */
     private bool $isStreamOpened = false;

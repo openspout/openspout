@@ -6,8 +6,8 @@ namespace OpenSpout\Writer\ODS\Manager;
 
 use OpenSpout\Writer\Common\Entity\Sheet;
 use OpenSpout\Writer\Common\Entity\Workbook;
+use OpenSpout\Writer\Common\Manager\AbstractWorkbookManager;
 use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
-use OpenSpout\Writer\Common\Manager\WorkbookManagerAbstract;
 use OpenSpout\Writer\ODS\Helper\FileSystemHelper;
 use OpenSpout\Writer\ODS\Manager\Style\StyleManager;
 use OpenSpout\Writer\ODS\Options;
@@ -19,7 +19,7 @@ use OpenSpout\Writer\ODS\Options;
  * @property FileSystemHelper $fileSystemHelper
  * @property StyleManager     $styleManager
  */
-final class WorkbookManager extends WorkbookManagerAbstract
+final class WorkbookManager extends AbstractWorkbookManager
 {
     /**
      * Maximum number of rows a ODS sheet can contain.

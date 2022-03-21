@@ -6,7 +6,7 @@ namespace OpenSpout\Reader\XLSX;
 
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\Escaper\XLSX;
-use OpenSpout\Reader\ReaderAbstract;
+use OpenSpout\Reader\AbstractReader;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\MemoryLimit;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsManager;
@@ -15,9 +15,9 @@ use OpenSpout\Reader\XLSX\Manager\WorkbookRelationshipsManager;
 use ZipArchive;
 
 /**
- * @extends ReaderAbstract<SheetIterator>
+ * @extends AbstractReader<SheetIterator>
  */
-final class Reader extends ReaderAbstract
+final class Reader extends AbstractReader
 {
     private ZipArchive $zip;
 
