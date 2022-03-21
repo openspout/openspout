@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace OpenSpout\Reader\XLSX\Manager;
 
-use OpenSpout\Reader\Common\Manager\StyleManagerInterface;
 use OpenSpout\Reader\Wrapper\XMLReader;
 
 class StyleManager implements StyleManagerInterface

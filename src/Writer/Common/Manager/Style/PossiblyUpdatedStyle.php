@@ -7,8 +7,7 @@ namespace OpenSpout\Writer\Common\Manager\Style;
 use OpenSpout\Common\Entity\Style\Style;
 
 /**
- * Indicates if style is updated.
- * It allow to know if style registration must be done.
+ * @internal
  */
 final class PossiblyUpdatedStyle
 {

@@ -13,7 +13,7 @@ use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
 use OpenSpout\Writer\XLSX\Options;
 
 /**
- * XLSX workbook manager, providing the interfaces to work with workbook.
+ * @internal
  *
  * @property WorksheetManager $worksheetManager
  * @property StyleManager     $styleManager

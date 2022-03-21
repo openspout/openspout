@@ -11,6 +11,8 @@ use SplFixedArray;
 /**
  * This class implements the in-memory caching strategy for shared strings.
  * This strategy is used when the number of unique strings is low, compared to the memory available.
+ *
+ * @internal
  */
 final class InMemoryStrategy implements CachingStrategyInterface
 {

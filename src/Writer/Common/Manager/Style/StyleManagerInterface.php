@@ -8,7 +8,7 @@ use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Style\Style;
 
 /**
- * Interface StyleHManagernterface.
+ * @internal
  */
 interface StyleManagerInterface
 {

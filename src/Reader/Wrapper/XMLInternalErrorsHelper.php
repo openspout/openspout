@@ -7,7 +7,7 @@ namespace OpenSpout\Reader\Wrapper;
 use OpenSpout\Reader\Exception\XMLProcessingException;
 
 /**
- * Trait XMLInternalErrorsHelper.
+ * @internal
  */
 trait XMLInternalErrorsHelper
 {

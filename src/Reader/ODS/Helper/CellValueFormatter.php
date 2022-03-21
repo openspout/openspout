@@ -14,7 +14,7 @@ use OpenSpout\Common\Helper\Escaper\ODS;
 use OpenSpout\Reader\Exception\InvalidValueException;
 
 /**
- * This class provides helper functions to format cell values.
+ * @internal
  */
 final class CellValueFormatter
 {

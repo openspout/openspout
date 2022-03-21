@@ -8,14 +8,14 @@ use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Style\Style;
 
 /**
- * Manages styles to be applied to a cell.
+ * @internal
  */
-class StyleManager implements StyleManagerInterface
+abstract class AbstractStyleManager implements StyleManagerInterface
 {
-    /** @var StyleRegistry Registry for all used styles */
-    protected StyleRegistry $styleRegistry;
+    /** @var AbstractStyleRegistry Registry for all used styles */
+    protected AbstractStyleRegistry $styleRegistry;
 
-    public function __construct(StyleRegistry $styleRegistry)
+    public function __construct(AbstractStyleRegistry $styleRegistry)
     {
         $this->styleRegistry = $styleRegistry;
     }

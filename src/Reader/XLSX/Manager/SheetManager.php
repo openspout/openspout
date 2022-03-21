@@ -14,7 +14,7 @@ use OpenSpout\Reader\XLSX\RowIterator;
 use OpenSpout\Reader\XLSX\Sheet;
 
 /**
- * This class manages XLSX sheets.
+ * @internal
  */
 final class SheetManager
 {

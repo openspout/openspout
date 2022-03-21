@@ -7,7 +7,7 @@ namespace OpenSpout\Writer\XLSX\Manager;
 use OpenSpout\Common\Helper\Escaper;
 
 /**
- * This class provides functions to write shared strings.
+ * @internal
  */
 final class SharedStringsManager
 {

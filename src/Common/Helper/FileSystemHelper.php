@@ -9,8 +9,7 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
 /**
- * This class provides helper functions to help with the file system operations
- * like files/folders creation & deletion.
+ * @internal
  */
 final class FileSystemHelper implements FileSystemHelperInterface
 {

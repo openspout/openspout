@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace OpenSpout\Writer\ODS\Manager\Style;
 
 use OpenSpout\Common\Entity\Style\Style;
-use OpenSpout\Writer\Common\Manager\Style\StyleRegistry as CommonStyleRegistry;
+use OpenSpout\Writer\Common\Manager\Style\AbstractStyleRegistry as CommonStyleRegistry;
 
 /**
- * Registry for all used styles.
+ * @internal
  */
 final class StyleRegistry extends CommonStyleRegistry
 {

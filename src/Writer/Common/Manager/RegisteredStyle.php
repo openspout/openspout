@@ -8,6 +8,8 @@ use OpenSpout\Common\Entity\Style\Style;
 
 /**
  * Allow to know if this style must replace actual row style.
+ *
+ * @internal
  */
 final class RegisteredStyle
 {

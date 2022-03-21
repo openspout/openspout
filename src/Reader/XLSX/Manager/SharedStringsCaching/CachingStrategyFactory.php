@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace OpenSpout\Reader\XLSX\Manager\SharedStringsCaching;
 
+/**
+ * @internal
+ */
 final class CachingStrategyFactory
 {
     /**

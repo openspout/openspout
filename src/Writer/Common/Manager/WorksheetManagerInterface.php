@@ -8,8 +8,7 @@ use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\Common\Entity\Worksheet;
 
 /**
- * Interface WorksheetManagerInterface
- * Inteface for worksheet managers, providing the generic interfaces to work with worksheets.
+ * @internal
  */
 interface WorksheetManagerInterface
 {

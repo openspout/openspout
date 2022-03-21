@@ -13,7 +13,7 @@ use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyInterface;
 use OpenSpout\Reader\XLSX\Options;
 
 /**
- * This class manages the shared strings defined in the associated XML file.
+ * @internal
  */
 final class SharedStringsManager
 {

@@ -8,7 +8,7 @@ use OpenSpout\Reader\Exception\XMLProcessingException;
 use OpenSpout\Reader\Wrapper\XMLReader;
 
 /**
- * This class provides helper functions to extract data from the "settings.xml" file.
+ * @internal
  */
 final class SettingsHelper
 {

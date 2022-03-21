@@ -8,7 +8,7 @@ use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Reader\Wrapper\XMLReader;
 
 /**
- * This class manages the workbook relationships defined in the associated XML file.
+ * @internal
  */
 final class WorkbookRelationshipsManager
 {

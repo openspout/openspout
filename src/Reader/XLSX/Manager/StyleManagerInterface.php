@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace OpenSpout\Reader\Common\Manager;
+namespace OpenSpout\Reader\XLSX\Manager;
 
 /**
- * This class manages XLSX styles.
+ * @internal
  */
 interface StyleManagerInterface
 {

@@ -7,7 +7,7 @@ namespace OpenSpout\Writer\Common\Manager\Style;
 use OpenSpout\Common\Entity\Style\Style;
 
 /**
- * Takes care of merging styles together.
+ * @internal
  */
 final class StyleMerger
 {

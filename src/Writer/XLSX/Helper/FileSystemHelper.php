@@ -13,8 +13,7 @@ use OpenSpout\Writer\Common\Helper\ZipHelper;
 use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
 
 /**
- * This class provides helper functions to help with the file system operations
- * like files/folders creation & deletion for XLSX files.
+ * @internal
  */
 final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 {

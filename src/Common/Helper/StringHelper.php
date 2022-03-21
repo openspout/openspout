@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace OpenSpout\Common\Helper;
 
 /**
- * This class provides helper functions to work with strings and multibyte strings.
+ * @internal
  */
 final class StringHelper
 {

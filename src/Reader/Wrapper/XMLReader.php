@@ -7,9 +7,7 @@ namespace OpenSpout\Reader\Wrapper;
 use ZipArchive;
 
 /**
- * Wrapper around the built-in XMLReader.
- *
- * @see \XMLReader
+ * @internal
  */
 final class XMLReader extends \XMLReader
 {

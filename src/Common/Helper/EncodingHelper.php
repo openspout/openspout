@@ -8,7 +8,7 @@ use Error;
 use OpenSpout\Common\Exception\EncodingConversionException;
 
 /**
- * This class provides helper functions to work with encodings.
+ * @internal
  */
 final class EncodingHelper
 {

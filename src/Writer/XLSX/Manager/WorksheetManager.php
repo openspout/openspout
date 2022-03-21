@@ -15,7 +15,6 @@ use OpenSpout\Common\Helper\StringHelper;
 use OpenSpout\Writer\Common\Entity\Worksheet;
 use OpenSpout\Writer\Common\Helper\CellHelper;
 use OpenSpout\Writer\Common\Manager\RegisteredStyle;
-use OpenSpout\Writer\Common\Manager\RowManager;
 use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
 use OpenSpout\Writer\Common\Manager\WorksheetManagerInterface;
 use OpenSpout\Writer\XLSX\Helper\DateHelper;
@@ -23,7 +22,7 @@ use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
 use OpenSpout\Writer\XLSX\Options;
 
 /**
- * XLSX worksheet manager, providing the interfaces to work with XLSX worksheets.
+ * @internal
  */
 final class WorksheetManager implements WorksheetManagerInterface
 {
@@ -42,9 +41,6 @@ final class WorksheetManager implements WorksheetManagerInterface
         EOD;
 
     private Options $options;
-
-    /** @var RowManager Manages rows */
-    private RowManager $rowManager;
 
     /** @var StyleManager Manages styles */
     private StyleManager $styleManager;
@@ -66,7 +62,6 @@ final class WorksheetManager implements WorksheetManagerInterface
      */
     public function __construct(
         Options $options,
-        RowManager $rowManager,
         StyleManager $styleManager,
         StyleMerger $styleMerger,
         SharedStringsManager $sharedStringsManager,
@@ -74,7 +69,6 @@ final class WorksheetManager implements WorksheetManagerInterface
         StringHelper $stringHelper
     ) {
         $this->options = $options;
-        $this->rowManager = $rowManager;
         $this->styleManager = $styleManager;
         $this->styleMerger = $styleMerger;
         $this->sharedStringsManager = $sharedStringsManager;
@@ -105,7 +99,7 @@ final class WorksheetManager implements WorksheetManagerInterface
      */
     public function addRow(Worksheet $worksheet, Row $row): void
     {
-        if (!$this->rowManager->isEmpty($row)) {
+        if (!$row->isEmpty()) {
             $this->addNonEmptyRow($worksheet, $row);
         }
 

@@ -47,11 +47,11 @@ final class StyleManagerTest extends TestCase
         self::assertFalse($possiblyUpdatedStyle->isUpdated());
     }
 
-    private function getStyleManager(): StyleManager
+    private function getStyleManager(): AbstractStyleManager
     {
         $style = (new Style());
-        $styleRegistry = new StyleRegistry($style);
+        $styleRegistry = new class($style) extends AbstractStyleRegistry {};
 
-        return new StyleManager($styleRegistry);
+        return new class($styleRegistry) extends AbstractStyleManager {};
     }
 }

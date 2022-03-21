@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace OpenSpout\Common\Helper;
 
 /**
- * This interface describes helper functions to help with the file system operations
- * like files/folders creation & deletion.
+ * @internal
  */
 interface FileSystemHelperInterface
 {
