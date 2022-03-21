@@ -107,6 +107,8 @@ final class Row
     }
 
     /**
+     * @internal
+     *
      * @return mixed[] The row values, as array
      */
     public function toArray(): array
