@@ -6,8 +6,8 @@ namespace OpenSpout\Writer\XLSX\Manager;
 
 use OpenSpout\Writer\Common\Entity\Sheet;
 use OpenSpout\Writer\Common\Entity\Workbook;
+use OpenSpout\Writer\Common\Manager\AbstractWorkbookManager;
 use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
-use OpenSpout\Writer\Common\Manager\WorkbookManagerAbstract;
 use OpenSpout\Writer\XLSX\Helper\FileSystemHelper;
 use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
 use OpenSpout\Writer\XLSX\Options;
@@ -19,7 +19,7 @@ use OpenSpout\Writer\XLSX\Options;
  * @property StyleManager     $styleManager
  * @property FileSystemHelper $fileSystemHelper
  */
-final class WorkbookManager extends WorkbookManagerAbstract
+final class WorkbookManager extends AbstractWorkbookManager
 {
     /**
      * Maximum number of rows a XLSX sheet can contain.

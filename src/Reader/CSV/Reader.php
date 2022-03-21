@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace OpenSpout\Reader\CSV;
 
 use OpenSpout\Common\Helper\EncodingHelper;
-use OpenSpout\Reader\ReaderAbstract;
+use OpenSpout\Reader\AbstractReader;
 
 /**
- * @extends ReaderAbstract<SheetIterator>
+ * @extends AbstractReader<SheetIterator>
  */
-final class Reader extends ReaderAbstract
+final class Reader extends AbstractReader
 {
     /** @var resource Pointer to the file to be written */
     private $filePointer;

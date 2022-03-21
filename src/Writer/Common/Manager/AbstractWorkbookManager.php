@@ -19,7 +19,7 @@ use OpenSpout\Writer\Exception\SheetNotFoundException;
 /**
  * @internal
  */
-abstract class WorkbookManagerAbstract implements WorkbookManagerInterface
+abstract class AbstractWorkbookManager implements WorkbookManagerInterface
 {
     protected WorksheetManagerInterface $worksheetManager;
 

@@ -10,7 +10,7 @@ use OpenSpout\Common\Exception\OpenSpoutException;
 use OpenSpout\Common\Helper\FileSystemHelper;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
 
-abstract class WriterAbstract implements WriterInterface
+abstract class AbstractWriter implements WriterInterface
 {
     /** @var resource Pointer to the file/stream we will write to */
     protected $filePointer;

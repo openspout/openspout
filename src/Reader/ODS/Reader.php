@@ -6,14 +6,14 @@ namespace OpenSpout\Reader\ODS;
 
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\Escaper\ODS;
+use OpenSpout\Reader\AbstractReader;
 use OpenSpout\Reader\ODS\Helper\SettingsHelper;
-use OpenSpout\Reader\ReaderAbstract;
 use ZipArchive;
 
 /**
- * @extends ReaderAbstract<SheetIterator>
+ * @extends AbstractReader<SheetIterator>
  */
-final class Reader extends ReaderAbstract
+final class Reader extends AbstractReader
 {
     private ZipArchive $zip;
 

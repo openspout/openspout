@@ -6,10 +6,10 @@ namespace OpenSpout\Writer\XLSX;
 
 use OpenSpout\Common\Helper\Escaper\XLSX;
 use OpenSpout\Common\Helper\StringHelper;
+use OpenSpout\Writer\AbstractWriterMultiSheets;
 use OpenSpout\Writer\Common\Entity\Workbook;
 use OpenSpout\Writer\Common\Helper\ZipHelper;
 use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
-use OpenSpout\Writer\WriterMultiSheetsAbstract;
 use OpenSpout\Writer\XLSX\Helper\FileSystemHelper;
 use OpenSpout\Writer\XLSX\Manager\SharedStringsManager;
 use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
@@ -17,7 +17,7 @@ use OpenSpout\Writer\XLSX\Manager\Style\StyleRegistry;
 use OpenSpout\Writer\XLSX\Manager\WorkbookManager;
 use OpenSpout\Writer\XLSX\Manager\WorksheetManager;
 
-final class Writer extends WriterMultiSheetsAbstract
+final class Writer extends AbstractWriterMultiSheets
 {
     /** @var string Content-Type value for the header */
     protected static string $headerContentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
