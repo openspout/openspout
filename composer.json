@@ -53,6 +53,9 @@
         }
     },
     "autoload-dev": {
+        "psr-4": {
+            "OpenSpout\\Benchmarks\\": "benchmarks/"
+        },
         "classmap": [
             "tests/"
         ]

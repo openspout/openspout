@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace OpenSpout\Writer\CSV;
+namespace OpenSpout\Benchmarks;
 
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\TestUsingResource;
+use OpenSpout\Writer\CSV\Writer;
 use PhpBench\Attributes as Bench;
 
 /**

@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OpenSpout\Writer\XLSX;
-
-use OpenSpout\Common\Entity\Row;
+namespace OpenSpout\Benchmarks;
 
 /**
  * @internal

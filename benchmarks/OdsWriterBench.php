@@ -2,10 +2,12 @@
 
 declare(strict_types=1);
 
-namespace OpenSpout\Writer\ODS;
+namespace OpenSpout\Benchmarks;
 
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\TestUsingResource;
+use OpenSpout\Writer\ODS\Options;
+use OpenSpout\Writer\ODS\Writer;
 use PhpBench\Attributes as Bench;
 
 /**

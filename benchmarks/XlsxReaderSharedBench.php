@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace OpenSpout\Reader\XLSX;
+namespace OpenSpout\Benchmarks;
 
+use OpenSpout\Reader\XLSX\Reader;
 use OpenSpout\TestUsingResource;
 use PhpBench\Attributes as Bench;
 

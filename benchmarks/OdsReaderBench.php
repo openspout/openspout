@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace OpenSpout\Reader\ODS;
+namespace OpenSpout\Benchmarks;
 
+use OpenSpout\Reader\ODS\Reader;
 use OpenSpout\TestUsingResource;
 use PhpBench\Attributes as Bench;
 

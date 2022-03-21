@@ -2,10 +2,12 @@
 
 declare(strict_types=1);
 
-namespace OpenSpout\Writer\XLSX;
+namespace OpenSpout\Benchmarks;
 
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\TestUsingResource;
+use OpenSpout\Writer\XLSX\Options;
+use OpenSpout\Writer\XLSX\Writer;
 use PhpBench\Attributes as Bench;
 
 /**
