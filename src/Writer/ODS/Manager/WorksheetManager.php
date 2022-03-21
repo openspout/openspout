@@ -222,20 +222,18 @@ final class WorksheetManager implements WorksheetManagerInterface
             $data .= ' office:value-type="float" calcext:value-type="float" office:value="'.$cellValue.'">';
             $data .= '<text:p>'.$cellValue.'</text:p>';
             $data .= '</table:table-cell>';
-        } elseif ($cell instanceof Cell\DateCell) {
-            $value = $cell->getValue();
-            if ($value instanceof DateTimeInterface) {
-                $datevalue = substr((new DateTimeImmutable('@'.$value->getTimestamp()))->format(DateTimeInterface::W3C), 0, -6);
-                $data .= ' office:value-type="date" calcext:value-type="date" office:date-value="'.$datevalue.'Z">';
-                $data .= '<text:p>'.$datevalue.'Z</text:p>';
-            } else {
-                // workaround for missing DateInterval::format('c'), see https://stackoverflow.com/a/61088115/53538
-                static $f = ['M0S', 'H0M', 'DT0H', 'M0D', 'Y0M', 'P0Y', 'Y0M', 'P0M'];
-                static $r = ['M', 'H', 'DT', 'M', 'Y0M', 'P', 'Y', 'P'];
-                $value = rtrim(str_replace($f, $r, $value->format('P%yY%mM%dDT%hH%iM%sS')), 'PT') ?: 'PT0S';
-                $data .= ' office:value-type="time" office:time-value="'.$value.'">';
-                $data .= '<text:p>'.$value.'</text:p>';
-            }
+        } elseif ($cell instanceof Cell\DateTimeCell) {
+            $datevalue = substr((new DateTimeImmutable('@'.$cell->getValue()->getTimestamp()))->format(DateTimeInterface::W3C), 0, -6);
+            $data .= ' office:value-type="date" calcext:value-type="date" office:date-value="'.$datevalue.'Z">';
+            $data .= '<text:p>'.$datevalue.'Z</text:p>';
+            $data .= '</table:table-cell>';
+        } elseif ($cell instanceof Cell\DateIntervalCell) {
+            // workaround for missing DateInterval::format('c'), see https://stackoverflow.com/a/61088115/53538
+            static $f = ['M0S', 'H0M', 'DT0H', 'M0D', 'Y0M', 'P0Y', 'Y0M', 'P0M'];
+            static $r = ['M', 'H', 'DT', 'M', 'Y0M', 'P', 'Y', 'P'];
+            $value = rtrim(str_replace($f, $r, $cell->getValue()->format('P%yY%mM%dDT%hH%iM%sS')), 'PT') ?: 'PT0S';
+            $data .= ' office:value-type="time" office:time-value="'.$value.'">';
+            $data .= '<text:p>'.$value.'</text:p>';
             $data .= '</table:table-cell>';
         } elseif ($cell instanceof Cell\ErrorCell && \is_string($cell->getRawValue())) {
             // only writes the error value if it's a string

@@ -7,7 +7,8 @@ namespace OpenSpout\Common\Entity;
 use DateInterval;
 use DateTimeInterface;
 use OpenSpout\Common\Entity\Cell\BooleanCell;
-use OpenSpout\Common\Entity\Cell\DateCell;
+use OpenSpout\Common\Entity\Cell\DateIntervalCell;
+use OpenSpout\Common\Entity\Cell\DateTimeCell;
 use OpenSpout\Common\Entity\Cell\EmptyCell;
 use OpenSpout\Common\Entity\Cell\ErrorCell;
 use OpenSpout\Common\Entity\Cell\FormulaCell;
@@ -47,8 +48,11 @@ abstract class Cell
         if (\is_int($value) || \is_float($value)) {
             return new NumericCell($value, $style);
         }
-        if ($value instanceof DateTimeInterface || $value instanceof DateInterval) {
-            return new DateCell($value, $style);
+        if ($value instanceof DateTimeInterface) {
+            return new DateTimeCell($value, $style);
+        }
+        if ($value instanceof DateInterval) {
+            return new DateIntervalCell($value, $style);
         }
         if (\is_string($value) && isset($value[0]) && '=' === $value[0]) {
             return new FormulaCell($value, $style);
