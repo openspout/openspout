@@ -55,22 +55,6 @@ abstract class AbstractReader implements ReaderInterface
     }
 
     /**
-     * Returns an iterator to iterate over sheets.
-     *
-     * @throws \OpenSpout\Reader\Exception\ReaderNotOpenedException If called before opening the reader
-     *
-     * @return T
-     */
-    public function getSheetIterator(): SheetIteratorInterface
-    {
-        if (!$this->isStreamOpened) {
-            throw new ReaderNotOpenedException('Reader should be opened first.');
-        }
-
-        return $this->getConcreteSheetIterator();
-    }
-
-    /**
      * Closes the reader, preventing any additional reading.
      */
     public function close(): void
@@ -95,16 +79,16 @@ abstract class AbstractReader implements ReaderInterface
     abstract protected function openReader(string $filePath): void;
 
     /**
-     * Returns an iterator to iterate over sheets.
-     *
-     * @return T To iterate over sheets
-     */
-    abstract protected function getConcreteSheetIterator(): SheetIteratorInterface;
-
-    /**
      * Closes the reader. To be used after reading the file.
      */
     abstract protected function closeReader(): void;
+
+    final protected function ensureStreamOpened(): void
+    {
+        if (!$this->isStreamOpened) {
+            throw new ReaderNotOpenedException('Reader should be opened first.');
+        }
+    }
 
     /**
      * Returns the real path of the given path.

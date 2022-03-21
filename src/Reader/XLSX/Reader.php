@@ -45,6 +45,13 @@ final class Reader extends AbstractReader
         $this->cachingStrategyFactory = $cachingStrategyFactory;
     }
 
+    public function getSheetIterator(): SheetIterator
+    {
+        $this->ensureStreamOpened();
+
+        return $this->sheetIterator;
+    }
+
     /**
      * Returns whether stream wrappers are supported.
      */

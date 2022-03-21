@@ -36,6 +36,13 @@ final class Reader extends AbstractReader
         $this->isRunningAtLeastPhp81 = \PHP_VERSION_ID >= 80100;
     }
 
+    public function getSheetIterator(): SheetIterator
+    {
+        $this->ensureStreamOpened();
+
+        return $this->sheetIterator;
+    }
+
     /**
      * Returns whether stream wrappers are supported.
      */
