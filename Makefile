@@ -17,3 +17,7 @@ static-analysis: vendor
 test: vendor
 	rm -fr tests/resources/generated/*
 	php -d zend.assertions=1 vendor/bin/phpunit ${arg}
+
+.PHONY: benchmark
+benchmark: vendor
+	php -d zend.assertions=1 vendor/bin/phpbench run --report=default ${arg}

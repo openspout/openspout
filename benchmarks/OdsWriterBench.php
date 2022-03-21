@@ -2,38 +2,27 @@
 
 declare(strict_types=1);
 
-namespace OpenSpout\Writer\ODS;
+namespace OpenSpout\Benchmarks;
 
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\TestUsingResource;
-use PHPUnit\Framework\TestCase;
+use OpenSpout\Writer\ODS\Options;
+use OpenSpout\Writer\ODS\Writer;
+use PhpBench\Attributes as Bench;
 
 /**
- * Performance tests for ODS Writer.
- *
  * @internal
  */
-final class WriterPerfTest extends TestCase
+final class OdsWriterBench
 {
     use TestUsingResource;
 
-    /**
-     * 1 million rows (each row containing 3 cells) should be written
-     * in less than 4 minutes and the execution should not require
-     * more than 3MB of memory.
-     *
-     * @group perf-tests
-     */
-    public function testPerfWhenWritingOneMillionRowsODS(): void
+    #[Bench\OutputTimeUnit('seconds')]
+    #[Bench\Assert('mode(variant.mem.peak) < 2097152')]
+    #[Bench\Assert('mode(variant.time.avg) < 45000000')]
+    public function benchWriting1MRowsODS(): void
     {
-        // getting current memory peak to avoid taking into account the memory used by PHPUnit
-        $beforeMemoryPeakUsage = memory_get_peak_usage(true);
-
         $numRows = 1000000;
-        $expectedMaxExecutionTime = 240; // 4 minutes in seconds
-        $expectedMaxMemoryPeakUsage = 3 * 1024 * 1024; // 3MB in bytes
-        $startTime = time();
-
         $fileName = 'ods_with_one_million_rows.ods';
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
@@ -50,13 +39,7 @@ final class WriterPerfTest extends TestCase
 
         $writer->close();
 
-        self::assertSame($numRows, $this->getNumWrittenRows($resourcePath), "The created ODS ({$fileName}) should contain {$numRows} rows");
-
-        $executionTime = time() - $startTime;
-        self::assertTrue($executionTime < $expectedMaxExecutionTime, "Writing 1 million rows should take less than {$expectedMaxExecutionTime} seconds (took {$executionTime} seconds)");
-
-        $memoryPeakUsage = memory_get_peak_usage(true) - $beforeMemoryPeakUsage;
-        self::assertTrue($memoryPeakUsage < $expectedMaxMemoryPeakUsage, 'Writing 1 million rows should require less than '.($expectedMaxMemoryPeakUsage / 1024 / 1024).' MB of memory (required '.($memoryPeakUsage / 1024 / 1024).' MB)');
+        \assert(1000000 === $this->getNumWrittenRows($resourcePath));
     }
 
     private function getNumWrittenRows(string $resourcePath): int
@@ -84,7 +67,7 @@ final class WriterPerfTest extends TestCase
 
         // Get the last 200 characters
         $lastCharacters = shell_exec("tail -c 200 {$tmpFile}");
-        self::assertNotFalse($lastCharacters);
+        \assert(false !== $lastCharacters);
 
         // remove the temporary file
         unlink($tmpFile);
