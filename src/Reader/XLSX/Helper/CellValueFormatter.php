@@ -137,8 +137,9 @@ final class CellValueFormatter
 
         $cellValue = '';
         for ($i = 0; $i < $tNodes->count(); ++$i) {
-            $tNode = $tNodes->item($i);
-            $cellValue .= $this->escaper->unescape($tNode->nodeValue);
+            $nodeValue = $tNodes->item($i)->nodeValue;
+            \assert(null !== $nodeValue);
+            $cellValue .= $this->escaper->unescape($nodeValue);
         }
 
         return $cellValue;

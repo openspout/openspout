@@ -81,14 +81,14 @@ final class StyleMerger
         if (!$style->hasSetCellAlignment() && $baseStyle->shouldApplyCellAlignment()) {
             $styleToUpdate->setCellAlignment($baseStyle->getCellAlignment());
         }
-        if (null === $style->getBorder() && $baseStyle->shouldApplyBorder()) {
-            $styleToUpdate->setBorder($baseStyle->getBorder());
+        if (null === $style->getBorder() && null !== ($border = $baseStyle->getBorder())) {
+            $styleToUpdate->setBorder($border);
         }
-        if (null === $style->getFormat() && $baseStyle->shouldApplyFormat()) {
-            $styleToUpdate->setFormat($baseStyle->getFormat());
+        if (null === $style->getFormat() && null !== ($format = $baseStyle->getFormat())) {
+            $styleToUpdate->setFormat($format);
         }
-        if (!$style->shouldApplyBackgroundColor() && $baseStyle->shouldApplyBackgroundColor()) {
-            $styleToUpdate->setBackgroundColor($baseStyle->getBackgroundColor());
+        if (null === $style->getBackgroundColor() && null !== ($bgColor = $baseStyle->getBackgroundColor())) {
+            $styleToUpdate->setBackgroundColor($bgColor);
         }
     }
 }

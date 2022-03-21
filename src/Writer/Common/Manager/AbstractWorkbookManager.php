@@ -29,8 +29,8 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
     /** @var FileSystemWithRootFolderHelperInterface Helper to perform file system operations */
     protected FileSystemWithRootFolderHelperInterface $fileSystemHelper;
 
-    /** @var null|Workbook The workbook to manage */
-    private ?Workbook $workbook;
+    /** @var Workbook The workbook to manage */
+    private Workbook $workbook;
 
     private AbstractOptions $options;
 
@@ -56,7 +56,7 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
         $this->fileSystemHelper = $fileSystemHelper;
     }
 
-    public function getWorkbook(): ?Workbook
+    public function getWorkbook(): Workbook
     {
         return $this->workbook;
     }

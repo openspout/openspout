@@ -61,11 +61,11 @@ trait XMLInternalErrorsHelper
      *
      * @see libxml_get_last_error
      *
-     * @return null|string Last XML error message or null if no error
+     * @return string Last XML error message or null if no error
      */
-    private function getLastXMLErrorMessage(): ?string
+    private function getLastXMLErrorMessage(): string
     {
-        $errorMessage = null;
+        $errorMessage = '';
         $error = libxml_get_last_error();
 
         if (false !== $error) {

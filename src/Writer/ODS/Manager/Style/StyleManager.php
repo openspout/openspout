@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer\ODS\Manager\Style;
 
+use OpenSpout\Common\Entity\Style\Border;
 use OpenSpout\Common\Entity\Style\BorderPart;
 use OpenSpout\Common\Entity\Style\CellAlignment;
 use OpenSpout\Common\Entity\Style\Style;
@@ -361,12 +362,12 @@ final class StyleManager extends CommonStyleManager
             $content .= $this->getWrapTextXMLContent();
         }
 
-        if ($style->shouldApplyBorder()) {
-            $content .= $this->getBorderXMLContent($style);
+        if (null !== ($border = $style->getBorder())) {
+            $content .= $this->getBorderXMLContent($border);
         }
 
-        if ($style->shouldApplyBackgroundColor()) {
-            $content .= $this->getBackgroundColorXMLContent($style);
+        if (null !== ($bgColor = $style->getBackgroundColor())) {
+            $content .= $this->getBackgroundColorXMLContent($bgColor);
         }
 
         $content .= '/>';
@@ -385,11 +386,11 @@ final class StyleManager extends CommonStyleManager
     /**
      * Returns the contents of the borders definition for the "<style:table-cell-properties>" section.
      */
-    private function getBorderXMLContent(Style $style): string
+    private function getBorderXMLContent(Border $border): string
     {
         $borders = array_map(static function (BorderPart $borderPart) {
             return BorderHelper::serializeBorderPart($borderPart);
-        }, $style->getBorder()->getParts());
+        }, $border->getParts());
 
         return sprintf(' %s ', implode(' ', $borders));
     }
@@ -397,8 +398,8 @@ final class StyleManager extends CommonStyleManager
     /**
      * Returns the contents of the background color definition for the "<style:table-cell-properties>" section.
      */
-    private function getBackgroundColorXMLContent(Style $style): string
+    private function getBackgroundColorXMLContent(string $bgColor): string
     {
-        return sprintf(' fo:background-color="#%s" ', $style->getBackgroundColor());
+        return sprintf(' fo:background-color="#%s" ', $bgColor);
     }
 }

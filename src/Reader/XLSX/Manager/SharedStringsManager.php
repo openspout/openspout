@@ -187,16 +187,21 @@ final class SharedStringsManager
         $sharedStringValue = '';
 
         // NOTE: expand() will automatically decode all XML entities of the child nodes
-        /** @var DOMElement $siNode */
         $siNode = $xmlReader->expand();
+        \assert($siNode instanceof DOMElement);
         $textNodes = $siNode->getElementsByTagName(self::XML_NODE_T);
 
         foreach ($textNodes as $textNode) {
+            \assert($textNode instanceof DOMElement);
             if ($this->shouldExtractTextNodeValue($textNode)) {
                 $textNodeValue = $textNode->nodeValue;
+                \assert(null !== $textNodeValue);
                 $shouldPreserveWhitespace = $this->shouldPreserveWhitespace($textNode);
 
-                $sharedStringValue .= ($shouldPreserveWhitespace) ? $textNodeValue : trim($textNodeValue);
+                $sharedStringValue .= $shouldPreserveWhitespace
+                    ? $textNodeValue
+                    : trim($textNodeValue)
+                ;
             }
         }
 
@@ -214,7 +219,9 @@ final class SharedStringsManager
      */
     private function shouldExtractTextNodeValue(DOMElement $textNode): bool
     {
-        $parentTagName = $textNode->parentNode->localName;
+        $parentNode = $textNode->parentNode;
+        \assert(null !== $parentNode);
+        $parentTagName = $parentNode->localName;
 
         return self::XML_NODE_SI === $parentTagName || self::XML_NODE_R === $parentTagName;
     }

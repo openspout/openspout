@@ -109,11 +109,6 @@ final class Sheet
         return $this;
     }
 
-    public function getSheetView(): ?SheetView
-    {
-        return $this->sheetView;
-    }
-
     /**
      * @return $this
      */
@@ -124,8 +119,8 @@ final class Sheet
         return $this;
     }
 
-    public function hasSheetView(): bool
+    public function getSheetView(): ?SheetView
     {
-        return $this->sheetView instanceof SheetView;
+        return $this->sheetView;
     }
 }

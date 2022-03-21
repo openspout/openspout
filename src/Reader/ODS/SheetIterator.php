@@ -134,11 +134,13 @@ final class SheetIterator implements SheetIteratorInterface
     public function current(): Sheet
     {
         $escapedSheetName = $this->xmlReader->getAttribute(self::XML_ATTRIBUTE_TABLE_NAME);
+        \assert(null !== $escapedSheetName);
         $sheetName = $this->escaper->unescape($escapedSheetName);
 
         $isSheetActive = $this->isSheetActive($sheetName, $this->currentSheetIndex, $this->activeSheetName);
 
         $sheetStyleName = $this->xmlReader->getAttribute(self::XML_ATTRIBUTE_TABLE_STYLE_NAME);
+        \assert(null !== $sheetStyleName);
         $isSheetVisible = $this->isSheetVisible($sheetStyleName);
 
         return new Sheet(
@@ -185,6 +187,7 @@ final class SheetIterator implements SheetIteratorInterface
             $isSheetVisible = ('false' !== $tableStyleNode->getAttribute(self::XML_ATTRIBUTE_TABLE_DISPLAY));
 
             $parentStyleNode = $tableStyleNode->parentNode;
+            \assert(null !== $parentStyleNode);
             $styleName = $parentStyleNode->getAttribute(self::XML_ATTRIBUTE_STYLE_NAME);
 
             $sheetsVisibility[$styleName] = $isSheetVisible;

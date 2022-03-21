@@ -174,11 +174,13 @@ final class SheetManager
     private function getSheetFromSheetXMLNode(XMLReader $xmlReaderOnSheetNode, int $sheetIndexZeroBased, bool $isSheetActive): Sheet
     {
         $sheetId = $xmlReaderOnSheetNode->getAttribute(self::XML_ATTRIBUTE_R_ID);
+        \assert(null !== $sheetId);
 
         $sheetState = $xmlReaderOnSheetNode->getAttribute(self::XML_ATTRIBUTE_STATE);
         $isSheetVisible = (self::SHEET_STATE_HIDDEN !== $sheetState);
 
         $escapedSheetName = $xmlReaderOnSheetNode->getAttribute(self::XML_ATTRIBUTE_NAME);
+        \assert(null !== $escapedSheetName);
         $sheetName = $this->escaper->unescape($escapedSheetName);
 
         $sheetDataXMLFilePath = $this->getSheetDataXMLFilePathForSheetId($sheetId);
@@ -212,6 +214,7 @@ final class SheetManager
                         // In workbook.xml.rels, it is only "worksheets/sheet1.xml"
                         // In [Content_Types].xml, the path is "/xl/worksheets/sheet1.xml"
                         $sheetDataXMLFilePath = $xmlReader->getAttribute(self::XML_ATTRIBUTE_TARGET);
+                        \assert(null !== $sheetDataXMLFilePath);
 
                         // sometimes, the sheet data file path already contains "/xl/"...
                         if (!str_starts_with($sheetDataXMLFilePath, '/xl/')) {

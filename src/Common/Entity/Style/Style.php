@@ -89,18 +89,11 @@ final class Style
 
     private ?Border $border = null;
 
-    /** @var bool Whether border properties should be applied */
-    private bool $shouldApplyBorder = false;
-
     /** @var null|string Background color */
     private ?string $backgroundColor = null;
 
-    private bool $hasSetBackgroundColor = false;
-
     /** @var null|string Format */
     private ?string $format = null;
-
-    private bool $hasSetFormat = false;
 
     private bool $isRegistered = false;
 
@@ -121,7 +114,7 @@ final class Style
         return $this->id;
     }
 
-    public function setId(?int $id): self
+    public function setId(int $id): self
     {
         $this->id = $id;
 
@@ -135,16 +128,10 @@ final class Style
 
     public function setBorder(Border $border): self
     {
-        $this->shouldApplyBorder = true;
         $this->border = $border;
         $this->isEmpty = false;
 
         return $this;
-    }
-
-    public function shouldApplyBorder(): bool
-    {
-        return $this->shouldApplyBorder;
     }
 
     public function isFontBold(): bool
@@ -370,7 +357,6 @@ final class Style
      */
     public function setBackgroundColor(string $color): self
     {
-        $this->hasSetBackgroundColor = true;
         $this->backgroundColor = $color;
         $this->isEmpty = false;
 
@@ -383,19 +369,10 @@ final class Style
     }
 
     /**
-     * @return bool Whether the background color should be applied
-     */
-    public function shouldApplyBackgroundColor(): bool
-    {
-        return $this->hasSetBackgroundColor;
-    }
-
-    /**
      * Sets format.
      */
     public function setFormat(string $format): self
     {
-        $this->hasSetFormat = true;
         $this->format = $format;
         $this->isEmpty = false;
 
@@ -405,14 +382,6 @@ final class Style
     public function getFormat(): ?string
     {
         return $this->format;
-    }
-
-    /**
-     * @return bool Whether format should be applied
-     */
-    public function shouldApplyFormat(): bool
-    {
-        return $this->hasSetFormat;
     }
 
     public function isRegistered(): bool

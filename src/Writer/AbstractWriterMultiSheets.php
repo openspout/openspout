@@ -150,7 +150,7 @@ abstract class AbstractWriterMultiSheets extends AbstractWriter
      */
     private function throwIfWorkbookIsNotAvailable(): void
     {
-        if (null === $this->workbookManager->getWorkbook()) {
+        if (null === $this->workbookManager) {
             throw new WriterNotOpenedException('The writer must be opened before performing this action.');
         }
     }

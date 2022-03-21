@@ -233,8 +233,7 @@ class StyleRegistry extends CommonStyleRegistry
     {
         $styleId = $style->getId();
 
-        if ($style->shouldApplyBorder()) {
-            $border = $style->getBorder();
+        if (null !== ($border = $style->getBorder())) {
             $serializedBorder = serialize($border);
 
             $isBorderAlreadyRegistered = isset($this->registeredBorders[$serializedBorder]);

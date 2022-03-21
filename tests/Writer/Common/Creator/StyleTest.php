@@ -22,7 +22,7 @@ final class StyleTest extends TestCase
     {
         $border = new Border(new BorderPart(Border::BOTTOM));
         $style = (new Style())->setBorder($border);
-        self::assertTrue($style->shouldApplyBorder());
+        self::assertNotNull($style->getBorder());
     }
 
     public function testStyleBuilderShouldMergeBorders(): void

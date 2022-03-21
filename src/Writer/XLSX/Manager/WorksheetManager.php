@@ -178,8 +178,8 @@ final class WorksheetManager implements WorksheetManagerInterface
 
         $worksheetFilePointer = $worksheet->getFilePointer();
         $sheet = $worksheet->getExternalSheet();
-        if ($sheet->hasSheetView()) {
-            fwrite($worksheetFilePointer, '<sheetViews>'.$sheet->getSheetView()->getXml().'</sheetViews>');
+        if (null !== ($sheetView = $sheet->getSheetView())) {
+            fwrite($worksheetFilePointer, '<sheetViews>'.$sheetView->getXml().'</sheetViews>');
         }
         fwrite($worksheetFilePointer, $this->getXMLFragmentForDefaultCellSizing());
         fwrite($worksheetFilePointer, $this->getXMLFragmentForColumnWidths());

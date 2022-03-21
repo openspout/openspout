@@ -6,6 +6,7 @@ namespace OpenSpout\Writer\Common\Helper;
 
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use SplFileInfo;
 use ZipArchive;
 
 /**
@@ -102,9 +103,13 @@ final class ZipHelper
     public function addFolderToArchive(ZipArchive $zip, string $folderPath, string $existingFileMode = self::EXISTING_FILES_OVERWRITE): void
     {
         $folderRealPath = $this->getNormalizedRealPath($folderPath).'/';
-        $itemIterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($folderPath, RecursiveDirectoryIterator::SKIP_DOTS), RecursiveIteratorIterator::SELF_FIRST);
+        $itemIterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($folderPath, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::SELF_FIRST
+        );
 
         foreach ($itemIterator as $itemInfo) {
+            \assert($itemInfo instanceof SplFileInfo);
             $itemRealPath = $this->getNormalizedRealPath($itemInfo->getPathname());
             $itemLocalPath = str_replace($folderRealPath, '', $itemRealPath);
 

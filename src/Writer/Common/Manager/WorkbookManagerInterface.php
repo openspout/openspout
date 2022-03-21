@@ -17,7 +17,7 @@ use OpenSpout\Writer\Exception\WriterException;
  */
 interface WorkbookManagerInterface
 {
-    public function getWorkbook(): ?Workbook;
+    public function getWorkbook(): Workbook;
 
     /**
      * Creates a new sheet in the workbook and make it the current sheet.

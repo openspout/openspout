@@ -187,6 +187,7 @@ final class StyleManager extends CommonStyleManager
         foreach ($registeredBorders as $styleId) {
             $style = $this->styleRegistry->getStyleFromStyleId($styleId);
             $border = $style->getBorder();
+            \assert(null !== $border);
             $content .= '<border>';
 
             // @see https://github.com/box/spout/issues/271
@@ -235,7 +236,7 @@ final class StyleManager extends CommonStyleManager
                 $content .= ' applyFont="1"';
             }
 
-            $content .= sprintf(' applyBorder="%d"', $style->shouldApplyBorder() ? 1 : 0);
+            $content .= sprintf(' applyBorder="%d"', (bool) $style->getBorder());
 
             if ($style->shouldApplyCellAlignment() || $style->shouldWrapText() || $style->shouldShrinkToFit()) {
                 $content .= ' applyAlignment="1">';

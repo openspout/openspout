@@ -292,6 +292,7 @@ class StyleManager implements StyleManagerInterface
         // Remove extra formatting (what's between [ ], the brackets should not be preceded by a "\")
         $pattern = '((?<!\\\)\[.+?(?<!\\\)\])';
         $formatCode = preg_replace($pattern, '', $formatCode);
+        \assert(null !== $formatCode);
 
         // custom date formats contain specific characters to represent the date:
         // e - yy - m - d - h - s
