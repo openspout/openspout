@@ -17,7 +17,7 @@ final class CsvWriterBench
 
     #[Bench\OutputTimeUnit('seconds')]
     #[Bench\Assert('mode(variant.mem.peak) < 2097152')]
-    #[Bench\Assert('mode(variant.time.avg) < 10000000')]
+    #[Bench\Assert('mode(variant.time.avg) < 7500000')]
     public function benchWriting1MRowsCSV(): void
     {
         $numRows = 1000000;

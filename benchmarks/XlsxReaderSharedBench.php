@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OpenSpout\Reader\ODS;
+namespace OpenSpout\Reader\XLSX;
 
 use OpenSpout\TestUsingResource;
 use PhpBench\Attributes as Bench;
@@ -10,16 +10,16 @@ use PhpBench\Attributes as Bench;
 /**
  * @internal
  */
-final class OdsReaderBench
+final class XlsxReaderSharedBench
 {
     use TestUsingResource;
 
     #[Bench\OutputTimeUnit('seconds')]
-    #[Bench\Assert('mode(variant.mem.peak) < 2097152')]
-    #[Bench\Assert('mode(variant.time.avg) < 40000000')]
-    public function benchReading1MRowsODS(): void
+    #[Bench\Assert('mode(variant.mem.peak) < 4194304')]
+    #[Bench\Assert('mode(variant.time.avg) < 35000000')]
+    public function benchReading300KRowsXLSXWithSharedStrings(): void
     {
-        $fileName = 'ods_with_one_million_rows.ods';
+        $fileName = 'xlsx_with_300k_rows_and_shared_strings.xlsx';
         $resourcePath = $this->getResourcePath($fileName);
 
         $reader = new Reader();
@@ -35,6 +35,6 @@ final class OdsReaderBench
 
         $reader->close();
 
-        \assert(1000000 === $numReadRows);
+        \assert(300000 === $numReadRows);
     }
 }

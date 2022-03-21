@@ -212,8 +212,10 @@ jobs:
           - "CsvWriterBench"
           - "OdsReaderBench"
           - "OdsWriterBench"
-          - "XlsxReaderBench"
-          - "XlsxWriterBench"
+          - "XlsxReaderInlineBench"
+          - "XlsxReaderSharedBench"
+          - "XlsxWriterInlineBench"
+          - "XlsxWriterSharedBench"
 
     steps:
       - name: "Checkout"
@@ -242,4 +244,5 @@ jobs:
         run: "composer update --no-interaction --no-progress"
 
       - name: "Run benchmarks"
+        timeout-minutes: 3
         run: "vendor/bin/phpbench run --report=default --filter ${{ matrix.bench }}"

@@ -16,7 +16,7 @@ final class CsvReaderBench
 
     #[Bench\OutputTimeUnit('seconds')]
     #[Bench\Assert('mode(variant.mem.peak) < 2097152')]
-    #[Bench\Assert('mode(variant.time.avg) < 10000000')]
+    #[Bench\Assert('mode(variant.time.avg) < 7500000')]
     public function benchReading1MRowsCSV(): void
     {
         $fileName = 'csv_with_one_million_rows.csv';
