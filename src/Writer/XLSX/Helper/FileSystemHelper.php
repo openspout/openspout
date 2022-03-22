@@ -8,9 +8,11 @@ use DateTimeImmutable;
 use OpenSpout\Common\Helper\Escaper\XLSX;
 use OpenSpout\Common\Helper\FileSystemHelper as CommonFileSystemHelper;
 use OpenSpout\Writer\Common\Entity\Worksheet;
+use OpenSpout\Writer\Common\Helper\CellHelper;
 use OpenSpout\Writer\Common\Helper\FileSystemWithRootFolderHelperInterface;
 use OpenSpout\Writer\Common\Helper\ZipHelper;
 use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
+use OpenSpout\Writer\XLSX\Options;
 
 /**
  * @internal
@@ -31,6 +33,11 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     public const WORKBOOK_XML_FILE_NAME = 'workbook.xml';
     public const WORKBOOK_RELS_XML_FILE_NAME = 'workbook.xml.rels';
     public const STYLES_XML_FILE_NAME = 'styles.xml';
+
+    private const SHEET_XML_FILE_HEADER = <<<'EOD'
+        <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+        <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+        EOD;
 
     private string $baseFolderRealPath;
     private CommonFileSystemHelper $baseFileSystemHelper;
@@ -58,6 +65,9 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 
     /** @var string Path to the "worksheets" folder inside the "xl" folder */
     private string $xlWorksheetsFolder;
+
+    /** @var string Path to the temp folder, inside the root folder, where specific sheets content will be written to */
+    private string $sheetsContentTempFolder;
 
     /**
      * @param string    $baseFolderPath The path of the base folder where all the I/O can occur
@@ -107,6 +117,11 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
         return $this->xlWorksheetsFolder;
     }
 
+    public function getSheetsContentTempFolder(): string
+    {
+        return $this->sheetsContentTempFolder;
+    }
+
     /**
      * Creates all the folders needed to create a XLSX file, as well as the files that won't change.
      *
@@ -119,6 +134,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             ->createRelsFolderAndFile()
             ->createDocPropsFolderAndFiles()
             ->createXlFolderAndSubFolders()
+            ->createSheetsContentTempFolder()
         ;
     }
 
@@ -225,6 +241,62 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     }
 
     /**
+     * Creates the "content.xml" file under the root folder.
+     *
+     * @param Worksheet[] $worksheets
+     */
+    public function createContentFiles(Options $options, array $worksheets): self
+    {
+        foreach ($worksheets as $worksheet) {
+            $sheet = $worksheet->getExternalSheet();
+            $contentXmlFilePath = $this->getXlWorksheetsFolder().'/'.strtolower($sheet->getName()).'.xml';
+            $worksheetFilePointer = fopen($contentXmlFilePath, 'w');
+            \assert(false !== $worksheetFilePointer);
+
+            fwrite($worksheetFilePointer, self::SHEET_XML_FILE_HEADER);
+            if (null !== ($sheetView = $sheet->getSheetView())) {
+                fwrite($worksheetFilePointer, '<sheetViews>'.$sheetView->getXml().'</sheetViews>');
+            }
+            fwrite($worksheetFilePointer, $this->getXMLFragmentForDefaultCellSizing($options));
+            fwrite($worksheetFilePointer, $this->getXMLFragmentForColumnWidths($options));
+            fwrite($worksheetFilePointer, '<sheetData>');
+
+            $worksheetFilePath = $worksheet->getFilePath();
+            $this->copyFileContentsToTarget($worksheetFilePath, $worksheetFilePointer);
+            fwrite($worksheetFilePointer, '</sheetData>');
+
+            // create nodes for merge cells
+            $mergeCellsOption = $options->MERGE_CELLS;
+            if ([] !== $mergeCellsOption) {
+                $mergeCellString = '<mergeCells count="'.\count($mergeCellsOption).'">';
+                foreach ($mergeCellsOption as $values) {
+                    $output = array_map(static function ($value): string {
+                        return CellHelper::getColumnLettersFromColumnIndex($value[0]).$value[1];
+                    }, $values);
+                    $mergeCellString .= '<mergeCell ref="'.implode(':', $output).'"/>';
+                }
+                $mergeCellString .= '</mergeCells>';
+                fwrite($worksheetFilePointer, $mergeCellString);
+            }
+
+            fwrite($worksheetFilePointer, '</worksheet>');
+            fclose($worksheetFilePointer);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Deletes the temporary folder where sheets content was stored.
+     */
+    public function deleteWorksheetTempFolder(): self
+    {
+        $this->deleteFolderRecursively($this->sheetsContentTempFolder);
+
+        return $this;
+    }
+
+    /**
      * Zips the root folder and streams the contents of the zip into the given stream.
      *
      * @param resource $streamPointer Pointer to the stream to copy the zip
@@ -247,6 +319,39 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 
         // once the zip is copied, remove it
         $this->deleteFile($zipFilePath);
+    }
+
+    /**
+     * Construct column width references xml to inject into worksheet xml file.
+     */
+    private function getXMLFragmentForColumnWidths(Options $options): string
+    {
+        if ([] === $options->COLUMN_WIDTHS) {
+            return '';
+        }
+        $xml = '<cols>';
+        foreach ($options->COLUMN_WIDTHS as $entry) {
+            $xml .= '<col min="'.$entry[0].'" max="'.$entry[1].'" width="'.$entry[2].'" customWidth="true"/>';
+        }
+        $xml .= '</cols>';
+
+        return $xml;
+    }
+
+    /**
+     * Constructs default row height and width xml to inject into worksheet xml file.
+     */
+    private function getXMLFragmentForDefaultCellSizing(Options $options): string
+    {
+        $rowHeightXml = null === $options->DEFAULT_ROW_HEIGHT ? '' : " defaultRowHeight=\"{$options->DEFAULT_ROW_HEIGHT}\"";
+        $colWidthXml = null === $options->DEFAULT_COLUMN_WIDTH ? '' : " defaultColWidth=\"{$options->DEFAULT_COLUMN_WIDTH}\"";
+        if ('' === $colWidthXml && '' === $rowHeightXml) {
+            return '';
+        }
+        // Ensure that the required defaultRowHeight is set
+        $rowHeightXml = '' === $rowHeightXml ? ' defaultRowHeight="0"' : $rowHeightXml;
+
+        return "<sheetFormatPr{$colWidthXml}{$rowHeightXml}/>";
     }
 
     /**
@@ -369,6 +474,19 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     }
 
     /**
+     * Creates the temp folder where specific sheets content will be written to.
+     * This folder is not part of the final ODS file and is only used to be able to jump between sheets.
+     *
+     * @throws \OpenSpout\Common\Exception\IOException If unable to create the folder
+     */
+    private function createSheetsContentTempFolder(): self
+    {
+        $this->sheetsContentTempFolder = $this->createFolder($this->rootFolder, 'worksheets-temp');
+
+        return $this;
+    }
+
+    /**
      * Creates the "_rels" folder under the "xl" folder.
      *
      * @throws \OpenSpout\Common\Exception\IOException If unable to create the folder
@@ -390,5 +508,21 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
         $this->xlWorksheetsFolder = $this->createFolder($this->xlFolder, self::WORKSHEETS_FOLDER_NAME);
 
         return $this;
+    }
+
+    /**
+     * Streams the content of the file at the given path into the target resource.
+     * Depending on which mode the target resource was created with, it will truncate then copy
+     * or append the content to the target file.
+     *
+     * @param string   $sourceFilePath Path of the file whose content will be copied
+     * @param resource $targetResource Target resource that will receive the content
+     */
+    private function copyFileContentsToTarget(string $sourceFilePath, $targetResource): void
+    {
+        $sourceHandle = fopen($sourceFilePath, 'r');
+        \assert(false !== $sourceHandle);
+        stream_copy_to_stream($sourceHandle, $targetResource);
+        fclose($sourceHandle);
     }
 }

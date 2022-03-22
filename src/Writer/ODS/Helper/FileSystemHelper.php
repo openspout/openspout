@@ -21,7 +21,6 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     public const MIMETYPE = 'application/vnd.oasis.opendocument.spreadsheet';
 
     public const META_INF_FOLDER_NAME = 'META-INF';
-    public const SHEETS_CONTENT_TEMP_FOLDER_NAME = 'worksheets-temp';
 
     public const MANIFEST_XML_FILE_NAME = 'manifest.xml';
     public const CONTENT_XML_FILE_NAME = 'content.xml';
@@ -245,7 +244,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
      */
     private function createSheetsContentTempFolder(): self
     {
-        $this->sheetsContentTempFolder = $this->createFolder($this->rootFolder, self::SHEETS_CONTENT_TEMP_FOLDER_NAME);
+        $this->sheetsContentTempFolder = $this->createFolder($this->rootFolder, 'worksheets-temp');
 
         return $this;
     }

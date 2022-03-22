@@ -18,6 +18,7 @@ use OpenSpout\Writer\XLSX\Options;
  * @property WorksheetManager $worksheetManager
  * @property StyleManager     $styleManager
  * @property FileSystemHelper $fileSystemHelper
+ * @property Options          $options
  */
 final class WorkbookManager extends AbstractWorkbookManager
 {
@@ -47,16 +48,6 @@ final class WorkbookManager extends AbstractWorkbookManager
     }
 
     /**
-     * @return string The file path where the data for the given sheet will be stored
-     */
-    public function getWorksheetFilePath(Sheet $sheet): string
-    {
-        $worksheetFilesFolder = $this->fileSystemHelper->getXlWorksheetsFolder();
-
-        return $worksheetFilesFolder.'/'.strtolower($sheet->getName()).'.xml';
-    }
-
-    /**
      * @return int Maximum number of rows/columns a sheet can contain
      */
     protected function getMaxRowsPerWorksheet(): int
@@ -82,6 +73,8 @@ final class WorkbookManager extends AbstractWorkbookManager
         $worksheets = $this->getWorksheets();
 
         $this->fileSystemHelper
+            ->createContentFiles($this->options, $worksheets)
+            ->deleteWorksheetTempFolder()
             ->createContentTypesFile($worksheets)
             ->createWorkbookFile($worksheets)
             ->createWorkbookRelsFile($worksheets)

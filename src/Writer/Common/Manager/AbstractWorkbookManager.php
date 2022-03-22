@@ -29,10 +29,10 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
     /** @var FileSystemWithRootFolderHelperInterface Helper to perform file system operations */
     protected FileSystemWithRootFolderHelperInterface $fileSystemHelper;
 
+    protected AbstractOptions $options;
+
     /** @var Workbook The workbook to manage */
     private Workbook $workbook;
-
-    private AbstractOptions $options;
 
     /** @var StyleMerger Helper to merge styles */
     private StyleMerger $styleMerger;
@@ -124,20 +124,15 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
     public function addRowToCurrentWorksheet(Row $row): void
     {
         $currentWorksheet = $this->getCurrentWorksheet();
-        $hasReachedMaxRows = $this->hasCurrentWorksheetReachedMaxRows();
-
-        // if we reached the maximum number of rows for the current sheet...
-        if ($hasReachedMaxRows) {
-            // ... continue writing in a new sheet if option set
-            if ($this->options->SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY) {
-                $currentWorksheet = $this->addNewSheetAndMakeItCurrent();
-
-                $this->addRowToWorksheet($currentWorksheet, $row);
+        if ($this->hasCurrentWorksheetReachedMaxRows()) {
+            if (!$this->options->SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY) {
+                return;
             }
-            // otherwise, do nothing as the data won't be written anyways
-        } else {
-            $this->addRowToWorksheet($currentWorksheet, $row);
+
+            $currentWorksheet = $this->addNewSheetAndMakeItCurrent();
         }
+
+        $this->addRowToWorksheet($currentWorksheet, $row);
     }
 
     /**
@@ -163,7 +158,12 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
     /**
      * @return string The file path where the data for the given sheet will be stored
      */
-    abstract protected function getWorksheetFilePath(Sheet $sheet): string;
+    protected function getWorksheetFilePath(Sheet $sheet): string
+    {
+        $sheetsContentTempFolder = $this->fileSystemHelper->getSheetsContentTempFolder();
+
+        return $sheetsContentTempFolder.'/sheet'.$sheet->getIndex().'.xml';
+    }
 
     /**
      * Closes custom objects that are still opened.
