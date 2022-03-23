@@ -34,11 +34,6 @@ final class WorksheetManager implements WorksheetManagerInterface
      */
     public const MAX_CHARACTERS_PER_CELL = 32767;
 
-    public const SHEET_XML_FILE_HEADER = <<<'EOD'
-        <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-        <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
-        EOD;
-
     private Options $options;
 
     /** @var StyleManager Manages styles */
@@ -89,8 +84,6 @@ final class WorksheetManager implements WorksheetManagerInterface
         \assert(false !== $sheetFilePointer);
 
         $worksheet->setFilePointer($sheetFilePointer);
-
-        fwrite($sheetFilePointer, self::SHEET_XML_FILE_HEADER);
     }
 
     /**
@@ -106,85 +99,11 @@ final class WorksheetManager implements WorksheetManagerInterface
     }
 
     /**
-     * Construct column width references xml to inject into worksheet xml file.
-     */
-    public function getXMLFragmentForColumnWidths(): string
-    {
-        if ([] === $this->options->COLUMN_WIDTHS) {
-            return '';
-        }
-        $xml = '<cols>';
-        foreach ($this->options->COLUMN_WIDTHS as $entry) {
-            $xml .= '<col min="'.$entry[0].'" max="'.$entry[1].'" width="'.$entry[2].'" customWidth="true"/>';
-        }
-        $xml .= '</cols>';
-
-        return $xml;
-    }
-
-    /**
-     * Constructs default row height and width xml to inject into worksheet xml file.
-     */
-    public function getXMLFragmentForDefaultCellSizing(): string
-    {
-        $rowHeightXml = null === $this->options->DEFAULT_ROW_HEIGHT ? '' : " defaultRowHeight=\"{$this->options->DEFAULT_ROW_HEIGHT}\"";
-        $colWidthXml = null === $this->options->DEFAULT_COLUMN_WIDTH ? '' : " defaultColWidth=\"{$this->options->DEFAULT_COLUMN_WIDTH}\"";
-        if ('' === $colWidthXml && '' === $rowHeightXml) {
-            return '';
-        }
-        // Ensure that the required defaultRowHeight is set
-        $rowHeightXml = '' === $rowHeightXml ? ' defaultRowHeight="0"' : $rowHeightXml;
-
-        return "<sheetFormatPr{$colWidthXml}{$rowHeightXml}/>";
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function close(Worksheet $worksheet): void
     {
-        $this->ensureSheetDataStated($worksheet);
-        $worksheetFilePointer = $worksheet->getFilePointer();
-        fwrite($worksheetFilePointer, '</sheetData>');
-
-        // create nodes for merge cells
-        $mergeCellsOption = $this->options->MERGE_CELLS;
-        if ([] !== $mergeCellsOption) {
-            $mergeCellString = '<mergeCells count="'.\count($mergeCellsOption).'">';
-            foreach ($mergeCellsOption as $values) {
-                $output = array_map(static function ($value): string {
-                    return CellHelper::getColumnLettersFromColumnIndex($value[0]).$value[1];
-                }, $values);
-                $mergeCellString .= '<mergeCell ref="'.implode(':', $output).'"/>';
-            }
-            $mergeCellString .= '</mergeCells>';
-            fwrite($worksheet->getFilePointer(), $mergeCellString);
-        }
-
-        fwrite($worksheetFilePointer, '</worksheet>');
-        fclose($worksheetFilePointer);
-    }
-
-    /**
-     * Writes the sheet data header.
-     *
-     * @param Worksheet $worksheet The worksheet to add the row to
-     */
-    private function ensureSheetDataStated(Worksheet $worksheet): void
-    {
-        if ($worksheet->getSheetDataStarted()) {
-            return;
-        }
-
-        $worksheetFilePointer = $worksheet->getFilePointer();
-        $sheet = $worksheet->getExternalSheet();
-        if (null !== ($sheetView = $sheet->getSheetView())) {
-            fwrite($worksheetFilePointer, '<sheetViews>'.$sheetView->getXml().'</sheetViews>');
-        }
-        fwrite($worksheetFilePointer, $this->getXMLFragmentForDefaultCellSizing());
-        fwrite($worksheetFilePointer, $this->getXMLFragmentForColumnWidths());
-        fwrite($worksheetFilePointer, '<sheetData>');
-        $worksheet->setSheetDataStarted(true);
+        fclose($worksheet->getFilePointer());
     }
 
     /**
@@ -198,7 +117,6 @@ final class WorksheetManager implements WorksheetManagerInterface
      */
     private function addNonEmptyRow(Worksheet $worksheet, Row $row): void
     {
-        $this->ensureSheetDataStated($worksheet);
         $sheetFilePointer = $worksheet->getFilePointer();
         $rowStyle = $row->getStyle();
         $rowIndexOneBased = $worksheet->getLastWrittenRowIndex() + 1;
@@ -281,7 +199,7 @@ final class WorksheetManager implements WorksheetManagerInterface
         } elseif ($cell instanceof Cell\FormulaCell) {
             $cellXML .= '><f>'.substr($cell->getValue(), 1).'</f></c>';
         } elseif ($cell instanceof Cell\DateTimeCell) {
-            $cellXML .= '><v>'.(string) DateHelper::toExcel($cell->getValue()).'</v></c>';
+            $cellXML .= '><v>'.DateHelper::toExcel($cell->getValue()).'</v></c>';
         } elseif ($cell instanceof Cell\ErrorCell && \is_string($cell->getRawValue())) {
             // only writes the error value if it's a string
             $cellXML .= ' t="e"><v>'.$cell->getRawValue().'</v></c>';

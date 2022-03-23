@@ -47,16 +47,6 @@ final class WorkbookManager extends AbstractWorkbookManager
     }
 
     /**
-     * @return string The file path where the data for the given sheet will be stored
-     */
-    public function getWorksheetFilePath(Sheet $sheet): string
-    {
-        $sheetsContentTempFolder = $this->fileSystemHelper->getSheetsContentTempFolder();
-
-        return $sheetsContentTempFolder.'/sheet'.$sheet->getIndex().'.xml';
-    }
-
-    /**
      * @return int Maximum number of rows/columns a sheet can contain
      */
     protected function getMaxRowsPerWorksheet(): int

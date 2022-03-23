@@ -134,9 +134,7 @@ final class WorksheetManager implements WorksheetManagerInterface
      */
     public function close(Worksheet $worksheet): void
     {
-        $worksheetFilePointer = $worksheet->getFilePointer();
-
-        fclose($worksheetFilePointer);
+        fclose($worksheet->getFilePointer());
     }
 
     /**

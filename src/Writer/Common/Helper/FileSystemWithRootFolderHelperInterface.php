@@ -19,4 +19,6 @@ interface FileSystemWithRootFolderHelperInterface extends FileSystemHelperInterf
     public function createBaseFilesAndFolders(): void;
 
     public function getRootFolder(): string;
+
+    public function getSheetsContentTempFolder(): string;
 }
