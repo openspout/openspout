@@ -1,6 +1,7 @@
 # Read data from a specific sheet only
 
-Even though a spreadsheet contains multiple sheets, you may be interested in reading only one of them and skip the other ones. Here is how you can do it with OpenSpout:
+Even though a spreadsheet contains multiple sheets, you may be interested in reading only one of them and skip the
+other ones. Here is how you can do it with OpenSpout:
 
 * If you know the name of the sheet
 
