@@ -5,33 +5,23 @@
 [![Code Coverage](https://codecov.io/gh/openspout/openspout/coverage.svg?branch=main)](https://codecov.io/gh/openspout/openspout?branch=main)
 [![Total Downloads](https://poser.pugx.org/openspout/openspout/downloads)](https://packagist.org/packages/openspout/openspout)
 
-OpenSpout is a community driven fork of `box/spout`, a PHP library to read and write spreadsheet files (CSV, XLSX and ODS), in a fast and scalable way.
-Unlike other file readers or writers, it is capable of processing very large files, while keeping the memory usage really low (less than 3MB).
+OpenSpout is a community driven fork of `box/spout`, a PHP library to read and write spreadsheet files
+(CSV, XLSX and ODS), in a fast and scalable way. Unlike other file readers or writers, it is capable of processing
+very large files, while keeping the memory usage really low (less than 3MB).
 
 ## Documentation
 
 Documentation can be found at [https://openspout.readthedocs.io/en/latest/](https://openspout.readthedocs.io/en/latest/).
 
-## Upgrade from `box/spout`
+## Upgrade from `box/spout:v3` to `openspout/openspout:v3`
 
 1. Replace `box/spout` with `openspout/openspout` in your `composer.json`
 2. Replace `Box\Spout` with `OpenSpout` in your code
 
 ## Upgrade guide
 
-Version 3 introduced new functionality but also some breaking changes. If you want to upgrade your Spout codebase from version 2 please consult the [Upgrade guide](UPGRADE-3.0.md). 
-
-## Running tests
-
-The `main` branch includes unit, functional and performance tests.
-If you just want to check that everything is working as expected, executing the unit and functional tests is enough.
-
-* `phpunit` - runs unit and functional tests
-* `phpunit --group perf-tests` - only runs the performance tests
-
-For information, the performance tests take about 10 minutes to run (processing 1 million rows files is not a quick thing).
-
-> Performance tests status: [![Build Status](https://travis-ci.org/box/spout.svg?branch=perf-tests)](https://travis-ci.org/box/spout)
+Version 4 introduced new functionality but also some breaking changes. If you want to upgrade your OpenSpout codebase
+please consult the [Upgrade guide](UPGRADE.md).
 
 ## Copyright and License
 

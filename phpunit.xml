@@ -21,12 +21,6 @@
     </testsuite>
   </testsuites>
 
-  <groups>
-    <exclude>
-      <group>perf-tests</group>
-    </exclude>
-  </groups>
-
   <coverage processUncoveredFiles="true">
     <include>
       <directory suffix=".php">src/</directory>
