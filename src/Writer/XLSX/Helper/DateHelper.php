@@ -15,8 +15,8 @@ class DateHelper
         $month = (int) $dateTime->format('m');
         $day = (int) $dateTime->format('d');
         $hours = (int) $dateTime->format('H');
-        $minutes = (int) $dateTime->format('I');
-        $seconds = (int) $dateTime->format('S');
+        $minutes = (int) $dateTime->format('i');
+        $seconds = (int) $dateTime->format('s');
         // Fudge factor for the erroneous fact that the year 1900 is treated as a Leap Year in MS Excel
         // This affects every date following 28th February 1900
         $excel1900isLeapYear = true;

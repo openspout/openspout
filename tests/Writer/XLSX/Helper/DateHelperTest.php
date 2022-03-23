@@ -18,7 +18,7 @@ final class DateHelperTest extends TestCase
      */
     public function testToExcel(\DateTimeInterface $dateTime, float $expected): void
     {
-        static::assertSame($expected, DateHelper::toExcel($dateTime));
+        static::assertEqualsWithDelta($expected, DateHelper::toExcel($dateTime), 1E-5);
     }
 
     /**
@@ -58,7 +58,7 @@ final class DateHelperTest extends TestCase
             [new DateTimeImmutable('2022-03-22 13:00:00'), 44642.5416666667],
             [new DateTimeImmutable('2022-03-22 13:05:00'), 44642.5451388889],
             [new DateTimeImmutable('2022-03-22 13:10:00'), 44642.5486111111],
-            [new DateTimeImmutable('2022-03-22 13:12:14'), 44642.550162037],
+            [new DateTimeImmutable('2022-03-22 13:12:14'), 44642.5501620370],
         ];
     }
 }
