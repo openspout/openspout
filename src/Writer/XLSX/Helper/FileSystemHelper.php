@@ -19,7 +19,7 @@ use OpenSpout\Writer\XLSX\Options;
  */
 final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 {
-    public const APP_NAME = 'Spout';
+    public const APP_NAME = 'OpenSpout';
 
     public const RELS_FOLDER_NAME = '_rels';
     public const DOC_PROPS_FOLDER_NAME = 'docProps';
