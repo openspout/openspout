@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenSpout\Writer\XLSX;
 
 use DateTimeImmutable;
+use DateTimeInterface;
 use OpenSpout\Writer\XLSX\Helper\DateHelper;
 use PHPUnit\Framework\TestCase;
 
@@ -16,13 +19,13 @@ final class DateHelperTest extends TestCase
     /**
      * @dataProvider provideDateTimeToExcelCases
      */
-    public function testToExcel(\DateTimeInterface $dateTime, float $expected): void
+    public function testToExcel(DateTimeInterface $dateTime, float $expected): void
     {
-        static::assertEqualsWithDelta($expected, DateHelper::toExcel($dateTime), 1E-5);
+        self::assertEqualsWithDelta($expected, DateHelper::toExcel($dateTime), 1E-5);
     }
 
     /**
-     * @return array<array-key, array<array-key, \DateTimeInterface|float|int>>
+     * @return array<array-key, array<array-key, DateTimeInterface|float|int>>
      */
     public function provideDateTimeToExcelCases(): array
     {
