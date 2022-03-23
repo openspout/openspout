@@ -7,6 +7,7 @@ This guide will help you install OpenSpout and teach you how to use it.
 OpenSpout can be installed directly from [Composer](https://getcomposer.org/).
 
 Run the following command:
+
 ```shell
 composer require openspout/openspout
 ```
@@ -21,15 +22,13 @@ Regardless of the file type, the interface to read a file is always the same:
 
 use OpenSpout\Reader\CSV\Reader;
 
-$reader = new Reader('/path/to/file.ext');
-
-$reader->open($filePath);
+$reader = new Reader();
+$reader->open('/path/to/file.ext');
 
 foreach ($reader->getSheetIterator() as $sheet) {
     foreach ($sheet->getRowIterator() as $row) {
         // do stuff with the row
         $cells = $row->getCells();
-        ...
     }
 }
 
@@ -38,8 +37,8 @@ $reader->close();
 
 If there are multiple sheets in the file, the reader will read all of them sequentially.
 
-
-Note that OpenSpout guesses the reader type based on the file extension. If the extension is not standard (`.csv`, `.ods`, `.xlsx` _- lower/uppercase_), a specific reader can be created directly:
+Note that OpenSpout guesses the reader type based on the file extension. If the extension is not standard (`.csv`,
+`.ods`, `.xlsx` _- lower/uppercase_), a specific reader can be created directly:
 
 ```php
 $reader = new \OpenSpout\Reader\XLSX\Reader();
@@ -87,9 +86,11 @@ $writer->addRow($rowFromValues);
 $writer->close();
 ```
 
-For XLSX and ODS files, the number of rows per sheet is limited to *1,048,576*. By default, once this limit is reached, the writer will automatically create a new sheet and continue writing data into it.
+For XLSX and ODS files, the number of rows per sheet is limited to *1,048,576*. By default, once this limit is reached,
+the writer will automatically create a new sheet and continue writing data into it.
 
 
 ## Advanced usage
 
-You can do a lot more with OpenSpout! Check out the [full documentation](./documentation.md) to learn about all the features.
+You can do a lot more with OpenSpout! Check out the [full documentation](./documentation.md) to learn about all the
+features.

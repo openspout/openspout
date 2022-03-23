@@ -2,9 +2,11 @@
 
 ## How can OpenSpout handle such large data sets and still use less than 3MB of memory?
 
-When writing data, OpenSpout is streaming the data to files, one or few lines at a time. That means that it only keeps in memory the few rows that it needs to write. Once written, the memory is freed.
+When writing data, OpenSpout is streaming the data to files, one or few lines at a time. That means that it only keeps
+in memory the few rows that it needs to write. Once written, the memory is freed.
 
-Same goes with reading. Only one row at a time is stored in memory. A special technique is used to handle shared strings in XLSX, storing them - if needed - into several small temporary files that allows fast access.
+Same goes with reading. Only one row at a time is stored in memory. A special technique is used to handle shared
+strings in XLSX, storing them - if needed - into several small temporary files that allows fast access.
 
 ## How long does it take to generate a file with X rows?
 
@@ -20,7 +22,7 @@ Here are a few numbers regarding the performance of OpenSpout:
 | ODS  | Read                          | 1 second                 | 1-2 minutes                  | 5-6 minutes                      |
 |      | Write                         | < 1 second               | 35-40 seconds                | 5-6 minutes                      |
 
-## Does OpenSpout support charts or formulas?
+## Does OpenSpout support charts?
 
-No. This is a compromise to keep memory usage low. Charts and formulas requires data to be kept in memory in order to be used.
+No. This is a compromise to keep memory usage low. Charts requires data to be kept in memory in order to be used.
 So the larger the file would be, the more memory would be consumed, preventing your code to scale well.

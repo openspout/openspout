@@ -12,7 +12,6 @@ $options = new Options();
 $options->FIELD_DELIMITER = '|';
 $options->FIELD_ENCLOSURE = '@';
 $reader = new Reader($options);
-
 ```
 
 Additionally, if you need to read non UTF-8 files, you can specify the encoding of your file this way:
@@ -43,7 +42,9 @@ $writer = new Writer($options);
 
 ### New sheet creation
 
-It is possible to change the behavior of the writers when the maximum number of rows (*1,048,576*) has been written in the current sheet. By default, a new sheet is automatically created so that writing can keep going but that may not always be preferable.
+It is possible to change the behavior of the writers when the maximum number of rows (*1,048,576*) has been written in
+the current sheet. By default, a new sheet is automatically created so that writing can keep going but that may not
+always be preferable.
 
 ```php
 use OpenSpout\Writer\ODS\Writer;
@@ -63,10 +64,10 @@ Sheet view settings must be configured before any rows are added to the sheet.
 use OpenSpout\Writer\XLSX\Entity\SheetView;
 use OpenSpout\Writer\XLSX\Writer;
 
-$sheetView = (new SheetView())
-    ->setFreezeRow(2) // First row will be fixed
-    ->setFreezeColumn('D') // Columns A to C will be fixed
-    ->setZoomScale(150); // And other options
+$sheetView = new SheetView();
+$sheetView->setFreezeRow(2); // First row will be fixed
+$sheetView->setFreezeColumn('D'); // Columns A to C will be fixed
+$sheetView->setZoomScale(150); // And other options
 
 $writer = new Writer();
 $writer->getCurrentSheet()->setSheetView($sheetView);
@@ -74,7 +75,9 @@ $writer->getCurrentSheet()->setSheetView($sheetView);
 
 ### Using a custom temporary folder
 
-Processing XLSX and ODS files requires temporary files to be created. By default, OpenSpout will use the system default temporary folder (as returned by `sys_get_temp_dir()`). It is possible to override this by explicitly setting it on the reader or writer:
+Processing XLSX and ODS files requires temporary files to be created. By default, OpenSpout will use the system default
+temporary folder (as returned by `sys_get_temp_dir()`). It is possible to override this by explicitly setting it on the
+reader or writer:
 
 ```php
 use OpenSpout\Writer\XLSX\Writer;
@@ -88,10 +91,13 @@ $writer = new Writer($options);
 ### Strings storage (XLSX writer)
 
 XLSX files support different ways to store the string values:
-* Shared strings are meant to optimize file size by separating strings from the sheet representation and ignoring strings duplicates (if a string is used three times, only one string will be stored)
+
+* Shared strings are meant to optimize file size by separating strings from the sheet representation and ignoring
+  strings duplicates (if a string is used three times, only one string will be stored)
 * Inline strings are less optimized (as duplicate strings are all stored) but is faster to process
 
-In order to keep the memory usage really low, OpenSpout does not de-duplicate strings when using shared strings. It is nevertheless possible to use this mode.
+In order to keep the memory usage really low, OpenSpout does not de-duplicate strings when using shared strings. It is
+nevertheless possible to use this mode.
 
 ```php
 use OpenSpout\Writer\XLSX\Writer;
@@ -105,12 +111,14 @@ $writer = new Writer($options);
 
 > #### Note on Apple Numbers and iOS support
 >
-> Apple's products (Numbers and the iOS previewer) don't support inline strings and display empty cells instead. Therefore, if these platforms need to be supported, make sure to use shared strings!
+> Apple's products (Numbers and the iOS previewer) don't support inline strings and display empty cells instead.
+> Therefore, if these platforms need to be supported, make sure to use shared strings!
 
 ### Date/Time formatting
 
 When reading a spreadsheet containing dates or times, OpenSpout returns the values by default as `DateTime` objects.
-It is possible to change this behavior and have a formatted date returned instead (e.g. "2016-11-29 1:22 AM"). The format of the date corresponds to what is specified in the spreadsheet.
+It is possible to change this behavior and have a formatted date returned instead (e.g. "2016-11-29 1:22 AM"). The
+format of the date corresponds to what is specified in the spreadsheet.
 
 ```php
 use OpenSpout\Reader\XLSX\Reader;
@@ -122,7 +130,6 @@ $options->SHOULD_FORMAT_DATES = true; // will return formatted dates
 $reader = new Reader($options);
 ```
  
-
 ## Empty rows
 
 By default, when OpenSpout reads a spreadsheet it skips empty rows and only return rows containing data.
@@ -130,19 +137,22 @@ This behavior can be changed so that OpenSpout returns all rows:
 
 ```php
 use OpenSpout\Reader\CSV\Reader;
+use OpenSpout\Reader\CSV\Options;
 
-$reader = new Reader('/path/to/file.ext');
-$reader->setShouldPreserveEmptyRows(true);
+$options = new Options();
+$options->SHOULD_PRESERVE_EMPTY_ROWS = true;
+$reader = new Reader($options);
 ```
-
 
 ## Styling
 
 ### Available styles
 
-OpenSpout supports styling at a row and cell level. It is possible to customize the fonts, backgrounds, alignment as well as borders.
+OpenSpout supports styling at a row and cell level. It is possible to customize the fonts, backgrounds, alignment as
+well as borders.
 
-For fonts and alignments, OpenSpout does not support all the possible formatting options yet. But you can find the most important ones:
+For fonts and alignments, OpenSpout does not support all the possible formatting options yet. But you can find the most
+important ones:
 
 | Category             | Property       | API |
 |:---------------------|:---------------|:-------------------------------------- |
@@ -172,20 +182,19 @@ use OpenSpout\Writer\XLSX\Writer;
 $writer = new Writer();
 $writer->openToFile($filePath);
 
-/** Create a style with the StyleBuilder */
-$style = (new Style())
-    ->setFontBold()
-    ->setFontSize(15)
-    ->setFontColor(Color::BLUE)
-    ->setShouldWrapText()
-    ->setCellAlignment(CellAlignment::RIGHT)
-    ->setBackgroundColor(Color::YELLOW)
-;
+// Create a style with the StyleBuilder
+$style = new Style();
+$style->setFontBold();
+$style->setFontSize(15);
+$style->setFontColor(Color::BLUE);
+$style->setShouldWrapText();
+$style->setCellAlignment(CellAlignment::RIGHT);
+$style->setBackgroundColor(Color::YELLOW);
 
-/** Create a row with cells and apply the style to all cells */
+// Create a row with cells and apply the style to all cells
 $row = Row::fromValues(['Carl', 'is', 'great'], $style);
 
-/** Add the row to the writer */
+// Add the row to the writer
 $writer->addRow($row);
 $writer->close();
 ```
@@ -205,9 +214,8 @@ $border = new Border(
     new BorderPart(Border::BOTTOM, Color::GREEN, Border::WIDTH_THIN, Border::STYLE_DASHED)
 );
 
-$style = (new Style())
-    ->setBorder($border)
-;
+$style = new Style();
+$style->setBorder($border);
 
 $writer = new Writer();
 $writer->openToFile($filePath);
@@ -222,7 +230,8 @@ $writer->close();
 
 ### Styling cells
 
-The same styling techniques as described in [Styling rows](#styling-rows) can be applied to individual cells of a row as well.
+The same styling techniques as described in [Styling rows](#styling-rows) can be applied to individual cells of a row
+as well.
 
 Cell styles are inherited from the parent row and the default row style respectively.
 
@@ -238,35 +247,31 @@ use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Writer\XLSX\Writer;
 use OpenSpout\Writer\XLSX\Options;
 
-$defaultStyle = (new Style())
-    ->setFontSize(8)
-;
+$defaultStyle = new Style();
+$defaultStyle->setFontSize(8);
 
 $options = new Options();
 $options->DEFAULT_ROW_STYLE = $defaultStyle;
 $writer = new Writer($options);
 $writer->openToFile($filePath);
 
-$zebraBlackStyle = (new Style())
-    ->setBackgroundColor(Color::BLACK)
-    ->setFontColor(Color::WHITE)
-    ->setFontSize(10)
-;
+$zebraBlackStyle = new Style();
+$zebraBlackStyle->setBackgroundColor(Color::BLACK);
+$zebraBlackStyle->setFontColor(Color::WHITE);
+$zebraBlackStyle->setFontSize(10);
 
-$zebraWhiteStyle = (new Style())
-    ->setBackgroundColor(Color::WHITE)
-    ->setFontColor(Color::BLACK)
-    ->setFontItalic()
-;  
+$zebraWhiteStyle = new Style();
+$zebraWhiteStyle->setBackgroundColor(Color::WHITE);
+$zebraWhiteStyle->setFontColor(Color::BLACK);
+$zebraWhiteStyle->setFontItalic();
 
 $cells = [
     Cell::fromValue('Ze', $zebraBlackStyle),
     Cell::fromValue('bra', $zebraWhiteStyle)
 ];
 
-$rowStyle = (new Style())
-    ->setFontBold()
-;
+$rowStyle = new Style();
+$rowStyle->setFontBold();
 
 $row = new Row($cells, $rowStyle);
 
@@ -283,10 +288,9 @@ use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Writer\XLSX\Writer;
 use OpenSpout\Writer\XLSX\Options;
 
-$defaultStyle = (new Style())
-    ->setFontName('Arial')
-    ->setFontSize(11)
-;
+$defaultStyle = new Style();
+$defaultStyle->setFontName('Arial');
+$defaultStyle->setFontSize(11);
 
 $options = new Options();
 $options->DEFAULT_ROW_STYLE = $defaultStyle;
@@ -294,10 +298,10 @@ $writer = new Writer($options);
 $writer->openToFile($filePath);
 ```
 
-
 ## Playing with sheets
 
-When creating a XLSX or ODS file, it is possible to control which sheet the data will be written into. At any time, you can retrieve or set the current sheet:
+When creating a XLSX or ODS file, it is possible to control which sheet the data will be written into. At any time, you
+can retrieve or set the current sheet:
 
 ```php
 $firstSheet = $writer->getCurrentSheet();
@@ -343,21 +347,5 @@ $sheet->setName('My custom name');
 > * it must not start or end with a single quote
 > * it must be unique
 >
-> Handling these restrictions is the developer's responsibility. OpenSpout does not try to automatically change the sheet's name, as one may rely on this name to be exactly what was passed in.
-
-
-## Fluent interface
-
-Because fluent interfaces are great, you can use them with OpenSpout:
-
-```php
-use OpenSpout\Writer\WriterEntityFactory;
-
-$writer = WriterEntityFactory::createWriterFromFile('path/to/file.ext');
-$writer->setTempFolder($customTempFolderPath)
-       ->setShouldUseInlineStrings(true)
-       ->openToFile($filePath)
-       ->addRow($headerRow)
-       ->addRows($dataRows)
-       ->close();
-```
+> Handling these restrictions is the developer's responsibility. OpenSpout does not try to automatically change the
+> sheet's name, as one may rely on this name to be exactly what was passed in.
