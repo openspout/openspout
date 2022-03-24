@@ -26,6 +26,11 @@ final class Writer extends AbstractWriterMultiSheets
         $this->options = $options ?? new Options();
     }
 
+    public function getOptions(): Options
+    {
+        return $this->options;
+    }
+
     protected function createWorkbookManager(): WorkbookManager
     {
         $workbook = new Workbook();
