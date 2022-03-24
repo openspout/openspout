@@ -24,6 +24,11 @@ final class Writer extends AbstractWriter
         $this->options = $options ?? new Options();
     }
 
+    public function getOptions(): Options
+    {
+        return $this->options;
+    }
+
     /**
      * Opens the CSV streamer and makes it ready to accept data.
      */

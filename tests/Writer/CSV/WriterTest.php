@@ -168,6 +168,16 @@ final class WriterTest extends TestCase
         self::assertSame('"""csv--11""",csv--12\\,csv--13\\\\,csv--14\\\\\\', $writtenContent, 'The \'"\' and \'\\\' characters should be properly escaped');
     }
 
+    public function testShouldSetOptionWithGetter(): void
+    {
+        $options = new Options();
+        $writer = new Writer($options);
+
+        $options->FLUSH_THRESHOLD = random_int(100, 199);
+
+        self::assertSame($options->FLUSH_THRESHOLD, $writer->getOptions()->FLUSH_THRESHOLD);
+    }
+
     /**
      * @param Row[] $allRows
      */

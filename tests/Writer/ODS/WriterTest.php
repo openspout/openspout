@@ -472,6 +472,16 @@ final class WriterTest extends TestCase
         self::assertSame('application/vnd.oasis.opendocument.spreadsheet', $finfo->file($resourcePath));
     }
 
+    public function testShouldSetOptionWithGetter(): void
+    {
+        $options = new Options();
+        $writer = new Writer($options);
+
+        $options->DEFAULT_COLUMN_WIDTH = (float) random_int(100, 199);
+
+        self::assertSame($options->DEFAULT_COLUMN_WIDTH, $writer->getOptions()->DEFAULT_COLUMN_WIDTH);
+    }
+
     /**
      * @param Row[] $allRows
      */
