@@ -9,6 +9,7 @@ use OpenSpout\Common\Entity\Style\BorderPart;
 use OpenSpout\Common\Entity\Style\CellAlignment;
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Writer\Common\AbstractOptions;
+use OpenSpout\Writer\Common\ColumnWidth;
 use OpenSpout\Writer\Common\Entity\Worksheet;
 use OpenSpout\Writer\Common\Manager\Style\AbstractStyleManager as CommonStyleManager;
 use OpenSpout\Writer\ODS\Helper\BorderHelper;
@@ -104,12 +105,9 @@ final class StyleManager extends CommonStyleManager
         }
 
         // Sort column widths since ODS cares about order
-        usort($this->options->COLUMN_WIDTHS, function ($a, $b) {
-            if ($a[0] === $b[0]) {
-                return 0;
-            }
-
-            return ($a[0] < $b[0]) ? -1 : 1;
+        $columnWidths = $this->options->getColumnWidths();
+        usort($columnWidths, static function (ColumnWidth $a, ColumnWidth $b): int {
+            return $a->start <=> $b->start;
         });
         $content .= $this->getTableColumnStylesXMLContent();
 
@@ -120,15 +118,15 @@ final class StyleManager extends CommonStyleManager
 
     public function getTableColumnStylesXMLContent(): string
     {
-        if ([] === $this->options->COLUMN_WIDTHS) {
+        if ([] === $this->options->getColumnWidths()) {
             return '';
         }
 
         $content = '';
-        foreach ($this->options->COLUMN_WIDTHS as $styleIndex => $entry) {
+        foreach ($this->options->getColumnWidths() as $styleIndex => $columnWidth) {
             $content .= <<<EOD
                 <style:style style:family="table-column" style:name="co{$styleIndex}">
-                    <style:table-column-properties fo:break-before="auto" style:use-optimal-column-width="false" style:column-width="{$entry[2]}pt"/>
+                    <style:table-column-properties fo:break-before="auto" style:use-optimal-column-width="false" style:column-width="{$columnWidth->width}pt"/>
                 </style:style>
                 EOD;
         }
@@ -138,20 +136,21 @@ final class StyleManager extends CommonStyleManager
 
     public function getStyledTableColumnXMLContent(int $maxNumColumns): string
     {
-        if ([] === $this->options->COLUMN_WIDTHS) {
+        if ([] === $this->options->getColumnWidths()) {
             return '';
         }
 
         $content = '';
-        foreach ($this->options->COLUMN_WIDTHS as $styleIndex => $entry) {
-            $numCols = $entry[1] - $entry[0] + 1;
+        foreach ($this->options->getColumnWidths() as $styleIndex => $columnWidth) {
+            $numCols = $columnWidth->end - $columnWidth->start + 1;
             $content .= <<<EOD
                 <table:table-column table:default-cell-style-name='Default' table:style-name="co{$styleIndex}" table:number-columns-repeated="{$numCols}"/>
                 EOD;
         }
+        \assert(isset($columnWidth));
         // Note: This assumes the column widths are contiguous and default width is
         // only applied to columns after the last custom column with a custom width
-        $content .= '<table:table-column table:default-cell-style-name="ce1" table:style-name="default-column-style" table:number-columns-repeated="'.($maxNumColumns - $entry[1]).'"/>';
+        $content .= '<table:table-column table:default-cell-style-name="ce1" table:style-name="default-column-style" table:number-columns-repeated="'.($maxNumColumns - $columnWidth->end).'"/>';
 
         return $content;
     }

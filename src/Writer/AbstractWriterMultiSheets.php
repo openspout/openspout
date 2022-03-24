@@ -22,7 +22,7 @@ abstract class AbstractWriterMultiSheets extends AbstractWriter
      *
      * @return Sheet[] All the workbook's sheets
      */
-    public function getSheets(): array
+    final public function getSheets(): array
     {
         $this->throwIfWorkbookIsNotAvailable();
 
@@ -37,34 +37,6 @@ abstract class AbstractWriterMultiSheets extends AbstractWriter
     }
 
     /**
-     * @param int ...$columns One or more columns with this width
-     */
-    public function setColumnWidth(float $width, int ...$columns): void
-    {
-        // Gather sequences
-        $sequence = [];
-        foreach ($columns as $i) {
-            $sequenceLength = \count($sequence);
-            if ($sequenceLength > 0) {
-                $previousValue = $sequence[$sequenceLength - 1];
-                if ($i !== $previousValue + 1) {
-                    $this->setColumnWidthForRange($width, $sequence[0], $previousValue);
-                    $sequence = [];
-                }
-            }
-            $sequence[] = $i;
-        }
-        $this->setColumnWidthForRange($width, $sequence[0], $sequence[\count($sequence) - 1]);
-    }
-
-    /**
-     * @param float $width The width to set
-     * @param int   $start First column index of the range
-     * @param int   $end   Last column index of the range
-     */
-    abstract public function setColumnWidthForRange(float $width, int $start, int $end): void;
-
-    /**
      * Creates a new sheet and make it the current sheet. The data will now be written to this sheet.
      *
      * @throws IOException
@@ -72,7 +44,7 @@ abstract class AbstractWriterMultiSheets extends AbstractWriter
      *
      * @return Sheet The created sheet
      */
-    public function addNewSheetAndMakeItCurrent(): Sheet
+    final public function addNewSheetAndMakeItCurrent(): Sheet
     {
         $this->throwIfWorkbookIsNotAvailable();
         $worksheet = $this->workbookManager->addNewSheetAndMakeItCurrent();
@@ -87,7 +59,7 @@ abstract class AbstractWriterMultiSheets extends AbstractWriter
      *
      * @return Sheet The current sheet
      */
-    public function getCurrentSheet(): Sheet
+    final public function getCurrentSheet(): Sheet
     {
         $this->throwIfWorkbookIsNotAvailable();
 
@@ -103,7 +75,7 @@ abstract class AbstractWriterMultiSheets extends AbstractWriter
      * @throws SheetNotFoundException   If the given sheet does not exist in the workbook
      * @throws WriterNotOpenedException If the writer has not been opened yet
      */
-    public function setCurrentSheet(Sheet $sheet): void
+    final public function setCurrentSheet(Sheet $sheet): void
     {
         $this->throwIfWorkbookIsNotAvailable();
         $this->workbookManager->setCurrentSheet($sheet);

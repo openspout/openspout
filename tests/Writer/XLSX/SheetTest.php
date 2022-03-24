@@ -143,10 +143,11 @@ final class SheetTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = new Writer();
+        $options = new Options();
+        $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12']));
-        $writer->setColumnWidth(100.0, 1);
+        $options->setColumnWidth(100.0, 1);
         $writer->close();
 
         $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
@@ -163,10 +164,11 @@ final class SheetTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = new Writer();
+        $options = new Options();
+        $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12', 'xlsx--13']));
-        $writer->setColumnWidth(100.0, 1, 2, 3);
+        $options->setColumnWidth(100.0, 1, 2, 3);
         $writer->close();
 
         $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
@@ -183,11 +185,12 @@ final class SheetTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = new Writer();
+        $options = new Options();
+        $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12', 'xlsx--13', 'xlsx--14', 'xlsx--15', 'xlsx--16']));
-        $writer->setColumnWidth(50.0, 1, 3, 4, 6);
-        $writer->setColumnWidth(100.0, 2, 5);
+        $options->setColumnWidth(50.0, 1, 3, 4, 6);
+        $options->setColumnWidth(100.0, 2, 5);
         $writer->close();
 
         $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
@@ -208,10 +211,11 @@ final class SheetTest extends TestCase
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $writer = new Writer();
+        $options = new Options();
+        $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12', 'xlsx--13']));
-        $writer->setColumnWidthForRange(50.0, 1, 3);
+        $options->setColumnWidthForRange(50.0, 1, 3);
         $writer->close();
 
         $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';

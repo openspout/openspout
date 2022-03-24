@@ -92,7 +92,7 @@ final class WriterTest extends TestCase
         $tempFolderPath = $this->getTempFolderPath();
 
         $options = new Options();
-        $options->TEMP_FOLDER = $tempFolderPath;
+        $options->setTempFolder($tempFolderPath);
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
 

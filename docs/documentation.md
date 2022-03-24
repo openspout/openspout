@@ -84,7 +84,7 @@ use OpenSpout\Writer\XLSX\Writer;
 use OpenSpout\Writer\XLSX\Options;
 
 $options = new Options();
-$options->TEMP_FOLDER = $customTempFolderPath;
+$options->setTempFolder($customTempFolderPath);
 $writer = new Writer($options);
 ```
 

@@ -97,7 +97,7 @@ final class WriterTest extends TestCase
         $tempFolderPath = $this->getTempFolderPath();
 
         $options = new Options();
-        $options->TEMP_FOLDER = $tempFolderPath;
+        $options->setTempFolder($tempFolderPath);
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
 
@@ -481,10 +481,10 @@ final class WriterTest extends TestCase
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
         $options = new Options();
-        $options->mergeCells([0, 1], [3, 1]);
-        $options->mergeCells([2, 3], [10, 3]);
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
+        $options->mergeCells(0, 1, 3, 1);
+        $options->mergeCells(2, 3, 10, 3);
         $writer->close();
 
         $xmlReader = $this->getXmlReaderForSheetFromXmlFile($fileName, '1');

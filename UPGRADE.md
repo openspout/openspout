@@ -13,7 +13,7 @@ Removing support for EOLed PHP versions as well adding support for new PHP versi
 
 ### Reader & Writer objects
 
-Both readers and writers have to be naturally instantiated with `new` keyword, passing the eventual neede `Options`
+Both readers and writers have to be naturally instantiated with `new` keyword, passing the eventual needed `Options`
 class as the first argument:
 
 ```php
@@ -28,7 +28,7 @@ $reader = new Reader($options);
 
 ### Cell types on writes
 
-Cell types are now handled with separate objects:
+Cell types are now handled with separate classes:
 
 ```php
 use OpenSpout\Common\Entity\Cell;

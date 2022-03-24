@@ -27,7 +27,7 @@ abstract class AbstractWriter implements WriterInterface
     /**
      * {@inheritdoc}
      */
-    public function openToFile($outputFilePath): void
+    final public function openToFile($outputFilePath): void
     {
         $this->outputFilePath = $outputFilePath;
 
@@ -45,7 +45,7 @@ abstract class AbstractWriter implements WriterInterface
      * @codeCoverageIgnore
      * {@inheritdoc}
      */
-    public function openToBrowser($outputFileName): void
+    final public function openToBrowser($outputFileName): void
     {
         $this->outputFilePath = basename($outputFileName);
 
@@ -97,7 +97,7 @@ abstract class AbstractWriter implements WriterInterface
     /**
      * {@inheritdoc}
      */
-    public function addRow(Row $row): void
+    final public function addRow(Row $row): void
     {
         if (!$this->isWriterOpened) {
             throw new WriterNotOpenedException('The writer needs to be opened before adding row.');
@@ -118,7 +118,7 @@ abstract class AbstractWriter implements WriterInterface
     /**
      * {@inheritdoc}
      */
-    public function addRows(array $rows): void
+    final public function addRows(array $rows): void
     {
         foreach ($rows as $row) {
             $this->addRow($row);
@@ -128,7 +128,7 @@ abstract class AbstractWriter implements WriterInterface
     /**
      * {@inheritdoc}
      */
-    public function close(): void
+    final public function close(): void
     {
         if (!$this->isWriterOpened) {
             return;

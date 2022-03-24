@@ -266,14 +266,17 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             fwrite($worksheetFilePointer, '</sheetData>');
 
             // create nodes for merge cells
-            $mergeCellsOption = $options->MERGE_CELLS;
-            if ([] !== $mergeCellsOption) {
-                $mergeCellString = '<mergeCells count="'.\count($mergeCellsOption).'">';
-                foreach ($mergeCellsOption as $values) {
-                    $output = array_map(static function ($value): string {
-                        return CellHelper::getColumnLettersFromColumnIndex($value[0]).$value[1];
-                    }, $values);
-                    $mergeCellString .= '<mergeCell ref="'.implode(':', $output).'"/>';
+            $mergeCells = $options->getMergeCells();
+            if ([] !== $mergeCells) {
+                $mergeCellString = '<mergeCells count="'.\count($mergeCells).'">';
+                foreach ($mergeCells as $mergeCell) {
+                    $topLeft = CellHelper::getColumnLettersFromColumnIndex($mergeCell->topLeftColumn).$mergeCell->topLeftRow;
+                    $bottomRight = CellHelper::getColumnLettersFromColumnIndex($mergeCell->bottomRightColumn).$mergeCell->bottomRightRow;
+                    $mergeCellString .= sprintf(
+                        '<mergeCell ref="%s:%s"/>',
+                        $topLeft,
+                        $bottomRight
+                    );
                 }
                 $mergeCellString .= '</mergeCells>';
                 fwrite($worksheetFilePointer, $mergeCellString);
@@ -326,12 +329,12 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
      */
     private function getXMLFragmentForColumnWidths(Options $options): string
     {
-        if ([] === $options->COLUMN_WIDTHS) {
+        if ([] === $options->getColumnWidths()) {
             return '';
         }
         $xml = '<cols>';
-        foreach ($options->COLUMN_WIDTHS as $entry) {
-            $xml .= '<col min="'.$entry[0].'" max="'.$entry[1].'" width="'.$entry[2].'" customWidth="true"/>';
+        foreach ($options->getColumnWidths() as $columnWidth) {
+            $xml .= '<col min="'.$columnWidth->start.'" max="'.$columnWidth->end.'" width="'.$columnWidth->width.'" customWidth="true"/>';
         }
         $xml .= '</cols>';
 
