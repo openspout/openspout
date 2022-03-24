@@ -248,11 +248,11 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     public function createContentFiles(Options $options, array $worksheets): self
     {
         foreach ($worksheets as $worksheet) {
-            $sheet = $worksheet->getExternalSheet();
-            $contentXmlFilePath = $this->getXlWorksheetsFolder().\DIRECTORY_SEPARATOR.strtolower($sheet->getName()).'.xml';
+            $contentXmlFilePath = $this->getXlWorksheetsFolder().\DIRECTORY_SEPARATOR.basename($worksheet->getFilePath());
             $worksheetFilePointer = fopen($contentXmlFilePath, 'w');
             \assert(false !== $worksheetFilePointer);
 
+            $sheet = $worksheet->getExternalSheet();
             fwrite($worksheetFilePointer, self::SHEET_XML_FILE_HEADER);
             if (null !== ($sheetView = $sheet->getSheetView())) {
                 fwrite($worksheetFilePointer, '<sheetViews>'.$sheetView->getXml().'</sheetViews>');

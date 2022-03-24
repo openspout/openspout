@@ -548,6 +548,21 @@ final class WriterTest extends TestCase
         self::assertSame($options->DEFAULT_COLUMN_WIDTH, $writer->getOptions()->DEFAULT_COLUMN_WIDTH);
     }
 
+    public function testSheetFilenameAreStoredWithIndex(): void
+    {
+        $fileName = 'sheet_indexes.xlsx';
+        $this->createGeneratedFolderIfNeeded($fileName);
+        $resourcePath = $this->getGeneratedResourcePath($fileName);
+
+        $writer = new Writer();
+        $writer->openToFile($resourcePath);
+        $writer->getCurrentSheet()->setName(uniqid());
+        $writer->addRow(Row::fromValues(['foo']));
+        $writer->close();
+
+        $this->assertInlineDataWasWrittenToSheet($fileName, 1, 'foo');
+    }
+
     /**
      * @param Row[] $allRows
      */
