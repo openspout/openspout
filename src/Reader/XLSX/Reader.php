@@ -101,16 +101,6 @@ final class Reader extends AbstractReader
     }
 
     /**
-     * Returns an iterator to iterate over sheets.
-     *
-     * @return SheetIterator To iterate over sheets
-     */
-    protected function getConcreteSheetIterator(): SheetIterator
-    {
-        return $this->sheetIterator;
-    }
-
-    /**
      * Closes the reader. To be used after reading the file.
      */
     protected function closeReader(): void

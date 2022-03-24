@@ -80,6 +80,51 @@ final class SheetTest extends TestCase
         self::assertStringContainsString(' table:display="false"', $xmlContents, 'The sheet visibility should have been changed to "hidden"');
     }
 
+    public function testWritesColumnWidths(): void
+    {
+        $fileName = 'test_column_widths.ods';
+        $this->createGeneratedFolderIfNeeded($fileName);
+        $resourcePath = $this->getGeneratedResourcePath($fileName);
+
+        $options = new Options();
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $writer->addRow(Row::fromValues(['ods--11', 'ods--12']));
+        $options->setColumnWidth(100.0, 1);
+        $writer->close();
+
+        $pathToWorkbookFile = $resourcePath.'#content.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString('style:column-width="100pt"', $xmlContents, 'No cols tag found in sheet');
+        self::assertStringContainsString('table:number-columns-repeated="1"', $xmlContents, 'No expected column width definition found in sheet');
+    }
+
+    public function testWritesMultipleColumnWidthsInRanges(): void
+    {
+        $fileName = 'test_multiple_column_widths_in_ranges.ods';
+        $this->createGeneratedFolderIfNeeded($fileName);
+        $resourcePath = $this->getGeneratedResourcePath($fileName);
+
+        $options = new Options();
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $writer->addRow(Row::fromValues(['ods--11', 'ods--12', 'ods--13', 'ods--14', 'ods--15', 'ods--16']));
+        $options->setColumnWidth(50.0, 1, 3, 4, 6);
+        $options->setColumnWidth(100.0, 2, 5);
+        $writer->close();
+
+        $pathToWorkbookFile = $resourcePath.'#content.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString('style:column-width="50pt"', $xmlContents, 'No cols tag found in sheet');
+        self::assertStringContainsString('style:column-width="100pt"', $xmlContents, 'No cols tag found in sheet');
+        self::assertStringContainsString('table:number-columns-repeated="1"', $xmlContents, 'No expected column width definition found in sheet');
+        self::assertStringContainsString('table:number-columns-repeated="2"', $xmlContents, 'No expected column width definition found in sheet');
+    }
+
     private function writerForFile(string $fileName): Writer
     {
         $this->createGeneratedFolderIfNeeded($fileName);

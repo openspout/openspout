@@ -6,6 +6,8 @@ namespace OpenSpout\Reader\XLSX;
 
 use DateTimeImmutable;
 use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory;
+use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\MemoryLimit;
 use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
@@ -53,6 +55,19 @@ final class ReaderTest extends TestCase
     public function testReadForAllWorksheets(string $resourceName, int $expectedNumOfRows, int $expectedNumOfCellsPerRow): void
     {
         $allRows = $this->getAllRowsForFile($resourceName);
+
+        self::assertCount($expectedNumOfRows, $allRows, "There should be {$expectedNumOfRows} rows");
+        foreach ($allRows as $row) {
+            self::assertCount($expectedNumOfCellsPerRow, $row, "There should be {$expectedNumOfCellsPerRow} cells for every row");
+        }
+    }
+
+    /**
+     * @dataProvider dataProviderForTestReadForAllWorksheets
+     */
+    public function testReadForAllWorksheetsWithFileBasedCachingStrategy(string $resourceName, int $expectedNumOfRows, int $expectedNumOfCellsPerRow): void
+    {
+        $allRows = $this->getAllRowsForFile($resourceName, null, new CachingStrategyFactory(new MemoryLimit('1b')));
 
         self::assertCount($expectedNumOfRows, $allRows, "There should be {$expectedNumOfRows} rows");
         foreach ($allRows as $row) {
@@ -292,8 +307,9 @@ final class ReaderTest extends TestCase
 
     public function testReadShouldSupportFormatDatesAndTimesIfSpecified(): void
     {
-        $shouldFormatDates = true;
-        $allRows = $this->getAllRowsForFile('sheet_with_dates_and_times.xlsx', $shouldFormatDates);
+        $options = new Options();
+        $options->SHOULD_FORMAT_DATES = true;
+        $allRows = $this->getAllRowsForFile('sheet_with_dates_and_times.xlsx', $options);
 
         $expectedRows = [
             ['1/13/2016', '01/13/2016', '13-Jan-16', 'Wednesday January 13, 16', 'Today is 1/13/2016'],
@@ -305,8 +321,9 @@ final class ReaderTest extends TestCase
 
     public function testReadShouldApplyCustomDateFormatNumberEvenIfApplyNumberFormatNotSpecified(): void
     {
-        $shouldFormatDates = true;
-        $allRows = $this->getAllRowsForFile('sheet_with_custom_date_formats_and_no_apply_number_format.xlsx', $shouldFormatDates);
+        $options = new Options();
+        $options->SHOULD_FORMAT_DATES = true;
+        $allRows = $this->getAllRowsForFile('sheet_with_custom_date_formats_and_no_apply_number_format.xlsx', $options);
 
         $expectedRows = [
             // "General", "GENERAL", "MM/DD/YYYY", "MM/dd/YYYY", "H:MM:SS"
@@ -380,7 +397,10 @@ final class ReaderTest extends TestCase
 
     public function testReadShouldReturnEmptyLinesIfShouldPreserveEmptyRowsSet(): void
     {
-        $allRows = $this->getAllRowsForFile('sheet_with_empty_rows_and_missing_row_index.xlsx', false, true);
+        $options = new Options();
+        $options->SHOULD_FORMAT_DATES = false;
+        $options->SHOULD_PRESERVE_EMPTY_ROWS = true;
+        $allRows = $this->getAllRowsForFile('sheet_with_empty_rows_and_missing_row_index.xlsx', $options);
 
         self::assertCount(6, $allRows, 'There should be 6 rows');
 
@@ -637,20 +657,13 @@ final class ReaderTest extends TestCase
      */
     private function getAllRowsForFile(
         string $fileName,
-        ?bool $shouldFormatDates = null,
-        ?bool $shouldPreserveEmptyRows = null
+        ?Options $options = null,
+        ?CachingStrategyFactory $cachingStrategyFactory = null,
     ): array {
         $allRows = [];
         $resourcePath = $this->getResourcePath($fileName);
 
-        $options = new Options();
-        if (null !== $shouldFormatDates) {
-            $options->SHOULD_FORMAT_DATES = $shouldFormatDates;
-        }
-        if (null !== $shouldPreserveEmptyRows) {
-            $options->SHOULD_PRESERVE_EMPTY_ROWS = $shouldPreserveEmptyRows;
-        }
-        $reader = new Reader($options);
+        $reader = new Reader($options, $cachingStrategyFactory);
         $reader->open($resourcePath);
 
         foreach ($reader->getSheetIterator() as $sheetIndex => $sheet) {

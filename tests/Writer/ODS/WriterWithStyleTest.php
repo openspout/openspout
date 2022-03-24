@@ -188,13 +188,16 @@ final class WriterWithStyleTest extends TestCase
     {
         $fileName = 'test_add_row_should_apply_cell_alignment.xlsx';
 
+        $dataRows = [];
         $rightAlignedStyle = (new Style())->setCellAlignment(CellAlignment::RIGHT);
-        $dataRows = $this->createStyledRowsFromValues([['ods--11']], $rightAlignedStyle);
+        $dataRows[] = Row::fromValues(['ods--11'], $rightAlignedStyle);
+        $leftAlignedStyle = (new Style())->setCellAlignment(CellAlignment::LEFT);
+        $dataRows[] = Row::fromValues(['ods--12'], $leftAlignedStyle);
 
         $this->writeToODSFile($dataRows, $fileName);
 
         $styleElements = $this->getCellStyleElementsFromContentXmlFile($fileName);
-        self::assertCount(2, $styleElements, 'There should be 2 styles (default and custom)');
+        self::assertCount(3, $styleElements, 'There should be 3 styles (1 default and 2 custom)');
 
         $customStyleElement = $styleElements[1];
         $this->assertFirstChildHasAttributeEquals('end', $customStyleElement, 'paragraph-properties', 'fo:text-align');

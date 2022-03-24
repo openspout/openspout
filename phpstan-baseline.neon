@@ -36,6 +36,11 @@ parameters:
 			path: src/Writer/ODS/Manager/WorksheetManager.php
 
 		-
+			message: "#^Comparison operation \"\\<\" between int\\<1, max\\> and 1 is always false\\.$#"
+			count: 1
+			path: src/Writer/XLSX/Entity/SheetView.php
+
+		-
 			message: "#^Method OpenSpout\\\\Reader\\\\CSV\\\\SpoutTestStream\\:\\:url_stat\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: tests/Reader/CSV/SpoutTestStream.php
@@ -44,6 +49,11 @@ parameters:
 			message: "#^Dynamic call to static method XMLReader\\:\\:XML\\(\\)\\.$#"
 			count: 1
 			path: tests/Reader/Wrapper/XMLReaderTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$freezeRow of method OpenSpout\\\\Writer\\\\XLSX\\\\Entity\\\\SheetView\\:\\:setFreezeRow\\(\\) expects int\\<1, max\\>, \\-1 given\\.$#"
+			count: 1
+			path: tests/Reader/XLSX/Entity/SheetViewTest.php
 
 		-
 			message: "#^Method OpenSpout\\\\Reader\\\\XLSX\\\\Manager\\\\StyleManagerTest\\:\\:getStyleManagerMock\\(\\) has parameter \\$customNumberFormats with no value type specified in iterable type array\\.$#"

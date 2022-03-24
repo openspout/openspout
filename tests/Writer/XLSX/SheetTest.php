@@ -271,6 +271,7 @@ final class SheetTest extends TestCase
                 ->setZoomScale(50)
                 ->setZoomScaleNormal(70)
                 ->setZoomScalePageLayoutView(80)
+                ->setWorkbookViewId(90)
                 ->setFreezeColumn('B')
                 ->setFreezeRow(2)
         );

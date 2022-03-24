@@ -67,13 +67,12 @@ final class WriterTest extends TestCase
 
     public function testAddRowShouldThrowExceptionIfUnsupportedDataTypePassedIn(): void
     {
-        $this->expectException(InvalidArgumentException::class);
-
         $fileName = 'test_add_row_should_throw_exception_if_unsupported_data_type_passed_in.ods';
         $dataRows = [
             Row::fromValues([new stdClass()]),
         ];
 
+        $this->expectException(InvalidArgumentException::class);
         $this->writeToODSFile($dataRows, $fileName);
     }
 
