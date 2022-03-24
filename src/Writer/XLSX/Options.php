@@ -31,6 +31,11 @@ final class Options extends AbstractOptions
     /**
      * Row coordinates are indexed from 1, columns from 0 (A = 0),
      * so a merge B2:G2 looks like $writer->mergeCells(1, 2, 6, 2);.
+     *
+     * @param 0|positive-int $topLeftColumn
+     * @param positive-int   $topLeftRow
+     * @param 0|positive-int $bottomRightColumn
+     * @param positive-int   $bottomRightRow
      */
     public function mergeCells(
         int $topLeftColumn,

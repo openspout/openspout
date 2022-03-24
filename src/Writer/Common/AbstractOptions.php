@@ -26,7 +26,7 @@ abstract class AbstractOptions
     }
 
     /**
-     * @param int ...$columns One or more columns with this width
+     * @param positive-int ...$columns One or more columns with this width
      */
     final public function setColumnWidth(float $width, int ...$columns): void
     {
@@ -47,9 +47,9 @@ abstract class AbstractOptions
     }
 
     /**
-     * @param float $width The width to set
-     * @param int   $start First column index of the range
-     * @param int   $end   Last column index of the range
+     * @param float        $width The width to set
+     * @param positive-int $start First column index of the range
+     * @param positive-int $end   Last column index of the range
      */
     final public function setColumnWidthForRange(float $width, int $start, int $end): void
     {
