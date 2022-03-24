@@ -26,21 +26,11 @@ final class Writer extends AbstractWriterMultiSheets
         $this->options = $options ?? new Options();
     }
 
-    /**
-     * @param float $width The width to set
-     * @param int   $start First column index of the range
-     * @param int   $end   Last column index of the range
-     */
-    public function setColumnWidthForRange(float $width, int $start, int $end): void
-    {
-        $this->options->COLUMN_WIDTHS[] = [$start, $end, $width];
-    }
-
     protected function createWorkbookManager(): WorkbookManager
     {
         $workbook = new Workbook();
 
-        $fileSystemHelper = new FileSystemHelper($this->options->TEMP_FOLDER, new ZipHelper());
+        $fileSystemHelper = new FileSystemHelper($this->options->getTempFolder(), new ZipHelper());
         $fileSystemHelper->createBaseFilesAndFolders();
 
         $styleMerger = new StyleMerger();

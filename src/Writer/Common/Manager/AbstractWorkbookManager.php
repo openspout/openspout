@@ -56,7 +56,7 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
         $this->fileSystemHelper = $fileSystemHelper;
     }
 
-    public function getWorkbook(): Workbook
+    final public function getWorkbook(): Workbook
     {
         return $this->workbook;
     }
@@ -67,7 +67,7 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
      *
      * @return Worksheet The created sheet
      */
-    public function addNewSheetAndMakeItCurrent(): Worksheet
+    final public function addNewSheetAndMakeItCurrent(): Worksheet
     {
         $worksheet = $this->addNewSheet();
         $this->setCurrentWorksheet($worksheet);
@@ -78,7 +78,7 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
     /**
      * @return Worksheet[] All the workbook's sheets
      */
-    public function getWorksheets(): array
+    final public function getWorksheets(): array
     {
         return $this->workbook->getWorksheets();
     }
@@ -88,7 +88,7 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
      *
      * @return Worksheet The current sheet
      */
-    public function getCurrentWorksheet(): Worksheet
+    final public function getCurrentWorksheet(): Worksheet
     {
         return $this->currentWorksheet;
     }
@@ -101,7 +101,7 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
      *
      * @throws SheetNotFoundException If the given sheet does not exist in the workbook
      */
-    public function setCurrentSheet(Sheet $sheet): void
+    final public function setCurrentSheet(Sheet $sheet): void
     {
         $worksheet = $this->getWorksheetFromExternalSheet($sheet);
         if (null !== $worksheet) {
@@ -121,7 +121,7 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
      * @throws IOException                                          If trying to create a new sheet and unable to open the sheet for writing
      * @throws \OpenSpout\Common\Exception\InvalidArgumentException
      */
-    public function addRowToCurrentWorksheet(Row $row): void
+    final public function addRowToCurrentWorksheet(Row $row): void
     {
         $currentWorksheet = $this->getCurrentWorksheet();
         if ($this->hasCurrentWorksheetReachedMaxRows()) {
@@ -142,7 +142,7 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
      *
      * @param resource $finalFilePointer Pointer to the spreadsheet that will be created
      */
-    public function close($finalFilePointer): void
+    final public function close($finalFilePointer): void
     {
         $this->closeAllWorksheets();
         $this->closeRemainingObjects();
@@ -154,16 +154,6 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
      * @return int Maximum number of rows/columns a sheet can contain
      */
     abstract protected function getMaxRowsPerWorksheet(): int;
-
-    /**
-     * @return string The file path where the data for the given sheet will be stored
-     */
-    protected function getWorksheetFilePath(Sheet $sheet): string
-    {
-        $sheetsContentTempFolder = $this->fileSystemHelper->getSheetsContentTempFolder();
-
-        return $sheetsContentTempFolder.'/sheet'.$sheet->getIndex().'.xml';
-    }
 
     /**
      * Closes custom objects that are still opened.
@@ -179,6 +169,16 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
      * @param resource $finalFilePointer Pointer to the spreadsheet that will be created
      */
     abstract protected function writeAllFilesToDiskAndZipThem($finalFilePointer): void;
+
+    /**
+     * @return string The file path where the data for the given sheet will be stored
+     */
+    private function getWorksheetFilePath(Sheet $sheet): string
+    {
+        $sheetsContentTempFolder = $this->fileSystemHelper->getSheetsContentTempFolder();
+
+        return $sheetsContentTempFolder.'/sheet'.$sheet->getIndex().'.xml';
+    }
 
     /**
      * Deletes the root folder created in the temp folder and all its contents.

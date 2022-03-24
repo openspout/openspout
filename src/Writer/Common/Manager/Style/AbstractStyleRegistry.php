@@ -49,12 +49,12 @@ abstract class AbstractStyleRegistry
     /**
      * @return Style[] List of registered styles
      */
-    public function getRegisteredStyles(): array
+    final public function getRegisteredStyles(): array
     {
         return array_values($this->styleIdToStyleMappingTable);
     }
 
-    public function getStyleFromStyleId(int $styleId): Style
+    final public function getStyleFromStyleId(int $styleId): Style
     {
         return $this->styleIdToStyleMappingTable[$styleId];
     }
@@ -66,7 +66,7 @@ abstract class AbstractStyleRegistry
      *
      * @return string The serialized style
      */
-    public function serialize(Style $style): string
+    final public function serialize(Style $style): string
     {
         return serialize($style);
     }

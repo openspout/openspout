@@ -14,8 +14,8 @@ final class Options extends AbstractOptions
 
     public bool $SHOULD_USE_INLINE_STRINGS = true;
 
-    /** @var array<array-key, array<array-key, int[]>> */
-    public array $MERGE_CELLS = [];
+    /** @var MergeCell[] */
+    private array $MERGE_CELLS = [];
 
     public function __construct()
     {
@@ -29,17 +29,30 @@ final class Options extends AbstractOptions
     }
 
     /**
-     * Merge cells.
      * Row coordinates are indexed from 1, columns from 0 (A = 0),
-     * so a merge B2:G2 looks like $writer->mergeCells([1,2], [6, 2]);.
-     *
-     * You may use CellHelper::getColumnLettersFromColumnIndex() to convert from "B2" to "[1,2]"
-     *
-     * @param int[] $range1 - top left cell's coordinate [column, row]
-     * @param int[] $range2 - bottom right cell's coordinate [column, row]
+     * so a merge B2:G2 looks like $writer->mergeCells(1, 2, 6, 2);.
      */
-    public function mergeCells(array $range1, array $range2): void
+    public function mergeCells(
+        int $topLeftColumn,
+        int $topLeftRow,
+        int $bottomRightColumn,
+        int $bottomRightRow
+    ): void {
+        $this->MERGE_CELLS[] = new MergeCell(
+            $topLeftColumn,
+            $topLeftRow,
+            $bottomRightColumn,
+            $bottomRightRow
+        );
+    }
+
+    /**
+     * @internal
+     *
+     * @return MergeCell[]
+     */
+    public function getMergeCells(): array
     {
-        $this->MERGE_CELLS[] = [$range1, $range2];
+        return $this->MERGE_CELLS;
     }
 }

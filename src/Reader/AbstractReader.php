@@ -57,7 +57,7 @@ abstract class AbstractReader implements ReaderInterface
     /**
      * Closes the reader, preventing any additional reading.
      */
-    public function close(): void
+    final public function close(): void
     {
         if ($this->isStreamOpened) {
             $this->closeReader();

@@ -4,15 +4,18 @@ declare(strict_types=1);
 
 namespace OpenSpout\Reader\XLSX;
 
+use OpenSpout\Common\TempFolderOptionTrait;
+
 final class Options
 {
-    public string $TEMP_FOLDER;
+    use TempFolderOptionTrait;
+
     public bool $SHOULD_FORMAT_DATES = false;
     public bool $SHOULD_PRESERVE_EMPTY_ROWS = false;
     public bool $SHOULD_USE_1904_DATES = false;
 
     public function __construct()
     {
-        $this->TEMP_FOLDER = sys_get_temp_dir();
+        $this->setTempFolder(sys_get_temp_dir());
     }
 }

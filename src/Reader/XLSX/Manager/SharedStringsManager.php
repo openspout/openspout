@@ -172,7 +172,7 @@ final class SharedStringsManager
     private function getBestSharedStringsCachingStrategy(?int $sharedStringsUniqueCount): CachingStrategyInterface
     {
         return $this->cachingStrategyFactory
-            ->createBestCachingStrategy($sharedStringsUniqueCount, $this->options->TEMP_FOLDER)
+            ->createBestCachingStrategy($sharedStringsUniqueCount, $this->options->getTempFolder())
         ;
     }
 

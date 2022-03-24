@@ -27,12 +27,12 @@ abstract class Cell
 
     abstract public function getValue(): mixed;
 
-    public function setStyle(?Style $style): void
+    final public function setStyle(?Style $style): void
     {
         $this->style = $style ?? new Style();
     }
 
-    public function getStyle(): Style
+    final public function getStyle(): Style
     {
         return $this->style;
     }

@@ -28,7 +28,7 @@ abstract class AbstractStyleManager implements StyleManagerInterface
      *
      * @return Style the registered style, updated with an internal ID
      */
-    public function registerStyle(Style $style): Style
+    final public function registerStyle(Style $style): Style
     {
         return $this->styleRegistry->registerStyle($style);
     }
@@ -39,7 +39,7 @@ abstract class AbstractStyleManager implements StyleManagerInterface
      *
      * @return PossiblyUpdatedStyle The eventually updated style
      */
-    public function applyExtraStylesIfNeeded(Cell $cell): PossiblyUpdatedStyle
+    final public function applyExtraStylesIfNeeded(Cell $cell): PossiblyUpdatedStyle
     {
         return $this->applyWrapTextIfCellContainsNewLine($cell);
     }
@@ -49,7 +49,7 @@ abstract class AbstractStyleManager implements StyleManagerInterface
      *
      * @return Style Default style
      */
-    protected function getDefaultStyle(): Style
+    final protected function getDefaultStyle(): Style
     {
         // By construction, the default style has ID 0
         return $this->styleRegistry->getRegisteredStyles()[0];

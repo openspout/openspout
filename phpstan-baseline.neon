@@ -31,11 +31,6 @@ parameters:
 			path: src/Reader/XLSX/Helper/CellValueFormatter.php
 
 		-
-			message: "#^Variable \\$entry might not be defined\\.$#"
-			count: 1
-			path: src/Writer/ODS/Manager/Style/StyleManager.php
-
-		-
 			message: "#^Short ternary operator is not allowed\\. Use null coalesce operator if applicable or consider using long ternary\\.$#"
 			count: 1
 			path: src/Writer/ODS/Manager/WorksheetManager.php
