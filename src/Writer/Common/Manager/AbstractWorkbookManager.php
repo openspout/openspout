@@ -172,7 +172,7 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
     {
         $sheetsContentTempFolder = $this->fileSystemHelper->getSheetsContentTempFolder();
 
-        return $sheetsContentTempFolder.'/sheet'.$sheet->getIndex().'.xml';
+        return $sheetsContentTempFolder.\DIRECTORY_SEPARATOR.'sheet'.$sheet->getIndex().'.xml';
     }
 
     /**

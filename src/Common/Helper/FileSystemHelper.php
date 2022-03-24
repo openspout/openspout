@@ -45,7 +45,7 @@ final class FileSystemHelper implements FileSystemHelperInterface
     {
         $this->throwIfOperationNotInBaseFolder($parentFolderPath);
 
-        $folderPath = $parentFolderPath.'/'.$folderName;
+        $folderPath = $parentFolderPath.\DIRECTORY_SEPARATOR.$folderName;
 
         $errorMessage = '';
         set_error_handler(static function ($nr, $message) use (&$errorMessage): bool {
@@ -79,7 +79,7 @@ final class FileSystemHelper implements FileSystemHelperInterface
     {
         $this->throwIfOperationNotInBaseFolder($parentFolderPath);
 
-        $filePath = $parentFolderPath.'/'.$fileName;
+        $filePath = $parentFolderPath.\DIRECTORY_SEPARATOR.$fileName;
 
         $errorMessage = '';
         set_error_handler(static function ($nr, $message) use (&$errorMessage): bool {

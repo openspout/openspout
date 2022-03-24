@@ -39,7 +39,7 @@ final class SharedStringsManager
      */
     public function __construct(string $xlFolder, Escaper\XLSX $stringsEscaper)
     {
-        $sharedStringsFilePath = $xlFolder.'/'.self::SHARED_STRINGS_FILE_NAME;
+        $sharedStringsFilePath = $xlFolder.\DIRECTORY_SEPARATOR.self::SHARED_STRINGS_FILE_NAME;
         $resource = fopen($sharedStringsFilePath, 'w');
         \assert(false !== $resource);
         $this->sharedStringsFilePointer = $resource;

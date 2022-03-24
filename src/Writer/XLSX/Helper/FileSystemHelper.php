@@ -249,7 +249,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     {
         foreach ($worksheets as $worksheet) {
             $sheet = $worksheet->getExternalSheet();
-            $contentXmlFilePath = $this->getXlWorksheetsFolder().'/'.strtolower($sheet->getName()).'.xml';
+            $contentXmlFilePath = $this->getXlWorksheetsFolder().\DIRECTORY_SEPARATOR.strtolower($sheet->getName()).'.xml';
             $worksheetFilePointer = fopen($contentXmlFilePath, 'w');
             \assert(false !== $worksheetFilePointer);
 
@@ -314,8 +314,8 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
         // to the zip file in a particular order.
         // "[Content_Types].xml" then at least 2 files located in "xl" folder should be zipped first.
         $this->zipHelper->addFileToArchive($zip, $this->rootFolder, self::CONTENT_TYPES_XML_FILE_NAME);
-        $this->zipHelper->addFileToArchive($zip, $this->rootFolder, self::XL_FOLDER_NAME.'/'.self::WORKBOOK_XML_FILE_NAME);
-        $this->zipHelper->addFileToArchive($zip, $this->rootFolder, self::XL_FOLDER_NAME.'/'.self::STYLES_XML_FILE_NAME);
+        $this->zipHelper->addFileToArchive($zip, $this->rootFolder, self::XL_FOLDER_NAME.\DIRECTORY_SEPARATOR.self::WORKBOOK_XML_FILE_NAME);
+        $this->zipHelper->addFileToArchive($zip, $this->rootFolder, self::XL_FOLDER_NAME.\DIRECTORY_SEPARATOR.self::STYLES_XML_FILE_NAME);
 
         $this->zipHelper->addFolderToArchive($zip, $this->rootFolder, ZipHelper::EXISTING_FILES_SKIP);
         $this->zipHelper->closeArchiveAndCopyToStream($zip, $streamPointer);
