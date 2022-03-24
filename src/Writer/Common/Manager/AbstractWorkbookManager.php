@@ -56,11 +56,6 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
         $this->fileSystemHelper = $fileSystemHelper;
     }
 
-    final public function getWorkbook(): Workbook
-    {
-        return $this->workbook;
-    }
-
     /**
      * Creates a new sheet in the workbook and make it the current sheet.
      * The writing will resume where it stopped (i.e. data won't be truncated).
@@ -177,7 +172,7 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
     {
         $sheetsContentTempFolder = $this->fileSystemHelper->getSheetsContentTempFolder();
 
-        return $sheetsContentTempFolder.'/sheet'.$sheet->getIndex().'.xml';
+        return $sheetsContentTempFolder.\DIRECTORY_SEPARATOR.'sheet'.$sheet->getIndex().'.xml';
     }
 
     /**

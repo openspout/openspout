@@ -12,11 +12,6 @@ use OpenSpout\Writer\AbstractWriter;
 
 final class Writer extends AbstractWriter
 {
-    /**
-     * Number of rows to write before flushing.
-     */
-    public const FLUSH_THRESHOLD = 500;
-
     /** @var string Content-Type value for the header */
     protected static string $headerContentType = 'text/csv; charset=UTF-8';
 
@@ -61,11 +56,11 @@ final class Writer extends AbstractWriter
             ''
         );
         if (false === $wasWriteSuccessful) {
-            throw new IOException('Unable to write data');
+            throw new IOException('Unable to write data'); // @codeCoverageIgnore
         }
 
         ++$this->lastWrittenRowIndex;
-        if (0 === $this->lastWrittenRowIndex % self::FLUSH_THRESHOLD) {
+        if (0 === $this->lastWrittenRowIndex % $this->options->FLUSH_THRESHOLD) {
             fflush($this->filePointer);
         }
     }

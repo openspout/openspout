@@ -122,7 +122,9 @@ final class FileBasedStrategy implements CachingStrategyInterface
         }
 
         if ($this->inMemoryTempFilePath !== $tempFilePath) {
-            $contents = file_get_contents($this->convertToUseRealPath($tempFilePath));
+            $tempFilePath = realpath($tempFilePath);
+            \assert(false !== $tempFilePath);
+            $contents = file_get_contents($tempFilePath);
             \assert(false !== $contents);
             $this->inMemoryTempFileContents = explode(PHP_EOL, $contents);
             $this->inMemoryTempFilePath = $tempFilePath;
@@ -163,32 +165,6 @@ final class FileBasedStrategy implements CachingStrategyInterface
         $numTempFile = (int) ($sharedStringIndex / $this->maxNumStringsPerTempFile);
 
         return $this->tempFolder.'/sharedstrings'.$numTempFile;
-    }
-
-    /**
-     * Updates the given file path to use a real path.
-     * This is to avoid issues on some Windows setup.
-     *
-     * @param string $filePath File path
-     *
-     * @return string The file path using a real path
-     */
-    private function convertToUseRealPath(string $filePath): string
-    {
-        $realFilePath = $filePath;
-
-        if (str_starts_with($filePath, 'zip://')) {
-            if (1 === preg_match('/zip:\/\/(.*)#(.*)/', $filePath, $matches)) {
-                $documentPath = $matches[1];
-                $documentInsideZipPath = $matches[2];
-                $realFilePath = 'zip://'.realpath($documentPath).'#'.$documentInsideZipPath;
-            }
-        } else {
-            $realFilePath = realpath($filePath);
-            \assert(false !== $realFilePath);
-        }
-
-        return $realFilePath;
     }
 
     /**

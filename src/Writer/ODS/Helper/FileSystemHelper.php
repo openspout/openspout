@@ -120,7 +120,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
         $this->createFileWithContents($this->rootFolder, self::CONTENT_XML_FILE_NAME, $contentXmlFileContents);
 
         // Append sheets content to "content.xml"
-        $contentXmlFilePath = $this->rootFolder.'/'.self::CONTENT_XML_FILE_NAME;
+        $contentXmlFilePath = $this->rootFolder.\DIRECTORY_SEPARATOR.self::CONTENT_XML_FILE_NAME;
         $contentXmlHandle = fopen($contentXmlFilePath, 'a');
         \assert(false !== $contentXmlHandle);
 

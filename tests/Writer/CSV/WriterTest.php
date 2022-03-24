@@ -82,7 +82,11 @@ final class WriterTest extends TestCase
         $allRows = $this->createRowsFromValues([
             ['csv--11', 'csv--12'],
         ]);
-        $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_no_bom.csv', ',', '"', false);
+        $options = new Options();
+        $options->FIELD_DELIMITER = ',';
+        $options->FIELD_ENCLOSURE = '"';
+        $options->SHOULD_ADD_BOM = false;
+        $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_no_bom.csv', $options);
 
         self::assertStringNotContainsString(EncodingHelper::BOM_UTF8, $writtenContent, 'The CSV file should not contain a UTF-8 BOM');
     }
@@ -117,10 +121,26 @@ final class WriterTest extends TestCase
             ['csv--11', 'csv--12', 'csv--13'],
             ['csv--21', 'csv--22', 'csv--23'],
         ]);
-        $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_pipe_delimiters.csv', '|');
+        $options = new Options();
+        $options->FIELD_DELIMITER = '|';
+        $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_pipe_delimiters.csv', $options);
         $writtenContent = $this->trimWrittenContent($writtenContent);
 
         self::assertSame("csv--11|csv--12|csv--13\ncsv--21|csv--22|csv--23", $writtenContent, 'The fields should be delimited with |');
+    }
+
+    public function testFflush(): void
+    {
+        $allRows = $this->createRowsFromValues([
+            ['csv--11', 'csv--12', 'csv--13'],
+            ['csv--21', 'csv--22', 'csv--23'],
+        ]);
+        $options = new Options();
+        $options->FLUSH_THRESHOLD = 1;
+        $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_fflush.csv', $options);
+        $writtenContent = $this->trimWrittenContent($writtenContent);
+
+        self::assertSame("csv--11,csv--12,csv--13\ncsv--21,csv--22,csv--23", $writtenContent);
     }
 
     public function testWriteShouldSupportCustomFieldEnclosure(): void
@@ -128,7 +148,10 @@ final class WriterTest extends TestCase
         $allRows = $this->createRowsFromValues([
             ['This is, a comma', 'csv--12', 'csv--13'],
         ]);
-        $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_pound_enclosures.csv', ',', '#');
+        $options = new Options();
+        $options->FIELD_DELIMITER = ',';
+        $options->FIELD_ENCLOSURE = '#';
+        $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_pound_enclosures.csv', $options);
         $writtenContent = $this->trimWrittenContent($writtenContent);
 
         self::assertSame('#This is, a comma#,csv--12,csv--13', $writtenContent, 'The fields should be enclosed with #');
@@ -151,23 +174,11 @@ final class WriterTest extends TestCase
     private function writeToCsvFileAndReturnWrittenContent(
         array $allRows,
         string $fileName,
-        ?string $fieldDelimiter = null,
-        ?string $fieldEnclosure = null,
-        ?bool $shouldAddBOM = null
+        ?Options $options = null
     ): string {
         $this->createGeneratedFolderIfNeeded($fileName);
         $resourcePath = $this->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        if (null !== $fieldDelimiter) {
-            $options->FIELD_DELIMITER = $fieldDelimiter;
-        }
-        if (null !== $fieldEnclosure) {
-            $options->FIELD_ENCLOSURE = $fieldEnclosure;
-        }
-        if (null !== $shouldAddBOM) {
-            $options->SHOULD_ADD_BOM = $shouldAddBOM;
-        }
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->addRows($allRows);

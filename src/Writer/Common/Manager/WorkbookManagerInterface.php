@@ -17,8 +17,6 @@ use OpenSpout\Writer\Exception\WriterException;
  */
 interface WorkbookManagerInterface
 {
-    public function getWorkbook(): Workbook;
-
     /**
      * Creates a new sheet in the workbook and make it the current sheet.
      * The writing will resume where it stopped (i.e. data won't be truncated).

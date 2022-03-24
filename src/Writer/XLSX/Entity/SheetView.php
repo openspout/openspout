@@ -178,14 +178,14 @@ final class SheetView
     }
 
     /**
-     * @param int $freezeRow Set to 2 to fix the first row
+     * @param positive-int $freezeRow Set to 2 to fix the first row
      *
      * @return $this
      */
     public function setFreezeRow(int $freezeRow): self
     {
         if ($freezeRow < 1) {
-            throw new InvalidArgumentException('Freeze row must be a positive integer', 1589543073);
+            throw new InvalidArgumentException('Freeze row must be a positive integer');
         }
 
         $this->freezeRow = $freezeRow;

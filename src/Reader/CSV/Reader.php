@@ -63,10 +63,12 @@ final class Reader extends AbstractReader
     {
         // "auto_detect_line_endings" is deprecated in PHP 8.1
         if (!$this->isRunningAtLeastPhp81) {
+            // @codeCoverageIgnoreStart
             $originalAutoDetectLineEndings = \ini_get('auto_detect_line_endings');
             \assert(false !== $originalAutoDetectLineEndings);
             $this->originalAutoDetectLineEndings = $originalAutoDetectLineEndings;
             ini_set('auto_detect_line_endings', '1');
+            // @codeCoverageIgnoreEnd
         }
 
         $resource = fopen($filePath, 'r');
@@ -85,16 +87,6 @@ final class Reader extends AbstractReader
     }
 
     /**
-     * Returns an iterator to iterate over sheets.
-     *
-     * @return SheetIterator To iterate over sheets
-     */
-    protected function getConcreteSheetIterator(): SheetIterator
-    {
-        return $this->sheetIterator;
-    }
-
-    /**
      * Closes the reader. To be used after reading the file.
      */
     protected function closeReader(): void
@@ -103,7 +95,9 @@ final class Reader extends AbstractReader
 
         // "auto_detect_line_endings" is deprecated in PHP 8.1
         if (!$this->isRunningAtLeastPhp81) {
+            // @codeCoverageIgnoreStart
             ini_set('auto_detect_line_endings', $this->originalAutoDetectLineEndings);
+            // @codeCoverageIgnoreEnd
         }
     }
 }
