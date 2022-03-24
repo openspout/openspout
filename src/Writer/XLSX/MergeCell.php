@@ -9,6 +9,12 @@ namespace OpenSpout\Writer\XLSX;
  */
 final class MergeCell
 {
+    /**
+     * @param 0|positive-int $topLeftColumn
+     * @param positive-int   $topLeftRow
+     * @param 0|positive-int $bottomRightColumn
+     * @param positive-int   $bottomRightRow
+     */
     public function __construct(
         public int $topLeftColumn,
         public int $topLeftRow,

@@ -143,6 +143,43 @@ $options = new Options();
 $options->SHOULD_PRESERVE_EMPTY_ROWS = true;
 $reader = new Reader($options);
 ```
+ 
+## Column widths
+
+Column widths can be set on options for both ODS and XLSX writers:
+
+```php
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
+use OpenSpout\Writer\XLSX\Options;
+
+$options = new Options();
+$writer = new Writer($options);
+$writer->openToFile('/tmp/file.xlsx');
+$writer->addRow(Row::fromValues(['foo', 'bar', 'baz']));
+
+$options->setColumnWidth(10, 1);
+$options->setColumnWidthForRange(12, 2, 3);
+$writer->close();
+```
+ 
+## Cell merging
+
+Cell can me merged with the XLSX writers:
+
+```php
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
+use OpenSpout\Writer\XLSX\Options;
+
+$options = new Options();
+$writer = new Writer($options);
+$writer->openToFile('/tmp/file.xlsx');
+$writer->addRow(Row::fromValues(['foo', 'bar', 'baz']));
+
+$options->mergeCells(0, 1, 0, 2);
+$writer->close();
+```
 
 ## Styling
 
