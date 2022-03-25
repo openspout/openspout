@@ -41,7 +41,7 @@ abstract class Cell
     final public static function fromValue(mixed $value, ?Style $style = null): self
     {
         if ($value instanceof self) {
-            throw new InvalidArgumentException('Cannot pass another Cell as a value.');
+            throw new InvalidArgumentException(sprintf('Cannot pass an instance of %s a value.', self::class));
         }
 
         if (\is_bool($value)) {
