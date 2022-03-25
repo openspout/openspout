@@ -210,7 +210,7 @@ final class CellValueFormatter
     private function formatExcelTimestampValue(float $nodeValue, int $cellStyleId): string|DateTimeImmutable
     {
         if (!$this->isValidTimestampValue($nodeValue)) {
-            throw new InvalidValueException($nodeValue);
+            throw new InvalidValueException((string) $nodeValue);
         }
 
         return $this->formatExcelTimestampValueAsDateTimeValue($nodeValue, $cellStyleId);

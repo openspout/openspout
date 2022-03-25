@@ -233,15 +233,13 @@ final class WorksheetManager implements WorksheetManagerInterface
             $data .= ' office:value-type="time" office:time-value="'.$value.'">';
             $data .= '<text:p>'.$value.'</text:p>';
             $data .= '</table:table-cell>';
-        } elseif ($cell instanceof Cell\ErrorCell && \is_string($cell->getRawValue())) {
+        } elseif ($cell instanceof Cell\ErrorCell) {
             // only writes the error value if it's a string
             $data .= ' office:value-type="string" calcext:value-type="error" office:value="">';
             $data .= '<text:p>'.$cell->getRawValue().'</text:p>';
             $data .= '</table:table-cell>';
         } elseif ($cell instanceof Cell\EmptyCell) {
             $data .= '/>';
-        } else {
-            throw new InvalidArgumentException('Trying to add a value with an unsupported type: '.\gettype($cell->getValue()));
         }
 
         return $data;

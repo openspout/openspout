@@ -9,13 +9,10 @@ use DateTimeImmutable;
 use DateTimeZone;
 use DOMElement;
 use DOMNode;
-use FilesystemIterator;
 use finfo;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
-use OpenSpout\Common\Exception\InvalidArgumentException;
 use OpenSpout\Common\Exception\IOException;
-use OpenSpout\Common\Exception\OpenSpoutException;
 use OpenSpout\Common\Helper\StringHelper;
 use OpenSpout\Reader\Wrapper\XMLReader;
 use OpenSpout\TestUsingResource;
@@ -27,7 +24,6 @@ use OpenSpout\Writer\ODS\Manager\WorkbookManager;
 use OpenSpout\Writer\RowCreationHelper;
 use PHPUnit\Framework\TestCase;
 use ReflectionHelper;
-use stdClass;
 
 /**
  * @internal
@@ -63,47 +59,6 @@ final class WriterTest extends TestCase
 
         $writer = new Writer();
         $writer->addRows([Row::fromValues(['ods--11', 'ods--12'])]);
-    }
-
-    public function testAddRowShouldThrowExceptionIfUnsupportedDataTypePassedIn(): void
-    {
-        $fileName = 'test_add_row_should_throw_exception_if_unsupported_data_type_passed_in.ods';
-        $dataRows = [
-            Row::fromValues([new stdClass()]),
-        ];
-
-        $this->expectException(InvalidArgumentException::class);
-        $this->writeToODSFile($dataRows, $fileName);
-    }
-
-    public function testAddRowShouldCleanupAllFilesIfExceptionIsThrown(): void
-    {
-        $fileName = 'test_add_row_should_cleanup_all_files_if_exception_thrown.ods';
-        $dataRows = [
-            Row::fromValues(['wrong']),
-            Row::fromValues([new stdClass()]),
-        ];
-
-        $this->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
-
-        $this->recreateTempFolder();
-        $tempFolderPath = $this->getTempFolderPath();
-
-        $options = new Options();
-        $options->setTempFolder($tempFolderPath);
-        $writer = new Writer($options);
-        $writer->openToFile($resourcePath);
-
-        try {
-            $writer->addRows($dataRows);
-            self::fail('Exception should have been thrown');
-        } catch (OpenSpoutException $e) {
-            self::assertFileDoesNotExist($fileName, 'Output file should have been deleted');
-
-            $numFiles = iterator_count(new FilesystemIterator($tempFolderPath, FilesystemIterator::SKIP_DOTS));
-            self::assertSame(0, $numFiles, 'All temp files should have been deleted');
-        }
     }
 
     public function testAddNewSheetAndMakeItCurrent(): void
@@ -178,7 +133,9 @@ final class WriterTest extends TestCase
 
         foreach ($dataRows as $dataRow) {
             foreach ($dataRow->getCells() as $cell) {
-                $this->assertValueWasWritten($fileName, $cell->getValue());
+                $value = $cell->getValue();
+                self::assertIsScalar($value);
+                $this->assertValueWasWritten($fileName, (string) $value);
             }
         }
     }
@@ -197,7 +154,9 @@ final class WriterTest extends TestCase
         for ($i = 1; $i <= $numSheets; ++$i) {
             foreach ($dataRows as $dataRow) {
                 foreach ($dataRow->getCells() as $cell) {
-                    $this->assertValueWasWritten($fileName, $cell->getValue());
+                    $value = $cell->getValue();
+                    self::assertIsScalar($value);
+                    $this->assertValueWasWritten($fileName, (string) $value);
                 }
             }
         }
@@ -214,7 +173,9 @@ final class WriterTest extends TestCase
 
         foreach ($dataRows as $dataRow) {
             foreach ($dataRow->getCells() as $cell) {
-                $this->assertValueWasWritten($fileName, $cell->getValue());
+                $value = $cell->getValue();
+                self::assertIsScalar($value);
+                $this->assertValueWasWritten($fileName, (string) $value);
             }
         }
     }

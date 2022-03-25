@@ -65,16 +65,10 @@ final class CellTest extends TestCase
         self::assertInstanceOf(FormulaCell::class, Cell::fromValue('=SUM(A1:A2)'));
     }
 
-    public function testCellTypeError(): void
-    {
-        self::assertInstanceOf(ErrorCell::class, Cell::fromValue([]));
-    }
-
     public function testErroredCellValueShouldBeNull(): void
     {
-        $cell = Cell::fromValue([]);
-        self::assertInstanceOf(ErrorCell::class, $cell);
+        $cell = new ErrorCell('#DIV/0', null);
         self::assertNull($cell->getValue());
-        self::assertSame([], $cell->getRawValue());
+        self::assertSame('#DIV/0', $cell->getRawValue());
     }
 }
