@@ -82,7 +82,7 @@ final class CellTest extends TestCase
     public function testPassingCellAsValueShouldThrowError(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Cannot pass an instance of OpenSpout\Common\Entity\Cell a value.');
+        $this->expectExceptionMessage('Cannot pass an instance of OpenSpout\Common\Entity\Cell as a value.');
 
         Cell::fromValue(Cell::fromValue(''));
     }
