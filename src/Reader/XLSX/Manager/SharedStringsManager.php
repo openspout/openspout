@@ -192,7 +192,6 @@ final class SharedStringsManager
         $textNodes = $siNode->getElementsByTagName(self::XML_NODE_T);
 
         foreach ($textNodes as $textNode) {
-            \assert($textNode instanceof DOMElement);
             if ($this->shouldExtractTextNodeValue($textNode)) {
                 $textNodeValue = $textNode->nodeValue;
                 \assert(null !== $textNodeValue);
