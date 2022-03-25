@@ -14,6 +14,7 @@ use OpenSpout\Common\Entity\Cell\ErrorCell;
 use OpenSpout\Common\Entity\Cell\FormulaCell;
 use OpenSpout\Common\Entity\Cell\NumericCell;
 use OpenSpout\Common\Entity\Cell\StringCell;
+use OpenSpout\Common\Exception\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -76,5 +77,13 @@ final class CellTest extends TestCase
         self::assertInstanceOf(ErrorCell::class, $cell);
         self::assertNull($cell->getValue());
         self::assertSame([], $cell->getRawValue());
+    }
+
+    public function testPassingCellAsValueShouldThrowError(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Cannot pass another Cell as a value.');
+
+        Cell::fromValue(Cell::fromValue(''));
     }
 }

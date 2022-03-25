@@ -15,6 +15,7 @@ use OpenSpout\Common\Entity\Cell\FormulaCell;
 use OpenSpout\Common\Entity\Cell\NumericCell;
 use OpenSpout\Common\Entity\Cell\StringCell;
 use OpenSpout\Common\Entity\Style\Style;
+use OpenSpout\Common\Exception\InvalidArgumentException;
 
 abstract class Cell
 {
@@ -39,6 +40,10 @@ abstract class Cell
 
     final public static function fromValue(mixed $value, ?Style $style = null): self
     {
+        if ($value instanceof self) {
+            throw new InvalidArgumentException('Cannot pass another Cell as a value.');
+        }
+
         if (\is_bool($value)) {
             return new BooleanCell($value, $style);
         }
