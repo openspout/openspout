@@ -6,8 +6,6 @@ namespace OpenSpout\Writer;
 
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\IOException;
-use OpenSpout\Common\Exception\OpenSpoutException;
-use OpenSpout\Common\Helper\FileSystemHelper;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
 
 abstract class AbstractWriter implements WriterInterface
@@ -31,10 +29,19 @@ abstract class AbstractWriter implements WriterInterface
     {
         $this->outputFilePath = $outputFilePath;
 
+        $errorMessage = null;
+        set_error_handler(static function ($nr, $message) use (&$errorMessage): bool {
+            $errorMessage = $message;
+
+            return true;
+        });
+
         $resource = fopen($this->outputFilePath, 'wb+');
-        if (false === $resource) {
-            throw new IOException("Unable to open file {$this->outputFilePath}");
+        restore_error_handler();
+        if (null !== $errorMessage) {
+            throw new IOException("Unable to open file {$this->outputFilePath}: {$errorMessage}");
         }
+        \assert(false !== $resource);
         $this->filePointer = $resource;
 
         $this->openWriter();
@@ -103,16 +110,7 @@ abstract class AbstractWriter implements WriterInterface
             throw new WriterNotOpenedException('The writer needs to be opened before adding row.');
         }
 
-        try {
-            $this->addRowToWriter($row);
-        } catch (OpenSpoutException $e) {
-            // if an exception occurs while writing data,
-            // close the writer and remove all files created so far.
-            $this->closeAndAttemptToCleanupAllFiles();
-
-            // re-throw the exception to alert developers of the error
-            throw $e;
-        }
+        $this->addRowToWriter($row);
     }
 
     /**
@@ -162,21 +160,4 @@ abstract class AbstractWriter implements WriterInterface
      * Closes the streamer, preventing any additional writing.
      */
     abstract protected function closeWriter(): void;
-
-    /**
-     * Closes the writer and attempts to cleanup all files that were
-     * created during the writing process (temp files & final file).
-     */
-    private function closeAndAttemptToCleanupAllFiles(): void
-    {
-        // close the writer, which should remove all temp files
-        $this->close();
-
-        // remove output file if it was created
-        if (file_exists($this->outputFilePath)) {
-            $outputFolderPath = \dirname($this->outputFilePath);
-            $fileSystemHelper = new FileSystemHelper($outputFolderPath);
-            $fileSystemHelper->deleteFile($this->outputFilePath);
-        }
-    }
 }

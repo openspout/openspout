@@ -31,6 +31,11 @@ parameters:
 			path: src/Reader/XLSX/Helper/CellValueFormatter.php
 
 		-
+			message: "#^Parameter \\#1 \\$callback of function array_map expects \\(callable\\(OpenSpout\\\\Common\\\\Entity\\\\Cell\\)\\: mixed\\)\\|null, Closure\\(OpenSpout\\\\Common\\\\Entity\\\\Cell\\\\BooleanCell\\|OpenSpout\\\\Common\\\\Entity\\\\Cell\\\\EmptyCell\\|OpenSpout\\\\Common\\\\Entity\\\\Cell\\\\NumericCell\\|OpenSpout\\\\Common\\\\Entity\\\\Cell\\\\StringCell\\)\\: string given\\.$#"
+			count: 1
+			path: src/Writer/CSV/Writer.php
+
+		-
 			message: "#^Short ternary operator is not allowed\\. Use null coalesce operator if applicable or consider using long ternary\\.$#"
 			count: 1
 			path: src/Writer/ODS/Manager/WorksheetManager.php

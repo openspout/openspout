@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace OpenSpout\Common\Entity;
 
+use DateInterval;
+use DateTimeInterface;
 use OpenSpout\Common\Entity\Style\Style;
 
 final class Row
@@ -32,11 +34,11 @@ final class Row
     }
 
     /**
-     * @param mixed[] $cellValues
+     * @param list<null|bool|DateInterval|DateTimeInterface|float|int|string> $cellValues
      */
     public static function fromValues(array $cellValues = [], ?Style $rowStyle = null): self
     {
-        $cells = array_map(static function (mixed $cellValue): Cell {
+        $cells = array_map(static function (null|bool|string|int|float|DateTimeInterface|DateInterval $cellValue): Cell {
             return Cell::fromValue($cellValue);
         }, $cellValues);
 
@@ -109,11 +111,11 @@ final class Row
     /**
      * @internal
      *
-     * @return mixed[] The row values, as array
+     * @return list<null|bool|DateInterval|DateTimeInterface|float|int|string> The row values, as array
      */
     public function toArray(): array
     {
-        return array_map(static function (Cell $cell): mixed {
+        return array_map(static function (Cell $cell): null|bool|string|int|float|DateTimeInterface|DateInterval {
             return $cell->getValue();
         }, $this->cells);
     }

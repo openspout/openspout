@@ -200,7 +200,7 @@ final class WorksheetManager implements WorksheetManagerInterface
             $cellXML .= '><f>'.substr($cell->getValue(), 1).'</f></c>';
         } elseif ($cell instanceof Cell\DateTimeCell) {
             $cellXML .= '><v>'.DateHelper::toExcel($cell->getValue()).'</v></c>';
-        } elseif ($cell instanceof Cell\ErrorCell && \is_string($cell->getRawValue())) {
+        } elseif ($cell instanceof Cell\ErrorCell) {
             // only writes the error value if it's a string
             $cellXML .= ' t="e"><v>'.$cell->getRawValue().'</v></c>';
         } elseif ($cell instanceof Cell\EmptyCell) {
@@ -211,8 +211,6 @@ final class WorksheetManager implements WorksheetManagerInterface
                 // NOTE: not appending to $cellXML is the right behavior!!
                 $cellXML = '';
             }
-        } else {
-            throw new InvalidArgumentException('Trying to add a value with an unsupported type: '.\gettype($cell->getValue()));
         }
 
         return $cellXML;

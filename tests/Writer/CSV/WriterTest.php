@@ -22,16 +22,14 @@ final class WriterTest extends TestCase
 
     public function testWriteShouldThrowExceptionIfCannotOpenFileForWriting(): void
     {
-        $this->expectException(IOException::class);
-
         $fileName = 'file_that_wont_be_written.csv';
         $this->createUnwritableFolderIfNeeded();
         $filePath = $this->getGeneratedUnwritableResourcePath($fileName);
 
         $writer = new Writer();
-        @$writer->openToFile($filePath);
-        $writer->addRow(Row::fromValues(['csv--11', 'csv--12']));
         $writer->close();
+        $this->expectException(IOException::class);
+        $writer->openToFile($filePath);
     }
 
     public function testWriteShouldThrowExceptionIfCallAddRowBeforeOpeningWriter(): void

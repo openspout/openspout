@@ -7,13 +7,10 @@ namespace OpenSpout\Writer\XLSX;
 use DateTimeImmutable;
 use DateTimeZone;
 use DOMElement;
-use FilesystemIterator;
 use finfo;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
-use OpenSpout\Common\Exception\InvalidArgumentException;
 use OpenSpout\Common\Exception\IOException;
-use OpenSpout\Common\Exception\OpenSpoutException;
 use OpenSpout\Reader\Wrapper\XMLReader;
 use OpenSpout\TestUsingResource;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
@@ -21,7 +18,6 @@ use OpenSpout\Writer\RowCreationHelper;
 use OpenSpout\Writer\XLSX\Manager\WorkbookManager;
 use PHPUnit\Framework\TestCase;
 use ReflectionHelper;
-use stdClass;
 
 /**
  * @internal
@@ -57,59 +53,6 @@ final class WriterTest extends TestCase
 
         $writer = new Writer();
         $writer->addRows($this->createRowsFromValues([['xlsx--11', 'xlsx--12']]));
-    }
-
-    public function testAddRowShouldThrowExceptionIfUnsupportedDataTypePassedIn(): void
-    {
-        $fileName = 'test_add_row_should_throw_exception_if_unsupported_data_type_passed_in.xlsx';
-        $dataRows = [
-            Row::fromValues([new stdClass()]),
-        ];
-
-        $this->expectException(InvalidArgumentException::class);
-        $this->writeToXLSXFile($dataRows, $fileName);
-    }
-
-    public function testAddRowShouldThrowExceptionIfWritingStringExceedingMaxNumberOfCharactersAllowedPerCell(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        $fileName = 'test_add_row_should_throw_exception_if_string_exceeds_max_num_chars_allowed_per_cell.xlsx';
-        $dataRows = $this->createRowsFromValues([
-            [new stdClass()],
-        ]);
-
-        $this->writeToXLSXFile($dataRows, $fileName);
-    }
-
-    public function testAddRowShouldCleanupAllFilesIfExceptionIsThrown(): void
-    {
-        $fileName = 'test_add_row_should_cleanup_all_files_if_exception_thrown.xlsx';
-        $dataRows = $this->createRowsFromValues([
-            ['wrong'],
-            [new stdClass()],
-        ]);
-
-        $this->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
-
-        $this->recreateTempFolder();
-        $tempFolderPath = $this->getTempFolderPath();
-
-        $options = new Options();
-        $options->setTempFolder($tempFolderPath);
-        $writer = new Writer($options);
-        $writer->openToFile($resourcePath);
-
-        try {
-            $writer->addRows($dataRows);
-            self::fail('Exception should have been thrown');
-        } catch (OpenSpoutException $e) {
-            self::assertFileDoesNotExist($fileName, 'Output file should have been deleted');
-
-            $numFiles = iterator_count(new FilesystemIterator($tempFolderPath, FilesystemIterator::SKIP_DOTS));
-            self::assertSame(0, $numFiles, 'All temp files should have been deleted');
-        }
     }
 
     public function testAddNewSheetAndMakeItCurrent(): void
@@ -212,7 +155,9 @@ final class WriterTest extends TestCase
 
         foreach ($dataRows as $dataRow) {
             foreach ($dataRow->getCells() as $cell) {
-                $this->assertSharedStringWasWritten($fileName, $cell->getValue());
+                $value = $cell->getValue();
+                self::assertIsScalar($value);
+                $this->assertSharedStringWasWritten($fileName, (string) $value);
             }
         }
     }
@@ -231,7 +176,9 @@ final class WriterTest extends TestCase
         for ($i = 1; $i <= $numSheets; ++$i) {
             foreach ($dataRows as $dataRow) {
                 foreach ($dataRow->getCells() as $cell) {
-                    $this->assertSharedStringWasWritten($fileName, $cell->getValue());
+                    $value = $cell->getValue();
+                    self::assertIsScalar($value);
+                    $this->assertSharedStringWasWritten($fileName, (string) $value);
                 }
             }
         }
