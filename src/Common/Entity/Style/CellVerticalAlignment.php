@@ -7,7 +7,7 @@ namespace OpenSpout\Common\Entity\Style;
 /**
  * This class provides constants to work with text vertical alignment.
  */
-abstract class CellVerticalAlignment
+final class CellVerticalAlignment
 {
     public const AUTO = 'auto';
     public const BASELINE = 'baseline';

@@ -7,7 +7,7 @@ namespace OpenSpout\Common\Entity\Style;
 /**
  * This class provides constants to work with text alignment.
  */
-abstract class CellAlignment
+final class CellAlignment
 {
     public const LEFT = 'left';
     public const RIGHT = 'right';
