@@ -245,10 +245,10 @@ final class StyleManager extends CommonStyleManager
                     $content .= sprintf(' horizontal="%s"', $style->getCellAlignment());
                 }
                 if ($style->shouldApplyCellVerticalAlignment()) {
-                    $content .= \sprintf(' vertical="%s"', $style->getCellVerticalAlignment());
+                    $content .= sprintf(' vertical="%s"', $style->getCellVerticalAlignment());
                 }
                 if ($style->hasSetWrapText()) {
-                    $content .= ' wrapText="' . ($style->shouldWrapText() ? '1' : '0') . '"';
+                    $content .= ' wrapText="'.($style->shouldWrapText() ? '1' : '0').'"';
                 }
                 if ($style->shouldShrinkToFit()) {
                     $content .= ' shrinkToFit="true"';

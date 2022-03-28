@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace OpenSpout\Common\Entity\Style;
 
-use Box\Spout\Common\Entity\Style\CellVerticalAlignment;
 use OpenSpout\Common\Exception\InvalidArgumentException;
 
 /**

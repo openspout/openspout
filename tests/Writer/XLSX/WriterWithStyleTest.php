@@ -10,6 +10,7 @@ use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\Border;
 use OpenSpout\Common\Entity\Style\BorderPart;
 use OpenSpout\Common\Entity\Style\CellAlignment;
+use OpenSpout\Common\Entity\Style\CellVerticalAlignment;
 use OpenSpout\Common\Entity\Style\Color;
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Reader\Wrapper\XMLReader;
@@ -252,7 +253,7 @@ final class WriterWithStyleTest extends TestCase
     {
         $fileName = 'test_add_row_should_add_negated_wrap_text_alignment.xlsx';
 
-        $style = (new Style())->setShouldWrapText(false)->;
+        $style = (new Style())->setShouldWrapText(false);
         $dataRows = $this->createStyledRowsFromValues([
             ['xlsx--11', 'xlsx--12'],
         ], $style);
@@ -261,7 +262,7 @@ final class WriterWithStyleTest extends TestCase
 
         $cellXfsDomElement = $this->getXmlSectionFromStylesXmlFile($fileName, 'cellXfs');
         $xfElement = $cellXfsDomElement->getElementsByTagName('xf')->item(1);
-        $this->assertEquals(1, $xfElement->getAttribute('applyAlignment'));
+        self::assertEquals(1, $xfElement->getAttribute('applyAlignment'));
         $this->assertFirstChildHasAttributeEquals('0', $xfElement, 'alignment', 'wrapText');
     }
 
@@ -295,6 +296,21 @@ final class WriterWithStyleTest extends TestCase
         $xfElement = $cellXfsDomElement->getElementsByTagName('xf')->item(1);
         self::assertSame('1', $xfElement->getAttribute('applyAlignment'));
         $this->assertFirstChildHasAttributeEquals(CellAlignment::RIGHT, $xfElement, 'alignment', 'horizontal');
+    }
+
+    public function testAddRowShouldApplyCellVerticalAlignment(): void
+    {
+        $fileName = 'test_add_row_should_apply_cell_alignment.xlsx';
+
+        $rightAlignedStyle = (new Style())->setCellVerticalAlignment(CellVerticalAlignment::JUSTIFY);
+        $dataRows = $this->createStyledRowsFromValues([['xlsx--11']], $rightAlignedStyle);
+
+        $this->writeToXLSXFile($dataRows, $fileName);
+
+        $cellXfsDomElement = $this->getXmlSectionFromStylesXmlFile($fileName, 'cellXfs');
+        $xfElement = $cellXfsDomElement->getElementsByTagName('xf')->item(1);
+        self::assertSame('1', $xfElement->getAttribute('applyAlignment'));
+        $this->assertFirstChildHasAttributeEquals(CellAlignment::JUSTIFY, $xfElement, 'alignment', 'vertical');
     }
 
     public function testAddRowShouldApplyShrinkToFit(): void

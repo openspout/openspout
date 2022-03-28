@@ -1,9 +1,10 @@
 <?php
 
-namespace Box\Spout\Common\Entity\Style;
+declare(strict_types=1);
+
+namespace OpenSpout\Common\Entity\Style;
 
 /**
- * Class CellVerticalAlignment
  * This class provides constants to work with text vertical alignment.
  */
 abstract class CellVerticalAlignment
@@ -16,7 +17,7 @@ abstract class CellVerticalAlignment
     public const JUSTIFY = 'justify';
     public const TOP = 'top';
 
-    private static $VALID_ALIGNMENTS = [
+    private const VALID_ALIGNMENTS = [
         self::AUTO => 1,
         self::BASELINE => 1,
         self::BOTTOM => 1,
@@ -31,6 +32,6 @@ abstract class CellVerticalAlignment
      */
     public static function isValid(string $cellVerticalAlignment): bool
     {
-        return isset(self::$VALID_ALIGNMENTS[$cellVerticalAlignment]);
+        return isset(self::VALID_ALIGNMENTS[$cellVerticalAlignment]);
     }
 }

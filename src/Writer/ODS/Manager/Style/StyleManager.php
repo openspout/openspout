@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer\ODS\Manager\Style;
 
-use Box\Spout\Common\Entity\Style\CellVerticalAlignment;
 use OpenSpout\Common\Entity\Style\Border;
 use OpenSpout\Common\Entity\Style\BorderPart;
 use OpenSpout\Common\Entity\Style\CellAlignment;
+use OpenSpout\Common\Entity\Style\CellVerticalAlignment;
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Writer\Common\AbstractOptions;
 use OpenSpout\Writer\Common\ColumnWidth;
@@ -323,7 +323,7 @@ final class StyleManager extends CommonStyleManager
 
         return '<style:paragraph-properties '
             .$this->getCellAlignmentSectionContent($style)
-            . $this->getCellVerticalAlignmentSectionContent($style)
+            .$this->getCellVerticalAlignmentSectionContent($style)
             .'/>';
     }
 
@@ -332,17 +332,26 @@ final class StyleManager extends CommonStyleManager
      */
     private function getCellAlignmentSectionContent(Style $style): string
     {
+        if (!$style->hasSetCellAlignment()) {
+            return '';
+        }
+
         return sprintf(
             ' fo:text-align="%s" ',
             $this->transformCellAlignment($style->getCellAlignment())
         );
     }
+
     /**
-     * Returns the contents of the cell vertical alignment definition for the "<style:paragraph-properties>" section
+     * Returns the contents of the cell vertical alignment definition for the "<style:paragraph-properties>" section.
      */
     private function getCellVerticalAlignmentSectionContent(Style $style): string
     {
-        return \sprintf(
+        if (!$style->hasSetCellVerticalAlignment()) {
+            return '';
+        }
+
+        return sprintf(
             ' fo:vertical-align="%s" ',
             $this->transformCellVerticalAlignment($style->getCellVerticalAlignment())
         );
@@ -361,16 +370,16 @@ final class StyleManager extends CommonStyleManager
             default => $cellAlignment,
         };
     }
-    
+
     /**
      * Spec uses 'middle' rather than 'center'
-     * http://docs.oasis-open.org/office/v1.2/os/OpenDocument-v1.2-os-part1.html#__RefHeading__1420236_253892949
+     * http://docs.oasis-open.org/office/v1.2/os/OpenDocument-v1.2-os-part1.html#__RefHeading__1420236_253892949.
      */
     private function transformCellVerticalAlignment(string $cellVerticalAlignment): string
     {
-        return ($cellVerticalAlignment === CellVerticalAlignment::CENTER)
+        return (CellVerticalAlignment::CENTER === $cellVerticalAlignment)
             ? 'middle'
-            :  $cellVerticalAlignment;
+            : $cellVerticalAlignment;
     }
 
     /**
@@ -402,7 +411,7 @@ final class StyleManager extends CommonStyleManager
      */
     private function getWrapTextXMLContent(bool $shouldWrapText): string
     {
-        return ' fo:wrap-option="' . ($shouldWrapText ? '' : 'no-') . 'wrap" style:vertical-align="automatic" ';
+        return ' fo:wrap-option="'.($shouldWrapText ? '' : 'no-').'wrap" style:vertical-align="automatic" ';
     }
 
     /**
