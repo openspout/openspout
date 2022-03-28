@@ -10,6 +10,7 @@ use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\Border;
 use OpenSpout\Common\Entity\Style\BorderPart;
 use OpenSpout\Common\Entity\Style\CellAlignment;
+use OpenSpout\Common\Entity\Style\CellVerticalAlignment;
 use OpenSpout\Common\Entity\Style\Color;
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Reader\Wrapper\XMLReader;
@@ -168,6 +169,24 @@ final class WriterWithStyleTest extends TestCase
         $this->assertFirstChildHasAttributeEquals('wrap', $customStyleElement, 'table-cell-properties', 'fo:wrap-option');
     }
 
+    public function testAddRowShouldAddNegatedWrapTextAlignmentInfoInStylesXmlFileIfSpecified(): void
+    {
+        $fileName = 'test_add_row_should_add_negated_wrap_text_alignment.ods';
+
+        $style = (new Style())->setShouldWrapText(false);
+        $dataRows = $this->createStyledRowsFromValues([
+            ['ods--11', 'ods--12'],
+        ], $style);
+
+        $this->writeToODSFile($dataRows, $fileName);
+
+        $styleElements = $this->getCellStyleElementsFromContentXmlFile($fileName);
+        self::assertCount(2, $styleElements, 'There should be 2 styles (default and custom)');
+
+        $customStyleElement = $styleElements[1];
+        $this->assertFirstChildHasAttributeEquals('no-wrap', $customStyleElement, 'table-cell-properties', 'fo:wrap-option');
+    }
+
     public function testAddRowShouldApplyWrapTextIfCellContainsNewLine(): void
     {
         $fileName = 'test_add_row_should_apply_wrap_text_if_new_lines.ods';
@@ -201,6 +220,25 @@ final class WriterWithStyleTest extends TestCase
 
         $customStyleElement = $styleElements[1];
         $this->assertFirstChildHasAttributeEquals('end', $customStyleElement, 'paragraph-properties', 'fo:text-align');
+    }
+
+    public function testAddRowShouldApplyCellVerticalAlignment(): void
+    {
+        $fileName = 'test_add_row_should_apply_cell_alignment.xlsx';
+
+        $dataRows = [];
+        $rightAlignedStyle = (new Style())->setCellVerticalAlignment(CellVerticalAlignment::BASELINE);
+        $dataRows[] = Row::fromValues(['ods--11'], $rightAlignedStyle);
+        $leftAlignedStyle = (new Style())->setCellVerticalAlignment(CellVerticalAlignment::CENTER);
+        $dataRows[] = Row::fromValues(['ods--12'], $leftAlignedStyle);
+
+        $this->writeToODSFile($dataRows, $fileName);
+
+        $styleElements = $this->getCellStyleElementsFromContentXmlFile($fileName);
+        self::assertCount(3, $styleElements, 'There should be 3 styles (1 default and 2 custom)');
+
+        $customStyleElement = $styleElements[1];
+        $this->assertFirstChildHasAttributeEquals('baseline', $customStyleElement, 'paragraph-properties', 'fo:vertical-align');
     }
 
     public function testAddRowShouldSupportCellStyling(): void

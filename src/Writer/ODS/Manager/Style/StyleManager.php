@@ -7,6 +7,7 @@ namespace OpenSpout\Writer\ODS\Manager\Style;
 use OpenSpout\Common\Entity\Style\Border;
 use OpenSpout\Common\Entity\Style\BorderPart;
 use OpenSpout\Common\Entity\Style\CellAlignment;
+use OpenSpout\Common\Entity\Style\CellVerticalAlignment;
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Writer\Common\AbstractOptions;
 use OpenSpout\Writer\Common\ColumnWidth;
@@ -316,12 +317,13 @@ final class StyleManager extends CommonStyleManager
      */
     private function getParagraphPropertiesSectionContent(Style $style): string
     {
-        if (!$style->shouldApplyCellAlignment()) {
+        if (!$style->shouldApplyCellAlignment() && !$style->shouldApplyCellVerticalAlignment()) {
             return '';
         }
 
         return '<style:paragraph-properties '
             .$this->getCellAlignmentSectionContent($style)
+            .$this->getCellVerticalAlignmentSectionContent($style)
             .'/>';
     }
 
@@ -330,9 +332,28 @@ final class StyleManager extends CommonStyleManager
      */
     private function getCellAlignmentSectionContent(Style $style): string
     {
+        if (!$style->hasSetCellAlignment()) {
+            return '';
+        }
+
         return sprintf(
             ' fo:text-align="%s" ',
             $this->transformCellAlignment($style->getCellAlignment())
+        );
+    }
+
+    /**
+     * Returns the contents of the cell vertical alignment definition for the "<style:paragraph-properties>" section.
+     */
+    private function getCellVerticalAlignmentSectionContent(Style $style): string
+    {
+        if (!$style->hasSetCellVerticalAlignment()) {
+            return '';
+        }
+
+        return sprintf(
+            ' fo:vertical-align="%s" ',
+            $this->transformCellVerticalAlignment($style->getCellVerticalAlignment())
         );
     }
 
@@ -351,14 +372,25 @@ final class StyleManager extends CommonStyleManager
     }
 
     /**
+     * Spec uses 'middle' rather than 'center'
+     * http://docs.oasis-open.org/office/v1.2/os/OpenDocument-v1.2-os-part1.html#__RefHeading__1420236_253892949.
+     */
+    private function transformCellVerticalAlignment(string $cellVerticalAlignment): string
+    {
+        return (CellVerticalAlignment::CENTER === $cellVerticalAlignment)
+            ? 'middle'
+            : $cellVerticalAlignment;
+    }
+
+    /**
      * Returns the contents of the "<style:table-cell-properties>" section, inside "<style:style>" section.
      */
     private function getTableCellPropertiesSectionContent(Style $style): string
     {
         $content = '<style:table-cell-properties ';
 
-        if ($style->shouldWrapText()) {
-            $content .= $this->getWrapTextXMLContent();
+        if ($style->hasSetWrapText()) {
+            $content .= $this->getWrapTextXMLContent($style->shouldWrapText());
         }
 
         if (null !== ($border = $style->getBorder())) {
@@ -377,9 +409,9 @@ final class StyleManager extends CommonStyleManager
     /**
      * Returns the contents of the wrap text definition for the "<style:table-cell-properties>" section.
      */
-    private function getWrapTextXMLContent(): string
+    private function getWrapTextXMLContent(bool $shouldWrapText): string
     {
-        return ' fo:wrap-option="wrap" style:vertical-align="automatic" ';
+        return ' fo:wrap-option="'.($shouldWrapText ? '' : 'no-').'wrap" style:vertical-align="automatic" ';
     }
 
     /**

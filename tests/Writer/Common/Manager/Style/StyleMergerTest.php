@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace OpenSpout\Writer\Common\Manager\Style;
 
 use OpenSpout\Common\Entity\Style\CellAlignment;
+use OpenSpout\Common\Entity\Style\CellVerticalAlignment;
 use OpenSpout\Common\Entity\Style\Color;
 use OpenSpout\Common\Entity\Style\Style;
 use PHPUnit\Framework\TestCase;
@@ -91,6 +92,7 @@ final class StyleMergerTest extends TestCase
             ->setShouldWrapText()
             ->setShouldShrinkToFit()
             ->setCellAlignment(CellAlignment::JUSTIFY)
+            ->setCellVerticalAlignment(CellVerticalAlignment::BASELINE)
         ;
         $currentStyle = (new Style());
         $mergedStyle = $this->styleMerger->merge($currentStyle, $baseStyle);
@@ -106,6 +108,9 @@ final class StyleMergerTest extends TestCase
 
         self::assertFalse($currentStyle->hasSetCellAlignment());
         self::assertTrue($mergedStyle->hasSetCellAlignment());
+
+        self::assertFalse($currentStyle->hasSetCellVerticalAlignment());
+        self::assertTrue($mergedStyle->hasSetCellVerticalAlignment());
     }
 
     public function testMergeWithShouldDoNothingIfStylePropertyNotSetOnBaseNorCurrent(): void

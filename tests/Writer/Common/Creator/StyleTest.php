@@ -7,6 +7,7 @@ namespace OpenSpout\Writer\Common\Creator\Style;
 use OpenSpout\Common\Entity\Style\Border;
 use OpenSpout\Common\Entity\Style\BorderPart;
 use OpenSpout\Common\Entity\Style\CellAlignment;
+use OpenSpout\Common\Entity\Style\CellVerticalAlignment;
 use OpenSpout\Common\Entity\Style\Color;
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Common\Exception\InvalidArgumentException;
@@ -46,9 +47,21 @@ final class StyleTest extends TestCase
         self::assertTrue($style->shouldApplyCellAlignment());
     }
 
+    public function testStyleBuilderShouldApplyCellVerticalAlignment(): void
+    {
+        $style = (new Style())->setCellVerticalAlignment(CellVerticalAlignment::CENTER);
+        self::assertTrue($style->shouldApplyCellVerticalAlignment());
+    }
+
     public function testStyleBuilderShouldThrowOnInvalidCellAlignment(): void
     {
         $this->expectException(InvalidArgumentException::class);
         (new Style())->setCellAlignment('invalid_cell_alignment');
+    }
+
+    public function testStyleBuilderShouldThrowOnInvalidCellVerticalAlignment(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        (new Style())->setCellVerticalAlignment('invalid_cell_alignment');
     }
 }
