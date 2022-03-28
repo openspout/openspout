@@ -191,19 +191,21 @@ well as borders.
 For fonts and alignments, OpenSpout does not support all the possible formatting options yet. But you can find the most
 important ones:
 
-| Category             | Property       | API |
-|:---------------------|:---------------|:-------------------------------------- |
-| Font                 | Bold           | `StyleBuilder::setFontBold()` |
-|                      | Italic         | `StyleBuilder::setFontItalic()` |
-|                      | Underline      | `StyleBuilder::setFontUnderline()` |
-|                      | Strikethrough  | `StyleBuilder::setFontStrikethrough()` |
-|                      | Font name      | `StyleBuilder::setFontName('Arial')` |
-|                      | Font size      | `StyleBuilder::setFontSize(14)` |
-|                      | Font color     | `StyleBuilder::setFontColor(Color::BLUE)`<br>`StyleBuilder::setFontColor(Color::rgb(0, 128, 255))` |
-| Alignment            | Cell alignment | `StyleBuilder::setCellAlignment(CellAlignment::CENTER)` |
-|                      | Wrap text      | `StyleBuilder::setShouldWrapText(true)` |
-| Format _(XLSX only)_ | Number format  | `StyleBuilder::setFormat('0.000')` |
-|                      | Date format    | `StyleBuilder::setFormat('m/d/yy h:mm')` |
+| Category             | Property                | API
+|:---------------------|:------------------------|:--------------------------------------
+| Font                 | Bold                    | `Style::setFontBold()`
+|                      | Italic                  | `Style::setFontItalic()`
+|                      | Underline               | `Style::setFontUnderline()`
+|                      | Strikethrough           | `Style::setFontStrikethrough()`
+|                      | Font name               | `Style::setFontName('Arial')`
+|                      | Font size               | `Style::setFontSize(14)`
+|                      | Font color              | `Style::setFontColor(Color::BLUE)`
+|                      |                         | `Style::setFontColor(Color::rgb(0, 128, 255))`
+| Alignment            | Cell alignment          | `Style::setCellAlignment(CellAlignment::CENTER)`
+|                      | Cell vertical alignment | `Style::setCellVerticalAlignment(CellVerticalAlignment::CENTER)`
+|                      | Wrap text               | `Style::setShouldWrapText(true)`
+| Format _(XLSX only)_ | Number format           | `Style::setFormat('0.000')`
+|                      | Date format             | `Style::setFormat('m/d/yy h:mm')`
 
 ### Styling rows
 
@@ -213,19 +215,19 @@ It is possible to apply some formatting options to a row. In this case, all cell
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\CellAlignment;
 use OpenSpout\Common\Entity\Style\Color;
-use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
 use OpenSpout\Writer\XLSX\Writer;
 
 $writer = new Writer();
 $writer->openToFile($filePath);
 
-// Create a style with the StyleBuilder
+// Create a style with the Style
 $style = new Style();
 $style->setFontBold();
 $style->setFontSize(15);
 $style->setFontColor(Color::BLUE);
 $style->setShouldWrapText();
 $style->setCellAlignment(CellAlignment::RIGHT);
+$style->setCellVerticalAlignment(CellVerticalAlignment::BOTTOM);
 $style->setBackgroundColor(Color::YELLOW);
 
 // Create a row with cells and apply the style to all cells
@@ -244,7 +246,6 @@ use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\Border;
 use OpenSpout\Common\Entity\Style\BorderPart;
 use OpenSpout\Common\Entity\Style\Color;
-use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
 use OpenSpout\Writer\XLSX\Writer;
 
 $border = new Border(
