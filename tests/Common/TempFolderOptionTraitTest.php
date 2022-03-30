@@ -12,6 +12,15 @@ use PHPUnit\Framework\TestCase;
  */
 final class TempFolderOptionTraitTest extends TestCase
 {
+    public function testTempFolderDefaultsToSysTmp(): void
+    {
+        $options = new class() {
+            use TempFolderOptionTrait;
+        };
+
+        self::assertSame(sys_get_temp_dir(), $options->getTempFolder());
+    }
+
     public function testTempFolderMustBeWritable(): void
     {
         $options = new class() {

@@ -59,7 +59,7 @@ final class OdsWriterBench
         $pathToContentXmlFile = 'zip://'.$resourcePath.'#content.xml';
 
         // since we cannot execute "tail" on a file inside a zip, we need to copy it outside first
-        $tmpFile = sys_get_temp_dir().\DIRECTORY_SEPARATOR.'get_last_characters.xml';
+        $tmpFile = (new TestUsingResource())->getTempFolderPath().\DIRECTORY_SEPARATOR.'get_last_characters.xml';
         copy($pathToContentXmlFile, $tmpFile);
 
         // Get the last 200 characters

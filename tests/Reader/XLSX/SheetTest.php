@@ -40,7 +40,9 @@ final class SheetTest extends TestCase
     private function openFileAndReturnSheets(string $fileName): array
     {
         $resourcePath = TestUsingResource::getResourcePath($fileName);
-        $reader = new Reader();
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $reader = new Reader($options);
         $reader->open($resourcePath);
 
         $sheets = [];

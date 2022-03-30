@@ -15,7 +15,7 @@ static-analysis: vendor
 
 .PHONY: test
 test: vendor
-	chmod -f -R u+rwX tests/resources/generated_* || true
+	chmod -fR u+rwX tests/resources/generated_* || true
 	rm -fr tests/resources/generated_*
 	php \
 		-d zend.assertions=1 \

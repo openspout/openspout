@@ -34,28 +34,33 @@ final class WriterTest extends TestCase
 
     public function testAddRowShouldThrowExceptionIfCannotOpenAFileForWriting(): void
     {
-        $this->expectException(IOException::class);
-
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
         $fileName = 'file_that_wont_be_written.ods';
         $filePath = (new TestUsingResource())->getGeneratedUnwritableResourcePath($fileName);
+        $this->expectException(IOException::class);
 
-        $writer = new Writer();
         @$writer->openToFile($filePath);
     }
 
     public function testAddRowShouldThrowExceptionIfCallAddRowBeforeOpeningWriter(): void
     {
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
         $this->expectException(WriterNotOpenedException::class);
 
-        $writer = new Writer();
         $writer->addRow(Row::fromValues(['ods--11', 'ods--12']));
     }
 
     public function testAddRowShouldThrowExceptionIfCalledBeforeOpeningWriter(): void
     {
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
         $this->expectException(WriterNotOpenedException::class);
 
-        $writer = new Writer();
         $writer->addRows([Row::fromValues(['ods--11', 'ods--12'])]);
     }
 
@@ -64,7 +69,9 @@ final class WriterTest extends TestCase
         $fileName = 'test_add_new_sheet_and_make_it_current.ods';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $writer = new Writer();
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->addNewSheetAndMakeItCurrent();
         $writer->close();
@@ -79,7 +86,9 @@ final class WriterTest extends TestCase
         $fileName = 'test_set_current_sheet.ods';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $writer = new Writer();
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
         $writer->openToFile($resourcePath);
 
         $writer->addNewSheetAndMakeItCurrent();
@@ -107,7 +116,9 @@ final class WriterTest extends TestCase
         $fileName = 'test_double_close_calls.ods';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $writer = new Writer();
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
         $writer->close(); // This call should not cause any error
 
         $writer->openToFile($resourcePath);
@@ -314,7 +325,9 @@ final class WriterTest extends TestCase
 
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $writer = new Writer();
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
         $writer->openToFile($resourcePath);
 
         $writer->addRows($dataRowsSheet1);
@@ -430,6 +443,7 @@ final class WriterTest extends TestCase
     public function testShouldSetOptionWithGetter(): void
     {
         $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
 
         $options->DEFAULT_COLUMN_WIDTH = (float) random_int(100, 199);
@@ -448,6 +462,7 @@ final class WriterTest extends TestCase
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
         if (null !== $shouldCreateSheetsAutomatically) {
             $options->SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY = $shouldCreateSheetsAutomatically;
         }
@@ -472,6 +487,7 @@ final class WriterTest extends TestCase
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
         if (null !== $shouldCreateSheetsAutomatically) {
             $options->SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY = $shouldCreateSheetsAutomatically;
         }

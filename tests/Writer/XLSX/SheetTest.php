@@ -54,7 +54,9 @@ final class SheetTest extends TestCase
         $fileName = 'test_set_name_with_non_unique_name.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $writer = new Writer();
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
         $writer->openToFile($resourcePath);
 
         $customSheetName = 'Sheet name';
@@ -82,8 +84,10 @@ final class SheetTest extends TestCase
 
     public function testThrowsIfWorkbookIsNotInitialized(): void
     {
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
         $this->expectException(WriterNotOpenedException::class);
-        $writer = new Writer();
 
         $writer->addRow(Row::fromValues([]));
     }
@@ -94,6 +98,7 @@ final class SheetTest extends TestCase
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
         $options->DEFAULT_COLUMN_WIDTH = 10.0;
         $options->DEFAULT_ROW_HEIGHT = 20.0;
         $writer = new Writer($options);
@@ -117,6 +122,7 @@ final class SheetTest extends TestCase
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
         $options->DEFAULT_COLUMN_WIDTH = 10.0;
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
@@ -139,6 +145,7 @@ final class SheetTest extends TestCase
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12']));
@@ -159,6 +166,7 @@ final class SheetTest extends TestCase
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12', 'xlsx--13']));
@@ -179,6 +187,7 @@ final class SheetTest extends TestCase
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12', 'xlsx--13', 'xlsx--14', 'xlsx--15', 'xlsx--16']));
@@ -204,6 +213,7 @@ final class SheetTest extends TestCase
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12', 'xlsx--13']));
@@ -223,7 +233,9 @@ final class SheetTest extends TestCase
         $fileName = 'test_formula.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $writer = new Writer();
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->addRow(Row::fromValues([1]));
         $writer->addRow(Row::fromValues([2]));
@@ -242,7 +254,9 @@ final class SheetTest extends TestCase
         $fileName = 'test_sheetview_properties.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $writer = new Writer();
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
         $writer->openToFile($resourcePath);
 
         $writer->getCurrentSheet()->setSheetView(
@@ -283,7 +297,9 @@ final class SheetTest extends TestCase
     {
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $writer = new Writer();
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
         $writer->openToFile($resourcePath);
 
         $sheet = $writer->getCurrentSheet();
@@ -302,7 +318,9 @@ final class SheetTest extends TestCase
     {
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $writer = new Writer();
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
         $writer->openToFile($resourcePath);
 
         $writer->addRow(Row::fromValues(['xlsx--sheet1--11', 'xlsx--sheet1--12']));
@@ -318,7 +336,9 @@ final class SheetTest extends TestCase
     {
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $writer = new Writer();
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
         $writer->openToFile($resourcePath);
 
         $sheet = $writer->getCurrentSheet();

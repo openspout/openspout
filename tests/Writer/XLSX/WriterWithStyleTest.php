@@ -36,7 +36,9 @@ final class WriterWithStyleTest extends TestCase
 
     public function testAddRowShouldThrowExceptionIfCallAddRowBeforeOpeningWriter(): void
     {
-        $writer = new Writer();
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
 
         $this->expectException(WriterNotOpenedException::class);
         $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12'], $this->defaultStyle));
@@ -44,7 +46,9 @@ final class WriterWithStyleTest extends TestCase
 
     public function testAddRowShouldThrowExceptionIfCalledBeforeOpeningWriter(): void
     {
-        $writer = new Writer();
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
 
         $this->expectException(WriterNotOpenedException::class);
         $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12'], $this->defaultStyle));
@@ -571,6 +575,7 @@ final class WriterWithStyleTest extends TestCase
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
         $options->SHOULD_USE_INLINE_STRINGS = true;
         $writer = new Writer($options);
 
@@ -589,6 +594,7 @@ final class WriterWithStyleTest extends TestCase
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
         $options->SHOULD_USE_INLINE_STRINGS = true;
         $options->DEFAULT_ROW_STYLE = $defaultStyle;
         $writer = new Writer($options);

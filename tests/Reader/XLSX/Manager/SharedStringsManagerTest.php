@@ -119,9 +119,12 @@ final class SharedStringsManagerTest extends TestCase
         $cachingStrategyFactory = new CachingStrategyFactory(new MemoryLimit('1'));
         $workbookRelationshipsManager = new WorkbookRelationshipsManager($resourcePath);
 
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+
         $this->sharedStringsManager = new SharedStringsManager(
             $resourcePath,
-            new Options(),
+            $options,
             $workbookRelationshipsManager,
             $cachingStrategyFactory
         );

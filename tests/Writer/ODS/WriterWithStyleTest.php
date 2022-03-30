@@ -36,17 +36,21 @@ final class WriterWithStyleTest extends TestCase
 
     public function testAddRowShouldThrowExceptionIfCallAddRowBeforeOpeningWriter(): void
     {
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
         $this->expectException(WriterNotOpenedException::class);
 
-        $writer = new Writer();
         $writer->addRow(Row::fromValues(['ods--11', 'ods--12'], $this->defaultStyle));
     }
 
     public function testAddRowShouldThrowExceptionIfCalledBeforeOpeningWriter(): void
     {
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
         $this->expectException(WriterNotOpenedException::class);
 
-        $writer = new Writer();
         $writer->addRow(Row::fromValues(['ods--11', 'ods--12'], $this->defaultStyle));
     }
 
@@ -368,7 +372,9 @@ final class WriterWithStyleTest extends TestCase
     {
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $writer = new Writer();
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
 
         $writer->openToFile($resourcePath);
         $writer->addRows($allRows);
@@ -385,6 +391,7 @@ final class WriterWithStyleTest extends TestCase
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
         $options->DEFAULT_ROW_STYLE = $defaultStyle;
         $writer = new Writer($options);
 

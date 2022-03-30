@@ -52,7 +52,9 @@ final class SheetTest extends TestCase
         $fileName = 'test_set_name_with_non_unique_name.ods';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $writer = new Writer();
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
         $writer->openToFile($resourcePath);
 
         $customSheetName = 'Sheet name';
@@ -84,6 +86,7 @@ final class SheetTest extends TestCase
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->addRow(Row::fromValues(['ods--11', 'ods--12']));
@@ -104,6 +107,7 @@ final class SheetTest extends TestCase
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->addRow(Row::fromValues(['ods--11', 'ods--12', 'ods--13', 'ods--14', 'ods--15', 'ods--16']));
@@ -125,7 +129,9 @@ final class SheetTest extends TestCase
     {
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $writer = new Writer();
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
         $writer->openToFile($resourcePath);
 
         return $writer;
@@ -149,7 +155,9 @@ final class SheetTest extends TestCase
     {
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $writer = new Writer();
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
         $writer->openToFile($resourcePath);
 
         $writer->addRow(Row::fromValues(['ods--sheet1--11', 'ods--sheet1--12']));
@@ -165,7 +173,9 @@ final class SheetTest extends TestCase
     {
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $writer = new Writer();
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
         $writer->openToFile($resourcePath);
 
         $sheet = $writer->getCurrentSheet();
