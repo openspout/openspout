@@ -366,9 +366,7 @@ final class WriterWithStyleTest extends TestCase
      */
     private function writeToODSFile(array $allRows, string $fileName): Writer
     {
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $writer = new Writer();
 
@@ -384,9 +382,7 @@ final class WriterWithStyleTest extends TestCase
      */
     private function writeToODSFileWithDefaultStyle(array $allRows, string $fileName, Style $defaultStyle): Writer
     {
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
         $options->DEFAULT_ROW_STYLE = $defaultStyle;

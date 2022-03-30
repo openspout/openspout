@@ -37,9 +37,7 @@ final class WriterTest extends TestCase
         $this->expectException(IOException::class);
 
         $fileName = 'file_that_wont_be_written.ods';
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createUnwritableFolderIfNeeded();
-        $filePath = $testUsingResource->getGeneratedUnwritableResourcePath($fileName);
+        $filePath = (new TestUsingResource())->getGeneratedUnwritableResourcePath($fileName);
 
         $writer = new Writer();
         @$writer->openToFile($filePath);
@@ -64,9 +62,7 @@ final class WriterTest extends TestCase
     public function testAddNewSheetAndMakeItCurrent(): void
     {
         $fileName = 'test_add_new_sheet_and_make_it_current.ods';
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $writer = new Writer();
         $writer->openToFile($resourcePath);
@@ -81,9 +77,7 @@ final class WriterTest extends TestCase
     public function testSetCurrentSheet(): void
     {
         $fileName = 'test_set_current_sheet.ods';
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $writer = new Writer();
         $writer->openToFile($resourcePath);
@@ -111,9 +105,7 @@ final class WriterTest extends TestCase
     public function testCloseShouldNoopWhenWriterIsNotOpened(): void
     {
         $fileName = 'test_double_close_calls.ods';
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $writer = new Writer();
         $writer->close(); // This call should not cause any error
@@ -320,9 +312,7 @@ final class WriterTest extends TestCase
             ['ods--sheet1--41', 'ods--sheet1--42', 'ods--sheet1--43'],
         ]);
 
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $writer = new Writer();
         $writer->openToFile($resourcePath);
@@ -455,9 +445,7 @@ final class WriterTest extends TestCase
         string $fileName,
         ?bool $shouldCreateSheetsAutomatically = null
     ): Writer {
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
         if (null !== $shouldCreateSheetsAutomatically) {
@@ -481,9 +469,7 @@ final class WriterTest extends TestCase
         string $fileName,
         ?bool $shouldCreateSheetsAutomatically = null
     ): Writer {
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
         if (null !== $shouldCreateSheetsAutomatically) {

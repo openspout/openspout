@@ -21,9 +21,7 @@ final class CsvWriterBench
     {
         $numRows = 1000000;
         $fileName = 'csv_with_one_million_rows.csv';
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $writer = new Writer();
         $writer->openToFile($resourcePath);

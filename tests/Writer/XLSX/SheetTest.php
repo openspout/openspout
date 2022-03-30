@@ -52,9 +52,7 @@ final class SheetTest extends TestCase
         $this->expectException(InvalidSheetNameException::class);
 
         $fileName = 'test_set_name_with_non_unique_name.xlsx';
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $writer = new Writer();
         $writer->openToFile($resourcePath);
@@ -93,9 +91,7 @@ final class SheetTest extends TestCase
     public function testWritesDefaultCellSizesIfSet(): void
     {
         $fileName = 'test_writes_default_cell_sizes_if_set.xlsx';
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
         $options->DEFAULT_COLUMN_WIDTH = 10.0;
@@ -118,9 +114,7 @@ final class SheetTest extends TestCase
     public function testWritesDefaultRequiredRowHeightIfOmitted(): void
     {
         $fileName = 'test_writes_default_required_row_height_if_omitted.xlsx';
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
         $options->DEFAULT_COLUMN_WIDTH = 10.0;
@@ -142,9 +136,7 @@ final class SheetTest extends TestCase
     public function testWritesColumnWidths(): void
     {
         $fileName = 'test_column_widths.xlsx';
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
         $writer = new Writer($options);
@@ -164,9 +156,7 @@ final class SheetTest extends TestCase
     public function testWritesMultipleColumnWidths(): void
     {
         $fileName = 'test_multiple_column_widths.xlsx';
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
         $writer = new Writer($options);
@@ -186,9 +176,7 @@ final class SheetTest extends TestCase
     public function testWritesMultipleColumnWidthsInRanges(): void
     {
         $fileName = 'test_multiple_column_widths_in_ranges.xlsx';
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
         $writer = new Writer($options);
@@ -213,9 +201,7 @@ final class SheetTest extends TestCase
     public function testCanTakeColumnWidthsAsRange(): void
     {
         $fileName = 'test_column_widths_as_ranges.xlsx';
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
         $writer = new Writer($options);
@@ -235,9 +221,7 @@ final class SheetTest extends TestCase
     public function testCanWriteAFormula(): void
     {
         $fileName = 'test_formula.xlsx';
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $writer = new Writer();
         $writer->openToFile($resourcePath);
@@ -256,9 +240,7 @@ final class SheetTest extends TestCase
     public function testCanSetSheetViewProperties(): void
     {
         $fileName = 'test_sheetview_properties.xlsx';
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $writer = new Writer();
         $writer->openToFile($resourcePath);
@@ -299,9 +281,7 @@ final class SheetTest extends TestCase
 
     private function writeDataToSheetWithCustomName(string $fileName, string $sheetName): Sheet
     {
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $writer = new Writer();
         $writer->openToFile($resourcePath);
@@ -320,9 +300,7 @@ final class SheetTest extends TestCase
      */
     private function writeDataToMultipleSheetsAndReturnSheets(string $fileName): array
     {
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $writer = new Writer();
         $writer->openToFile($resourcePath);
@@ -338,9 +316,7 @@ final class SheetTest extends TestCase
 
     private function writeDataToHiddenSheet(string $fileName): void
     {
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $writer = new Writer();
         $writer->openToFile($resourcePath);

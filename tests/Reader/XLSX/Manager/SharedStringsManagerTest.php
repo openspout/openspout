@@ -115,7 +115,7 @@ final class SharedStringsManagerTest extends TestCase
 
     private function createSharedStringsManager(string $resourceName = 'one_sheet_with_shared_strings.xlsx'): SharedStringsManager
     {
-        $resourcePath = (new TestUsingResource())->getResourcePath($resourceName);
+        $resourcePath = TestUsingResource::getResourcePath($resourceName);
         $cachingStrategyFactory = new CachingStrategyFactory(new MemoryLimit('1'));
         $workbookRelationshipsManager = new WorkbookRelationshipsManager($resourcePath);
 

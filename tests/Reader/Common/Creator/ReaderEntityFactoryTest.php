@@ -15,28 +15,28 @@ final class ReaderEntityFactoryTest extends TestCase
 {
     public function testCreateFromFileCSV(): void
     {
-        $validCsv = (new TestUsingResource())->getResourcePath('csv_test_create_from_file.csv');
+        $validCsv = TestUsingResource::getResourcePath('csv_test_create_from_file.csv');
         $reader = ReaderFactory::createFromFile($validCsv);
         self::assertInstanceOf(\OpenSpout\Reader\CSV\Reader::class, $reader);
     }
 
     public function testCreateFromFileCSVAllCaps(): void
     {
-        $validCsv = (new TestUsingResource())->getResourcePath('csv_test_create_from_file.CSV');
+        $validCsv = TestUsingResource::getResourcePath('csv_test_create_from_file.CSV');
         $reader = ReaderFactory::createFromFile($validCsv);
         self::assertInstanceOf(\OpenSpout\Reader\CSV\Reader::class, $reader);
     }
 
     public function testCreateFromFileODS(): void
     {
-        $validOds = (new TestUsingResource())->getResourcePath('csv_test_create_from_file.ods');
+        $validOds = TestUsingResource::getResourcePath('csv_test_create_from_file.ods');
         $reader = ReaderFactory::createFromFile($validOds);
         self::assertInstanceOf(\OpenSpout\Reader\ODS\Reader::class, $reader);
     }
 
     public function testCreateFromFileXLSX(): void
     {
-        $validXlsx = (new TestUsingResource())->getResourcePath('csv_test_create_from_file.xlsx');
+        $validXlsx = TestUsingResource::getResourcePath('csv_test_create_from_file.xlsx');
         $reader = ReaderFactory::createFromFile($validXlsx);
         self::assertInstanceOf(\OpenSpout\Reader\XLSX\Reader::class, $reader);
     }
@@ -44,7 +44,7 @@ final class ReaderEntityFactoryTest extends TestCase
     public function testCreateFromFileUnsupported(): void
     {
         $this->expectException(UnsupportedTypeException::class);
-        $invalid = (new TestUsingResource())->getResourcePath('test_unsupported_file_type.other');
+        $invalid = TestUsingResource::getResourcePath('test_unsupported_file_type.other');
         ReaderFactory::createFromFile($invalid);
     }
 

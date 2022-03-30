@@ -24,9 +24,7 @@ final class XlsxWriterSharedBench
     {
         $numRows = 1000000;
         $fileName = 'xlsx_with_one_million_rows_and_shared_strings.xlsx';
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
         $options->SHOULD_USE_INLINE_STRINGS = false;

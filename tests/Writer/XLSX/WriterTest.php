@@ -31,9 +31,7 @@ final class WriterTest extends TestCase
         $this->expectException(IOException::class);
 
         $fileName = 'file_that_wont_be_written.xlsx';
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createUnwritableFolderIfNeeded();
-        $filePath = $testUsingResource->getGeneratedUnwritableResourcePath($fileName);
+        $filePath = (new TestUsingResource())->getGeneratedUnwritableResourcePath($fileName);
 
         $writer = new Writer();
         @$writer->openToFile($filePath);
@@ -58,9 +56,7 @@ final class WriterTest extends TestCase
     public function testAddNewSheetAndMakeItCurrent(): void
     {
         $fileName = 'test_add_new_sheet_and_make_it_current.xlsx';
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $writer = new Writer();
         $writer->openToFile($resourcePath);
@@ -75,9 +71,7 @@ final class WriterTest extends TestCase
     public function testSetCurrentSheet(): void
     {
         $fileName = 'test_set_current_sheet.xlsx';
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $writer = new Writer();
         $writer->openToFile($resourcePath);
@@ -96,9 +90,7 @@ final class WriterTest extends TestCase
     public function testCloseShouldNoopWhenWriterIsNotOpened(): void
     {
         $fileName = 'test_double_close_calls.xlsx';
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $writer = new Writer();
         $writer->close(); // This call should not cause any error
@@ -320,9 +312,7 @@ final class WriterTest extends TestCase
             ['xlsx--sheet1--41', 'xlsx--sheet1--42', 'xlsx--sheet1--43'],
         ]);
 
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
         $options->SHOULD_USE_INLINE_STRINGS = true;
@@ -428,9 +418,7 @@ final class WriterTest extends TestCase
     public function testCloseShouldAddMergeCellTags(): void
     {
         $fileName = 'test_add_row_should_support_column_widths.xlsx';
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
         $writer = new Writer($options);
@@ -458,9 +446,7 @@ final class WriterTest extends TestCase
     public function testGeneratedFileShouldBeValidForEmptySheets(): void
     {
         $fileName = 'test_empty_sheet.xlsx';
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
         $writer = new Writer();
         $writer->openToFile($resourcePath);
 
@@ -504,9 +490,7 @@ final class WriterTest extends TestCase
     public function testSheetFilenameAreStoredWithIndex(): void
     {
         $fileName = 'sheet_indexes.xlsx';
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $writer = new Writer();
         $writer->openToFile($resourcePath);
@@ -526,9 +510,7 @@ final class WriterTest extends TestCase
         ?bool $shouldUseInlineStrings = null,
         ?bool $shouldCreateSheetsAutomatically = null
     ): Writer {
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
         if (null !== $shouldUseInlineStrings) {
@@ -556,9 +538,7 @@ final class WriterTest extends TestCase
         ?bool $shouldUseInlineStrings = null,
         ?bool $shouldCreateSheetsAutomatically = null
     ): Writer {
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
         if (null !== $shouldUseInlineStrings) {

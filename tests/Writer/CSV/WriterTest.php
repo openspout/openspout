@@ -22,9 +22,7 @@ final class WriterTest extends TestCase
     public function testWriteShouldThrowExceptionIfCannotOpenFileForWriting(): void
     {
         $fileName = 'file_that_wont_be_written.csv';
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createUnwritableFolderIfNeeded();
-        $filePath = $testUsingResource->getGeneratedUnwritableResourcePath($fileName);
+        $filePath = (new TestUsingResource())->getGeneratedUnwritableResourcePath($fileName);
 
         $writer = new Writer();
         $writer->close();
@@ -53,9 +51,7 @@ final class WriterTest extends TestCase
     public function testCloseShouldNoopWhenWriterIsNotOpened(): void
     {
         $fileName = 'test_double_close_calls.csv';
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $writer = new Writer();
         $writer->close(); // This call should not cause any error
@@ -185,9 +181,7 @@ final class WriterTest extends TestCase
         string $fileName,
         ?Options $options = null
     ): string {
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);

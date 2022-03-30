@@ -16,7 +16,7 @@ final class XMLReaderTest extends TestCase
 {
     public function testOpenShouldFailIfFileInsideZipDoesNotExist(): void
     {
-        $resourcePath = (new TestUsingResource())->getResourcePath('one_sheet_with_inline_strings.xlsx');
+        $resourcePath = TestUsingResource::getResourcePath('one_sheet_with_inline_strings.xlsx');
 
         $xmlReader = new XMLReader();
 
@@ -30,7 +30,7 @@ final class XMLReaderTest extends TestCase
     {
         $this->expectException(XMLProcessingException::class);
 
-        $resourcePath = (new TestUsingResource())->getResourcePath('one_sheet_with_invalid_xml_characters.xlsx');
+        $resourcePath = TestUsingResource::getResourcePath('one_sheet_with_invalid_xml_characters.xlsx');
 
         $xmlReader = new XMLReader();
         if (false === $xmlReader->openFileInZip($resourcePath, 'xl/worksheets/sheet1.xml')) {
@@ -48,7 +48,7 @@ final class XMLReaderTest extends TestCase
 
         // The sharedStrings.xml file in "attack_billion_laughs.xlsx" contains
         // a doctype element that causes read errors
-        $resourcePath = (new TestUsingResource())->getResourcePath('attack_billion_laughs.xlsx');
+        $resourcePath = TestUsingResource::getResourcePath('attack_billion_laughs.xlsx');
 
         $xmlReader = new XMLReader();
         if (false !== $xmlReader->openFileInZip($resourcePath, 'xl/sharedStrings.xml')) {
@@ -72,7 +72,7 @@ final class XMLReaderTest extends TestCase
      */
     public function testFileExistsWithinZip(string $innerFilePath, bool $expectedResult): void
     {
-        $resourcePath = (new TestUsingResource())->getResourcePath('one_sheet_with_inline_strings.xlsx');
+        $resourcePath = TestUsingResource::getResourcePath('one_sheet_with_inline_strings.xlsx');
         $zipStreamURI = 'zip://'.$resourcePath.'#'.$innerFilePath;
 
         $xmlReader = new XMLReader();

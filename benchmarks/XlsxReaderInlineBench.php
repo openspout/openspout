@@ -19,7 +19,7 @@ final class XlsxReaderInlineBench
     public function benchReading300KRowsXLSXWithInlineStrings(): void
     {
         $fileName = 'xlsx_with_300k_rows_and_inline_strings.xlsx';
-        $resourcePath = (new TestUsingResource())->getResourcePath($fileName);
+        $resourcePath = TestUsingResource::getResourcePath($fileName);
 
         $reader = new Reader();
         $reader->open($resourcePath);

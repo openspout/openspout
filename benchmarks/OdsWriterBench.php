@@ -22,9 +22,7 @@ final class OdsWriterBench
     {
         $numRows = 1000000;
         $fileName = 'ods_with_one_million_rows.ods';
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
         $options->SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY = true;

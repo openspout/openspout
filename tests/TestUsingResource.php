@@ -28,7 +28,7 @@ final class TestUsingResource
     {
         $realpath = realpath(self::RESOURCES_PATH);
         \assert(false !== $realpath);
-        $generatedPath = $realpath .DIRECTORY_SEPARATOR.'generated_'.(string) getenv('TEST_TOKEN');
+        $generatedPath = $realpath.\DIRECTORY_SEPARATOR.'generated_'.(string) getenv('TEST_TOKEN');
         $this->generatedResourcesPath = $generatedPath;
         $this->generatedUnwritableResourcesPath = $generatedPath.\DIRECTORY_SEPARATOR.'unwritable';
         $this->tempFolderPath = $generatedPath.\DIRECTORY_SEPARATOR.'temp';
@@ -37,7 +37,7 @@ final class TestUsingResource
     /**
      * @return string Path of the resource who matches the given name or null if resource not found
      */
-    public function getResourcePath(string $resourceName): string
+    public static function getResourcePath(string $resourceName): string
     {
         $resourceType = pathinfo($resourceName, PATHINFO_EXTENSION);
 
@@ -50,18 +50,12 @@ final class TestUsingResource
     public function getGeneratedResourcePath(string $resourceName): string
     {
         $resourceType = pathinfo($resourceName, PATHINFO_EXTENSION);
-
-        return realpath($this->generatedResourcesPath).\DIRECTORY_SEPARATOR.strtolower($resourceType).\DIRECTORY_SEPARATOR.$resourceName;
-    }
-
-    public function createGeneratedFolderIfNeeded(string $resourceName): void
-    {
-        $resourceType = pathinfo($resourceName, PATHINFO_EXTENSION);
         $generatedResourcePathForType = $this->generatedResourcesPath.\DIRECTORY_SEPARATOR.strtolower($resourceType);
-
         if (!file_exists($generatedResourcePathForType)) {
             mkdir($generatedResourcePathForType, 0700, true);
         }
+
+        return $generatedResourcePathForType.\DIRECTORY_SEPARATOR.$resourceName;
     }
 
     /**
@@ -69,25 +63,20 @@ final class TestUsingResource
      */
     public function getGeneratedUnwritableResourcePath(string $resourceName): string
     {
-        return realpath($this->generatedUnwritableResourcesPath).\DIRECTORY_SEPARATOR.$resourceName;
-    }
-
-    public function createUnwritableFolderIfNeeded(): void
-    {
         // On Windows, chmod() or the mkdir's mode is ignored
         if ($this->isWindows()) {
             Assert::markTestSkipped('Skipping because Windows cannot create read-only folders through PHP');
         }
 
-        if (file_exists($this->generatedUnwritableResourcesPath)) {
-            return;
+        if (!file_exists($this->generatedUnwritableResourcesPath)) {
+            if (!file_exists($this->generatedResourcesPath)) {
+                mkdir($this->generatedResourcesPath, 0700, true);
+            }
+
+            mkdir($this->generatedUnwritableResourcesPath, 0500, true);
         }
 
-        if (!file_exists($this->generatedResourcesPath)) {
-            mkdir($this->generatedResourcesPath, 0700, true);
-        }
-
-        mkdir($this->generatedUnwritableResourcesPath, 0500, true);
+        return realpath($this->generatedUnwritableResourcesPath).\DIRECTORY_SEPARATOR.$resourceName;
     }
 
     /**

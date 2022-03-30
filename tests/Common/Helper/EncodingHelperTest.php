@@ -29,7 +29,7 @@ final class EncodingHelperTest extends TestCase
      */
     public function testGetBytesOffsetToSkipBOM(string $fileName, string $encoding, int $expectedBytesOffset): void
     {
-        $resourcePath = (new TestUsingResource())->getResourcePath($fileName);
+        $resourcePath = TestUsingResource::getResourcePath($fileName);
         $filePointer = fopen($resourcePath, 'r');
         self::assertNotFalse($filePointer);
 

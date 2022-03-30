@@ -19,7 +19,7 @@ final class XlsxReaderSharedBench
     public function benchReading300KRowsXLSXWithSharedStrings(): void
     {
         $fileName = 'xlsx_with_300k_rows_and_shared_strings.xlsx';
-        $resourcePath = (new TestUsingResource())->getResourcePath($fileName);
+        $resourcePath = TestUsingResource::getResourcePath($fileName);
 
         $reader = new Reader();
         $reader->open($resourcePath);

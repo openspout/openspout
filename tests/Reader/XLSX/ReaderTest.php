@@ -512,7 +512,7 @@ final class ReaderTest extends TestCase
     public function testReadMultipleTimesShouldRewindReader(): void
     {
         $allRows = [];
-        $resourcePath = (new TestUsingResource())->getResourcePath('two_sheets_with_inline_strings.xlsx');
+        $resourcePath = TestUsingResource::getResourcePath('two_sheets_with_inline_strings.xlsx');
 
         $reader = new Reader();
         $reader->open($resourcePath);
@@ -659,7 +659,7 @@ final class ReaderTest extends TestCase
         ?CachingStrategyFactory $cachingStrategyFactory = null,
     ): array {
         $allRows = [];
-        $resourcePath = (new TestUsingResource())->getResourcePath($fileName);
+        $resourcePath = TestUsingResource::getResourcePath($fileName);
 
         $reader = new Reader($options, $cachingStrategyFactory);
         $reader->open($resourcePath);

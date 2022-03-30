@@ -19,7 +19,7 @@ final class OdsReaderBench
     public function benchReading1MRowsODS(): void
     {
         $fileName = 'ods_with_one_million_rows.ods';
-        $resourcePath = (new TestUsingResource())->getResourcePath($fileName);
+        $resourcePath = TestUsingResource::getResourcePath($fileName);
 
         $reader = new Reader();
         $reader->open($resourcePath);

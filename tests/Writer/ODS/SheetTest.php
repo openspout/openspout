@@ -50,9 +50,7 @@ final class SheetTest extends TestCase
         $this->expectException(InvalidSheetNameException::class);
 
         $fileName = 'test_set_name_with_non_unique_name.ods';
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $writer = new Writer();
         $writer->openToFile($resourcePath);
@@ -83,9 +81,7 @@ final class SheetTest extends TestCase
     public function testWritesColumnWidths(): void
     {
         $fileName = 'test_column_widths.ods';
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
         $writer = new Writer($options);
@@ -105,9 +101,7 @@ final class SheetTest extends TestCase
     public function testWritesMultipleColumnWidthsInRanges(): void
     {
         $fileName = 'test_multiple_column_widths_in_ranges.ods';
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
         $writer = new Writer($options);
@@ -129,9 +123,7 @@ final class SheetTest extends TestCase
 
     private function writerForFile(string $fileName): Writer
     {
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $writer = new Writer();
         $writer->openToFile($resourcePath);
@@ -155,9 +147,7 @@ final class SheetTest extends TestCase
      */
     private function writeDataToMulitpleSheetsAndReturnSheets(string $fileName): array
     {
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $writer = new Writer();
         $writer->openToFile($resourcePath);
@@ -173,9 +163,7 @@ final class SheetTest extends TestCase
 
     private function writeDataToHiddenSheet(string $fileName): void
     {
-        $testUsingResource = new TestUsingResource();
-        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $writer = new Writer();
         $writer->openToFile($resourcePath);

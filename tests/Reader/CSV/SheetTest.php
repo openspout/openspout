@@ -23,7 +23,7 @@ final class SheetTest extends TestCase
 
     private function openFileAndReturnSheet(string $fileName): Sheet
     {
-        $resourcePath = (new TestUsingResource())->getResourcePath($fileName);
+        $resourcePath = TestUsingResource::getResourcePath($fileName);
         $reader = new Reader();
         $reader->open($resourcePath);
 

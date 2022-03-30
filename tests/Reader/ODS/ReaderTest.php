@@ -303,7 +303,7 @@ final class ReaderTest extends TestCase
     {
         $this->expectException(IteratorNotRewindableException::class);
 
-        $resourcePath = (new TestUsingResource())->getResourcePath('one_sheet_with_strings.ods');
+        $resourcePath = TestUsingResource::getResourcePath('one_sheet_with_strings.ods');
         $reader = new Reader();
         $reader->open($resourcePath);
 
@@ -323,7 +323,7 @@ final class ReaderTest extends TestCase
     public function testReadMultipleTimesShouldRewindReader(): void
     {
         $allRows = [];
-        $resourcePath = (new TestUsingResource())->getResourcePath('two_sheets_with_strings.ods');
+        $resourcePath = TestUsingResource::getResourcePath('two_sheets_with_strings.ods');
 
         $reader = new Reader();
         $reader->open($resourcePath);
@@ -457,7 +457,7 @@ final class ReaderTest extends TestCase
     private function getAllRowsForFile(string $fileName, bool $shouldFormatDates = false, bool $shouldPreserveEmptyRows = false): array
     {
         $allRows = [];
-        $resourcePath = (new TestUsingResource())->getResourcePath($fileName);
+        $resourcePath = TestUsingResource::getResourcePath($fileName);
 
         $options = new Options();
         $options->SHOULD_FORMAT_DATES = $shouldFormatDates;
