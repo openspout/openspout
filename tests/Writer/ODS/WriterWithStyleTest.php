@@ -26,7 +26,6 @@ use PHPUnit\Framework\TestCase;
 final class WriterWithStyleTest extends TestCase
 {
     use RowCreationHelper;
-    use TestUsingResource;
 
     private Style $defaultStyle;
 
@@ -37,17 +36,21 @@ final class WriterWithStyleTest extends TestCase
 
     public function testAddRowShouldThrowExceptionIfCallAddRowBeforeOpeningWriter(): void
     {
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
         $this->expectException(WriterNotOpenedException::class);
 
-        $writer = new Writer();
         $writer->addRow(Row::fromValues(['ods--11', 'ods--12'], $this->defaultStyle));
     }
 
     public function testAddRowShouldThrowExceptionIfCalledBeforeOpeningWriter(): void
     {
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
         $this->expectException(WriterNotOpenedException::class);
 
-        $writer = new Writer();
         $writer->addRow(Row::fromValues(['ods--11', 'ods--12'], $this->defaultStyle));
     }
 
@@ -367,10 +370,11 @@ final class WriterWithStyleTest extends TestCase
      */
     private function writeToODSFile(array $allRows, string $fileName): Writer
     {
-        $this->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $writer = new Writer();
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
 
         $writer->openToFile($resourcePath);
         $writer->addRows($allRows);
@@ -384,10 +388,10 @@ final class WriterWithStyleTest extends TestCase
      */
     private function writeToODSFileWithDefaultStyle(array $allRows, string $fileName, Style $defaultStyle): Writer
     {
-        $this->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
         $options->DEFAULT_ROW_STYLE = $defaultStyle;
         $writer = new Writer($options);
 
@@ -405,7 +409,7 @@ final class WriterWithStyleTest extends TestCase
     {
         $cellElements = [];
 
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $xmlReader = new XMLReader();
         $xmlReader->openFileInZip($resourcePath, 'content.xml');
@@ -430,7 +434,7 @@ final class WriterWithStyleTest extends TestCase
     {
         $cellStyleElements = [];
 
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $xmlReader = new XMLReader();
         $xmlReader->openFileInZip($resourcePath, 'content.xml');
@@ -450,7 +454,7 @@ final class WriterWithStyleTest extends TestCase
 
     private function getXmlSectionFromStylesXmlFile(string $fileName, string $section): DOMElement
     {
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $xmlReader = new XMLReader();
         $xmlReader->openFileInZip($resourcePath, 'styles.xml');

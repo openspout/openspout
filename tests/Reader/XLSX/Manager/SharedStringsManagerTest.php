@@ -19,8 +19,6 @@ use ReflectionHelper;
  */
 final class SharedStringsManagerTest extends TestCase
 {
-    use TestUsingResource;
-
     private ?SharedStringsManager $sharedStringsManager;
 
     protected function setUp(): void
@@ -117,13 +115,16 @@ final class SharedStringsManagerTest extends TestCase
 
     private function createSharedStringsManager(string $resourceName = 'one_sheet_with_shared_strings.xlsx'): SharedStringsManager
     {
-        $resourcePath = $this->getResourcePath($resourceName);
+        $resourcePath = TestUsingResource::getResourcePath($resourceName);
         $cachingStrategyFactory = new CachingStrategyFactory(new MemoryLimit('1'));
         $workbookRelationshipsManager = new WorkbookRelationshipsManager($resourcePath);
 
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+
         $this->sharedStringsManager = new SharedStringsManager(
             $resourcePath,
-            new Options(),
+            $options,
             $workbookRelationshipsManager,
             $cachingStrategyFactory
         );

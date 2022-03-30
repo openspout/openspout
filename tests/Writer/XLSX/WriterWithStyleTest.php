@@ -26,7 +26,6 @@ use PHPUnit\Framework\TestCase;
 final class WriterWithStyleTest extends TestCase
 {
     use RowCreationHelper;
-    use TestUsingResource;
 
     private Style $defaultStyle;
 
@@ -37,7 +36,9 @@ final class WriterWithStyleTest extends TestCase
 
     public function testAddRowShouldThrowExceptionIfCallAddRowBeforeOpeningWriter(): void
     {
-        $writer = new Writer();
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
 
         $this->expectException(WriterNotOpenedException::class);
         $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12'], $this->defaultStyle));
@@ -45,7 +46,9 @@ final class WriterWithStyleTest extends TestCase
 
     public function testAddRowShouldThrowExceptionIfCalledBeforeOpeningWriter(): void
     {
-        $writer = new Writer();
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
 
         $this->expectException(WriterNotOpenedException::class);
         $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12'], $this->defaultStyle));
@@ -569,10 +572,10 @@ final class WriterWithStyleTest extends TestCase
      */
     private function writeToXLSXFile(array $allRows, string $fileName): Writer
     {
-        $this->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
         $options->SHOULD_USE_INLINE_STRINGS = true;
         $writer = new Writer($options);
 
@@ -588,10 +591,10 @@ final class WriterWithStyleTest extends TestCase
      */
     private function writeToXLSXFileWithDefaultStyle(array $allRows, string $fileName, ?Style $defaultStyle): Writer
     {
-        $this->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
         $options->SHOULD_USE_INLINE_STRINGS = true;
         $options->DEFAULT_ROW_STYLE = $defaultStyle;
         $writer = new Writer($options);
@@ -605,7 +608,7 @@ final class WriterWithStyleTest extends TestCase
 
     private function getXmlSectionFromStylesXmlFile(string $fileName, string $section): DOMElement
     {
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $xmlReader = new XMLReader();
         $xmlReader->openFileInZip($resourcePath, 'xl/styles.xml');
@@ -626,7 +629,7 @@ final class WriterWithStyleTest extends TestCase
     {
         $cellElements = [];
 
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $xmlReader = new XMLReader();
         $xmlReader->openFileInZip($resourcePath, 'xl/worksheets/sheet1.xml');

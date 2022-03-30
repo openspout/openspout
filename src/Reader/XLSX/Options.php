@@ -13,9 +13,4 @@ final class Options
     public bool $SHOULD_FORMAT_DATES = false;
     public bool $SHOULD_PRESERVE_EMPTY_ROWS = false;
     public bool $SHOULD_USE_1904_DATES = false;
-
-    public function __construct()
-    {
-        $this->setTempFolder(sys_get_temp_dir());
-    }
 }

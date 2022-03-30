@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace OpenSpout\Common\Helper;
 
 use OpenSpout\Common\Exception\IOException;
+use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -17,8 +18,7 @@ final class FileSystemHelperTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->baseFolder = sys_get_temp_dir().\DIRECTORY_SEPARATOR.uniqid('tmp_');
-        self::assertTrue(mkdir($this->baseFolder, 0700, false));
+        $this->baseFolder = (new TestUsingResource())->getTempFolderPath();
         $this->fileSystemHelper = new FileSystemHelper($this->baseFolder);
     }
 
@@ -41,7 +41,7 @@ final class FileSystemHelperTest extends TestCase
      */
     public function testCreateFolderShouldThrowExceptionWhenFails(): void
     {
-        self::assertTrue(chmod($this->baseFolder, 0));
+        self::assertTrue(chmod($this->baseFolder, 0500));
         $this->expectException(IOException::class);
         $this->expectExceptionMessage('Permission denied');
         $this->fileSystemHelper->createFolder($this->baseFolder, 'folder_name');
@@ -59,7 +59,7 @@ final class FileSystemHelperTest extends TestCase
      */
     public function testCreateFileWithContentsShouldThrowExceptionIfFails(): void
     {
-        self::assertTrue(chmod($this->baseFolder, 0));
+        self::assertTrue(chmod($this->baseFolder, 0500));
         $this->expectException(IOException::class);
         $this->expectExceptionMessage('Permission denied');
         $this->fileSystemHelper->createFileWithContents($this->baseFolder, 'folder_name', 'contents');

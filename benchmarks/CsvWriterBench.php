@@ -14,8 +14,6 @@ use PhpBench\Attributes as Bench;
  */
 final class CsvWriterBench
 {
-    use TestUsingResource;
-
     #[Bench\OutputTimeUnit('seconds')]
     #[Bench\Assert('mode(variant.mem.peak) < 2097152')]
     #[Bench\Assert('mode(variant.time.avg) < 10000000')]
@@ -23,8 +21,7 @@ final class CsvWriterBench
     {
         $numRows = 1000000;
         $fileName = 'csv_with_one_million_rows.csv';
-        $this->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $writer = new Writer();
         $writer->openToFile($resourcePath);

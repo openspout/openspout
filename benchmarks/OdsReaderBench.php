@@ -13,15 +13,13 @@ use PhpBench\Attributes as Bench;
  */
 final class OdsReaderBench
 {
-    use TestUsingResource;
-
     #[Bench\OutputTimeUnit('seconds')]
     #[Bench\Assert('mode(variant.mem.peak) < 2097152')]
     #[Bench\Assert('mode(variant.time.avg) < 60000000')]
     public function benchReading1MRowsODS(): void
     {
         $fileName = 'ods_with_one_million_rows.ods';
-        $resourcePath = $this->getResourcePath($fileName);
+        $resourcePath = TestUsingResource::getResourcePath($fileName);
 
         $reader = new Reader();
         $reader->open($resourcePath);

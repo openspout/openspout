@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OpenSpout\Reader\XLSX\Manager\SharedStringsCaching;
 
+use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -30,7 +31,7 @@ final class CachingStrategyFactoryTest extends TestCase
     public function testCreateBestCachingStrategy(?int $sharedStringsUniqueCount, string $memoryLimitInKB, string $expectedStrategyClassName): void
     {
         $strategy = (new CachingStrategyFactory(new MemoryLimit($memoryLimitInKB)))
-            ->createBestCachingStrategy($sharedStringsUniqueCount, sys_get_temp_dir())
+            ->createBestCachingStrategy($sharedStringsUniqueCount, (new TestUsingResource())->getTempFolderPath())
         ;
 
         self::assertSame($expectedStrategyClassName, $strategy::class);

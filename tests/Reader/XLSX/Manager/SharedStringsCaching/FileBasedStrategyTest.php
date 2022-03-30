@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace OpenSpout\Reader\XLSX\Manager\SharedStringsCaching;
 
 use OpenSpout\Reader\Exception\SharedStringNotFoundException;
+use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -16,7 +17,7 @@ final class FileBasedStrategyTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->strategy = new FileBasedStrategy(sys_get_temp_dir(), 999);
+        $this->strategy = new FileBasedStrategy((new TestUsingResource())->getTempFolderPath(), 999);
     }
 
     public function testUninitializedFileRaisesException(): void

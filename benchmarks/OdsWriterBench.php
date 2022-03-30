@@ -15,8 +15,6 @@ use PhpBench\Attributes as Bench;
  */
 final class OdsWriterBench
 {
-    use TestUsingResource;
-
     #[Bench\OutputTimeUnit('seconds')]
     #[Bench\Assert('mode(variant.mem.peak) < 2097152')]
     #[Bench\Assert('mode(variant.time.avg) < 60000000')]
@@ -24,8 +22,7 @@ final class OdsWriterBench
     {
         $numRows = 1000000;
         $fileName = 'ods_with_one_million_rows.ods';
-        $this->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $options = new Options();
         $options->SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY = true;
@@ -62,7 +59,7 @@ final class OdsWriterBench
         $pathToContentXmlFile = 'zip://'.$resourcePath.'#content.xml';
 
         // since we cannot execute "tail" on a file inside a zip, we need to copy it outside first
-        $tmpFile = sys_get_temp_dir().\DIRECTORY_SEPARATOR.'get_last_characters.xml';
+        $tmpFile = (new TestUsingResource())->getTempFolderPath().\DIRECTORY_SEPARATOR.'get_last_characters.xml';
         copy($pathToContentXmlFile, $tmpFile);
 
         // Get the last 200 characters

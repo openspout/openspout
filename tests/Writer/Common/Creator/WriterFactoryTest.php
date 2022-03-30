@@ -13,32 +13,30 @@ use PHPUnit\Framework\TestCase;
  */
 final class WriterFactoryTest extends TestCase
 {
-    use TestUsingResource;
-
     public function testCreateFromFileCSV(): void
     {
-        $validCsv = $this->getResourcePath('csv_test_create_from_file.csv');
+        $validCsv = TestUsingResource::getResourcePath('csv_test_create_from_file.csv');
         $writer = WriterFactory::createFromFile($validCsv);
         self::assertInstanceOf(\OpenSpout\Writer\CSV\Writer::class, $writer);
     }
 
     public function testCreateFromFileCSVAllCaps(): void
     {
-        $validCsv = $this->getResourcePath('csv_test_create_from_file.CSV');
+        $validCsv = TestUsingResource::getResourcePath('csv_test_create_from_file.CSV');
         $writer = WriterFactory::createFromFile($validCsv);
         self::assertInstanceOf(\OpenSpout\Writer\CSV\Writer::class, $writer);
     }
 
     public function testCreateFromFileODS(): void
     {
-        $validOds = $this->getResourcePath('csv_test_create_from_file.ods');
+        $validOds = TestUsingResource::getResourcePath('csv_test_create_from_file.ods');
         $writer = WriterFactory::createFromFile($validOds);
         self::assertInstanceOf(\OpenSpout\Writer\ODS\Writer::class, $writer);
     }
 
     public function testCreateFromFileXLSX(): void
     {
-        $validXlsx = $this->getResourcePath('csv_test_create_from_file.xlsx');
+        $validXlsx = TestUsingResource::getResourcePath('csv_test_create_from_file.xlsx');
         $writer = WriterFactory::createFromFile($validXlsx);
         self::assertInstanceOf(\OpenSpout\Writer\XLSX\Writer::class, $writer);
     }
@@ -46,7 +44,7 @@ final class WriterFactoryTest extends TestCase
     public function testCreateFromFileUnsupported(): void
     {
         $this->expectException(UnsupportedTypeException::class);
-        $invalid = $this->getResourcePath('test_unsupported_file_type.other');
+        $invalid = TestUsingResource::getResourcePath('test_unsupported_file_type.other');
         WriterFactory::createFromFile($invalid);
     }
 }

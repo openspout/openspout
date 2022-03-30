@@ -21,7 +21,6 @@ abstract class AbstractOptions
 
     public function __construct()
     {
-        $this->setTempFolder(sys_get_temp_dir());
         $this->DEFAULT_ROW_STYLE = new Style();
     }
 

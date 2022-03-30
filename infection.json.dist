@@ -1,0 +1,24 @@
+{
+    "$schema": "vendor/infection/infection/resources/schema.json",
+    "source": {
+        "directories": [
+            "src"
+        ]
+    },
+    "timeout": 2,
+    "logs": {
+        "text": "infections.log",
+        "stryker": {
+            "report": "/\\d\\.x/"
+        }
+    },
+    "mutators": {
+        "@default": true,
+        "@number": false,
+        "global-ignoreSourceCodeByRegex": [
+            "\\\\assert\\(.+\\);"
+        ]
+    },
+    "minMsi": 75,
+    "minCoveredMsi": 78
+}

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace OpenSpout\Benchmarks;
 
+use OpenSpout\TestUsingResource;
+
 /**
  * @internal
  */
@@ -46,7 +48,7 @@ trait XlsxWriterTrait
     private function getLastCharactersOfFile(string $filePath, int $numCharacters): string
     {
         // since we cannot execute "tail" on a file inside a zip, we need to copy it outside first
-        $tmpFile = sys_get_temp_dir().'/getLastCharacters.xml';
+        $tmpFile = (new TestUsingResource())->getTempFolderPath().'/getLastCharacters.xml';
         copy($filePath, $tmpFile);
 
         // Get the last 200 characters
