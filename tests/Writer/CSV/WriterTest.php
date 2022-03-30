@@ -18,13 +18,13 @@ use PHPUnit\Framework\TestCase;
 final class WriterTest extends TestCase
 {
     use RowCreationHelper;
-    use TestUsingResource;
 
     public function testWriteShouldThrowExceptionIfCannotOpenFileForWriting(): void
     {
         $fileName = 'file_that_wont_be_written.csv';
-        $this->createUnwritableFolderIfNeeded();
-        $filePath = $this->getGeneratedUnwritableResourcePath($fileName);
+        $testUsingResource = new TestUsingResource();
+        $testUsingResource->createUnwritableFolderIfNeeded();
+        $filePath = $testUsingResource->getGeneratedUnwritableResourcePath($fileName);
 
         $writer = new Writer();
         $writer->close();
@@ -53,8 +53,9 @@ final class WriterTest extends TestCase
     public function testCloseShouldNoopWhenWriterIsNotOpened(): void
     {
         $fileName = 'test_double_close_calls.csv';
-        $this->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $testUsingResource = new TestUsingResource();
+        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
+        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
 
         $writer = new Writer();
         $writer->close(); // This call should not cause any error
@@ -184,8 +185,9 @@ final class WriterTest extends TestCase
         string $fileName,
         ?Options $options = null
     ): string {
-        $this->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $testUsingResource = new TestUsingResource();
+        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
+        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
 
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);

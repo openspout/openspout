@@ -25,15 +25,15 @@ use ReflectionHelper;
 final class WriterTest extends TestCase
 {
     use RowCreationHelper;
-    use TestUsingResource;
 
     public function testAddRowShouldThrowExceptionIfCannotOpenAFileForWriting(): void
     {
         $this->expectException(IOException::class);
 
         $fileName = 'file_that_wont_be_written.xlsx';
-        $this->createUnwritableFolderIfNeeded();
-        $filePath = $this->getGeneratedUnwritableResourcePath($fileName);
+        $testUsingResource = new TestUsingResource();
+        $testUsingResource->createUnwritableFolderIfNeeded();
+        $filePath = $testUsingResource->getGeneratedUnwritableResourcePath($fileName);
 
         $writer = new Writer();
         @$writer->openToFile($filePath);
@@ -58,8 +58,9 @@ final class WriterTest extends TestCase
     public function testAddNewSheetAndMakeItCurrent(): void
     {
         $fileName = 'test_add_new_sheet_and_make_it_current.xlsx';
-        $this->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $testUsingResource = new TestUsingResource();
+        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
+        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
 
         $writer = new Writer();
         $writer->openToFile($resourcePath);
@@ -74,8 +75,9 @@ final class WriterTest extends TestCase
     public function testSetCurrentSheet(): void
     {
         $fileName = 'test_set_current_sheet.xlsx';
-        $this->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $testUsingResource = new TestUsingResource();
+        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
+        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
 
         $writer = new Writer();
         $writer->openToFile($resourcePath);
@@ -94,8 +96,9 @@ final class WriterTest extends TestCase
     public function testCloseShouldNoopWhenWriterIsNotOpened(): void
     {
         $fileName = 'test_double_close_calls.xlsx';
-        $this->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $testUsingResource = new TestUsingResource();
+        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
+        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
 
         $writer = new Writer();
         $writer->close(); // This call should not cause any error
@@ -317,8 +320,9 @@ final class WriterTest extends TestCase
             ['xlsx--sheet1--41', 'xlsx--sheet1--42', 'xlsx--sheet1--43'],
         ]);
 
-        $this->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $testUsingResource = new TestUsingResource();
+        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
+        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
 
         $options = new Options();
         $options->SHOULD_USE_INLINE_STRINGS = true;
@@ -424,8 +428,9 @@ final class WriterTest extends TestCase
     public function testCloseShouldAddMergeCellTags(): void
     {
         $fileName = 'test_add_row_should_support_column_widths.xlsx';
-        $this->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $testUsingResource = new TestUsingResource();
+        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
+        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
 
         $options = new Options();
         $writer = new Writer($options);
@@ -453,8 +458,9 @@ final class WriterTest extends TestCase
     public function testGeneratedFileShouldBeValidForEmptySheets(): void
     {
         $fileName = 'test_empty_sheet.xlsx';
-        $this->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $testUsingResource = new TestUsingResource();
+        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
+        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
         $writer = new Writer();
         $writer->openToFile($resourcePath);
 
@@ -476,7 +482,7 @@ final class WriterTest extends TestCase
         }
 
         $fileName = 'test_mime_type.xlsx';
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
         $dataRows = $this->createRowsFromValues([['foo']]);
 
         $this->writeToXLSXFile($dataRows, $fileName);
@@ -498,8 +504,9 @@ final class WriterTest extends TestCase
     public function testSheetFilenameAreStoredWithIndex(): void
     {
         $fileName = 'sheet_indexes.xlsx';
-        $this->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $testUsingResource = new TestUsingResource();
+        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
+        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
 
         $writer = new Writer();
         $writer->openToFile($resourcePath);
@@ -519,8 +526,9 @@ final class WriterTest extends TestCase
         ?bool $shouldUseInlineStrings = null,
         ?bool $shouldCreateSheetsAutomatically = null
     ): Writer {
-        $this->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $testUsingResource = new TestUsingResource();
+        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
+        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
 
         $options = new Options();
         if (null !== $shouldUseInlineStrings) {
@@ -548,8 +556,9 @@ final class WriterTest extends TestCase
         ?bool $shouldUseInlineStrings = null,
         ?bool $shouldCreateSheetsAutomatically = null
     ): Writer {
-        $this->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $testUsingResource = new TestUsingResource();
+        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
+        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
 
         $options = new Options();
         if (null !== $shouldUseInlineStrings) {
@@ -578,7 +587,7 @@ final class WriterTest extends TestCase
      */
     private function assertInlineDataWasWrittenToSheet(string $fileName, int $sheetIndex, $inlineData, string $message = ''): void
     {
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
         $pathToSheetFile = $resourcePath.'#xl/worksheets/sheet'.$sheetIndex.'.xml';
         $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
 
@@ -591,7 +600,7 @@ final class WriterTest extends TestCase
      */
     private function assertInlineDataWasNotWrittenToSheet(string $fileName, int $sheetIndex, $inlineData, string $message = ''): void
     {
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
         $pathToSheetFile = $resourcePath.'#xl/worksheets/sheet'.$sheetIndex.'.xml';
         $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
 
@@ -601,7 +610,7 @@ final class WriterTest extends TestCase
 
     private function assertSharedStringWasWritten(string $fileName, string $sharedString, string $message = ''): void
     {
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
         $pathToSharedStringsFile = $resourcePath.'#xl/sharedStrings.xml';
         $xmlContents = file_get_contents('zip://'.$pathToSharedStringsFile);
 
@@ -614,7 +623,7 @@ final class WriterTest extends TestCase
      */
     private function getXmlReaderForSheetFromXmlFile(string $fileName, string $sheetIndex): XMLReader
     {
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $xmlReader = new XMLReader();
         $xmlReader->openFileInZip($resourcePath, 'xl/worksheets/sheet'.$sheetIndex.'.xml');

@@ -13,8 +13,6 @@ use PHPUnit\Framework\TestCase;
  */
 final class EncodingHelperTest extends TestCase
 {
-    use TestUsingResource;
-
     public function dataProviderForTestGetBytesOffsetToSkipBOM(): array
     {
         return [
@@ -31,7 +29,7 @@ final class EncodingHelperTest extends TestCase
      */
     public function testGetBytesOffsetToSkipBOM(string $fileName, string $encoding, int $expectedBytesOffset): void
     {
-        $resourcePath = $this->getResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getResourcePath($fileName);
         $filePointer = fopen($resourcePath, 'r');
         self::assertNotFalse($filePointer);
 

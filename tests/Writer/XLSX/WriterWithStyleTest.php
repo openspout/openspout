@@ -26,7 +26,6 @@ use PHPUnit\Framework\TestCase;
 final class WriterWithStyleTest extends TestCase
 {
     use RowCreationHelper;
-    use TestUsingResource;
 
     private Style $defaultStyle;
 
@@ -569,8 +568,9 @@ final class WriterWithStyleTest extends TestCase
      */
     private function writeToXLSXFile(array $allRows, string $fileName): Writer
     {
-        $this->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $testUsingResource = new TestUsingResource();
+        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
+        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
 
         $options = new Options();
         $options->SHOULD_USE_INLINE_STRINGS = true;
@@ -588,8 +588,9 @@ final class WriterWithStyleTest extends TestCase
      */
     private function writeToXLSXFileWithDefaultStyle(array $allRows, string $fileName, ?Style $defaultStyle): Writer
     {
-        $this->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $testUsingResource = new TestUsingResource();
+        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
+        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
 
         $options = new Options();
         $options->SHOULD_USE_INLINE_STRINGS = true;
@@ -605,7 +606,7 @@ final class WriterWithStyleTest extends TestCase
 
     private function getXmlSectionFromStylesXmlFile(string $fileName, string $section): DOMElement
     {
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $xmlReader = new XMLReader();
         $xmlReader->openFileInZip($resourcePath, 'xl/styles.xml');
@@ -626,7 +627,7 @@ final class WriterWithStyleTest extends TestCase
     {
         $cellElements = [];
 
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
         $xmlReader = new XMLReader();
         $xmlReader->openFileInZip($resourcePath, 'xl/worksheets/sheet1.xml');

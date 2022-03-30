@@ -16,8 +16,6 @@ use PHPUnit\Framework\TestCase;
  */
 final class ReaderTest extends TestCase
 {
-    use TestUsingResource;
-
     public function dataProviderForTestReadShouldThrowException(): array
     {
         return [
@@ -514,7 +512,7 @@ final class ReaderTest extends TestCase
     public function testReadMultipleTimesShouldRewindReader(): void
     {
         $allRows = [];
-        $resourcePath = $this->getResourcePath('two_sheets_with_inline_strings.xlsx');
+        $resourcePath = (new TestUsingResource())->getResourcePath('two_sheets_with_inline_strings.xlsx');
 
         $reader = new Reader();
         $reader->open($resourcePath);
@@ -661,7 +659,7 @@ final class ReaderTest extends TestCase
         ?CachingStrategyFactory $cachingStrategyFactory = null,
     ): array {
         $allRows = [];
-        $resourcePath = $this->getResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getResourcePath($fileName);
 
         $reader = new Reader($options, $cachingStrategyFactory);
         $reader->open($resourcePath);

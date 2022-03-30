@@ -13,32 +13,30 @@ use PHPUnit\Framework\TestCase;
  */
 final class ReaderEntityFactoryTest extends TestCase
 {
-    use TestUsingResource;
-
     public function testCreateFromFileCSV(): void
     {
-        $validCsv = $this->getResourcePath('csv_test_create_from_file.csv');
+        $validCsv = (new TestUsingResource())->getResourcePath('csv_test_create_from_file.csv');
         $reader = ReaderFactory::createFromFile($validCsv);
         self::assertInstanceOf(\OpenSpout\Reader\CSV\Reader::class, $reader);
     }
 
     public function testCreateFromFileCSVAllCaps(): void
     {
-        $validCsv = $this->getResourcePath('csv_test_create_from_file.CSV');
+        $validCsv = (new TestUsingResource())->getResourcePath('csv_test_create_from_file.CSV');
         $reader = ReaderFactory::createFromFile($validCsv);
         self::assertInstanceOf(\OpenSpout\Reader\CSV\Reader::class, $reader);
     }
 
     public function testCreateFromFileODS(): void
     {
-        $validOds = $this->getResourcePath('csv_test_create_from_file.ods');
+        $validOds = (new TestUsingResource())->getResourcePath('csv_test_create_from_file.ods');
         $reader = ReaderFactory::createFromFile($validOds);
         self::assertInstanceOf(\OpenSpout\Reader\ODS\Reader::class, $reader);
     }
 
     public function testCreateFromFileXLSX(): void
     {
-        $validXlsx = $this->getResourcePath('csv_test_create_from_file.xlsx');
+        $validXlsx = (new TestUsingResource())->getResourcePath('csv_test_create_from_file.xlsx');
         $reader = ReaderFactory::createFromFile($validXlsx);
         self::assertInstanceOf(\OpenSpout\Reader\XLSX\Reader::class, $reader);
     }
@@ -46,7 +44,7 @@ final class ReaderEntityFactoryTest extends TestCase
     public function testCreateFromFileUnsupported(): void
     {
         $this->expectException(UnsupportedTypeException::class);
-        $invalid = $this->getResourcePath('test_unsupported_file_type.other');
+        $invalid = (new TestUsingResource())->getResourcePath('test_unsupported_file_type.other');
         ReaderFactory::createFromFile($invalid);
     }
 

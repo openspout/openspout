@@ -12,8 +12,6 @@ use PHPUnit\Framework\TestCase;
  */
 final class SheetTest extends TestCase
 {
-    use TestUsingResource;
-
     public function testReaderShouldReturnCorrectSheetInfos(): void
     {
         // NOTE: This spreadsheet has its second tab defined as active
@@ -50,7 +48,7 @@ final class SheetTest extends TestCase
      */
     private function openFileAndReturnSheets(string $fileName): array
     {
-        $resourcePath = $this->getResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getResourcePath($fileName);
         $reader = new Reader();
         $reader->open($resourcePath);
 

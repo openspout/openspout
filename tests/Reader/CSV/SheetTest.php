@@ -12,8 +12,6 @@ use PHPUnit\Framework\TestCase;
  */
 final class SheetTest extends TestCase
 {
-    use TestUsingResource;
-
     public function testReaderShouldReturnCorrectSheetInfos(): void
     {
         $sheet = $this->openFileAndReturnSheet('csv_standard.csv');
@@ -25,7 +23,7 @@ final class SheetTest extends TestCase
 
     private function openFileAndReturnSheet(string $fileName): Sheet
     {
-        $resourcePath = $this->getResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getResourcePath($fileName);
         $reader = new Reader();
         $reader->open($resourcePath);
 

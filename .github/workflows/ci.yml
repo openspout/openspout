@@ -105,12 +105,12 @@ jobs:
 
       - name: "Run tests"
         if: ${{ matrix.code-coverage == 'none' }}
-        timeout-minutes: 3
+        timeout-minutes: 1
         run: "vendor/bin/phpunit --no-coverage --no-logging"
 
       - name: "Run tests"
         if: ${{ matrix.code-coverage != 'none' }}
-        timeout-minutes: 3
+        timeout-minutes: 1
         run: "vendor/bin/phpunit --coverage-clover=coverage.xml --coverage-xml=coverage/coverage-xml --log-junit=coverage/junit.xml"
 
       - name: "Send code coverage report to Codecov.io"
@@ -123,7 +123,7 @@ jobs:
 
       - name: "Infection"
         if: ${{ matrix.code-coverage != 'none' }}
-        timeout-minutes: 10
+        timeout-minutes: 3
         run: "vendor/bin/infection --ansi --threads=$(nproc) --coverage=coverage --skip-initial-tests"
         env:
           STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
@@ -252,6 +252,9 @@ jobs:
           path: ${{ steps.composercache.outputs.dir }}
           key: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-${{ hashFiles('**/composer.json') }}
           restore-keys: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-
+
+      - name: "Remove infection"
+        run: "composer remove --no-progress --no-update --no-scripts --dev 'infection/infection'"
 
       - name: "Install dependencies"
         run: "composer update --no-interaction --no-progress"

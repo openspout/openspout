@@ -15,7 +15,6 @@ use PhpBench\Attributes as Bench;
  */
 final class XlsxWriterSharedBench
 {
-    use TestUsingResource;
     use XlsxWriterTrait;
 
     #[Bench\OutputTimeUnit('seconds')]
@@ -25,8 +24,9 @@ final class XlsxWriterSharedBench
     {
         $numRows = 1000000;
         $fileName = 'xlsx_with_one_million_rows_and_shared_strings.xlsx';
-        $this->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $testUsingResource = new TestUsingResource();
+        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
+        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
 
         $options = new Options();
         $options->SHOULD_USE_INLINE_STRINGS = false;

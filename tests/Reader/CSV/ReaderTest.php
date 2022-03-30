@@ -15,13 +15,12 @@ use PHPUnit\Framework\TestCase;
  */
 final class ReaderTest extends TestCase
 {
-    use TestUsingResource;
-
     public function testOpenShouldThrowExceptionIfFileDoesNotExist(): void
     {
+        $filePath = (new TestUsingResource())->getTempFolderPath().'/path/to/fake/file.csv';
         $this->expectException(IOException::class);
 
-        $this->createCSVReader(null, null)->open('/path/to/fake/file.csv');
+        $this->createCSVReader(null, null)->open($filePath);
     }
 
     public function testOpenShouldThrowExceptionIfTryingToReadBeforeOpeningReader(): void
@@ -36,10 +35,11 @@ final class ReaderTest extends TestCase
      */
     public function testOpenShouldThrowExceptionIfFileNotReadable(): void
     {
-        $resourcePath = $this->getResourcePath('csv_standard.csv');
+        $testUsingResource = new TestUsingResource();
+        $resourcePath = $testUsingResource->getResourcePath('csv_standard.csv');
         $testFilename = uniqid().basename($resourcePath);
-        $this->createGeneratedFolderIfNeeded($testFilename);
-        $testPath = $this->getGeneratedResourcePath($testFilename);
+        $testUsingResource->createGeneratedFolderIfNeeded($testFilename);
+        $testPath = $testUsingResource->getGeneratedResourcePath($testFilename);
 
         self::assertTrue(copy($resourcePath, $testPath));
         self::assertTrue(chmod($testPath, 0));
@@ -222,7 +222,7 @@ final class ReaderTest extends TestCase
     public function testReadShouldSupportNonUTF8FilesWithoutBOMs(string $fileName, string $fileEncoding, bool $shouldUseIconv): void
     {
         $allRows = [];
-        $resourcePath = $this->getResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getResourcePath($fileName);
 
         $options = new Options();
         $options->ENCODING = $fileEncoding;
@@ -248,7 +248,7 @@ final class ReaderTest extends TestCase
     public function testReadMultipleTimesShouldRewindReader(): void
     {
         $allRows = [];
-        $resourcePath = $this->getResourcePath('csv_standard.csv');
+        $resourcePath = (new TestUsingResource())->getResourcePath('csv_standard.csv');
 
         $reader = $this->createCSVReader(null, null);
         $reader->open($resourcePath);
@@ -392,7 +392,7 @@ final class ReaderTest extends TestCase
         ?bool $shouldPreserveEmptyRows = null
     ): array {
         $allRows = [];
-        $resourcePath = $this->getResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getResourcePath($fileName);
 
         $options = new Options();
         if (null !== $fieldDelimiter) {

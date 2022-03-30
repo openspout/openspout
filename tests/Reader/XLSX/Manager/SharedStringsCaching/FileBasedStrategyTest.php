@@ -16,7 +16,9 @@ final class FileBasedStrategyTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->strategy = new FileBasedStrategy(sys_get_temp_dir(), 999);
+        $tempFolder = sys_get_temp_dir().\DIRECTORY_SEPARATOR.uniqid('tmp_'.(string) getenv('TEST_TOKEN'));
+        self::assertNotFalse(mkdir($tempFolder));
+        $this->strategy = new FileBasedStrategy($tempFolder, 999);
     }
 
     public function testUninitializedFileRaisesException(): void

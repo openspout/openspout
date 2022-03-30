@@ -17,7 +17,6 @@ use PHPUnit\Framework\TestCase;
 final class SheetTest extends TestCase
 {
     use RowCreationHelper;
-    use TestUsingResource;
 
     public function testGetSheetIndex(): void
     {
@@ -51,8 +50,9 @@ final class SheetTest extends TestCase
         $this->expectException(InvalidSheetNameException::class);
 
         $fileName = 'test_set_name_with_non_unique_name.ods';
-        $this->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $testUsingResource = new TestUsingResource();
+        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
+        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
 
         $writer = new Writer();
         $writer->openToFile($resourcePath);
@@ -72,7 +72,7 @@ final class SheetTest extends TestCase
         $fileName = 'test_set_visibility_should_create_sheet_hidden.ods';
         $this->writeDataToHiddenSheet($fileName);
 
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
         $pathToContentFile = $resourcePath.'#content.xml';
         $xmlContents = file_get_contents('zip://'.$pathToContentFile);
 
@@ -83,8 +83,9 @@ final class SheetTest extends TestCase
     public function testWritesColumnWidths(): void
     {
         $fileName = 'test_column_widths.ods';
-        $this->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $testUsingResource = new TestUsingResource();
+        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
+        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
 
         $options = new Options();
         $writer = new Writer($options);
@@ -104,8 +105,9 @@ final class SheetTest extends TestCase
     public function testWritesMultipleColumnWidthsInRanges(): void
     {
         $fileName = 'test_multiple_column_widths_in_ranges.ods';
-        $this->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $testUsingResource = new TestUsingResource();
+        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
+        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
 
         $options = new Options();
         $writer = new Writer($options);
@@ -127,8 +129,9 @@ final class SheetTest extends TestCase
 
     private function writerForFile(string $fileName): Writer
     {
-        $this->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $testUsingResource = new TestUsingResource();
+        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
+        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
 
         $writer = new Writer();
         $writer->openToFile($resourcePath);
@@ -152,8 +155,9 @@ final class SheetTest extends TestCase
      */
     private function writeDataToMulitpleSheetsAndReturnSheets(string $fileName): array
     {
-        $this->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $testUsingResource = new TestUsingResource();
+        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
+        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
 
         $writer = new Writer();
         $writer->openToFile($resourcePath);
@@ -169,8 +173,9 @@ final class SheetTest extends TestCase
 
     private function writeDataToHiddenSheet(string $fileName): void
     {
-        $this->createGeneratedFolderIfNeeded($fileName);
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $testUsingResource = new TestUsingResource();
+        $testUsingResource->createGeneratedFolderIfNeeded($fileName);
+        $resourcePath = $testUsingResource->getGeneratedResourcePath($fileName);
 
         $writer = new Writer();
         $writer->openToFile($resourcePath);
@@ -184,7 +189,7 @@ final class SheetTest extends TestCase
 
     private function assertSheetNameEquals(string $expectedName, string $fileName, string $message = ''): void
     {
-        $resourcePath = $this->getGeneratedResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
         $pathToWorkbookFile = $resourcePath.'#content.xml';
         $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
 

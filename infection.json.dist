@@ -5,7 +5,7 @@
             "src"
         ]
     },
-    "timeout": 10,
+    "timeout": 2,
     "logs": {
         "text": "infections.log",
         "stryker": {
@@ -19,6 +19,6 @@
             "\\\\assert\\(.+\\);"
         ]
     },
-    "minMsi": 82,
-    "minCoveredMsi": 84
+    "minMsi": 76,
+    "minCoveredMsi": 78
 }

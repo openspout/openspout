@@ -17,8 +17,6 @@ use PHPUnit\Framework\TestCase;
  */
 final class ReaderTest extends TestCase
 {
-    use TestUsingResource;
-
     public function dataProviderForTestReadShouldThrowException(): array
     {
         return [
@@ -305,7 +303,7 @@ final class ReaderTest extends TestCase
     {
         $this->expectException(IteratorNotRewindableException::class);
 
-        $resourcePath = $this->getResourcePath('one_sheet_with_strings.ods');
+        $resourcePath = (new TestUsingResource())->getResourcePath('one_sheet_with_strings.ods');
         $reader = new Reader();
         $reader->open($resourcePath);
 
@@ -325,7 +323,7 @@ final class ReaderTest extends TestCase
     public function testReadMultipleTimesShouldRewindReader(): void
     {
         $allRows = [];
-        $resourcePath = $this->getResourcePath('two_sheets_with_strings.ods');
+        $resourcePath = (new TestUsingResource())->getResourcePath('two_sheets_with_strings.ods');
 
         $reader = new Reader();
         $reader->open($resourcePath);
@@ -459,7 +457,7 @@ final class ReaderTest extends TestCase
     private function getAllRowsForFile(string $fileName, bool $shouldFormatDates = false, bool $shouldPreserveEmptyRows = false): array
     {
         $allRows = [];
-        $resourcePath = $this->getResourcePath($fileName);
+        $resourcePath = (new TestUsingResource())->getResourcePath($fileName);
 
         $options = new Options();
         $options->SHOULD_FORMAT_DATES = $shouldFormatDates;

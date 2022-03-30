@@ -9,96 +9,99 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
 /**
- * Trait TestUsingResource.
+ * @internal
  */
-trait TestUsingResource
+final class TestUsingResource
 {
-    /** @var string Path to the test resources folder */
-    private string $resourcesPath = 'tests/resources';
+    private const RESOURCES_PATH = 'tests/resources';
 
     /** @var string Path to the test generated resources folder */
-    private string $generatedResourcesPath = 'tests/resources/generated';
+    private string $generatedResourcesPath;
 
     /** @var string Path to the test resources folder, that does not have writing permissions */
-    private string $generatedUnwritableResourcesPath = 'tests/resources/generated/unwritable';
+    private string $generatedUnwritableResourcesPath;
 
     /** @var string Path to the test temp folder */
-    private string $tempFolderPath = 'tests/resources/generated/temp';
+    private string $tempFolderPath;
+
+    public function __construct()
+    {
+        $realpath = realpath(self::RESOURCES_PATH);
+        \assert(false !== $realpath);
+        $generatedPath = $realpath .DIRECTORY_SEPARATOR.'generated_'.(string) getenv('TEST_TOKEN');
+        $this->generatedResourcesPath = $generatedPath;
+        $this->generatedUnwritableResourcesPath = $generatedPath.\DIRECTORY_SEPARATOR.'unwritable';
+        $this->tempFolderPath = $generatedPath.\DIRECTORY_SEPARATOR.'temp';
+    }
 
     /**
      * @return string Path of the resource who matches the given name or null if resource not found
      */
-    private function getResourcePath(string $resourceName): string
+    public function getResourcePath(string $resourceName): string
     {
         $resourceType = pathinfo($resourceName, PATHINFO_EXTENSION);
 
-        return realpath($this->resourcesPath).'/'.strtolower($resourceType).'/'.$resourceName;
+        return realpath(self::RESOURCES_PATH).\DIRECTORY_SEPARATOR.strtolower($resourceType).\DIRECTORY_SEPARATOR.$resourceName;
     }
 
     /**
      * @return string Path of the generated resource for the given name
      */
-    private function getGeneratedResourcePath(string $resourceName): string
+    public function getGeneratedResourcePath(string $resourceName): string
     {
         $resourceType = pathinfo($resourceName, PATHINFO_EXTENSION);
 
-        return realpath($this->generatedResourcesPath).'/'.strtolower($resourceType).'/'.$resourceName;
+        return realpath($this->generatedResourcesPath).\DIRECTORY_SEPARATOR.strtolower($resourceType).\DIRECTORY_SEPARATOR.$resourceName;
     }
 
-    private function createGeneratedFolderIfNeeded(string $resourceName): void
+    public function createGeneratedFolderIfNeeded(string $resourceName): void
     {
         $resourceType = pathinfo($resourceName, PATHINFO_EXTENSION);
-        $generatedResourcePathForType = $this->generatedResourcesPath.'/'.strtolower($resourceType);
+        $generatedResourcePathForType = $this->generatedResourcesPath.\DIRECTORY_SEPARATOR.strtolower($resourceType);
 
         if (!file_exists($generatedResourcePathForType)) {
-            mkdir($generatedResourcePathForType, 0777, true);
+            mkdir($generatedResourcePathForType, 0700, true);
         }
     }
 
     /**
      * @return string Path of the generated unwritable (because parent folder is read only) resource for the given name
      */
-    private function getGeneratedUnwritableResourcePath(string $resourceName): string
+    public function getGeneratedUnwritableResourcePath(string $resourceName): string
     {
-        return realpath($this->generatedUnwritableResourcesPath).'/'.$resourceName;
+        return realpath($this->generatedUnwritableResourcesPath).\DIRECTORY_SEPARATOR.$resourceName;
     }
 
-    private function createUnwritableFolderIfNeeded(): void
+    public function createUnwritableFolderIfNeeded(): void
     {
         // On Windows, chmod() or the mkdir's mode is ignored
         if ($this->isWindows()) {
             Assert::markTestSkipped('Skipping because Windows cannot create read-only folders through PHP');
         }
 
-        if (!file_exists($this->generatedUnwritableResourcesPath)) {
-            // Make sure generated folder exists first
-            if (!file_exists($this->generatedResourcesPath)) {
-                mkdir($this->generatedResourcesPath, 0777, true);
-            }
-
-            // 0444 = read only
-            mkdir($this->generatedUnwritableResourcesPath, 0444, true);
+        if (file_exists($this->generatedUnwritableResourcesPath)) {
+            return;
         }
+
+        if (!file_exists($this->generatedResourcesPath)) {
+            mkdir($this->generatedResourcesPath, 0700, true);
+        }
+
+        mkdir($this->generatedUnwritableResourcesPath, 0500, true);
     }
 
     /**
      * @return string Path of the temp folder
      */
-    private function getTempFolderPath(): string
-    {
-        $realpath = realpath($this->tempFolderPath);
-        \assert(false !== $realpath);
-
-        return $realpath;
-    }
-
-    private function recreateTempFolder(): void
+    public function getTempFolderPath(): string
     {
         if (file_exists($this->tempFolderPath)) {
             $this->deleteFolderRecursively($this->tempFolderPath);
         }
 
-        mkdir($this->tempFolderPath, 0777, true);
+        mkdir($this->tempFolderPath, 0700, true);
+
+        return $this->tempFolderPath;
     }
 
     /**

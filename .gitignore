@@ -1,5 +1,5 @@
 /coverage
-/tests/**/resources/generated
+/tests/**/resources/generated_*
 /vendor
 /.php-cs-fixer.cache
 /.phpunit.result.cache

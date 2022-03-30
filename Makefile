@@ -15,8 +15,13 @@ static-analysis: vendor
 
 .PHONY: test
 test: vendor
-	rm -fr tests/resources/generated/*
-	php -d zend.assertions=1 vendor/bin/phpunit \
+	chmod -f -R u+rwX tests/resources/generated_* || true
+	rm -fr tests/resources/generated_*
+	php \
+		-d zend.assertions=1 \
+		-d open_basedir="$(realpath .)" \
+		-d sys_temp_dir="$(realpath .)" \
+		vendor/bin/phpunit \
 		--coverage-xml=coverage/coverage-xml \
 		--coverage-html=coverage/html \
 		--log-junit=coverage/junit.xml \

@@ -29,8 +29,10 @@ final class CachingStrategyFactoryTest extends TestCase
      */
     public function testCreateBestCachingStrategy(?int $sharedStringsUniqueCount, string $memoryLimitInKB, string $expectedStrategyClassName): void
     {
+        $tempFolder = sys_get_temp_dir().\DIRECTORY_SEPARATOR.uniqid('tmp_'.(string) getenv('TEST_TOKEN'));
+        self::assertNotFalse(mkdir($tempFolder));
         $strategy = (new CachingStrategyFactory(new MemoryLimit($memoryLimitInKB)))
-            ->createBestCachingStrategy($sharedStringsUniqueCount, sys_get_temp_dir())
+            ->createBestCachingStrategy($sharedStringsUniqueCount, $tempFolder)
         ;
 
         self::assertSame($expectedStrategyClassName, $strategy::class);
