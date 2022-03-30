@@ -16,7 +16,18 @@ static-analysis: vendor
 .PHONY: test
 test: vendor
 	rm -fr tests/resources/generated/*
-	php -d zend.assertions=1 vendor/bin/phpunit ${arg}
+	php -d zend.assertions=1 vendor/bin/phpunit \
+		--coverage-xml=coverage/coverage-xml \
+		--coverage-html=coverage/html \
+		--log-junit=coverage/junit.xml \
+		${arg}
+
+.PHONY: code-coverage
+code-coverage: test
+	php -d zend.assertions=1 vendor/bin/infection \
+		--threads=$(shell nproc) \
+		--coverage=coverage \
+		--skip-initial-tests
 
 .PHONY: benchmark
 benchmark: vendor

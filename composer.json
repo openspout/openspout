@@ -37,6 +37,7 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.7.0",
+        "infection/infection": "^0.26.6",
         "phpbench/phpbench": "^1.2",
         "phpstan/phpstan": "^1.5.0",
         "phpstan/phpstan-phpunit": "^1.0.0",
@@ -59,6 +60,11 @@
         "classmap": [
             "tests/"
         ]
+    },
+    "config": {
+        "allow-plugins": {
+            "infection/extension-installer": true
+        }
     },
     "extra": {
         "branch-alias": {

@@ -17,7 +17,7 @@ final class FileSystemHelperTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->baseFolder = sys_get_temp_dir().\DIRECTORY_SEPARATOR.uniqid('tmp_');
+        $this->baseFolder = sys_get_temp_dir().\DIRECTORY_SEPARATOR.uniqid('tmp_'.(string) getenv('TEST_TOKEN'));
         self::assertTrue(mkdir($this->baseFolder, 0700, false));
         $this->fileSystemHelper = new FileSystemHelper($this->baseFolder);
     }

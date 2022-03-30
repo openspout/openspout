@@ -3,6 +3,8 @@ name: CI
 on:
   pull_request:
   push:
+    branches:
+      - "?.x"
 
 jobs:
   composer-json-lint:
@@ -109,7 +111,7 @@ jobs:
       - name: "Run tests"
         if: ${{ matrix.code-coverage != 'none' }}
         timeout-minutes: 3
-        run: "vendor/bin/phpunit --coverage-clover=coverage.xml"
+        run: "vendor/bin/phpunit --coverage-clover=coverage.xml --coverage-xml=coverage/coverage-xml --log-junit=coverage/junit.xml"
 
       - name: "Send code coverage report to Codecov.io"
         if: ${{ matrix.code-coverage != 'none' }}
@@ -118,6 +120,17 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage.xml
           fail_ci_if_error: true
+
+      - name: "Infection"
+        if: ${{ matrix.code-coverage != 'none' }}
+        timeout-minutes: 10
+        run: "vendor/bin/infection --ansi --threads=$(nproc) --coverage=coverage --skip-initial-tests"
+        env:
+          STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
+
+      - name: "Output infections"
+        if: ${{ matrix.code-coverage != 'none' }}
+        run: "cat infections.log"
 
   coding-standards:
     name: "Coding Standards"
