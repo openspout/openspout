@@ -49,6 +49,9 @@ interface WriterInterface
      */
     public function addRows(array $rows): void;
 
+    /**
+     * @return 0|positive-int
+     */
     public function getWrittenRowCount(): int;
 
     /**
