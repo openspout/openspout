@@ -158,6 +158,29 @@ final class WriterTest extends TestCase
         static::assertSame('"""csv--11""",csv--12\\,csv--13\\\\,csv--14\\\\\\', $writtenContent, 'The \'"\' and \'\\\' characters should be properly escaped');
     }
 
+    public function testWriteToCompressedStream()
+    {
+        $fileName = 'csv_compressed.csv.gz';
+        $this->createGeneratedFolderIfNeeded($fileName);
+        $pathName = $this->getGeneratedResourcePath($fileName);
+        $resourcePath = 'compress.zlib://'.$pathName;
+
+        $writer = WriterEntityFactory::createCSVWriter();
+        $writer->setShouldAddBOM(false);
+        $writer->openToFile($resourcePath);
+        $writer->addRows($this->createRowsFromValues([
+            ['csv-1', 'csv-2', 'csv-3'],
+        ]));
+        $writer->close();
+
+        $writtenContent = file_get_contents($pathName);
+        static::assertNotFalse($writtenContent);
+        $content = gzdecode($writtenContent);
+        static::assertNotFalse($content);
+        $content = trim($content);
+        static::assertSame('csv-1,csv-2,csv-3', $content);
+    }
+
     /**
      * @param Row[]  $allRows
      * @param string $fileName

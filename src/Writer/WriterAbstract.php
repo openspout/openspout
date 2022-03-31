@@ -64,7 +64,7 @@ abstract class WriterAbstract implements WriterInterface
     {
         $this->outputFilePath = $outputFilePath;
 
-        $this->filePointer = $this->globalFunctionsHelper->fopen($this->outputFilePath, 'wb+');
+        $this->filePointer = $this->globalFunctionsHelper->fopen($this->outputFilePath, 'w');
         $this->throwIfFilePointerIsNotAvailable();
 
         $this->openWriter();
