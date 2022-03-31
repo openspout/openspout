@@ -22,6 +22,8 @@ abstract class AbstractWriter implements WriterInterface
     /** @var bool Indicates whether the writer has been opened or not */
     private bool $isWriterOpened = false;
 
+    private int $writtenRowCount = 0;
+
     /**
      * {@inheritdoc}
      */
@@ -111,6 +113,7 @@ abstract class AbstractWriter implements WriterInterface
         }
 
         $this->addRowToWriter($row);
+        ++$this->writtenRowCount;
     }
 
     /**
@@ -121,6 +124,14 @@ abstract class AbstractWriter implements WriterInterface
         foreach ($rows as $row) {
             $this->addRow($row);
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    final public function getWrittenRowCount(): int
+    {
+        return $this->writtenRowCount;
     }
 
     /**
