@@ -36,6 +36,7 @@
         "ext-zip": "*"
     },
     "require-dev": {
+        "ext-zlib": "*",
         "friendsofphp/php-cs-fixer": "^3.4",
         "phpstan/phpstan": "^1.4",
         "phpstan/phpstan-phpunit": "^1.0",
