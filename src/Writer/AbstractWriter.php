@@ -36,7 +36,7 @@ abstract class AbstractWriter implements WriterInterface
             return true;
         });
 
-        $resource = fopen($this->outputFilePath, 'wb+');
+        $resource = fopen($this->outputFilePath, 'w');
         restore_error_handler();
         if (null !== $errorMessage) {
             throw new IOException("Unable to open file {$this->outputFilePath}: {$errorMessage}");
