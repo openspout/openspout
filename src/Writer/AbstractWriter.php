@@ -22,6 +22,7 @@ abstract class AbstractWriter implements WriterInterface
     /** @var bool Indicates whether the writer has been opened or not */
     private bool $isWriterOpened = false;
 
+    /** @var 0|positive-int */
     private int $writtenRowCount = 0;
 
     /**

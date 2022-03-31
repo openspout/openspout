@@ -31,6 +31,7 @@ final class Sheet
 
     private ?SheetView $sheetView = null;
 
+    /** @var 0|positive-int */
     private int $writtenRowCount = 0;
 
     /**
@@ -134,6 +135,9 @@ final class Sheet
         ++$this->writtenRowCount;
     }
 
+    /**
+     * @return 0|positive-int
+     */
     public function getWrittenRowCount(): int
     {
         return $this->writtenRowCount;
