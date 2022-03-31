@@ -31,6 +31,8 @@ final class Sheet
 
     private ?SheetView $sheetView = null;
 
+    private int $writtenRowCount = 0;
+
     /**
      * @param int          $sheetIndex           Index of the sheet, based on order in the workbook (zero-based)
      * @param string       $associatedWorkbookId ID of the sheet's associated workbook
@@ -122,5 +124,18 @@ final class Sheet
     public function getSheetView(): ?SheetView
     {
         return $this->sheetView;
+    }
+
+    /**
+     * @internal
+     */
+    public function incrementWrittenRowCount(): void
+    {
+        ++$this->writtenRowCount;
+    }
+
+    public function getWrittenRowCount(): int
+    {
+        return $this->writtenRowCount;
     }
 }

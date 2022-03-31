@@ -521,6 +521,45 @@ final class WriterTest extends TestCase
         $this->assertInlineDataWasWrittenToSheet($fileName, 1, 'foo');
     }
 
+    public function testShouldReturnWrittenRowCount(): void
+    {
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath('row_count.xlsx');
+
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        self::assertSame(0, $writer->getWrittenRowCount());
+        $writer->openToFile($resourcePath);
+
+        $firstSheet = $writer->getCurrentSheet();
+        self::assertSame(0, $writer->getWrittenRowCount());
+        self::assertSame(0, $firstSheet->getWrittenRowCount());
+        $writer->addRow(Row::fromValues(['csv-1', null]));
+        self::assertSame(1, $writer->getWrittenRowCount());
+        self::assertSame(1, $firstSheet->getWrittenRowCount());
+        $writer->addRow(Row::fromValues(['csv-2', null]));
+        self::assertSame(2, $writer->getWrittenRowCount());
+        self::assertSame(2, $firstSheet->getWrittenRowCount());
+        $writer->addRows($this->createRowsFromValues([
+            ['csv--11', 'csv--12'],
+            [],
+            ['csv--31', 'csv--32'],
+        ]));
+        self::assertSame(5, $writer->getWrittenRowCount());
+
+        $secondSheet = $writer->addNewSheetAndMakeItCurrent();
+        self::assertSame(5, $writer->getWrittenRowCount());
+        self::assertSame(5, $firstSheet->getWrittenRowCount());
+        self::assertSame(0, $secondSheet->getWrittenRowCount());
+        $writer->addRow(Row::fromValues(['csv-1', null]));
+        self::assertSame(6, $writer->getWrittenRowCount());
+        self::assertSame(5, $firstSheet->getWrittenRowCount());
+        self::assertSame(1, $secondSheet->getWrittenRowCount());
+
+        $writer->close();
+        self::assertSame(6, $writer->getWrittenRowCount());
+    }
+
     /**
      * @param Row[] $allRows
      */

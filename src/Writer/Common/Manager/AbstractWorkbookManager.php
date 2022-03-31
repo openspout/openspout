@@ -128,6 +128,7 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
         }
 
         $this->addRowToWorksheet($currentWorksheet, $row);
+        $currentWorksheet->getExternalSheet()->incrementWrittenRowCount();
     }
 
     /**
