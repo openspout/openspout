@@ -173,6 +173,28 @@ final class WriterTest extends TestCase
         self::assertSame($options->FLUSH_THRESHOLD, $writer->getOptions()->FLUSH_THRESHOLD);
     }
 
+    public function testWriteToCompressedStream(): void
+    {
+        $fileName = 'csv_compressed.csv.gz';
+        $pathName = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $resourcePath = 'compress.zlib://'.$pathName;
+
+        $writer = new Writer();
+        $writer->getOptions()->SHOULD_ADD_BOM = false;
+        $writer->openToFile($resourcePath);
+        $writer->addRows($this->createRowsFromValues([
+            ['csv-1', 'csv-2', 'csv-3'],
+        ]));
+        $writer->close();
+
+        $writtenContent = file_get_contents($pathName);
+        self::assertNotFalse($writtenContent);
+        $content = gzdecode($writtenContent);
+        self::assertNotFalse($content);
+        $content = trim($content);
+        self::assertSame('csv-1,csv-2,csv-3', $content);
+    }
+
     /**
      * @param Row[] $allRows
      */
