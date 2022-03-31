@@ -12,7 +12,7 @@ very large files, while keeping the memory usage really low (less than 3MB).
 
 ## Documentation
 
-Documentation can be found at [https://openspout.readthedocs.io/en/4.x/](https://openspout.readthedocs.io/en/4.x/)
+Documentation can be found at [`docs/`](docs).
 
 ## Upgrade from `box/spout:v3` to `openspout/openspout:v3`
 
