@@ -49,6 +49,8 @@ interface WriterInterface
      */
     public function addRows(array $rows): void;
 
+    public function getWrittenRowCount(): int;
+
     /**
      * Closes the writer. This will close the streamer as well, preventing new data
      * to be written to the file.

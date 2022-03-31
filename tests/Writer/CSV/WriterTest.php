@@ -32,20 +32,18 @@ final class WriterTest extends TestCase
 
     public function testWriteShouldThrowExceptionIfCallAddRowBeforeOpeningWriter(): void
     {
+        $writer = new Writer();
         $this->expectException(WriterNotOpenedException::class);
 
-        $writer = new Writer();
         $writer->addRow(Row::fromValues(['csv--11', 'csv--12']));
-        $writer->close();
     }
 
     public function testWriteShouldThrowExceptionIfCallAddRowsBeforeOpeningWriter(): void
     {
+        $writer = new Writer();
         $this->expectException(WriterNotOpenedException::class);
 
-        $writer = new Writer();
         $writer->addRow(Row::fromValues(['csv--11', 'csv--12']));
-        $writer->close();
     }
 
     public function testCloseShouldNoopWhenWriterIsNotOpened(): void
@@ -193,6 +191,28 @@ final class WriterTest extends TestCase
         self::assertNotFalse($content);
         $content = trim($content);
         self::assertSame('csv-1,csv-2,csv-3', $content);
+    }
+
+    public function testShouldReturnWrittenRowCount(): void
+    {
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath('row_count.csv');
+
+        $writer = new Writer();
+        self::assertSame(0, $writer->getWrittenRowCount());
+        $writer->openToFile($resourcePath);
+        self::assertSame(0, $writer->getWrittenRowCount());
+        $writer->addRow(Row::fromValues(['csv-1', null]));
+        self::assertSame(1, $writer->getWrittenRowCount());
+        $writer->addRow(Row::fromValues(['csv-2', null]));
+        self::assertSame(2, $writer->getWrittenRowCount());
+        $writer->addRows($this->createRowsFromValues([
+            ['csv--11', 'csv--12'],
+            [],
+            ['csv--31', 'csv--32'],
+        ]));
+        self::assertSame(5, $writer->getWrittenRowCount());
+        $writer->close();
+        self::assertSame(5, $writer->getWrittenRowCount());
     }
 
     /**
