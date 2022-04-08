@@ -37,8 +37,8 @@ final class WorkbookRelationshipsManager
     /** @var string Path of the XLSX file being read */
     private string $filePath;
 
-    /** @var null|array<string, string> Cache of the already read workbook relationships: [TYPE] => [FILE_NAME] */
-    private ?array $cachedWorkbookRelationships = null;
+    /** @var array<string, string> Cache of the already read workbook relationships: [TYPE] => [FILE_NAME] */
+    private array $cachedWorkbookRelationships;
 
     /**
      * @param string $filePath Path of the XLSX file being read
@@ -118,7 +118,7 @@ final class WorkbookRelationshipsManager
      */
     private function getWorkbookRelationships(): array
     {
-        if (null === $this->cachedWorkbookRelationships) {
+        if (!isset($this->cachedWorkbookRelationships)) {
             $xmlReader = new XMLReader();
 
             if (false === $xmlReader->openFileInZip($this->filePath, self::WORKBOOK_RELS_XML_FILE_PATH)) {

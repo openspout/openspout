@@ -44,8 +44,8 @@ final class SharedStringsManager
     /** @var CachingStrategyFactory Factory to create shared strings caching strategies */
     private CachingStrategyFactory $cachingStrategyFactory;
 
-    /** @var null|CachingStrategyInterface The best caching strategy for storing shared strings */
-    private ?CachingStrategyInterface $cachingStrategy = null;
+    /** @var CachingStrategyInterface The best caching strategy for storing shared strings */
+    private CachingStrategyInterface $cachingStrategy;
 
     public function __construct(
         string $filePath,
@@ -130,7 +130,7 @@ final class SharedStringsManager
      */
     public function cleanup(): void
     {
-        if (null !== $this->cachingStrategy) {
+        if (isset($this->cachingStrategy)) {
             $this->cachingStrategy->clearCache();
         }
     }

@@ -13,7 +13,7 @@ use OpenSpout\Writer\Exception\WriterNotOpenedException;
 
 abstract class AbstractWriterMultiSheets extends AbstractWriter
 {
-    private ?WorkbookManagerInterface $workbookManager = null;
+    private WorkbookManagerInterface $workbookManager;
 
     /**
      * Returns all the workbook's sheets.
@@ -88,7 +88,7 @@ abstract class AbstractWriterMultiSheets extends AbstractWriter
      */
     protected function openWriter(): void
     {
-        if (null === $this->workbookManager) {
+        if (!isset($this->workbookManager)) {
             $this->workbookManager = $this->createWorkbookManager();
             $this->workbookManager->addNewSheetAndMakeItCurrent();
         }
@@ -110,7 +110,7 @@ abstract class AbstractWriterMultiSheets extends AbstractWriter
      */
     protected function closeWriter(): void
     {
-        if (null !== $this->workbookManager) {
+        if (isset($this->workbookManager)) {
             $this->workbookManager->close($this->filePointer);
         }
     }
@@ -122,7 +122,7 @@ abstract class AbstractWriterMultiSheets extends AbstractWriter
      */
     private function throwIfWorkbookIsNotAvailable(): void
     {
-        if (null === $this->workbookManager) {
+        if (!isset($this->workbookManager)) {
             throw new WriterNotOpenedException('The writer must be opened before performing this action.');
         }
     }

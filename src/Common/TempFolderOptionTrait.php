@@ -11,7 +11,7 @@ use OpenSpout\Common\Exception\InvalidArgumentException;
  */
 trait TempFolderOptionTrait
 {
-    private ?string $tempFolder = null;
+    private string $tempFolder;
 
     final public function setTempFolder(string $tempFolder): void
     {
@@ -24,9 +24,8 @@ trait TempFolderOptionTrait
 
     final public function getTempFolder(): string
     {
-        if (null === $this->tempFolder) {
+        if (!isset($this->tempFolder)) {
             $this->setTempFolder(sys_get_temp_dir());
-            \assert(null !== $this->tempFolder);
         }
 
         return $this->tempFolder;

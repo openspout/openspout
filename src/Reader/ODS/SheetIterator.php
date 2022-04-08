@@ -177,17 +177,16 @@ final class SheetIterator implements SheetIteratorInterface
 
         $this->xmlReader->readUntilNodeFound(self::XML_NODE_AUTOMATIC_STYLES);
 
-        /** @var DOMElement $automaticStylesNode */
         $automaticStylesNode = $this->xmlReader->expand();
+        \assert($automaticStylesNode instanceof DOMElement);
 
         $tableStyleNodes = $automaticStylesNode->getElementsByTagNameNS(self::XML_STYLE_NAMESPACE, self::XML_NODE_STYLE_TABLE_PROPERTIES);
 
-        /** @var DOMElement $tableStyleNode */
         foreach ($tableStyleNodes as $tableStyleNode) {
             $isSheetVisible = ('false' !== $tableStyleNode->getAttribute(self::XML_ATTRIBUTE_TABLE_DISPLAY));
 
             $parentStyleNode = $tableStyleNode->parentNode;
-            \assert(null !== $parentStyleNode);
+            \assert($parentStyleNode instanceof DOMElement);
             $styleName = $parentStyleNode->getAttribute(self::XML_ATTRIBUTE_STYLE_NAME);
 
             $sheetsVisibility[$styleName] = $isSheetVisible;
