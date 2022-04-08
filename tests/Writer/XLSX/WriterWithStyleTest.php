@@ -378,7 +378,9 @@ final class WriterWithStyleTest extends TestCase
         $styleXfsElements = $this->getXmlSectionFromStylesXmlFile($fileName, 'cellXfs');
         self::assertSame('2', $styleXfsElements->getAttribute('count'), '2 cell xfs present - a default one and a custom one');
 
-        $customFillId = $styleXfsElements->lastChild->getAttribute('fillId');
+        $lastChild = $styleXfsElements->lastChild;
+        self::assertInstanceOf(DOMElement::class, $lastChild);
+        $customFillId = $lastChild->getAttribute('fillId');
         self::assertSame(2, (int) $customFillId, 'The custom fill id should have the index 2');
     }
 

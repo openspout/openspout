@@ -56,11 +56,11 @@ class StyleManager implements StyleManagerInterface
     /** @var null|string Path of the styles XML file */
     private ?string $stylesXMLFilePath;
 
-    /** @var null|array<int, string> Array containing a mapping NUM_FMT_ID => FORMAT_CODE */
-    private ?array $customNumberFormats = null;
+    /** @var array<int, string> Array containing a mapping NUM_FMT_ID => FORMAT_CODE */
+    private array $customNumberFormats;
 
-    /** @var null|array<array-key, array<string, null|bool|int>> Array containing a mapping STYLE_ID => [STYLE_ATTRIBUTES] */
-    private ?array $stylesAttributes = null;
+    /** @var array<array-key, array<string, null|bool|int>> Array containing a mapping STYLE_ID => [STYLE_ATTRIBUTES] */
+    private array $stylesAttributes;
 
     /** @var array<int, bool> Cache containing a mapping NUM_FMT_ID => IS_DATE_FORMAT. Used to avoid lots of recalculations */
     private array $numFmtIdToIsDateFormatCache = [];
@@ -117,7 +117,7 @@ class StyleManager implements StyleManagerInterface
      */
     protected function getCustomNumberFormats(): array
     {
-        if (null === $this->customNumberFormats) {
+        if (!isset($this->customNumberFormats)) {
             $this->extractRelevantInfo();
         }
 
@@ -129,7 +129,7 @@ class StyleManager implements StyleManagerInterface
      */
     protected function getStylesAttributes(): array
     {
-        if (null === $this->stylesAttributes) {
+        if (!isset($this->stylesAttributes)) {
             $this->extractRelevantInfo();
         }
 
