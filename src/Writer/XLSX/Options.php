@@ -6,6 +6,8 @@ namespace OpenSpout\Writer\XLSX;
 
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Writer\Common\AbstractOptions;
+use OpenSpout\Writer\Exception\WriterNotSet;
+use WeakReference;
 
 final class Options extends AbstractOptions
 {
@@ -14,10 +16,15 @@ final class Options extends AbstractOptions
 
     public bool $SHOULD_USE_INLINE_STRINGS = true;
 
+    /**
+     * @var null|WeakReference<Writer>
+     */
+    private WeakReference|null $writer;
+
     /** @var MergeCell[] */
     private array $MERGE_CELLS = [];
 
-    public function __construct()
+    public function __construct(Writer|null $writer = null)
     {
         parent::__construct();
 
@@ -26,6 +33,18 @@ final class Options extends AbstractOptions
         $defaultRowStyle->setFontName(self::DEFAULT_FONT_NAME);
 
         $this->DEFAULT_ROW_STYLE = $defaultRowStyle;
+
+        $this->setWriter($writer);
+    }
+
+    public function getWriter(): Writer|null
+    {
+        return $this->writer?->get();
+    }
+
+    public function setWriter(Writer|null $writer): void
+    {
+        $this->writer = null === $writer ? null : WeakReference::create($writer);
     }
 
     /**
@@ -43,7 +62,13 @@ final class Options extends AbstractOptions
         int $bottomRightColumn,
         int $bottomRightRow
     ): void {
+        $writer = $this->getWriter();
+        if (null === $writer) {
+            throw new WriterNotSet('Unable to merge cells. You should set writer first.');
+        }
+
         $this->MERGE_CELLS[] = new MergeCell(
+            $writer->getCurrentSheet()->getIndex(),
             $topLeftColumn,
             $topLeftRow,
             $bottomRightColumn,

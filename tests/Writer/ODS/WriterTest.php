@@ -222,7 +222,9 @@ final class WriterTest extends TestCase
             // Installed locales differ from one system to another, so we can't pick
             // a given locale.
             $shell_exec = shell_exec('locale -a');
-            self::assertIsString($shell_exec);
+            if (!\is_string($shell_exec)) {
+                self::markTestSkipped();
+            }
             $supportedLocales = explode("\n", $shell_exec);
             $foundCommaLocale = false;
             foreach ($supportedLocales as $supportedLocale) {
