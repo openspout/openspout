@@ -27,7 +27,6 @@ final class Writer extends AbstractWriterMultiSheets
     public function __construct(?Options $options = null)
     {
         $this->options = $options ?? new Options();
-        $this->options->setWriter($this);
     }
 
     public function getOptions(): Options

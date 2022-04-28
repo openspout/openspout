@@ -6,8 +6,6 @@ namespace OpenSpout\Writer\XLSX;
 
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Writer\Common\AbstractOptions;
-use OpenSpout\Writer\Exception\WriterNotSet;
-use WeakReference;
 
 final class Options extends AbstractOptions
 {
@@ -16,15 +14,10 @@ final class Options extends AbstractOptions
 
     public bool $SHOULD_USE_INLINE_STRINGS = true;
 
-    /**
-     * @var null|WeakReference<Writer>
-     */
-    private WeakReference|null $writer;
-
     /** @var MergeCell[] */
     private array $MERGE_CELLS = [];
 
-    public function __construct(Writer|null $writer = null)
+    public function __construct()
     {
         parent::__construct();
 
@@ -33,18 +26,6 @@ final class Options extends AbstractOptions
         $defaultRowStyle->setFontName(self::DEFAULT_FONT_NAME);
 
         $this->DEFAULT_ROW_STYLE = $defaultRowStyle;
-
-        $this->setWriter($writer);
-    }
-
-    public function getWriter(): Writer|null
-    {
-        return $this->writer?->get();
-    }
-
-    public function setWriter(Writer|null $writer): void
-    {
-        $this->writer = null === $writer ? null : WeakReference::create($writer);
     }
 
     /**
@@ -55,20 +36,17 @@ final class Options extends AbstractOptions
      * @param positive-int   $topLeftRow
      * @param 0|positive-int $bottomRightColumn
      * @param positive-int   $bottomRightRow
+     * @param 0|positive-int $sheetIndex
      */
     public function mergeCells(
         int $topLeftColumn,
         int $topLeftRow,
         int $bottomRightColumn,
-        int $bottomRightRow
+        int $bottomRightRow,
+        int $sheetIndex = 0,
     ): void {
-        $writer = $this->getWriter();
-        if (null === $writer) {
-            throw new WriterNotSet('Unable to merge cells. You should set writer first.');
-        }
-
         $this->MERGE_CELLS[] = new MergeCell(
-            $writer->getCurrentSheet()->getIndex(),
+            $sheetIndex,
             $topLeftColumn,
             $topLeftRow,
             $bottomRightColumn,
@@ -77,9 +55,9 @@ final class Options extends AbstractOptions
     }
 
     /**
-     * @internal
-     *
      * @return MergeCell[]
+     *
+     * @internal
      */
     public function getMergeCells(): array
     {

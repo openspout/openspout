@@ -165,7 +165,7 @@ $writer->close();
  
 ## Cell merging
 
-Cell can me merged with the XLSX writers:
+Cell can be merged with the XLSX writers:
 
 ```php
 use OpenSpout\Common\Entity\Row;
@@ -177,7 +177,7 @@ $writer = new Writer($options);
 $writer->openToFile('/tmp/file.xlsx');
 $writer->addRow(Row::fromValues(['foo', 'bar', 'baz']));
 
-$options->mergeCells(0, 1, 0, 2);
+$options->mergeCells(0, 1, 0, 2, $writer->getCurrentSheet()->getIndex());
 $writer->close();
 ```
 

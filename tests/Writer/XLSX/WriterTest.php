@@ -14,7 +14,6 @@ use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Reader\Wrapper\XMLReader;
 use OpenSpout\TestUsingResource;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
-use OpenSpout\Writer\Exception\WriterNotSet;
 use OpenSpout\Writer\RowCreationHelper;
 use OpenSpout\Writer\XLSX\Manager\WorkbookManager;
 use PHPUnit\Framework\TestCase;
@@ -469,9 +468,9 @@ final class WriterTest extends TestCase
         $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
-        $options->mergeCells(0, 1, 3, 1);
+        $options->mergeCells(0, 1, 3, 1, $writer->getCurrentSheet()->getIndex());
         $writer->addNewSheetAndMakeItCurrent();
-        $options->mergeCells(2, 3, 10, 3);
+        $options->mergeCells(2, 3, 10, 3, $writer->getCurrentSheet()->getIndex());
         $writer->close();
 
         $sheet1 = $this->getXmlReaderForSheetFromXmlFile($fileName, '1');
@@ -495,13 +494,6 @@ final class WriterTest extends TestCase
         $merge2 = $mergeCells2->childNodes->item(0);
         self::assertInstanceOf(DOMElement::class, $merge2);
         self::assertEquals('C3:K3', $merge2->getAttribute('ref'), 'Merge ref for first range is not valid.');
-    }
-
-    public function testOptionsWithoutWriter(): void
-    {
-        $this->expectException(WriterNotSet::class);
-        $options = new Options();
-        $options->mergeCells(0, 1, 3, 1);
     }
 
     public function testGeneratedFileShouldBeValidForEmptySheets(): void
