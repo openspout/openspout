@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer\Common\Entity;
 
+use OpenSpout\Writer\XLSX\AutoFilter;
+
 /**
  * Entity describing a Worksheet.
  */
@@ -24,6 +26,9 @@ final class Worksheet
     /** @var int Index of the last written row */
     private int $lastWrittenRowIndex;
 
+    /** @var AutoFilter */
+    private $autoFilter;
+
     /**
      * Worksheet constructor.
      */
@@ -34,6 +39,8 @@ final class Worksheet
         $this->externalSheet = $externalSheet;
         $this->maxNumColumns = 0;
         $this->lastWrittenRowIndex = 0;
+
+        $this->autoFilter = new AutoFilter('');
     }
 
     public function getFilePath(): string
@@ -91,5 +98,18 @@ final class Worksheet
     {
         // sheet index is zero-based, while ID is 1-based
         return $this->externalSheet->getIndex() + 1;
+    }
+
+    public function getAutoFilter(): AutoFilter
+    {
+        return $this->autoFilter;
+    }
+
+    /**
+     * Remove autoFilter.
+     */
+    public function removeAutoFilter(): void
+    {
+        $this->autoFilter->setRange('');
     }
 }

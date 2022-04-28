@@ -7,6 +7,7 @@ namespace OpenSpout\Writer;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Writer\Common\Entity\Sheet;
+use OpenSpout\Writer\Common\Helper\CellHelper;
 use OpenSpout\Writer\Common\Manager\WorkbookManagerInterface;
 use OpenSpout\Writer\Exception\SheetNotFoundException;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
@@ -79,6 +80,37 @@ abstract class AbstractWriterMultiSheets extends AbstractWriter
     {
         $this->throwIfWorkbookIsNotAvailable();
         $this->workbookManager->setCurrentSheet($sheet);
+    }
+
+    /**
+     * Row coordinates are indexed from 1, columns from 0 (A = 0),
+     * so a filter B2:G2 looks like $writer->setAutoFilterForCurrentSheet(1, 2, 6, 2);.
+     *
+     * @param 0|positive-int $fromColumnIndex
+     * @param positive-int   $fromRow
+     * @param 0|positive-int $toColumnIndex
+     * @param positive-int   $toRow
+     */
+    public function setAutoFilterForCurrentSheet(
+        int $fromColumnIndex,
+        int $fromRow,
+        int $toColumnIndex,
+        int $toRow
+    ): void {
+        $cellRange = sprintf(
+            '%s%s:%s%s',
+            CellHelper::getColumnLettersFromColumnIndex($fromColumnIndex),
+            $fromRow,
+            CellHelper::getColumnLettersFromColumnIndex($toColumnIndex),
+            $toRow
+        );
+
+        $this->workbookManager->getCurrentWorksheet()->getAutoFilter()->setRange($cellRange);
+    }
+
+    public function removeAutoFilterForCurrentSheet(): void
+    {
+        $this->workbookManager->getCurrentWorksheet()->removeAutoFilter();
     }
 
     abstract protected function createWorkbookManager(): WorkbookManagerInterface;

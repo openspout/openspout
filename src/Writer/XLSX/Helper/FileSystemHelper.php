@@ -195,6 +195,33 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 
         $workbookXmlFileContents .= <<<'EOD'
                 </sheets>
+            EOD;
+
+        $definedNames = '';
+        $i = 0; // Base localSheet ID
+
+        /** @var Worksheet $worksheet */
+        foreach ($worksheets as $worksheet) {
+            $range = $worksheet->getAutoFilter()->getRange();
+            if ('' !== $range) {
+                $worksheetName = $worksheet->getExternalSheet()->getName();
+                $rangeArray = $worksheet->getAutoFilter()->getRangeArray();
+                $name = sprintf('%s!$%s$%s:$%s$%s', $this->escaper->escape($worksheetName), $rangeArray[0], $rangeArray[1], $rangeArray[2], $rangeArray[3]);
+                $definedNames .= '<definedName function="false" hidden="true" localSheetId="'.$i.'" name="_xlnm._FilterDatabase" vbProcedure="false">'.$name.'</definedName>';
+                ++$i;
+            }
+        }
+        if ('' !== $definedNames) {
+            $workbookXmlFileContents .= <<<'EOD'
+                <definedNames>
+                EOD;
+            $workbookXmlFileContents .= $definedNames;
+            $workbookXmlFileContents .= <<<'EOD'
+                    </definedNames>
+                EOD;
+        }
+
+        $workbookXmlFileContents .= <<<'EOD'
             </workbook>
             EOD;
 
@@ -267,6 +294,14 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             $worksheetFilePath = $worksheet->getFilePath();
             $this->copyFileContentsToTarget($worksheetFilePath, $worksheetFilePointer);
             fwrite($worksheetFilePointer, '</sheetData>');
+
+            // create autoFilter
+            $range = $worksheet->getAutoFilter()->getRange();
+            if ('' !== $range) {
+                fwrite($worksheetFilePointer, '<sheetPr filterMode="false"><pageSetUpPr fitToPage="false"/></sheetPr>');
+                fwrite($worksheetFilePointer, sprintf('<dimension ref="%s"/>', $range));
+                fwrite($worksheetFilePointer, sprintf('<autoFilter ref="%s"/>', $range));
+            }
 
             // create nodes for merge cells
             $mergeCells = array_filter(
