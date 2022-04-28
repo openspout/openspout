@@ -46,6 +46,11 @@ parameters:
 			path: src/Writer/XLSX/Entity/SheetView.php
 
 		-
+			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\) with 'OpenSpout\\\\\\\\Common\\\\\\\\Entity\\\\\\\\Cell\\\\\\\\NumericCell' and OpenSpout\\\\Common\\\\Entity\\\\Cell\\\\NumericCell will always evaluate to true\\.$#"
+			count: 1
+			path: tests/Common/Entity/CellTest.php
+
+		-
 			message: "#^Method OpenSpout\\\\Reader\\\\CSV\\\\SpoutTestStream\\:\\:url_stat\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: tests/Reader/CSV/SpoutTestStream.php
