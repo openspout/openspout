@@ -275,7 +275,9 @@ final class WriterTest extends TestCase
             // Installed locales differ from one system to another, so we can't pick
             // a given locale.
             $shell_exec = shell_exec('locale -a');
-            self::assertIsString($shell_exec);
+            if (!\is_string($shell_exec)) {
+                self::markTestSkipped();
+            }
             $supportedLocales = explode("\n", $shell_exec);
             $foundCommaLocale = false;
             foreach ($supportedLocales as $supportedLocale) {
@@ -455,6 +457,43 @@ final class WriterTest extends TestCase
         $DOMNode1 = $xmlReader->expand();
         self::assertInstanceOf(DOMElement::class, $DOMNode1);
         self::assertEquals('C3:K3', $DOMNode1->getAttribute('ref'), 'Merge ref for second range is not valid.');
+    }
+
+    public function testMergeCellsOnSeparateSheets(): void
+    {
+        $fileName = 'test_merge_cells_on_separate_sheets.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $options->mergeCells(0, 1, 3, 1, $writer->getCurrentSheet()->getIndex());
+        $writer->addNewSheetAndMakeItCurrent();
+        $options->mergeCells(2, 3, 10, 3, $writer->getCurrentSheet()->getIndex());
+        $writer->close();
+
+        $sheet1 = $this->getXmlReaderForSheetFromXmlFile($fileName, '1');
+        $sheet1->readUntilNodeFound('mergeCells');
+        self::assertEquals('mergeCells', $sheet1->getCurrentNodeName(), 'Sheet 1 does not have mergeCells tag');
+
+        $mergeCells1 = $sheet1->expand();
+        self::assertNotFalse($mergeCells1);
+        self::assertEquals(1, $mergeCells1->childNodes->length, 'Sheet 1 does not have the specified number of mergeCell definitions');
+        $merge1 = $mergeCells1->childNodes->item(0);
+        self::assertInstanceOf(DOMElement::class, $merge1);
+        self::assertEquals('A1:D1', $merge1->getAttribute('ref'), 'Merge ref for first range is not valid.');
+
+        $sheet2 = $this->getXmlReaderForSheetFromXmlFile($fileName, '2');
+        $sheet2->readUntilNodeFound('mergeCells');
+        self::assertEquals('mergeCells', $sheet2->getCurrentNodeName(), 'Sheet 2 does not have mergeCells tag');
+
+        $mergeCells2 = $sheet2->expand();
+        self::assertNotFalse($mergeCells2);
+        self::assertEquals(1, $mergeCells2->childNodes->length, 'Sheet 2 does not have the specified number of mergeCell definitions');
+        $merge2 = $mergeCells2->childNodes->item(0);
+        self::assertInstanceOf(DOMElement::class, $merge2);
+        self::assertEquals('C3:K3', $merge2->getAttribute('ref'), 'Merge ref for first range is not valid.');
     }
 
     public function testGeneratedFileShouldBeValidForEmptySheets(): void

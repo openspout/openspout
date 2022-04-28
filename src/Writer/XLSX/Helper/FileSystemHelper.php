@@ -12,6 +12,7 @@ use OpenSpout\Writer\Common\Helper\CellHelper;
 use OpenSpout\Writer\Common\Helper\FileSystemWithRootFolderHelperInterface;
 use OpenSpout\Writer\Common\Helper\ZipHelper;
 use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
+use OpenSpout\Writer\XLSX\MergeCell;
 use OpenSpout\Writer\XLSX\Options;
 
 /**
@@ -247,6 +248,8 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
      */
     public function createContentFiles(Options $options, array $worksheets): self
     {
+        $allMergeCells = $options->getMergeCells();
+
         foreach ($worksheets as $worksheet) {
             $contentXmlFilePath = $this->getXlWorksheetsFolder().\DIRECTORY_SEPARATOR.basename($worksheet->getFilePath());
             $worksheetFilePointer = fopen($contentXmlFilePath, 'w');
@@ -266,7 +269,10 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             fwrite($worksheetFilePointer, '</sheetData>');
 
             // create nodes for merge cells
-            $mergeCells = $options->getMergeCells();
+            $mergeCells = array_filter(
+                $allMergeCells,
+                static fn (MergeCell $c) => $c->sheetIndex === $worksheet->getExternalSheet()->getIndex(),
+            );
             if ([] !== $mergeCells) {
                 $mergeCellString = '<mergeCells count="'.\count($mergeCells).'">';
                 foreach ($mergeCells as $mergeCell) {

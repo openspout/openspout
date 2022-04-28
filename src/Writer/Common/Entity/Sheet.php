@@ -14,7 +14,7 @@ final class Sheet
 {
     public const DEFAULT_SHEET_NAME_PREFIX = 'Sheet';
 
-    /** @var int Index of the sheet, based on order in the workbook (zero-based) */
+    /** @var 0|positive-int Index of the sheet, based on order in the workbook (zero-based) */
     private int $index;
 
     /** @var string ID of the sheet's associated workbook. Used to restrict sheet name uniqueness enforcement to a single workbook */
@@ -35,9 +35,9 @@ final class Sheet
     private int $writtenRowCount = 0;
 
     /**
-     * @param int          $sheetIndex           Index of the sheet, based on order in the workbook (zero-based)
-     * @param string       $associatedWorkbookId ID of the sheet's associated workbook
-     * @param SheetManager $sheetManager         To manage sheets
+     * @param 0|positive-int $sheetIndex           Index of the sheet, based on order in the workbook (zero-based)
+     * @param string         $associatedWorkbookId ID of the sheet's associated workbook
+     * @param SheetManager   $sheetManager         To manage sheets
      */
     public function __construct(int $sheetIndex, string $associatedWorkbookId, SheetManager $sheetManager)
     {
@@ -52,7 +52,7 @@ final class Sheet
     }
 
     /**
-     * @return int Index of the sheet, based on order in the workbook (zero-based)
+     * @return 0|positive-int Index of the sheet, based on order in the workbook (zero-based)
      */
     public function getIndex(): int
     {

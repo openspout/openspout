@@ -36,14 +36,17 @@ final class Options extends AbstractOptions
      * @param positive-int   $topLeftRow
      * @param 0|positive-int $bottomRightColumn
      * @param positive-int   $bottomRightRow
+     * @param 0|positive-int $sheetIndex
      */
     public function mergeCells(
         int $topLeftColumn,
         int $topLeftRow,
         int $bottomRightColumn,
-        int $bottomRightRow
+        int $bottomRightRow,
+        int $sheetIndex = 0,
     ): void {
         $this->MERGE_CELLS[] = new MergeCell(
+            $sheetIndex,
             $topLeftColumn,
             $topLeftRow,
             $bottomRightColumn,
@@ -52,9 +55,9 @@ final class Options extends AbstractOptions
     }
 
     /**
-     * @internal
-     *
      * @return MergeCell[]
+     *
+     * @internal
      */
     public function getMergeCells(): array
     {

@@ -103,6 +103,9 @@ final class SheetTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
+    /**
+     * @param 0|positive-int $sheetIndex
+     */
     private function createSheet(int $sheetIndex, string $associatedWorkbookId): Sheet
     {
         return new Sheet($sheetIndex, $associatedWorkbookId, $this->sheetManager);
