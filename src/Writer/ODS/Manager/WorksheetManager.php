@@ -87,20 +87,17 @@ final class WorksheetManager implements WorksheetManagerInterface
         $escapedSheetName = $this->stringsEscaper->escape($externalSheet->getName());
         $databaseRange = '';
 
-        if (null !== $externalSheet->getAutoFilter()) {
-            $rangeArray = $externalSheet->getAutoFilter()->getRange();
-            if ([] !== $rangeArray) {
-                $rangeAddress = sprintf(
-                    '\'%s\'.%s%s:\'%s\'.%s%s',
-                    $escapedSheetName,
-                    CellHelper::getColumnLettersFromColumnIndex($rangeArray['fromCol']),
-                    $rangeArray['fromRow'],
-                    $escapedSheetName,
-                    CellHelper::getColumnLettersFromColumnIndex($rangeArray['toCol']),
-                    $rangeArray['toRow']
-                );
-                $databaseRange = '<table:database-range table:name="__Anonymous_Sheet_DB__'.$externalSheet->getIndex().'" table:target-range-address="'.$rangeAddress.'" table:display-filter-buttons="true"/>';
-            }
+        if (null !== $autofilter = $externalSheet->getAutoFilter()) {
+            $rangeAddress = sprintf(
+                '\'%s\'.%s%s:\'%s\'.%s%s',
+                $escapedSheetName,
+                CellHelper::getColumnLettersFromColumnIndex($autofilter->fromColumnIndex),
+                $autofilter->fromRow,
+                $escapedSheetName,
+                CellHelper::getColumnLettersFromColumnIndex($autofilter->toColumnIndex),
+                $autofilter->toRow
+            );
+            $databaseRange = '<table:database-range table:name="__Anonymous_Sheet_DB__'.$externalSheet->getIndex().'" table:target-range-address="'.$rangeAddress.'" table:display-filter-buttons="true"/>';
         }
 
         return $databaseRange;

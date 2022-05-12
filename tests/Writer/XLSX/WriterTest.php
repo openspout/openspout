@@ -13,6 +13,7 @@ use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Reader\Wrapper\XMLReader;
 use OpenSpout\TestUsingResource;
+use OpenSpout\Writer\AutoFilter;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
 use OpenSpout\Writer\RowCreationHelper;
 use OpenSpout\Writer\XLSX\Manager\WorkbookManager;
@@ -608,7 +609,8 @@ final class WriterTest extends TestCase
         $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
-        $writer->getCurrentSheet()->setAutoFilter(0, 1, 3, 3);
+        $autoFilter = new AutoFilter(0, 1, 3, 3);
+        $writer->getCurrentSheet()->setAutoFilter($autoFilter);
         $writer->close();
 
         $xmlReader = $this->getXmlReaderForSheetFromXmlFile($fileName, '1');
@@ -628,12 +630,13 @@ final class WriterTest extends TestCase
         $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
-        $writer->getCurrentSheet()->setAutoFilter(0, 1, 3, 3);
+        $autoFilter = new AutoFilter(0, 1, 3, 3);
+        $writer->getCurrentSheet()->setAutoFilter($autoFilter);
         $writer->close();
 
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
-        $writer->getCurrentSheet()->removeAutoFilter();
+        $writer->getCurrentSheet()->setAutoFilter(null);
         $writer->close();
 
         $xmlReader = new XMLReader();
@@ -655,10 +658,12 @@ final class WriterTest extends TestCase
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->getCurrentSheet()->setName('Sheet First');
-        $writer->getCurrentSheet()->setAutoFilter(0, 1, 3, 3);
+        $autoFilter1 = new AutoFilter(0, 1, 3, 3);
+        $writer->getCurrentSheet()->setAutoFilter($autoFilter1);
         $writer->addNewSheetAndMakeItCurrent();
         $writer->getCurrentSheet()->setName('Sheet Last');
-        $writer->getCurrentSheet()->setAutoFilter(0, 1, 26, 11);
+        $autoFilter2 = new AutoFilter(0, 1, 26, 11);
+        $writer->getCurrentSheet()->setAutoFilter($autoFilter2);
         $writer->close();
 
         $pathToWorkbookFile = $resourcePath.'#xl/workbook.xml';

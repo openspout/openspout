@@ -146,39 +146,18 @@ final class Sheet
         return $this->writtenRowCount;
     }
 
+    /**
+     * @return $this
+     */
+    public function setAutoFilter(?AutoFilter $autoFilter): self
+    {
+        $this->autoFilter = $autoFilter;
+
+        return $this;
+    }
+
     public function getAutoFilter(): ?AutoFilter
     {
         return $this->autoFilter;
-    }
-
-    /**
-     * Row coordinates are indexed from 1, columns from 0 (A = 0),
-     * so a filter B2:G2 looks like setAutoFilter(1, 2, 6, 2);.
-     *
-     * @param 0|positive-int $fromColumnIndex
-     * @param positive-int   $fromRow
-     * @param 0|positive-int $toColumnIndex
-     * @param positive-int   $toRow
-     */
-    public function setAutoFilter(
-        int $fromColumnIndex,
-        int $fromRow,
-        int $toColumnIndex,
-        int $toRow
-    ): void {
-        $this->autoFilter = new AutoFilter(
-            $fromColumnIndex,
-            $fromRow,
-            $toColumnIndex,
-            $toRow
-        );
-    }
-
-    /**
-     * Remove autoFilter.
-     */
-    public function removeAutoFilter(): void
-    {
-        $this->autoFilter = null;
     }
 }

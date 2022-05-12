@@ -14,28 +14,15 @@ final class AutoFilterTest extends TestCase
 {
     public function testCreateAutofilterSetCorrectRange(): void
     {
-        $autoFilter = new AutoFilter(0, 1, 27, 13);
-        $customAutofilter = [
-            'fromCol' => 0,
-            'fromRow' => 1,
-            'toCol' => 27,
-            'toRow' => 13,
-        ];
+        $fromCol = 0;
+        $fromRow = 1;
+        $toCol = 27;
+        $toRow = 13;
+        $autoFilter = new AutoFilter($fromCol, $fromRow, $toCol, $toRow);
 
-        self::assertSame($customAutofilter, $autoFilter->getRange(), 'Incorrect AutoFilter range');
-    }
-
-    public function testGetRangeShouldReturnThePreviouslySetRange(): void
-    {
-        $autoFilter = new AutoFilter(0, 1, 2, 2);
-        $customAutofilter = [
-            'fromCol' => 0,
-            'fromRow' => 1,
-            'toCol' => 27,
-            'toRow' => 13,
-        ];
-
-        $autoFilter->setRange(0, 1, 27, 13);
-        self::assertSame($customAutofilter, $autoFilter->getRange(), 'Incorrect AutoFilter range');
+        self::assertSame($fromCol, $autoFilter->fromColumnIndex, 'Incorrect AutoFilter range');
+        self::assertSame($fromRow, $autoFilter->fromRow, 'Incorrect AutoFilter range');
+        self::assertSame($toCol, $autoFilter->toColumnIndex, 'Incorrect AutoFilter range');
+        self::assertSame($toRow, $autoFilter->toRow, 'Incorrect AutoFilter range');
     }
 }
