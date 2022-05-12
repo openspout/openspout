@@ -248,7 +248,9 @@ final class CellValueFormatter
         $dateObj = DateTimeImmutable::createFromFormat('|Y-m-d', $baseDate);
         \assert(false !== $dateObj);
         $dateObj = $dateObj->modify('+'.$daysSinceBaseDate.'days');
+        \assert(false !== $dateObj);
         $dateObj = $dateObj->modify('+'.$secondsRemainder.'seconds');
+        \assert(false !== $dateObj);
 
         if ($this->shouldFormatDates) {
             $styleNumberFormatCode = $this->styleManager->getNumberFormatCode($cellStyleId);
