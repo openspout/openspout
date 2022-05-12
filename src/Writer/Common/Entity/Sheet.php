@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer\Common\Entity;
 
+use OpenSpout\Writer\AutoFilter;
 use OpenSpout\Writer\Common\Manager\SheetManager;
 use OpenSpout\Writer\XLSX\Entity\SheetView;
 
@@ -33,6 +34,8 @@ final class Sheet
 
     /** @var 0|positive-int */
     private int $writtenRowCount = 0;
+
+    private ?AutoFilter $autoFilter = null;
 
     /**
      * @param 0|positive-int $sheetIndex           Index of the sheet, based on order in the workbook (zero-based)
@@ -141,5 +144,41 @@ final class Sheet
     public function getWrittenRowCount(): int
     {
         return $this->writtenRowCount;
+    }
+
+    public function getAutoFilter(): ?AutoFilter
+    {
+        return $this->autoFilter;
+    }
+
+    /**
+     * Row coordinates are indexed from 1, columns from 0 (A = 0),
+     * so a filter B2:G2 looks like setAutoFilter(1, 2, 6, 2);.
+     *
+     * @param 0|positive-int $fromColumnIndex
+     * @param positive-int   $fromRow
+     * @param 0|positive-int $toColumnIndex
+     * @param positive-int   $toRow
+     */
+    public function setAutoFilter(
+        int $fromColumnIndex,
+        int $fromRow,
+        int $toColumnIndex,
+        int $toRow
+    ): void {
+        $this->autoFilter = new AutoFilter(
+            $fromColumnIndex,
+            $fromRow,
+            $toColumnIndex,
+            $toRow
+        );
+    }
+
+    /**
+     * Remove autoFilter.
+     */
+    public function removeAutoFilter(): void
+    {
+        $this->autoFilter = null;
     }
 }

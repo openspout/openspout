@@ -198,17 +198,24 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             EOD;
 
         $definedNames = '';
-        $i = 0; // Base localSheet ID
 
         /** @var Worksheet $worksheet */
         foreach ($worksheets as $worksheet) {
-            $range = $worksheet->getAutoFilter()->getRange();
-            if ('' !== $range) {
-                $worksheetName = $worksheet->getExternalSheet()->getName();
-                $rangeArray = $worksheet->getAutoFilter()->getRangeArray();
-                $name = sprintf('%s!$%s$%s:$%s$%s', $this->escaper->escape($worksheetName), $rangeArray[0], $rangeArray[1], $rangeArray[2], $rangeArray[3]);
-                $definedNames .= '<definedName function="false" hidden="true" localSheetId="'.$i.'" name="_xlnm._FilterDatabase" vbProcedure="false">'.$name.'</definedName>';
-                ++$i;
+            $sheet = $worksheet->getExternalSheet();
+            if (null !== $sheet->getAutoFilter()) {
+                $rangeArray = $sheet->getAutoFilter()->getRange();
+                if ([] !== $rangeArray) {
+                    $worksheetName = $sheet->getName();
+                    $name = sprintf(
+                        '\'%s\'!$%s$%s:$%s$%s',
+                        $this->escaper->escape($worksheetName),
+                        CellHelper::getColumnLettersFromColumnIndex($rangeArray['fromCol']),
+                        $rangeArray['fromRow'],
+                        CellHelper::getColumnLettersFromColumnIndex($rangeArray['toCol']),
+                        $rangeArray['toRow']
+                    );
+                    $definedNames .= '<definedName function="false" hidden="true" localSheetId="'.$sheet->getIndex().'" name="_xlnm._FilterDatabase" vbProcedure="false">'.$name.'</definedName>';
+                }
             }
         }
         if ('' !== $definedNames) {
@@ -296,11 +303,20 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             fwrite($worksheetFilePointer, '</sheetData>');
 
             // create autoFilter
-            $range = $worksheet->getAutoFilter()->getRange();
-            if ('' !== $range) {
-                fwrite($worksheetFilePointer, '<sheetPr filterMode="false"><pageSetUpPr fitToPage="false"/></sheetPr>');
-                fwrite($worksheetFilePointer, sprintf('<dimension ref="%s"/>', $range));
-                fwrite($worksheetFilePointer, sprintf('<autoFilter ref="%s"/>', $range));
+            if (null !== $sheet->getAutoFilter()) {
+                $rangeArray = $sheet->getAutoFilter()->getRange();
+                if ([] !== $rangeArray) {
+                    $range = sprintf(
+                        '%s%s:%s%s',
+                        CellHelper::getColumnLettersFromColumnIndex($rangeArray['fromCol']),
+                        $rangeArray['fromRow'],
+                        CellHelper::getColumnLettersFromColumnIndex($rangeArray['toCol']),
+                        $rangeArray['toRow']
+                    );
+                    fwrite($worksheetFilePointer, '<sheetPr filterMode="false"><pageSetUpPr fitToPage="false"/></sheetPr>');
+                    fwrite($worksheetFilePointer, sprintf('<dimension ref="%s"/>', $range));
+                    fwrite($worksheetFilePointer, sprintf('<autoFilter ref="%s"/>', $range));
+                }
             }
 
             // create nodes for merge cells

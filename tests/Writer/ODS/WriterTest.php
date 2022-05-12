@@ -453,6 +453,92 @@ final class WriterTest extends TestCase
         self::assertSame($options->DEFAULT_COLUMN_WIDTH, $writer->getOptions()->DEFAULT_COLUMN_WIDTH);
     }
 
+    public function testSetAutofilterShouldWriteCorrectData(): void
+    {
+        $fileName = 'test_set_autofilter_should_write_correct_data.ods';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $writer->getCurrentSheet()->setName('Sheet First');
+        $writer->getCurrentSheet()->setAutoFilter(0, 1, 3, 3);
+        $writer->close();
+
+        $xmlReader = new XMLReader();
+        $xmlReader->openFileInZip($resourcePath, 'content.xml');
+        $xmlReader->readUntilNodeFound('table:database-ranges');
+
+        $sheetXmlNode = $xmlReader->expand();
+        self::assertInstanceOf(DOMElement::class, $sheetXmlNode);
+
+        $databaseRangeNodes = $sheetXmlNode->getElementsByTagName('database-range');
+        self::assertSame(1, $databaseRangeNodes->length);
+
+        $databaseRangeNode = $databaseRangeNodes->item(0);
+        $targetRangeAddress = $databaseRangeNode->getAttribute('table:target-range-address');
+        self::assertSame("'Sheet First'.A1:'Sheet First'.D3", $targetRangeAddress);
+    }
+
+    public function testRemoveAutofilterShouldDeleteDatabaseRangesTag(): void
+    {
+        $fileName = 'test_remove_autofilter_should_delete_all_database_range_tag.ods';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $writer->getCurrentSheet()->setAutoFilter(0, 1, 3, 3);
+        $writer->close();
+
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $writer->getCurrentSheet()->removeAutoFilter();
+        $writer->close();
+
+        $xmlReader = new XMLReader();
+        $xmlReader->openFileInZip($resourcePath, 'content.xml');
+        $foundDatabaseRanges = $xmlReader->readUntilNodeFound('table:database-ranges');
+        self::assertFalse($foundDatabaseRanges);
+    }
+
+    public function testAddAutofilterToTwoSheetsShouldWriteCorrectData(): void
+    {
+        $fileName = 'test_add_autofilter_to_two_sheets_should-write-correct-data.ods';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $writer->getCurrentSheet()->setAutoFilter(0, 1, 3, 3);
+        $writer->addNewSheetAndMakeItCurrent();
+        $writer->getCurrentSheet()->setAutoFilter(0, 1, 26, 11);
+        $writer->close();
+
+        $xmlReader = new XMLReader();
+        $xmlReader->openFileInZip($resourcePath, 'content.xml');
+        $xmlReader->readUntilNodeFound('table:database-ranges');
+
+        $sheetXmlNode = $xmlReader->expand();
+        self::assertInstanceOf(DOMElement::class, $sheetXmlNode);
+
+        $databaseRangeNodes = $sheetXmlNode->getElementsByTagName('database-range');
+        self::assertSame(2, $databaseRangeNodes->length);
+
+        $databaseRangeFirstNode = $databaseRangeNodes->item(0);
+        $targetRangeAddress = $databaseRangeFirstNode->getAttribute('table:target-range-address');
+        self::assertSame("'Sheet1'.A1:'Sheet1'.D3", $targetRangeAddress);
+
+        $databaseRangeSecondNode = $databaseRangeNodes->item(1);
+        $targetRangeAddress = $databaseRangeSecondNode->getAttribute('table:target-range-address');
+        self::assertSame("'Sheet2'.A1:'Sheet2'.AA11", $targetRangeAddress);
+    }
+
     /**
      * @param Row[] $allRows
      */

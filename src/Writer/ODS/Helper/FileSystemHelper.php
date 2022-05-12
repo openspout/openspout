@@ -134,6 +134,17 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             fwrite($contentXmlHandle, '</table:table>');
         }
 
+        // add AutoFilter
+        $databaseRanges = '';
+        foreach ($worksheets as $worksheet) {
+            $databaseRanges .= $worksheetManager->getTableDatabaseRangeElementAsString($worksheet);
+        }
+        if ('' !== $databaseRanges) {
+            fwrite($contentXmlHandle, '<table:database-ranges>');
+            fwrite($contentXmlHandle, $databaseRanges);
+            fwrite($contentXmlHandle, '</table:database-ranges>');
+        }
+
         $contentXmlFileContents = '</office:spreadsheet></office:body></office:document-content>';
 
         fwrite($contentXmlHandle, $contentXmlFileContents);

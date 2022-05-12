@@ -608,7 +608,7 @@ final class WriterTest extends TestCase
         $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
-        $writer->setAutoFilterForCurrentSheet(0, 1, 3, 3);
+        $writer->getCurrentSheet()->setAutoFilter(0, 1, 3, 3);
         $writer->close();
 
         $xmlReader = $this->getXmlReaderForSheetFromXmlFile($fileName, '1');
@@ -628,12 +628,12 @@ final class WriterTest extends TestCase
         $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
-        $writer->setAutoFilterForCurrentSheet(0, 1, 3, 3);
+        $writer->getCurrentSheet()->setAutoFilter(0, 1, 3, 3);
         $writer->close();
 
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
-        $writer->removeAutoFilterForCurrentSheet();
+        $writer->getCurrentSheet()->removeAutoFilter();
         $writer->close();
 
         $xmlReader = new XMLReader();
@@ -654,9 +654,11 @@ final class WriterTest extends TestCase
         $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
-        $writer->setAutoFilterForCurrentSheet(0, 1, 3, 3);
+        $writer->getCurrentSheet()->setName('Sheet First');
+        $writer->getCurrentSheet()->setAutoFilter(0, 1, 3, 3);
         $writer->addNewSheetAndMakeItCurrent();
-        $writer->setAutoFilterForCurrentSheet(0, 1, 5, 2);
+        $writer->getCurrentSheet()->setName('Sheet Last');
+        $writer->getCurrentSheet()->setAutoFilter(0, 1, 26, 11);
         $writer->close();
 
         $pathToWorkbookFile = $resourcePath.'#xl/workbook.xml';
@@ -675,12 +677,12 @@ final class WriterTest extends TestCase
 
         /** @var DOMElement $firstFilter */
         $firstFilter = $DOMNode->childNodes->item(0);
-        self::assertEquals('Sheet1!$A$1:$D$3', $firstFilter->nodeValue, 'DefinedName is not valid.');
+        self::assertEquals('\'Sheet First\'!$A$1:$D$3', $firstFilter->nodeValue, 'DefinedName is not valid.');
         self::assertEquals('0', $firstFilter->getAttribute('localSheetId'), 'Sheet Id is not valid.');
 
         /** @var DOMElement $secondFilter */
         $secondFilter = $DOMNode->childNodes->item(1);
-        self::assertEquals('Sheet2!$A$1:$F$2', $secondFilter->nodeValue, 'DefinedName is not valid.');
+        self::assertEquals('\'Sheet Last\'!$A$1:$AA$11', $secondFilter->nodeValue, 'DefinedName is not valid.');
         self::assertEquals('1', $secondFilter->getAttribute('localSheetId'), 'Sheet Id is not valid.');
     }
 
