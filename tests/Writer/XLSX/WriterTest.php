@@ -13,6 +13,7 @@ use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Reader\Wrapper\XMLReader;
 use OpenSpout\TestUsingResource;
+use OpenSpout\Writer\AutoFilter;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
 use OpenSpout\Writer\RowCreationHelper;
 use OpenSpout\Writer\XLSX\Manager\WorkbookManager;
@@ -597,6 +598,97 @@ final class WriterTest extends TestCase
 
         $writer->close();
         self::assertSame(6, $writer->getWrittenRowCount());
+    }
+
+    public function testCloseShouldAddAutofilterTag(): void
+    {
+        $fileName = 'test_close_should_add_autofilter_tag.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $autoFilter = new AutoFilter(0, 1, 3, 3);
+        $writer->getCurrentSheet()->setAutoFilter($autoFilter);
+        $writer->close();
+
+        $xmlReader = $this->getXmlReaderForSheetFromXmlFile($fileName, '1');
+        $xmlReader->readUntilNodeFound('autoFilter');
+        self::assertEquals('autoFilter', $xmlReader->getCurrentNodeName(), 'Sheet does not have autoFilter tag');
+        $DOMNode = $xmlReader->expand();
+        self::assertInstanceOf(DOMElement::class, $DOMNode);
+        self::assertEquals('A1:D3', $DOMNode->getAttribute('ref'), 'Merge ref for autoFilter range is not valid.');
+    }
+
+    public function testRemoveAutofilterShouldDeleteAllAutofilterTag(): void
+    {
+        $fileName = 'test_remove_autofilter_should_delete_all_autofilter_tag.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $autoFilter = new AutoFilter(0, 1, 3, 3);
+        $writer->getCurrentSheet()->setAutoFilter($autoFilter);
+        $writer->close();
+
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $writer->getCurrentSheet()->setAutoFilter(null);
+        $writer->close();
+
+        $xmlReader = new XMLReader();
+        $xmlReader->openFileInZip($resourcePath, 'xl/worksheets/sheet1.xml');
+        $foundAutofilterTag = $xmlReader->readUntilNodeFound('autoFilter');
+        self::assertFalse($foundAutofilterTag);
+        $xmlReader->openFileInZip($resourcePath, 'xl/workbook.xml');
+        $foundDefinedNamesTag = $xmlReader->readUntilNodeFound('definedNames');
+        self::assertFalse($foundDefinedNamesTag);
+    }
+
+    public function testAddAutofilterToTwoSheetsShouldWriteCorrectDataToWorkbookFile(): void
+    {
+        $fileName = 'test_add_autofilter_to_two_sheets_should-write-correct-data-to-workbook-file.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $writer->getCurrentSheet()->setName('Sheet First');
+        $autoFilter1 = new AutoFilter(0, 1, 3, 3);
+        $writer->getCurrentSheet()->setAutoFilter($autoFilter1);
+        $writer->addNewSheetAndMakeItCurrent();
+        $writer->getCurrentSheet()->setName('Sheet Last');
+        $autoFilter2 = new AutoFilter(0, 1, 26, 11);
+        $writer->getCurrentSheet()->setAutoFilter($autoFilter2);
+        $writer->close();
+
+        $pathToWorkbookFile = $resourcePath.'#xl/workbook.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
+
+        self::assertNotFalse($xmlContents);
+
+        $xmlReader = new XMLReader();
+        $xmlReader->openFileInZip($resourcePath, 'xl/workbook.xml');
+        $xmlReader->readUntilNodeFound('definedNames');
+        self::assertEquals('definedNames', $xmlReader->getCurrentNodeName(), 'Workbook does not have definedNames tag');
+
+        /** @var DOMElement $DOMNode */
+        $DOMNode = $xmlReader->expand();
+        self::assertEquals(2, $DOMNode->childElementCount, 'Workbook does not have the specified number of definedName tags');
+
+        /** @var DOMElement $firstFilter */
+        $firstFilter = $DOMNode->childNodes->item(0);
+        self::assertEquals('\'Sheet First\'!$A$1:$D$3', $firstFilter->nodeValue, 'DefinedName is not valid.');
+        self::assertEquals('0', $firstFilter->getAttribute('localSheetId'), 'Sheet Id is not valid.');
+
+        /** @var DOMElement $secondFilter */
+        $secondFilter = $DOMNode->childNodes->item(1);
+        self::assertEquals('\'Sheet Last\'!$A$1:$AA$11', $secondFilter->nodeValue, 'DefinedName is not valid.');
+        self::assertEquals('1', $secondFilter->getAttribute('localSheetId'), 'Sheet Id is not valid.');
     }
 
     /**

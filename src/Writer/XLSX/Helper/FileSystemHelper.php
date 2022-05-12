@@ -195,6 +195,31 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 
         $workbookXmlFileContents .= <<<'EOD'
                 </sheets>
+            EOD;
+
+        $definedNames = '';
+
+        /** @var Worksheet $worksheet */
+        foreach ($worksheets as $worksheet) {
+            $sheet = $worksheet->getExternalSheet();
+            if (null !== $autofilter = $sheet->getAutoFilter()) {
+                $worksheetName = $sheet->getName();
+                $name = sprintf(
+                    '\'%s\'!$%s$%s:$%s$%s',
+                    $this->escaper->escape($worksheetName),
+                    CellHelper::getColumnLettersFromColumnIndex($autofilter->fromColumnIndex),
+                    $autofilter->fromRow,
+                    CellHelper::getColumnLettersFromColumnIndex($autofilter->toColumnIndex),
+                    $autofilter->toRow
+                );
+                $definedNames .= '<definedName function="false" hidden="true" localSheetId="'.$sheet->getIndex().'" name="_xlnm._FilterDatabase" vbProcedure="false">'.$name.'</definedName>';
+            }
+        }
+        if ('' !== $definedNames) {
+            $workbookXmlFileContents .= '<definedNames>'.$definedNames.'</definedNames>';
+        }
+
+        $workbookXmlFileContents .= <<<'EOD'
             </workbook>
             EOD;
 
@@ -267,6 +292,20 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             $worksheetFilePath = $worksheet->getFilePath();
             $this->copyFileContentsToTarget($worksheetFilePath, $worksheetFilePointer);
             fwrite($worksheetFilePointer, '</sheetData>');
+
+            // create autoFilter
+            if (null !== $autofilter = $sheet->getAutoFilter()) {
+                $range = sprintf(
+                    '%s%s:%s%s',
+                    CellHelper::getColumnLettersFromColumnIndex($autofilter->fromColumnIndex),
+                    $autofilter->fromRow,
+                    CellHelper::getColumnLettersFromColumnIndex($autofilter->toColumnIndex),
+                    $autofilter->toRow
+                );
+                fwrite($worksheetFilePointer, '<sheetPr filterMode="false"><pageSetUpPr fitToPage="false"/></sheetPr>');
+                fwrite($worksheetFilePointer, sprintf('<dimension ref="%s"/>', $range));
+                fwrite($worksheetFilePointer, sprintf('<autoFilter ref="%s"/>', $range));
+            }
 
             // create nodes for merge cells
             $mergeCells = array_filter(
