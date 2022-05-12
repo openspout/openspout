@@ -4,20 +4,11 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer;
 
+/**
+ * @readonly
+ */
 final class AutoFilter
 {
-    /** @var 0|positive-int */
-    public $fromColumnIndex;
-
-    /** @var positive-int */
-    public $fromRow;
-
-    /** @var 0|positive-int */
-    public $toColumnIndex;
-
-    /** @var positive-int */
-    public $toRow;
-
     /**
      * @param 0|positive-int $fromColumnIndex
      * @param positive-int   $fromRow
@@ -25,14 +16,10 @@ final class AutoFilter
      * @param positive-int   $toRow
      */
     public function __construct(
-        int $fromColumnIndex,
-        int $fromRow,
-        int $toColumnIndex,
-        int $toRow
+        public int $fromColumnIndex,
+        public int $fromRow,
+        public int $toColumnIndex,
+        public int $toRow
     ) {
-        $this->fromColumnIndex = $fromColumnIndex;
-        $this->fromRow = $fromRow;
-        $this->toColumnIndex = $toColumnIndex;
-        $this->toRow = $toRow;
     }
 }
