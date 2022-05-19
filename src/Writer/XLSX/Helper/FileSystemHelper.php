@@ -282,6 +282,21 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 
             $sheet = $worksheet->getExternalSheet();
             fwrite($worksheetFilePointer, self::SHEET_XML_FILE_HEADER);
+
+            // AutoFilter tags
+            $range = '';
+            if (null !== $autofilter = $sheet->getAutoFilter()) {
+                $range = sprintf(
+                    '%s%s:%s%s',
+                    CellHelper::getColumnLettersFromColumnIndex($autofilter->fromColumnIndex),
+                    $autofilter->fromRow,
+                    CellHelper::getColumnLettersFromColumnIndex($autofilter->toColumnIndex),
+                    $autofilter->toRow
+                );
+                fwrite($worksheetFilePointer, '<sheetPr filterMode="false"><pageSetUpPr fitToPage="false"/></sheetPr>');
+                fwrite($worksheetFilePointer, sprintf('<dimension ref="%s"/>', $range));
+            }
+
             if (null !== ($sheetView = $sheet->getSheetView())) {
                 fwrite($worksheetFilePointer, '<sheetViews>'.$sheetView->getXml().'</sheetViews>');
             }
@@ -293,17 +308,8 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             $this->copyFileContentsToTarget($worksheetFilePath, $worksheetFilePointer);
             fwrite($worksheetFilePointer, '</sheetData>');
 
-            // create autoFilter
-            if (null !== $autofilter = $sheet->getAutoFilter()) {
-                $range = sprintf(
-                    '%s%s:%s%s',
-                    CellHelper::getColumnLettersFromColumnIndex($autofilter->fromColumnIndex),
-                    $autofilter->fromRow,
-                    CellHelper::getColumnLettersFromColumnIndex($autofilter->toColumnIndex),
-                    $autofilter->toRow
-                );
-                fwrite($worksheetFilePointer, '<sheetPr filterMode="false"><pageSetUpPr fitToPage="false"/></sheetPr>');
-                fwrite($worksheetFilePointer, sprintf('<dimension ref="%s"/>', $range));
+            // AutoFilter tag
+            if ('' !== $range) {
                 fwrite($worksheetFilePointer, sprintf('<autoFilter ref="%s"/>', $range));
             }
 
