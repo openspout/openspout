@@ -12,5 +12,5 @@ use OpenSpout\Common\Entity\Row;
  */
 interface RowIteratorInterface extends Iterator
 {
-    public function current(): Row;
+    public function current(): ?Row;
 }
