@@ -129,6 +129,20 @@ final class ReaderTest extends TestCase
         self::assertSame([], $allRows);
     }
 
+    public function testReadShouldReadEmptyFileUsingRowIteratorWithNullRow(): void
+    {
+        $resourcePath = TestUsingResource::getResourcePath('csv_empty.csv');
+        $reader = $this->createCSVReader(null, null);
+        $reader->open($resourcePath);
+
+        $sheet = $reader->getSheetIterator()->current();
+
+        $row = $sheet->getRowIterator();
+        $row->rewind();
+
+        self::assertNull($row->current());
+    }
+
     public function testReadShouldHaveTheRightNumberOfCells(): void
     {
         $allRows = $this->getAllRowsForFile('csv_with_different_cells_number.csv');
