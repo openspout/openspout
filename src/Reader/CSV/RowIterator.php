@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace OpenSpout\Reader\CSV;
 
-use Iterator;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Helper\EncodingHelper;
@@ -16,7 +15,7 @@ use OpenSpout\Reader\RowIteratorInterface;
 final class RowIterator implements RowIteratorInterface
 {
     /**
-     * Value passed to fgetcsv. 0 means "unlimited" (slightly slower but accomodates for very long lines).
+     * Value passed to fgetcsv. 0 means "unlimited" (slightly slower but accommodates for very long lines).
      */
     public const MAX_READ_BYTES_PER_LINE = 0;
 

@@ -8,9 +8,7 @@ use Iterator;
 use OpenSpout\Common\Entity\Row;
 
 /**
- * @extends Iterator<Row>
- *
- * @template-extends Iterator<int, null|Row>
+ * @extends Iterator<null|Row>
  */
 interface RowIteratorInterface extends Iterator
 {
