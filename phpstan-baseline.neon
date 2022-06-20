@@ -6,6 +6,11 @@ parameters:
 			path: src/Common/Entity/Row.php
 
 		-
+			message: "#^Return type \\(OpenSpout\\\\Common\\\\Entity\\\\Row\\|null\\) of method OpenSpout\\\\Reader\\\\CSV\\\\RowIterator\\:\\:current\\(\\) should be covariant with return type \\(OpenSpout\\\\Common\\\\Entity\\\\Row\\) of method Iterator\\<mixed,OpenSpout\\\\Common\\\\Entity\\\\Row\\>\\:\\:current\\(\\)$#"
+			count: 1
+			path: src/Reader/CSV/RowIterator.php
+
+		-
 			message: "#^Method OpenSpout\\\\Reader\\\\Common\\\\Creator\\\\ReaderFactory\\:\\:createFromFile\\(\\) return type with generic interface OpenSpout\\\\Reader\\\\ReaderInterface does not specify its types\\: T$#"
 			count: 1
 			path: src/Reader/Common/Creator/ReaderFactory.php
@@ -19,6 +24,11 @@ parameters:
 			message: "#^Cannot access offset 1 on callable\\(\\)\\: mixed\\.$#"
 			count: 1
 			path: src/Reader/Common/XMLProcessor.php
+
+		-
+			message: "#^Return type \\(OpenSpout\\\\Common\\\\Entity\\\\Row\\|null\\) of method OpenSpout\\\\Reader\\\\RowIteratorInterface\\:\\:current\\(\\) should be covariant with return type \\(OpenSpout\\\\Common\\\\Entity\\\\Row\\) of method Iterator\\<mixed,OpenSpout\\\\Common\\\\Entity\\\\Row\\>\\:\\:current\\(\\)$#"
+			count: 1
+			path: src/Reader/RowIteratorInterface.php
 
 		-
 			message: "#^Dynamic call to static method XMLReader\\:\\:open\\(\\)\\.$#"
