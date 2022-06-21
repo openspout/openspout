@@ -149,11 +149,12 @@ final class ZipHelper
      */
     private function addFileToArchiveWithCompressionMethod(ZipArchive $zip, string $rootFolderPath, string $localFilePath, string $existingFileMode, int $compressionMethod): void
     {
-        if (!$this->shouldSkipFile($zip, $localFilePath, $existingFileMode)) {
+        $normalizedLocalFilePath = str_replace(\DIRECTORY_SEPARATOR, '/', $localFilePath);
+        if (!$this->shouldSkipFile($zip, $normalizedLocalFilePath, $existingFileMode)) {
             $normalizedFullFilePath = $this->getNormalizedRealPath($rootFolderPath.'/'.$localFilePath);
-            $zip->addFile($normalizedFullFilePath, $localFilePath);
+            $zip->addFile($normalizedFullFilePath, $normalizedLocalFilePath);
 
-            $zip->setCompressionName($localFilePath, $compressionMethod);
+            $zip->setCompressionName($normalizedLocalFilePath, $compressionMethod);
         }
     }
 
