@@ -37,10 +37,12 @@ final class ZipHelperTest extends TestCase
 
         $zipMock->expects(self::once())
             ->method('addFile')
-            ->with(self::anything(), $normalizedLocalFilePath);
+            ->with(self::anything(), $normalizedLocalFilePath)
+        ;
         $zipMock->expects(self::once())
             ->method('setCompressionName')
-            ->with($normalizedLocalFilePath, $compressionMethod);
+            ->with($normalizedLocalFilePath, $compressionMethod)
+        ;
 
         ReflectionHelper::callMethodOnObject(
             $zipHelper,
