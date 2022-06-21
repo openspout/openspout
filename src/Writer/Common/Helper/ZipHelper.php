@@ -151,7 +151,7 @@ final class ZipHelper
     {
         $normalizedLocalFilePath = str_replace(\DIRECTORY_SEPARATOR, '/', $localFilePath);
         if (!$this->shouldSkipFile($zip, $normalizedLocalFilePath, $existingFileMode)) {
-            $normalizedFullFilePath = $this->getNormalizedRealPath($rootFolderPath.'/'.$localFilePath);
+            $normalizedFullFilePath = $this->getNormalizedRealPath($rootFolderPath.'/'.$normalizedLocalFilePath);
             $zip->addFile($normalizedFullFilePath, $normalizedLocalFilePath);
 
             $zip->setCompressionName($normalizedLocalFilePath, $compressionMethod);

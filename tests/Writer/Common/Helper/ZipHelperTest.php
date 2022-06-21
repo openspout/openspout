@@ -19,11 +19,12 @@ final class ZipHelperTest extends TestCase
         $zipHelper = new ZipHelper();
         $zipMock = $this->getMockBuilder(ZipArchive::class)
             ->onlyMethods(['addFile', 'setCompressionName'])
-            ->getMock();
+            ->getMock()
+        ;
 
         $tempFolder = (new TestUsingResource())->getTempFolderPath();
-        mkdir($tempFolder . '/xl', 0700, true);
-        touch($tempFolder . '/xl/workbook.xml');
+        mkdir($tempFolder.'/xl', 0700, true);
+        touch($tempFolder.'/xl/workbook.xml');
 
         $rootFolderPath = $tempFolder;
         // File has Windows directory separator.
@@ -51,7 +52,7 @@ final class ZipHelperTest extends TestCase
             $compressionMethod,
         );
 
-        unlink($tempFolder . '/xl/workbook.xml');
-        rmdir($tempFolder . '/xl');
+        unlink($tempFolder.'/xl/workbook.xml');
+        rmdir($tempFolder.'/xl');
     }
 }
