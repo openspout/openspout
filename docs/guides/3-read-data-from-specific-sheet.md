@@ -14,6 +14,10 @@ foreach ($reader->getSheetIterator() as $sheet) {
     if ($sheet->getName() === 'summary') {
         foreach ($sheet->getRowIterator() as $row) {
             // do something with the row
+            foreach ($row->getCells() as $cell) {
+                // do something with a cell for example print it.
+                echo $cell->getValue() . "\n";
+            }
         }
         break; // no need to read more sheets
     }
@@ -32,7 +36,10 @@ foreach ($reader->getSheetIterator() as $sheet) {
     // only read data from 3rd sheet
     if ($sheet->getIndex() === 2) { // index is 0-based
         foreach ($sheet->getRowIterator() as $row) {
-            // do something with the row
+            // do something with the row example grab cell 2
+            $cells = $row->getCells(); //Load all the cells
+            $cell_value = $cells[2]->getValue();
+            echo "$cell_value \n";
         }
         break; // no need to read more sheets
     }
