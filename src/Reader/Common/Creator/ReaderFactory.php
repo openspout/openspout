@@ -27,31 +27,31 @@ final class ReaderFactory
     {
         $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
 
-        $writer = match($extension) {
+        return match ($extension) {
             'csv' => new CSVReader(),
             'xlsx' => new XLSXReader(),
             'ods' => new ODSReader(),
-            default => null
+            default => throw new UnsupportedTypeException('No readers supporting the given type: '.$extension),
         };
+    }
 
-        if ($writer) {
-            return $writer;
-        }
-
+    /**
+     * Creates a reader by mime type.
+     *
+     * @param string $path The path to the spreadsheet file.
+     *
+     * @throws \OpenSpout\Common\Exception\UnsupportedTypeException
+     */
+    public static function createFromFileByMimeType(string $path): ReaderInterface
+    {
         $mime_type = mime_content_type($path);
 
-        $writer = match($mime_type) {
+        return match ($mime_type) {
             'application/csv', 'text/csv' => new CSVReader(),
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => new XLSXReader(),
             'application/vnd.oasis.opendocument.spreadsheet' => new ODSReader(),
-            default => null
+            default => throw new UnsupportedTypeException('No readers supporting the given type: '.$extension),
         };
-
-        if ($writer) {
-            return $writer;
-        }
-
-        throw new UnsupportedTypeException('No readers supporting the given type: ' . $mime_type);
     }
 }
 
