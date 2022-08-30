@@ -193,7 +193,7 @@ final class WorksheetManager implements WorksheetManagerInterface
         if ($cell instanceof Cell\StringCell) {
             $cellXML .= $this->getCellXMLFragmentForNonEmptyString($cell->getValue());
         } elseif ($cell instanceof Cell\BooleanCell) {
-            $cellXML .= ' t="b"><v>'.(int) ($cell->getValue()).'</v></c>';
+            $cellXML .= ' t="b"><v>'.(int) $cell->getValue().'</v></c>';
         } elseif ($cell instanceof Cell\NumericCell) {
             $cellXML .= '><v>'.$cell->getValue().'</v></c>';
         } elseif ($cell instanceof Cell\FormulaCell) {

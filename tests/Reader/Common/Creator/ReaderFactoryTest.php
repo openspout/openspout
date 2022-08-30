@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OpenSpout\Reader\Common\Creator;
 
+use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Exception\UnsupportedTypeException;
 use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
@@ -53,5 +54,40 @@ final class ReaderFactoryTest extends TestCase
         $notExistingFile = 'thereisnosuchfile.csv';
         $reader = ReaderFactory::createFromFile($notExistingFile);
         self::assertInstanceOf(\OpenSpout\Reader\CSV\Reader::class, $reader);
+    }
+
+    public function testCreateFromFileByMimeTypeCSV(): void
+    {
+        $validCsv = TestUsingResource::getResourcePath('csv_test_create_from_file_by_mime_type.csv');
+        $reader = ReaderFactory::createFromFileByMimeType($validCsv);
+        self::assertInstanceOf(\OpenSpout\Reader\CSV\Reader::class, $reader);
+    }
+
+    public function testCreateFromFileByMimeTypeODS(): void
+    {
+        $validOds = TestUsingResource::getResourcePath('ods_test_create_from_file_by_mime_type.ods');
+        $reader = ReaderFactory::createFromFileByMimeType($validOds);
+        self::assertInstanceOf(\OpenSpout\Reader\ODS\Reader::class, $reader);
+    }
+
+    public function testCreateFromFileByMimeTypeXLSX(): void
+    {
+        $validXlsx = TestUsingResource::getResourcePath('xlsx_test_create_from_file_by_mime_type.xlsx');
+        $reader = ReaderFactory::createFromFileByMimeType($validXlsx);
+        self::assertInstanceOf(\OpenSpout\Reader\XLSX\Reader::class, $reader);
+    }
+
+    public function testCreateFromFileByMimeTypeUnsupported(): void
+    {
+        $this->expectException(UnsupportedTypeException::class);
+        $invalid = TestUsingResource::getResourcePath('test_unsupported_file_type.other');
+        ReaderFactory::createFromFileByMimeType($invalid);
+    }
+
+    public function testCreateFromFileByMimeTypeMissingFile(): void
+    {
+        $this->expectException(IOException::class);
+        $notExistingFile = 'thereisnosuchfile.csv';
+        $reader = ReaderFactory::createFromFileByMimeType($notExistingFile);
     }
 }

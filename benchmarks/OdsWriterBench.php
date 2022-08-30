@@ -48,7 +48,7 @@ final class OdsWriterBench
         $preg_match_all = preg_match_all('/<text:p>ods--(\d+)-\d<\/text:p>/', $endingContentXmlContents, $matches);
         if (false !== $preg_match_all && 0 < $preg_match_all) {
             $lastMatch = array_pop($matches);
-            $numWrittenRows = (int) (array_pop($lastMatch));
+            $numWrittenRows = (int) array_pop($lastMatch);
         }
 
         return $numWrittenRows;

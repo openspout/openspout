@@ -287,7 +287,7 @@ final class WriterTest extends TestCase
 
         if (1 === $expectedNumTableCells) {
             $tableCellNode = $tableCellNodes->item(0);
-            $numColumnsRepeated = (int) ($tableCellNode->getAttribute('table:number-columns-repeated'));
+            $numColumnsRepeated = (int) $tableCellNode->getAttribute('table:number-columns-repeated');
             self::assertSame($expectedNumColumnsRepeated, $numColumnsRepeated);
         } else {
             foreach ($tableCellNodes as $tableCellNode) {

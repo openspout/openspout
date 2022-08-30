@@ -48,7 +48,7 @@ final class CellHelper
         // Also, not using the pow() function because it's slooooow...
         switch ($columnLength) {
             case 1:
-                $columnIndex = (self::columnLetterToIndexMapping[$columnLetters]);
+                $columnIndex = self::columnLetterToIndexMapping[$columnLetters];
 
                 break;
 

@@ -85,3 +85,8 @@ parameters:
 			count: 1
 			path: tests/Reader/XLSX/Manager/StyleManagerTest.php
 
+		-
+			message: "#^Method OpenSpout\\\\Reader\\\\Common\\\\Creator\\\\ReaderFactory\\:\\:createFromFileByMimeType\\(\\) return type with generic interface OpenSpout\\\\Reader\\\\ReaderInterface does not specify its types\\: T$#"
+			count: 1
+			path: src/Reader/Common/Creator/ReaderFactory.php
+
