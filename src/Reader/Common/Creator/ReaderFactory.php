@@ -44,7 +44,7 @@ final class ReaderFactory
      * @throws \OpenSpout\Common\Exception\UnsupportedTypeException
      * @throws \OpenSpout\Common\Exception\IOException
      */
-    public static function ReaderFactory(string $path): ReaderInterface
+    public static function createFromFileByMimeType(string $path): ReaderInterface
     {
         if (!file_exists($path)) {
             throw new IOException("Could not open {$path} for reading! File does not exist.");
