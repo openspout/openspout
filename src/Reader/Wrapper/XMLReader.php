@@ -172,7 +172,7 @@ final class XMLReader extends \XMLReader
          *
          * @see https://github.com/box/spout/issues/233
          */
-        $hasPrefix = (str_contains($nodeName, ':'));
+        $hasPrefix = str_contains($nodeName, ':');
         $currentNodeName = ($hasPrefix) ? $this->name : $this->localName;
 
         return $this->nodeType === $nodeType && $currentNodeName === $nodeName;

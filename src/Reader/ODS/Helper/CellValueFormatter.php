@@ -142,7 +142,7 @@ final class CellValueFormatter
      */
     private function formatBooleanCellValue(DOMElement $node): bool
     {
-        return (bool) ($node->getAttribute(self::XML_ATTRIBUTE_BOOLEAN_VALUE));
+        return (bool) $node->getAttribute(self::XML_ATTRIBUTE_BOOLEAN_VALUE);
     }
 
     /**

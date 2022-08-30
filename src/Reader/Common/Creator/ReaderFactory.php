@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace OpenSpout\Reader\Common\Creator;
 
-use OpenSpout\Common\Exception\UnsupportedTypeException;
 use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Common\Exception\UnsupportedTypeException;
 use OpenSpout\Reader\CSV\Reader as CSVReader;
 use OpenSpout\Reader\ODS\Reader as ODSReader;
 use OpenSpout\Reader\ReaderInterface;

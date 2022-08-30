@@ -156,7 +156,7 @@ final class FileSystemHelper implements FileSystemHelperInterface
         if (false === $operationFolderRealPath) {
             throw new IOException("Folder not found: {$operationFolderRealPath}");
         }
-        $isInBaseFolder = (str_starts_with($operationFolderRealPath, $this->baseFolderRealPath));
+        $isInBaseFolder = str_starts_with($operationFolderRealPath, $this->baseFolderRealPath);
         if (!$isInBaseFolder) {
             throw new IOException("Cannot perform I/O operation outside of the base folder: {$this->baseFolderRealPath}");
         }

@@ -170,7 +170,7 @@ class StyleManager implements StyleManagerInterface
     {
         while ($xmlReader->read()) {
             if ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_NUM_FMT)) {
-                $numFmtId = (int) ($xmlReader->getAttribute(self::XML_ATTRIBUTE_NUM_FMT_ID));
+                $numFmtId = (int) $xmlReader->getAttribute(self::XML_ATTRIBUTE_NUM_FMT_ID);
                 $formatCode = $xmlReader->getAttribute(self::XML_ATTRIBUTE_FORMAT_CODE);
                 \assert(null !== $formatCode);
                 $this->customNumberFormats[$numFmtId] = $formatCode;

@@ -39,7 +39,7 @@ trait XlsxWriterTrait
         $preg_match_all = preg_match_all('/<t.*>xlsx--(\d+)-\d+<\/t>/', $lastCharactersOfFile, $matches);
         if (false !== $preg_match_all && 0 < $preg_match_all) {
             $lastMatch = array_pop($matches);
-            $lastRowNumber = (int) (array_pop($lastMatch));
+            $lastRowNumber = (int) array_pop($lastMatch);
         }
 
         return $lastRowNumber;

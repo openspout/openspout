@@ -295,7 +295,7 @@ final class WriterWithStyleTest extends TestCase
 
         $styles = [
             (new Style())->setBorder($borderBottomGreenThickSolid),
-            (new Style()),
+            new Style(),
             (new Style())->setBorder($borderTopRedThinDashed),
             (new Style())->setBorder($borderLeft),
         ];

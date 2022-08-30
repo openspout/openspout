@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace OpenSpout\Reader\Common\Creator;
 
-use OpenSpout\Common\Exception\UnsupportedTypeException;
 use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Common\Exception\UnsupportedTypeException;
 use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
