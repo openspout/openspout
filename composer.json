@@ -30,6 +30,7 @@
     "require": {
         "php": "~8.0.0 || ~8.1.0",
         "ext-dom": "*",
+        "ext-fileinfo": "*",
         "ext-filter": "*",
         "ext-libxml": "*",
         "ext-xmlreader": "*",
