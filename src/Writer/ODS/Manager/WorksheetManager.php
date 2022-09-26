@@ -215,9 +215,9 @@ final class WorksheetManager implements WorksheetManagerInterface
      * @param int  $styleIndex            Index of the used style
      * @param int  $numTimesValueRepeated Number of times the value is consecutively repeated
      *
-     * @throws InvalidArgumentException If a cell value's type is not supported
-     *
      * @return string The cell XML content
+     *
+     * @throws InvalidArgumentException If a cell value's type is not supported
      */
     private function getCellXML(Cell $cell, int $styleIndex, int $numTimesValueRepeated): string
     {

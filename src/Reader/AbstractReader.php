@@ -10,6 +10,7 @@ use OpenSpout\Reader\Exception\ReaderNotOpenedException;
 
 /**
  * @template T of SheetIteratorInterface
+ *
  * @implements ReaderInterface<T>
  */
 abstract class AbstractReader implements ReaderInterface

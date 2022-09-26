@@ -116,9 +116,9 @@ final class SharedStringsManager
      *
      * @param int $sharedStringIndex Index of the shared string in the sharedStrings.xml file
      *
-     * @throws \OpenSpout\Reader\Exception\SharedStringNotFoundException If no shared string found for the given index
-     *
      * @return string The shared string at the given index
+     *
+     * @throws \OpenSpout\Reader\Exception\SharedStringNotFoundException If no shared string found for the given index
      */
     public function getStringAtIndex(int $sharedStringIndex): string
     {
@@ -140,9 +140,9 @@ final class SharedStringsManager
      *
      * @param XMLReader $xmlReader XMLReader instance
      *
-     * @throws \OpenSpout\Common\Exception\IOException If sharedStrings.xml is invalid and can't be read
-     *
      * @return null|int Number of unique shared strings in the sharedStrings.xml file
+     *
+     * @throws \OpenSpout\Common\Exception\IOException If sharedStrings.xml is invalid and can't be read
      */
     private function getSharedStringsUniqueCount(XMLReader $xmlReader): ?int
     {

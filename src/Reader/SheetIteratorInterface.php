@@ -8,6 +8,7 @@ use Iterator;
 
 /**
  * @template T of SheetInterface
+ *
  * @extends Iterator<T>
  */
 interface SheetIteratorInterface extends Iterator

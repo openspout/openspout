@@ -18,9 +18,9 @@ abstract class AbstractWriterMultiSheets extends AbstractWriter
     /**
      * Returns all the workbook's sheets.
      *
-     * @throws WriterNotOpenedException If the writer has not been opened yet
-     *
      * @return Sheet[] All the workbook's sheets
+     *
+     * @throws WriterNotOpenedException If the writer has not been opened yet
      */
     final public function getSheets(): array
     {
@@ -39,10 +39,10 @@ abstract class AbstractWriterMultiSheets extends AbstractWriter
     /**
      * Creates a new sheet and make it the current sheet. The data will now be written to this sheet.
      *
+     * @return Sheet The created sheet
+     *
      * @throws IOException
      * @throws WriterNotOpenedException If the writer has not been opened yet
-     *
-     * @return Sheet The created sheet
      */
     final public function addNewSheetAndMakeItCurrent(): Sheet
     {
@@ -55,9 +55,9 @@ abstract class AbstractWriterMultiSheets extends AbstractWriter
     /**
      * Returns the current sheet.
      *
-     * @throws WriterNotOpenedException If the writer has not been opened yet
-     *
      * @return Sheet The current sheet
+     *
+     * @throws WriterNotOpenedException If the writer has not been opened yet
      */
     final public function getCurrentSheet(): Sheet
     {

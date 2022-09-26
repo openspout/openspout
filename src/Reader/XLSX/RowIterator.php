@@ -365,9 +365,9 @@ final class RowIterator implements RowIteratorInterface
     /**
      * @param XMLReader $xmlReader XMLReader object, positioned on a "<row>" node
      *
-     *@throws \OpenSpout\Common\Exception\InvalidArgumentException When the given cell index is invalid
-     *
      * @return int Row index
+     *
+     *@throws \OpenSpout\Common\Exception\InvalidArgumentException When the given cell index is invalid
      */
     private function getRowIndex(XMLReader $xmlReader): int
     {
@@ -382,9 +382,9 @@ final class RowIterator implements RowIteratorInterface
     /**
      * @param XMLReader $xmlReader XMLReader object, positioned on a "<c>" node
      *
-     *@throws \OpenSpout\Common\Exception\InvalidArgumentException When the given cell index is invalid
-     *
      * @return int Column index
+     *
+     *@throws \OpenSpout\Common\Exception\InvalidArgumentException When the given cell index is invalid
      */
     private function getColumnIndex(XMLReader $xmlReader): int
     {

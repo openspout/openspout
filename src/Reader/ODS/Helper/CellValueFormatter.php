@@ -81,9 +81,9 @@ final class CellValueFormatter
      *
      * @see http://docs.oasis-open.org/office/v1.2/os/OpenDocument-v1.2-os-part1.html#refTable13
      *
-     * @throws InvalidValueException If the node value is not valid
-     *
      * @return bool|DateInterval|DateTimeImmutable|float|int|string The value associated with the cell, empty string if cell's type is void/undefined
+     *
+     * @throws InvalidValueException If the node value is not valid
      */
     public function extractAndFormatNodeValue(DOMElement $node): bool|DateInterval|DateTimeImmutable|float|int|string
     {
@@ -178,9 +178,9 @@ final class CellValueFormatter
     /**
      * Returns the cell Time value from the given node.
      *
-     * @throws InvalidValueException If the value is not a valid time
-     *
      * @return DateInterval|string The value associated with the cell
+     *
+     * @throws InvalidValueException If the value is not a valid time
      */
     private function formatTimeCellValue(DOMElement $node): DateInterval|string
     {

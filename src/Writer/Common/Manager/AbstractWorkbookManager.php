@@ -188,9 +188,9 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
     /**
      * Creates a new sheet in the workbook. The current sheet remains unchanged.
      *
-     * @throws \OpenSpout\Common\Exception\IOException If unable to open the sheet for writing
-     *
      * @return Worksheet The created sheet
+     *
+     * @throws \OpenSpout\Common\Exception\IOException If unable to open the sheet for writing
      */
     private function addNewSheet(): Worksheet
     {

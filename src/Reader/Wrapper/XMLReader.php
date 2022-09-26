@@ -77,9 +77,9 @@ final class XMLReader extends \XMLReader
      *
      * @param string $nodeName Name of the node to find
      *
-     * @throws \OpenSpout\Reader\Exception\XMLProcessingException If an error/warning occurred
-     *
      * @return bool TRUE on success or FALSE on failure
+     *
+     * @throws \OpenSpout\Reader\Exception\XMLProcessingException If an error/warning occurred
      */
     public function readUntilNodeFound(string $nodeName): bool
     {

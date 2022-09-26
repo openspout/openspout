@@ -221,9 +221,9 @@ final class WorksheetManager implements WorksheetManagerInterface
      *
      * @param string $cellValue The cell value
      *
-     * @throws InvalidArgumentException If the string exceeds the maximum number of characters allowed per cell
-     *
      * @return string The XML fragment representing the cell
+     *
+     * @throws InvalidArgumentException If the string exceeds the maximum number of characters allowed per cell
      */
     private function getCellXMLFragmentForNonEmptyString(string $cellValue): string
     {

@@ -37,9 +37,9 @@ final class FileSystemHelper implements FileSystemHelperInterface
      * @param string $parentFolderPath The parent folder path under which the folder is going to be created
      * @param string $folderName       The name of the folder to create
      *
-     * @throws \OpenSpout\Common\Exception\IOException If unable to create the folder or if the folder path is not inside of the base folder
-     *
      * @return string Path of the created folder
+     *
+     * @throws \OpenSpout\Common\Exception\IOException If unable to create the folder or if the folder path is not inside of the base folder
      */
     public function createFolder(string $parentFolderPath, string $folderName): string
     {
@@ -71,9 +71,9 @@ final class FileSystemHelper implements FileSystemHelperInterface
      * @param string $fileName         The name of the file to create
      * @param string $fileContents     The contents of the file to create
      *
-     * @throws \OpenSpout\Common\Exception\IOException If unable to create the file or if the file path is not inside of the base folder
-     *
      * @return string Path of the created file
+     *
+     * @throws \OpenSpout\Common\Exception\IOException If unable to create the file or if the file path is not inside of the base folder
      */
     public function createFileWithContents(string $parentFolderPath, string $fileName, string $fileContents): string
     {

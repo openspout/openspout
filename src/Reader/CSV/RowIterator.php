@@ -167,9 +167,9 @@ final class RowIterator implements RowIteratorInterface
      * As fgetcsv() does not manage correctly encoding for non UTF-8 data,
      * we remove manually whitespace with ltrim or rtrim (depending on the order of the bytes).
      *
-     * @throws \OpenSpout\Common\Exception\EncodingConversionException If unable to convert data to UTF-8
-     *
      * @return array<int, null|string>|false The row for the current file pointer, encoded in UTF-8 or FALSE if nothing to read
+     *
+     * @throws \OpenSpout\Common\Exception\EncodingConversionException If unable to convert data to UTF-8
      */
     private function getNextUTF8EncodedRow(): array|false
     {

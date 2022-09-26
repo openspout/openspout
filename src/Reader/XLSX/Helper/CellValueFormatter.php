@@ -84,9 +84,9 @@ final class CellValueFormatter
     /**
      * Returns the (unescaped) correctly marshalled, cell value associated to the given XML node.
      *
-     * @throws InvalidValueException If the value is not valid
-     *
      * @return bool|DateTimeImmutable|float|int|string The value associated with the cell
+     *
+     * @throws InvalidValueException If the value is not valid
      */
     public function extractAndFormatNodeValue(DOMElement $node): bool|DateTimeImmutable|float|int|string
     {

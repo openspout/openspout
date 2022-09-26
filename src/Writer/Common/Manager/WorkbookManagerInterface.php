@@ -21,9 +21,9 @@ interface WorkbookManagerInterface
      * Creates a new sheet in the workbook and make it the current sheet.
      * The writing will resume where it stopped (i.e. data won't be truncated).
      *
-     * @throws IOException If unable to open the sheet for writing
-     *
      * @return Worksheet The created sheet
+     *
+     * @throws IOException If unable to open the sheet for writing
      */
     public function addNewSheetAndMakeItCurrent(): Worksheet;
 

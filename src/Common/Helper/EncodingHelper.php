@@ -87,9 +87,9 @@ final class EncodingHelper
      * @param string $string         Non UTF-8 string to be converted
      * @param string $sourceEncoding The encoding used to encode the source string
      *
-     * @throws \OpenSpout\Common\Exception\EncodingConversionException If conversion is not supported or if the conversion failed
-     *
      * @return string The converted, UTF-8 string
+     *
+     * @throws \OpenSpout\Common\Exception\EncodingConversionException If conversion is not supported or if the conversion failed
      */
     public function attemptConversionToUTF8(?string $string, string $sourceEncoding): ?string
     {
@@ -102,9 +102,9 @@ final class EncodingHelper
      * @param string $string         UTF-8 string to be converted
      * @param string $targetEncoding The encoding the string should be re-encoded into
      *
-     * @throws \OpenSpout\Common\Exception\EncodingConversionException If conversion is not supported or if the conversion failed
-     *
      * @return string The converted string, encoded with the given encoding
+     *
+     * @throws \OpenSpout\Common\Exception\EncodingConversionException If conversion is not supported or if the conversion failed
      */
     public function attemptConversionFromUTF8(?string $string, string $targetEncoding): ?string
     {
@@ -143,9 +143,9 @@ final class EncodingHelper
      * @param string $sourceEncoding The encoding used to encode the source string
      * @param string $targetEncoding The encoding the string should be re-encoded into
      *
-     * @throws \OpenSpout\Common\Exception\EncodingConversionException If conversion is not supported or if the conversion failed
-     *
      * @return string The converted string, encoded with the given encoding
+     *
+     * @throws \OpenSpout\Common\Exception\EncodingConversionException If conversion is not supported or if the conversion failed
      */
     private function attemptConversion(?string $string, string $sourceEncoding, string $targetEncoding): ?string
     {
