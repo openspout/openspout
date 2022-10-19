@@ -67,6 +67,7 @@ jobs:
           - "ubuntu-latest"
         php-version:
           - "8.0"
+          - "8.2"
         code-coverage:
           - "none"
         include:

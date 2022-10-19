@@ -242,14 +242,24 @@ final class CellValueFormatter
         $baseDate = $this->shouldUse1904Dates ? '1904-01-01' : '1899-12-30';
 
         $daysSinceBaseDate = (int) $nodeValue;
+        $daysSign = '+';
+        if ($daysSinceBaseDate < 0) {
+            $daysSinceBaseDate = abs($daysSinceBaseDate);
+            $daysSign = '-';
+        }
         $timeRemainder = fmod($nodeValue, 1);
         $secondsRemainder = round($timeRemainder * self::NUM_SECONDS_IN_ONE_DAY, 0);
+        $secondsSign = '+';
+        if ($secondsRemainder < 0) {
+            $secondsRemainder = abs($secondsRemainder);
+            $secondsSign = '-';
+        }
 
         $dateObj = DateTimeImmutable::createFromFormat('|Y-m-d', $baseDate);
         \assert(false !== $dateObj);
-        $dateObj = $dateObj->modify('+'.$daysSinceBaseDate.'days');
+        $dateObj = $dateObj->modify($daysSign.$daysSinceBaseDate.'days');
         \assert(false !== $dateObj);
-        $dateObj = $dateObj->modify('+'.$secondsRemainder.'seconds');
+        $dateObj = $dateObj->modify($secondsSign.$secondsRemainder.'seconds');
         \assert(false !== $dateObj);
 
         if ($this->shouldFormatDates) {
