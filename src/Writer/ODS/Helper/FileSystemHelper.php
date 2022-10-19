@@ -117,12 +117,20 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 
         $contentXmlFileContents .= '<office:body><office:spreadsheet>';
 
-        $this->createFileWithContents($this->rootFolder, self::CONTENT_XML_FILE_NAME, $contentXmlFileContents);
+        $topContentTempFile = uniqid(self::CONTENT_XML_FILE_NAME);
+        $this->createFileWithContents($this->rootFolder, $topContentTempFile, $contentXmlFileContents);
 
         // Append sheets content to "content.xml"
         $contentXmlFilePath = $this->rootFolder.\DIRECTORY_SEPARATOR.self::CONTENT_XML_FILE_NAME;
-        $contentXmlHandle = fopen($contentXmlFilePath, 'a');
+        $contentXmlHandle = fopen($contentXmlFilePath, 'w');
         \assert(false !== $contentXmlHandle);
+
+        $topContentTempPathname = $this->rootFolder.\DIRECTORY_SEPARATOR.$topContentTempFile;
+        $topContentTempHandle = fopen($topContentTempPathname, 'r');
+        \assert(false !== $topContentTempHandle);
+        stream_copy_to_stream($topContentTempHandle, $contentXmlHandle);
+        fclose($topContentTempHandle);
+        unlink($topContentTempPathname);
 
         foreach ($worksheets as $worksheet) {
             // write the "<table:table>" node, with the final sheet's name
