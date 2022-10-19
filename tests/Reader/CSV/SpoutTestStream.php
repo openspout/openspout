@@ -10,12 +10,13 @@ namespace OpenSpout\Reader\CSV;
  */
 final class SpoutTestStream
 {
-    public $context;
-
     public const CLASS_NAME = __CLASS__;
 
     public const PATH_TO_CSV_RESOURCES = 'tests/resources/csv/';
     public const CSV_EXTENSION = '.csv';
+
+    /** @var null|resource */
+    public $context;
 
     private int $position;
 
