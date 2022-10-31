@@ -84,6 +84,12 @@ $rowFromValues = Row::fromValues($values);
 $writer->addRow($rowFromValues);
 
 $writer->close();
+/**
+ * in case of streaming data directly to the browser with $writer->openToBrowser() ensure
+ * to not send any further data after the $writer->close() call as that would be appended
+ * to the generated file and that makes Excel complain about it being corrupted.
+ * For example, you could place an `exit;` here or terminate the output in any other way.
+ */
 ```
 
 For XLSX and ODS files, the number of rows per sheet is limited to *1,048,576*. By default, once this limit is reached,
