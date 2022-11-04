@@ -387,3 +387,33 @@ $sheet->setName('My custom name');
 >
 > Handling these restrictions is the developer's responsibility. OpenSpout does not try to automatically change the
 > sheet's name, as one may rely on this name to be exactly what was passed in.
+
+## Reader factory
+
+In case of you have to manage multiple file format entries, you can use the reader factory for build your reader.  
+The reader factory support two guessing method.
+
+**Guess type by extension**
+```php
+$file = 'path/to/my_file.xlsx'
+
+$reader = ReaderFactory::createFromFile($file); // return XLSX/Reader
+$reader->open($file));
+
+// Do stuff
+
+$reader->close();
+```
+
+**Guess type by mime type**
+```php
+// "my_file" is an ods file.
+$file = 'path/to/my_file.any'
+
+$reader = ReaderFactory::createFromFileByMimeType($file); // return ODS/Reader
+$reader->open($file));
+
+// Do stuff
+
+$reader->close();
+```
