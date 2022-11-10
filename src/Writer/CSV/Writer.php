@@ -49,7 +49,7 @@ final class Writer extends AbstractWriter
      */
     protected function addRowToWriter(Row $row): void
     {
-        $cells = array_map(static function (Cell\BooleanCell|Cell\EmptyCell|Cell\NumericCell|Cell\StringCell $value): string {
+        $cells = array_map(static function (Cell\BooleanCell|Cell\EmptyCell|Cell\NumericCell|Cell\StringCell|Cell\FormulaCell $value): string {
             return (string) $value->getValue();
         }, $row->getCells());
 
