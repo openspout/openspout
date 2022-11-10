@@ -1,17 +1,17 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Binary operation \"\\+\" between int\\|string and 1 results in an error\\.$#"
-			count: 1
-			path: src/Common/Entity/Row.php
-
-		-
 			message: "#^Return type \\(OpenSpout\\\\Common\\\\Entity\\\\Row\\|null\\) of method OpenSpout\\\\Reader\\\\CSV\\\\RowIterator\\:\\:current\\(\\) should be covariant with return type \\(OpenSpout\\\\Common\\\\Entity\\\\Row\\) of method Iterator\\<mixed,OpenSpout\\\\Common\\\\Entity\\\\Row\\>\\:\\:current\\(\\)$#"
 			count: 1
 			path: src/Reader/CSV/RowIterator.php
 
 		-
 			message: "#^Method OpenSpout\\\\Reader\\\\Common\\\\Creator\\\\ReaderFactory\\:\\:createFromFile\\(\\) return type with generic interface OpenSpout\\\\Reader\\\\ReaderInterface does not specify its types\\: T$#"
+			count: 1
+			path: src/Reader/Common/Creator/ReaderFactory.php
+
+		-
+			message: "#^Method OpenSpout\\\\Reader\\\\Common\\\\Creator\\\\ReaderFactory\\:\\:createFromFileByMimeType\\(\\) return type with generic interface OpenSpout\\\\Reader\\\\ReaderInterface does not specify its types\\: T$#"
 			count: 1
 			path: src/Reader/Common/Creator/ReaderFactory.php
 
@@ -41,7 +41,7 @@ parameters:
 			path: src/Reader/XLSX/Helper/CellValueFormatter.php
 
 		-
-			message: "#^Parameter \\#1 \\$callback of function array_map expects \\(callable\\(OpenSpout\\\\Common\\\\Entity\\\\Cell\\)\\: mixed\\)\\|null, Closure\\(OpenSpout\\\\Common\\\\Entity\\\\Cell\\\\BooleanCell\\|OpenSpout\\\\Common\\\\Entity\\\\Cell\\\\EmptyCell\\|OpenSpout\\\\Common\\\\Entity\\\\Cell\\\\NumericCell\\|OpenSpout\\\\Common\\\\Entity\\\\Cell\\\\StringCell\\)\\: string given\\.$#"
+			message: "#^Parameter \\#1 \\$callback of function array_map expects \\(callable\\(OpenSpout\\\\Common\\\\Entity\\\\Cell\\)\\: mixed\\)\\|null, Closure\\(OpenSpout\\\\Common\\\\Entity\\\\Cell\\\\BooleanCell\\|OpenSpout\\\\Common\\\\Entity\\\\Cell\\\\EmptyCell\\|OpenSpout\\\\Common\\\\Entity\\\\Cell\\\\FormulaCell\\|OpenSpout\\\\Common\\\\Entity\\\\Cell\\\\NumericCell\\|OpenSpout\\\\Common\\\\Entity\\\\Cell\\\\StringCell\\)\\: string given\\.$#"
 			count: 1
 			path: src/Writer/CSV/Writer.php
 
@@ -84,9 +84,4 @@ parameters:
 			message: "#^Method OpenSpout\\\\Reader\\\\XLSX\\\\Manager\\\\StyleManagerTest\\:\\:getStyleManagerMock\\(\\) has parameter \\$styleAttributes with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: tests/Reader/XLSX/Manager/StyleManagerTest.php
-
-		-
-			message: "#^Method OpenSpout\\\\Reader\\\\Common\\\\Creator\\\\ReaderFactory\\:\\:createFromFileByMimeType\\(\\) return type with generic interface OpenSpout\\\\Reader\\\\ReaderInterface does not specify its types\\: T$#"
-			count: 1
-			path: src/Reader/Common/Creator/ReaderFactory.php
 

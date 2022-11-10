@@ -95,6 +95,17 @@ final class WriterTest extends TestCase
         self::assertSame('csv--11,,csv--13', $writtenContent, 'The null values should be replaced by empty values');
     }
 
+    public function testWriteShouldSupportFormulaLikeContent(): void
+    {
+        $allRows = $this->createRowsFromValues([
+            ['=Testing='],
+        ]);
+        $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_null_values.csv');
+        $writtenContent = $this->trimWrittenContent($writtenContent);
+
+        self::assertSame('=Testing=', $writtenContent);
+    }
+
     public function testWriteShouldNotSkipEmptyRows(): void
     {
         $allRows = $this->createRowsFromValues([
