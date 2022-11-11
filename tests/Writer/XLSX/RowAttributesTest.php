@@ -38,4 +38,14 @@ final class RowAttributesTest extends TestCase
 
         $attributes->setOutlineLevel(8);
     }
+
+    public function testIsEmpty(): void
+    {
+        $attributes = new RowAttributes();
+
+        self::assertTrue($attributes->isEmpty());
+        self::assertFalse((clone $attributes)->setOutlineLevel(1)->isEmpty());
+        self::assertFalse((clone $attributes)->setCollapsed(true)->isEmpty());
+        self::assertFalse((clone $attributes)->setVisible(false)->isEmpty());
+    }
 }

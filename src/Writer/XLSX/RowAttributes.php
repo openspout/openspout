@@ -66,4 +66,11 @@ final class RowAttributes
 
         return $this;
     }
+
+    public function isEmpty(): bool
+    {
+        return null === $this->getOutlineLevel()
+            && false === $this->isCollapsed()
+            && true === $this->isVisible();
+    }
 }

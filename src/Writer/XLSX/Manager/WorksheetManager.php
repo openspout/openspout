@@ -100,7 +100,7 @@ final class WorksheetManager implements WorksheetManagerInterface
         if (!$row->isEmpty()) {
             $this->addNonEmptyRow($worksheet, $row);
             $this->commentsManager->addComments($worksheet, $row);
-        } elseif (null !== $this->options->getRowAttributes($row)) {
+        } elseif (!$this->options->getRowAttributes($row)->isEmpty()) {
             $this->addEmptyRow($worksheet, $row);
         }
 
@@ -173,14 +173,14 @@ final class WorksheetManager implements WorksheetManagerInterface
         $rowXML = "<row{$rowAttributes}></row>";
 
         $wasWriteSuccessful = fwrite($sheetFilePointer, $rowXML);
-        assert(false !== $wasWriteSuccessful);
+        \assert(false !== $wasWriteSuccessful);
     }
 
     private function getRowAttributes(Row $row): string
     {
         $rowAttributes = $this->options->getRowAttributes($row);
 
-        if (null === $rowAttributes) {
+        if ($rowAttributes->isEmpty()) {
             return '';
         }
 

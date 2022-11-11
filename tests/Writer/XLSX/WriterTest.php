@@ -854,7 +854,7 @@ final class WriterTest extends TestCase
         $options->setRowAttributes($rowC, new RowAttributes(1, false, true));
         $writer->addRow($rowC);
 
-        $rowD = Row::fromValues();
+        $rowD = Row::fromValues([4, 5, 6]);
         $options->setRowAttributes($rowD, new RowAttributes(null));
         $writer->addRow($rowD);
 

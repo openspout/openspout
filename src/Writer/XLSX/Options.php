@@ -79,9 +79,13 @@ final class Options extends AbstractOptions
         return $row;
     }
 
-    public function getRowAttributes(Row $row): ?RowAttributes
+    public function getRowAttributes(Row $row): RowAttributes
     {
-        return $this->rowsAttributes[$row] ?? null;
+        if (!isset($this->rowsAttributes[$row])) {
+            $this->rowsAttributes[$row] = new RowAttributes();
+        }
+
+        return $this->rowsAttributes[$row];
     }
 
     public function getOutlineMaxLevel(): ?int
