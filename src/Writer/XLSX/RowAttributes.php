@@ -17,7 +17,7 @@ class RowAttributes
     /**
      * @param null|int<0, 7> $outlineLevel
      */
-    public function __construct(?int $outlineLevel, bool $collapsed = false, bool $visible = true)
+    public function __construct(?int $outlineLevel = null, bool $collapsed = false, bool $visible = true)
     {
         $this->setOutlineLevel($outlineLevel);
         $this->setCollapsed($collapsed);
