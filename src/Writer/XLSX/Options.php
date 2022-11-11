@@ -71,12 +71,12 @@ final class Options extends AbstractOptions
         return $this->MERGE_CELLS;
     }
 
-    public function setRowAttributes(Row $row, RowAttributes $attributes): static
+    public function setRowAttributes(Row $row, RowAttributes $attributes): Row
     {
         $this->rowsAttributes[$row] = $attributes;
         $this->outlineMaxLevel = max($attributes->getOutlineLevel(), (int) $this->outlineMaxLevel);
 
-        return $this;
+        return $row;
     }
 
     public function getRowAttributes(Row $row): ?RowAttributes

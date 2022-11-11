@@ -217,13 +217,14 @@ $writer = new Writer($options);
 $writer->openToFile('/tmp/file.xlsx');
 
 $levelOne = new RowAttributes(1);
-$rowA = Row::fromValues([1, 2, 3]);
-$options->setRowAttributes($rowA, $levelOne);
-$writer->addRow($rowA);
+$levelTwo = new RowAttributes(2);
 
-$rowB = Row::fromValues([3, 2, 1]);
-$options->setRowAttributes($rowB, $levelOne);
-$writer->addRow($rowB);
+$writer->addRow($options->setRowAttributes(Row::fromValues([1, 1, 1]), $levelOne));
+$writer->addRow($options->setRowAttributes(Row::fromValues([2, 2, 2]), $levelOne));
+$writer->addRow($options->setRowAttributes(Row::fromValues([3, 3, 3]), $levelTwo));
+$writer->addRow($options->setRowAttributes(Row::fromValues([4, 4, 4]), $levelTwo));
+$writer->addRow($options->setRowAttributes(Row::fromValues(), $levelOne));
+$writer->addRow(Row::fromValues());
 
 $writer->close();
 ```
