@@ -173,9 +173,7 @@ final class WorksheetManager implements WorksheetManagerInterface
         $rowXML = "<row{$rowAttributes}></row>";
 
         $wasWriteSuccessful = fwrite($sheetFilePointer, $rowXML);
-        if (false === $wasWriteSuccessful) {
-            throw new IOException("Unable to write data in {$worksheet->getFilePath()}");
-        }
+        assert(false !== $wasWriteSuccessful);
     }
 
     private function getRowAttributes(Row $row): string
