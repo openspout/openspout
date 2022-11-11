@@ -178,7 +178,8 @@ final class WorksheetManager implements WorksheetManagerInterface
         }
     }
 
-    private function getRowAttributes(Row $row): string {
+    private function getRowAttributes(Row $row): string
+    {
         $rowAttributes = $this->options->getRowAttributes($row);
 
         if (null === $rowAttributes) {
@@ -188,14 +189,14 @@ final class WorksheetManager implements WorksheetManagerInterface
         $xmlAttributes = '';
 
         if (!$rowAttributes->isVisible()) {
-            $xmlAttributes .= " hidden=\"true\"";
+            $xmlAttributes .= ' hidden="true"';
         }
 
         if ($rowAttributes->isCollapsed()) {
-            $xmlAttributes .= " collapsed=\"true\"";
+            $xmlAttributes .= ' collapsed="true"';
         }
 
-        if ($rowAttributes->getOutlineLevel() !== null) {
+        if (null !== $rowAttributes->getOutlineLevel()) {
             $xmlAttributes .= " outlineLevel=\"{$rowAttributes->getOutlineLevel()}\"";
         }
 
