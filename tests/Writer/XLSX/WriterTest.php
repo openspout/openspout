@@ -834,6 +834,92 @@ final class WriterTest extends TestCase
         self::assertStringNotContainsString('<b/>', $xmlContents, '');
     }
 
+    public function testAddRowAttributes(): void
+    {
+        $fileName = 'test_add_row_attributes.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $options = new Options();
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+
+        $rowA = Row::fromValues([1, 2, 3]);
+        $options->setRowAttributes($rowA, new RowAttributes(1));
+        $writer->addRow($rowA);
+
+        $rowB = Row::fromValues([3, 2, 1]);
+        $options->setRowAttributes($rowB, new RowAttributes(2, true, false));
+        $writer->addRow($rowB);
+
+        $rowC = Row::fromValues();
+        $options->setRowAttributes($rowC, new RowAttributes(1, false, true));
+        $writer->addRow($rowC);
+
+        $rowD = Row::fromValues();
+        $options->setRowAttributes($rowD, new RowAttributes(null));
+        $writer->addRow($rowD);
+
+        $writer->addRow(Row::fromValues());
+
+        $writer->close();
+
+        $xmlReader = new XMLReader();
+        $xmlReader->openFileInZip($resourcePath, 'xl/worksheets/sheet1.xml');
+
+        // sheetFormatPr
+        $xmlReader->readUntilNodeFound('sheetFormatPr');
+        self::assertEquals('sheetFormatPr', $xmlReader->getCurrentNodeName(), 'Workbook does not have sheetFormatPr tag');
+
+        /** @var DOMElement $DOMNode */
+        $DOMNode = $xmlReader->expand();
+        self::assertEquals(2, $DOMNode->getAttribute('outlineLevelRow'), 'outlineLevelRow value is not valid');
+
+        // Row A
+        $xmlReader->readUntilNodeFound('row');
+        self::assertEquals('row', $xmlReader->getCurrentNodeName(), 'Workbook does not have row tag');
+
+        /** @var DOMElement $DOMNode */
+        $DOMNode = $xmlReader->expand();
+        self::assertEquals(1, $DOMNode->getAttribute('outlineLevel'), 'outlineLevel value is not valid');
+        self::assertFalse($DOMNode->hasAttribute('collapsed'), 'collapsed attribute should not be added');
+        self::assertFalse($DOMNode->hasAttribute('hidden'), 'hidden attribute should not be added');
+
+        // Row B
+        $xmlReader->readUntilNodeFound('row');
+        self::assertEquals('row', $xmlReader->getCurrentNodeName(), 'Workbook does not have row tag');
+
+        /** @var DOMElement $DOMNode */
+        $DOMNode = $xmlReader->expand();
+        self::assertEquals(2, $DOMNode->getAttribute('outlineLevel'), 'outlineLevel value is not valid');
+        self::assertEquals('true', $DOMNode->getAttribute('collapsed'), 'collapsed value is not valid');
+        self::assertEquals('true', $DOMNode->getAttribute('hidden'), 'hidden value is not valid');
+
+        // Row C
+        $xmlReader->readUntilNodeFound('row');
+        self::assertEquals('row', $xmlReader->getCurrentNodeName(), 'Workbook does not have row tag');
+
+        /** @var DOMElement $DOMNode */
+        $DOMNode = $xmlReader->expand();
+        self::assertEquals(1, $DOMNode->getAttribute('outlineLevel'), 'outlineLevel value is not valid');
+        self::assertFalse($DOMNode->hasAttribute('collapsed'), 'collapsed attribute should not be added');
+        self::assertFalse($DOMNode->hasAttribute('hidden'), 'hidden attribute should not be added');
+
+        // Row D
+        $xmlReader->readUntilNodeFound('row');
+        self::assertEquals('row', $xmlReader->getCurrentNodeName(), 'Workbook does not have row tag');
+
+        /** @var DOMElement $DOMNode */
+        $DOMNode = $xmlReader->expand();
+        self::assertFalse($DOMNode->hasAttribute('outlineLevel'), 'outlineLevel attribute should not be added');
+        self::assertFalse($DOMNode->hasAttribute('collapsed'), 'collapsed attribute should not be added');
+        self::assertFalse($DOMNode->hasAttribute('hidden'), 'hidden attribute should not be added');
+
+        // Empty
+        self::assertFalse(
+            $xmlReader->readUntilNodeFound('row'),
+            'Empty cell without outlineLevel should not be written',
+        );
+    }
+
     /**
      * @param Row[] $allRows
      */

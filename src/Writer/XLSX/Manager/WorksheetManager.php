@@ -100,6 +100,8 @@ final class WorksheetManager implements WorksheetManagerInterface
         if (!$row->isEmpty()) {
             $this->addNonEmptyRow($worksheet, $row);
             $this->commentsManager->addComments($worksheet, $row);
+        } elseif (null !== $this->options->getRowAttributes($row)) {
+            $this->addEmptyRow($worksheet, $row);
         }
 
         $worksheet->setLastWrittenRowIndex($worksheet->getLastWrittenRowIndex() + 1);
@@ -129,10 +131,10 @@ final class WorksheetManager implements WorksheetManagerInterface
         $rowStyle = $row->getStyle();
         $rowIndexOneBased = $worksheet->getLastWrittenRowIndex() + 1;
         $numCells = $row->getNumCells();
-
+        $rowAttributes = $this->getRowAttributes($row);
         $rowHeight = $row->getHeight();
         $hasCustomHeight = ($this->options->DEFAULT_ROW_HEIGHT > 0 || $rowHeight > 0) ? '1' : '0';
-        $rowXML = "<row r=\"{$rowIndexOneBased}\" spans=\"1:{$numCells}\" ".($rowHeight > 0 ? "ht=\"{$rowHeight}\" " : '')."customHeight=\"{$hasCustomHeight}\">";
+        $rowXML = "<row r=\"{$rowIndexOneBased}\" spans=\"1:{$numCells}\" ".($rowHeight > 0 ? "ht=\"{$rowHeight}\" " : '')."customHeight=\"{$hasCustomHeight}\"{$rowAttributes}>";
 
         foreach ($row->getCells() as $columnIndexZeroBased => $cell) {
             $registeredStyle = $this->applyStyleAndRegister($cell, $rowStyle);
@@ -149,6 +151,55 @@ final class WorksheetManager implements WorksheetManagerInterface
         if (false === $wasWriteSuccessful) {
             throw new IOException("Unable to write data in {$worksheet->getFilePath()}");
         }
+    }
+
+    /**
+     * Adds empty row to the worksheet.
+     *
+     * @param Worksheet $worksheet The worksheet to add the row to
+     * @param Row       $row       The row to be written
+     *
+     * @throws InvalidArgumentException If a cell value's type is not supported
+     * @throws IOException              If the data cannot be written
+     */
+    private function addEmptyRow(Worksheet $worksheet, Row $row): void
+    {
+        $sheetFilePointer = $worksheet->getFilePointer();
+        $rowIndexOneBased = $worksheet->getLastWrittenRowIndex() + 1;
+        $rowAttributes = ''
+            ." r=\"{$rowIndexOneBased}\""
+            .$this->getRowAttributes($row);
+
+        $rowXML = "<row{$rowAttributes}></row>";
+
+        $wasWriteSuccessful = fwrite($sheetFilePointer, $rowXML);
+        if (false === $wasWriteSuccessful) {
+            throw new IOException("Unable to write data in {$worksheet->getFilePath()}");
+        }
+    }
+
+    private function getRowAttributes(Row $row): string {
+        $rowAttributes = $this->options->getRowAttributes($row);
+
+        if (null === $rowAttributes) {
+            return '';
+        }
+
+        $xmlAttributes = '';
+
+        if (!$rowAttributes->isVisible()) {
+            $xmlAttributes .= " hidden=\"true\"";
+        }
+
+        if ($rowAttributes->isCollapsed()) {
+            $xmlAttributes .= " collapsed=\"true\"";
+        }
+
+        if ($rowAttributes->getOutlineLevel() !== null) {
+            $xmlAttributes .= " outlineLevel=\"{$rowAttributes->getOutlineLevel()}\"";
+        }
+
+        return $xmlAttributes;
     }
 
     /**

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer\XLSX;
 
+use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Writer\Common\AbstractOptions;
+use WeakMap;
 
 final class Options extends AbstractOptions
 {
@@ -17,6 +19,10 @@ final class Options extends AbstractOptions
     /** @var MergeCell[] */
     private array $MERGE_CELLS = [];
 
+    /** @var WeakMap<Row, RowAttributes> */
+    private WeakMap $rowsAttributes;
+    private ?int $outlineMaxLevel = null;
+
     public function __construct()
     {
         parent::__construct();
@@ -26,6 +32,7 @@ final class Options extends AbstractOptions
         $defaultRowStyle->setFontName(self::DEFAULT_FONT_NAME);
 
         $this->DEFAULT_ROW_STYLE = $defaultRowStyle;
+        $this->rowsAttributes = new WeakMap();
     }
 
     /**
@@ -62,5 +69,23 @@ final class Options extends AbstractOptions
     public function getMergeCells(): array
     {
         return $this->MERGE_CELLS;
+    }
+
+    public function setRowAttributes(Row $row, RowAttributes $attributes): static
+    {
+        $this->rowsAttributes[$row] = $attributes;
+        $this->outlineMaxLevel = max($attributes->getOutlineLevel(), (int) $this->outlineMaxLevel);
+
+        return $this;
+    }
+
+    public function getRowAttributes(Row $row): ?RowAttributes
+    {
+        return $this->rowsAttributes[$row] ?? null;
+    }
+
+    public function getOutlineMaxLevel(): ?int
+    {
+        return $this->outlineMaxLevel;
     }
 }
