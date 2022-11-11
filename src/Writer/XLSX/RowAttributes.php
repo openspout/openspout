@@ -6,7 +6,7 @@ namespace OpenSpout\Writer\XLSX;
 
 use OpenSpout\Common\Exception\InvalidArgumentException;
 
-class RowAttributes
+final class RowAttributes
 {
     private bool $visible;
     private bool $collapsed;
