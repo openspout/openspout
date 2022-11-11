@@ -19,7 +19,10 @@ final class OptionsTest extends TestCase
         $row = Row::fromValues();
 
         self::assertNull($options->getOutlineMaxLevel());
-        self::assertSame($row, $options->setRowAttributes($row, $attributes));
+
+        // Level should be increased
+        $options->setRowAttributes($row, $attributes);
+
         self::assertEquals(2, $options->getOutlineMaxLevel());
 
         // Level cannot be decreased

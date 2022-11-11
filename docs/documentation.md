@@ -218,13 +218,25 @@ $writer->openToFile('/tmp/file.xlsx');
 
 $levelOne = new RowAttributes(1);
 $levelTwo = new RowAttributes(2);
+$rowA     = Row::fromValues([1, 1, 1]);
+$rowB     = Row::fromValues([2, 2, 2]);
+$rowC     = Row::fromValues([3, 3, 3]);
+$rowD     = Row::fromValues([4, 4, 4]);
+$rowE     = Row::fromValues();
+$rowF     = Row::fromValues();
 
-$writer->addRow($options->setRowAttributes(Row::fromValues([1, 1, 1]), $levelOne));
-$writer->addRow($options->setRowAttributes(Row::fromValues([2, 2, 2]), $levelOne));
-$writer->addRow($options->setRowAttributes(Row::fromValues([3, 3, 3]), $levelTwo));
-$writer->addRow($options->setRowAttributes(Row::fromValues([4, 4, 4]), $levelTwo));
-$writer->addRow($options->setRowAttributes(Row::fromValues(), $levelOne));
-$writer->addRow(Row::fromValues());
+$options->setRowAttributes($rowA, $levelOne);
+$options->setRowAttributes($rowB, $levelOne);
+$options->setRowAttributes($rowC, $levelTwo);
+$options->setRowAttributes($rowD, $levelTwo);
+$options->setRowAttributes($rowE, $levelOne);
+
+$writer->addRow($rowA);
+$writer->addRow($rowB);
+$writer->addRow($rowC);
+$writer->addRow($rowD);
+$writer->addRow($rowE);
+$writer->addRow($rowF);
 
 $writer->close();
 ```
