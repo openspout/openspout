@@ -22,4 +22,9 @@ final class DateIntervalCell extends Cell
     {
         return $this->value;
     }
+
+    public function isEmpty(): bool
+    {
+        return false;
+    }
 }

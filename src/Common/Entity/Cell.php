@@ -24,6 +24,8 @@ abstract class Cell
         $this->setStyle($style);
     }
 
+    abstract public function isEmpty(): bool;
+
     abstract public function getValue(): null|bool|string|int|float|DateTimeInterface|DateInterval;
 
     final public function setStyle(?Style $style): void

@@ -21,4 +21,9 @@ final class NumericCell extends Cell
     {
         return $this->value;
     }
+
+    public function isEmpty(): bool
+    {
+        return false;
+    }
 }

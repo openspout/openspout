@@ -21,4 +21,9 @@ final class StringCell extends Cell
     {
         return $this->value;
     }
+
+    public function isEmpty(): bool
+    {
+        return empty($this->value);
+    }
 }
