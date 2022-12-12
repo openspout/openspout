@@ -436,13 +436,13 @@ final class WriterTest extends TestCase
     {
         $fileName = 'test_add_row_should_apply_height.xlsx';
 
-        $this->writeToXLSXFile([Row::fromValues(['xlsx--11'])->setHeight('25')], $fileName);
+        $this->writeToXLSXFile([Row::fromValues(['xlsx--11'])->setHeight(25)], $fileName);
 
         $xmlReader = $this->getXmlReaderForSheetFromXmlFile($fileName, '1');
 
         $xmlReader->readUntilNodeFound('row');
         $DOMNode = $xmlReader->expand();
-        self::assertEquals('25', $DOMNode->getAttribute('ht'), 'Row height does not equal given value.');
+        self::assertEquals(25, $DOMNode->getAttribute('ht'), 'Row height does not equal given value.');
         self::assertEquals('1', $DOMNode->getAttribute('customHeight'), 'Row does not have custom height flag set.');
     }
 
