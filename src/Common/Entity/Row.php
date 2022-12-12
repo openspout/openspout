@@ -21,7 +21,7 @@ final class Row
     private Style $style;
 
     /** Row height. */
-    private string $height = '';
+    private float $height = 0;
 
     /**
      * Row constructor.
@@ -114,7 +114,7 @@ final class Row
     /**
      * Set row height.
      */
-    public function setHeight(string $height): self
+    public function setHeight(float $height): self
     {
         $this->height = $height;
 
@@ -124,7 +124,7 @@ final class Row
     /**
      * Returns row height.
      */
-    public function getHeight(): string
+    public function getHeight(): float
     {
         return $this->height;
     }
