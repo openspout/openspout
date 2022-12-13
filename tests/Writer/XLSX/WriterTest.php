@@ -441,6 +441,7 @@ final class WriterTest extends TestCase
 
         $xmlReader->readUntilNodeFound('row');
         $DOMNode = $xmlReader->expand();
+        self::assertInstanceOf(DOMElement::class, $DOMNode);
         self::assertEquals(25, $DOMNode->getAttribute('ht'), 'Row height does not equal given value.');
         self::assertEquals('1', $DOMNode->getAttribute('customHeight'), 'Row does not have custom height flag set.');
     }
