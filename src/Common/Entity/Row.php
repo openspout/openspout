@@ -20,6 +20,9 @@ final class Row
     /** The row style. */
     private Style $style;
 
+    /** Row height. */
+    private float $height = 0;
+
     /**
      * Row constructor.
      *
@@ -106,6 +109,24 @@ final class Row
         $this->style = $style ?? new Style();
 
         return $this;
+    }
+
+    /**
+     * Set row height.
+     */
+    public function setHeight(float $height): self
+    {
+        $this->height = $height;
+
+        return $this;
+    }
+
+    /**
+     * Returns row height.
+     */
+    public function getHeight(): float
+    {
+        return $this->height;
     }
 
     /**
