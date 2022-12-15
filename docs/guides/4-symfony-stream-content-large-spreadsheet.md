@@ -8,6 +8,8 @@ big the content is, the browser will be able to start rendering it as soon as th
 Reading a static spreadsheet to display its content to a user is a great use case for streaming. The spreadsheet can
 contain from a few rows to thousands of them and we don't want to wait until the whole file has been read (which can take a long time) before showing something to the user. Let's see how [Symfony's StreamedResponse](http://symfony.com/doc/current/components/http_foundation/introduction.html#streaming-a-response) let us easily stream the content of the spreadsheet.
 
+## Stream content by reading source file
+
 A regular controller usually builds the content to be displayed and encapsulate it into a `Response` object. Everything
 happens synchronously. Such a controller may look like this:
 
@@ -101,6 +103,38 @@ class MyStreamController extends Controller
 
             $reader->close();
         });
+
+        return $response;
+    }
+}
+```
+
+## Stream content directly without loading source file
+
+```php
+class MyStreamController extends Controller
+{
+    /**
+     * @Route("/spreadsheet/stream-data")
+     */
+    public function streamDataAction(): StreamedResponse
+    {
+        $writer = WriterEntityFactory::createXLSXWriter();
+        // Our source data where every array item contains 1 row
+        $data = [
+            ['c1r1','c2r1','c3r1'],
+            ['c1r2','c2r3','c3r4'],
+        ];
+        $response = new StreamedResponse(function () use ($writer, $data) {
+            $writer->openToBrowser('filename.xlsx');
+
+            foreach ($data as $row) {
+                $writer->addRow(WriterEntityFactory::createRowFromArray($row));
+            }
+
+            $writer->close();
+        });
+        $response->headers->set('Content-Type', 'application/vnd.ms-excel');
 
         return $response;
     }
