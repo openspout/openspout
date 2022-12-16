@@ -72,6 +72,21 @@ final class RowTest extends \PHPUnit\Framework\TestCase
         self::assertSame(3, $row->getNumCells());
     }
 
+    public function testRowFromArrayValuesSameAsRowToArrayValues(): void
+    {
+        $supportedValueTypes = [
+            null,
+            true,
+            new \DateTime('2022-12-12 12:22:22.0'),
+            new \DateInterval('P2D'),
+            5.55,
+            10,
+            'string',
+        ];
+
+        self::assertSame($supportedValueTypes, Row::fromValues($supportedValueTypes)->toArray());
+    }
+
     /**
      * @dataProvider dataProviderForTestIsEmptyRow
      *
