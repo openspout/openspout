@@ -130,8 +130,6 @@ final class Row
     }
 
     /**
-     * @internal
-     *
      * @return list<null|bool|DateInterval|DateTimeInterface|float|int|string> The row values, as array
      */
     public function toArray(): array
