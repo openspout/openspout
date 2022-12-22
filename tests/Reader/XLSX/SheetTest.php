@@ -34,6 +34,19 @@ final class SheetTest extends TestCase
         self::assertTrue($sheets[1]->isVisible());
     }
 
+    public function testReaderSheetIteratorKeyMethodShouldReturnFirstKey(): void
+    {
+        $resourcePath = TestUsingResource::getResourcePath('two_sheets_with_custom_names_and_custom_active_tab.xlsx');
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $reader = new Reader($options);
+        $reader->open($resourcePath);
+
+        self::assertSame(1, $reader->getSheetIterator()->key());
+
+        $reader->close();
+    }
+
     /**
      * @return Sheet[]
      */
