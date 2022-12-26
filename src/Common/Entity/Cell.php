@@ -18,10 +18,12 @@ use OpenSpout\Common\Entity\Style\Style;
 abstract class Cell
 {
     private Style $style;
+    private ?Comment $comment;
 
     public function __construct(?Style $style)
     {
         $this->setStyle($style);
+        $this->setComment(null);
     }
 
     abstract public function getValue(): null|bool|string|int|float|DateTimeInterface|DateInterval;
@@ -35,6 +37,17 @@ abstract class Cell
     {
         return $this->style;
     }
+
+    final public function setComment(?Comment $comment): void
+    {
+        $this->comment = $comment;
+    }
+
+    final public function getComment(): ?Comment
+    {
+        return $this->comment;
+    }
+
 
     final public static function fromValue(null|bool|string|int|float|DateTimeInterface|DateInterval $value, ?Style $style = null): self
     {

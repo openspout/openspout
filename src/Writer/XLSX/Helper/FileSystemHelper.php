@@ -23,6 +23,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     public const APP_NAME = 'OpenSpout';
 
     public const RELS_FOLDER_NAME = '_rels';
+    public const DRAWINGS_FOLDER_NAME = 'drawings';
     public const DOC_PROPS_FOLDER_NAME = 'docProps';
     public const XL_FOLDER_NAME = 'xl';
     public const WORKSHEETS_FOLDER_NAME = 'worksheets';
@@ -151,12 +152,14 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
                 <Default ContentType="application/xml" Extension="xml"/>
                 <Default ContentType="application/vnd.openxmlformats-package.relationships+xml" Extension="rels"/>
+                <Default ContentType="application/vnd.openxmlformats-officedocument.vmlDrawing" Extension="vml"/>
                 <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml" PartName="/xl/workbook.xml"/>
             EOD;
 
         /** @var Worksheet $worksheet */
         foreach ($worksheets as $worksheet) {
             $contentTypesXmlFileContents .= '<Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml" PartName="/xl/worksheets/sheet'.$worksheet->getId().'.xml"/>';
+            $contentTypesXmlFileContents .= '<Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml" PartName="/xl/comments'.$worksheet->getId().'.xml" />';
         }
 
         $contentTypesXmlFileContents .= <<<'EOD'
@@ -256,6 +259,31 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     }
 
     /**
+     * Create the "rels" file for a given worksheet. This contains relations to the comments.xml and drawing.vml files for this worksheet.
+     * 
+     * @param Worksheet[] $worksheets
+     */
+    public function createWorksheetRelsFiles(array $worksheets): self
+    {
+        $this->createFolder($this->getXlWorksheetsFolder(), self::RELS_FOLDER_NAME);
+
+        foreach ($worksheets as $worksheet) {
+            $worksheetId = $worksheet->getId();
+            $worksheetRelsContent = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+              <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                <Relationship Id="rId_comments_vml1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing" Target="../drawings/vmlDrawing'.$worksheetId.'.vml"/>
+                <Relationship Id="rId_comments1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments" Target="../comments'.$worksheetId.'.xml"/>
+              </Relationships>';
+
+            $folder = $this->getXlWorksheetsFolder().\DIRECTORY_SEPARATOR.'_rels';
+            $filename = 'sheet'.$worksheetId.'.xml.rels';
+
+            $this->createFileWithContents($folder, $filename, $worksheetRelsContent);
+        }
+        return $this;
+    }
+
+    /**
      * Creates the "styles.xml" file under the "xl" folder.
      */
     public function createStylesFile(StyleManager $styleManager): self
@@ -333,6 +361,9 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
                 fwrite($worksheetFilePointer, $mergeCellString);
             }
 
+            // Add the legacy drawing for comments
+            fwrite($worksheetFilePointer, '<legacyDrawing r:id="rId_comments_vml1"/>');
+            
             fwrite($worksheetFilePointer, '</worksheet>');
             fclose($worksheetFilePointer);
         }
@@ -523,6 +554,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
         $this->xlFolder = $this->createFolder($this->rootFolder, self::XL_FOLDER_NAME);
         $this->createXlRelsFolder();
         $this->createXlWorksheetsFolder();
+        $this->createDrawingsFolder();
 
         return $this;
     }
@@ -549,6 +581,17 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     {
         $this->xlRelsFolder = $this->createFolder($this->xlFolder, self::RELS_FOLDER_NAME);
 
+        return $this;
+    }
+
+    /**
+     * Creates the "drawings" folder under the "xl" folder.
+     * 
+     * @throws \OpenSpout\Common\Exception\IOException If unable to create the folder
+     */
+    private function createDrawingsFolder(): self
+    {
+        $this->createFolder($this->getXLFolder(), self::DRAWINGS_FOLDER_NAME);
         return $this;
     }
 

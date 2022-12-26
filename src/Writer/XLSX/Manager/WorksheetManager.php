@@ -18,6 +18,7 @@ use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
 use OpenSpout\Writer\Common\Manager\WorksheetManagerInterface;
 use OpenSpout\Writer\XLSX\Helper\DateHelper;
 use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
+use OpenSpout\Writer\XLSX\Manager\CommentsManager;
 use OpenSpout\Writer\XLSX\Options;
 
 /**
@@ -33,6 +34,9 @@ final class WorksheetManager implements WorksheetManagerInterface
      * @see https://support.office.com/en-us/article/Excel-specifications-and-limits-ca36e2dc-1f09-4620-b726-67c00b05040f [Excel 2013/2016]
      */
     public const MAX_CHARACTERS_PER_CELL = 32767;
+
+    /** @var CommentsManager Manages comments */
+    private CommentsManager $commentsManager;
 
     private Options $options;
 
@@ -58,6 +62,7 @@ final class WorksheetManager implements WorksheetManagerInterface
         Options $options,
         StyleManager $styleManager,
         StyleMerger $styleMerger,
+        CommentsManager $commentsManager,
         SharedStringsManager $sharedStringsManager,
         XLSXEscaper $stringsEscaper,
         StringHelper $stringHelper
@@ -65,6 +70,7 @@ final class WorksheetManager implements WorksheetManagerInterface
         $this->options = $options;
         $this->styleManager = $styleManager;
         $this->styleMerger = $styleMerger;
+        $this->commentsManager = $commentsManager;
         $this->sharedStringsManager = $sharedStringsManager;
         $this->stringsEscaper = $stringsEscaper;
         $this->stringHelper = $stringHelper;
@@ -84,6 +90,7 @@ final class WorksheetManager implements WorksheetManagerInterface
         \assert(false !== $sheetFilePointer);
 
         $worksheet->setFilePointer($sheetFilePointer);
+        $this->commentsManager->createWorksheetCommentFiles($worksheet);
     }
 
     /**
@@ -93,6 +100,7 @@ final class WorksheetManager implements WorksheetManagerInterface
     {
         if (!$row->isEmpty()) {
             $this->addNonEmptyRow($worksheet, $row);
+            $this->commentsManager->addComments($worksheet, $row);
         }
 
         $worksheet->setLastWrittenRowIndex($worksheet->getLastWrittenRowIndex() + 1);
@@ -104,6 +112,7 @@ final class WorksheetManager implements WorksheetManagerInterface
     public function close(Worksheet $worksheet): void
     {
         fclose($worksheet->getFilePointer());
+        $this->commentsManager->closeWorksheetCommentFiles($worksheet);
     }
 
     /**
