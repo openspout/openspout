@@ -336,6 +336,50 @@ $writer = new Writer($options);
 $writer->openToFile($filePath);
 ```
 
+## Cell comments
+The XLSX writer has support for adding comments (notes) to cells. To create a 400x200 panel, with in bold the message 'WARNING' and 2 newlines, then in italic a warning message.
+
+```php
+use OpenSpout\Common\Entity\Cell;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Entity\Comment\Comment;
+
+$writer = new \OpenSpout\Writer\XLSX\Writer();
+$writer->openToFile('output.xlsx');
+
+$cell = Cell::fromValue('Test');
+$comment = new Comment();
+$comment->setHeight("200px");
+$comment->setWidth("400px");
+
+$comment->createTextRun("WARNING\n\n")->setBold(true)->setItalic(false);
+$comment->createTextRun("There is something wrong with this cell")->setBold(false)->setItalic(true);
+
+$cell->setComment($comment);
+$row = new Row([$cell]);
+$writer->addRow($row);
+$writer->close();
+```
+
+A comment renders as a panel that has a height and width, of which the following can be set:
+
+- `setHeight(syring)`: height of the panel, in CSS format (can be with 'px' or 'pt')
+- `setWidth(string)`: width of the panel, in CSS format (can be with 'px' or 'pt')
+- `setMarginLeft(string)`: left margin of the panel, in CSS format (can be with 'px' or 'pt')
+- `setMarginTop(string)`: top margin of the panel, in CSS format (can be with 'px' or 'pt')
+- `setVisible(bool)`: defines whether the panel is open or hidden, the default is **false**.
+- `setFillColor(string)`: sets the background of the panel, defaults to **#FFFFE1** (light yellow)
+
+Within the panel, you can have multiple lines that have their own styling. Each is called a 'TextRun' and can be created by using the `createTextRun()` method that creates a new `OpenSpout\Common\Entity\Comment\Comment\TextRun` instance and adds it to the list of textruns for that comment. You can also manually instantiate it and add it to the list using the comment `addTextRun(TextRun)` method.
+
+A TextRun can be styled using the following methods:
+
+- `setBold(bool)`: Defaults to **false**
+- `setItalic(bool)`: Defaults to **false**
+- `setFontName(string)`: Name of the font, defaults to **Tahoma**
+- `setFontColor(string)`: Color of the font, defaults to **000000** (note it is a 8 character 
+- `setFontSize(int)`: Size of the font in points
+
 ## Playing with sheets
 
 When creating a XLSX or ODS file, it is possible to control which sheet the data will be written into. At any time, you
@@ -353,11 +397,13 @@ $writer->addRow($anotherRowForSheet1); // append the row to the first sheet
 ```
 
 It is also possible to retrieve all the sheets currently created:
+
 ```php
 $sheets = $writer->getSheets();
 ```
 
 It is possible to retrieve some sheet's attributes when reading:
+
 ```php
 foreach ($reader->getSheetIterator() as $sheet) {
     $sheetName = $sheet->getName();
@@ -394,6 +440,7 @@ In case of you have to manage multiple file format entries, you can use the read
 The reader factory support two guessing method.
 
 **Guess type by extension**
+
 ```php
 $file = 'path/to/my_file.xlsx'
 
@@ -406,6 +453,7 @@ $reader->close();
 ```
 
 **Guess type by mime type**
+
 ```php
 // "my_file" is an ods file.
 $file = 'path/to/my_file.any'
