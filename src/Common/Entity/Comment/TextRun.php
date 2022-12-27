@@ -9,8 +9,8 @@ namespace OpenSpout\Common\Entity\Comment;
  */
 final class TextRun
 {
-    private string $fontSize = '10';
-    private string $fontColor = 'FF000000';
+    private int $fontSize = 10;
+    private string $fontColor = '000000';
     private string $fontName = 'Tahoma';
     private bool $bold = false;
     private bool $italic = false;
@@ -32,6 +32,25 @@ final class TextRun
         return $this;
     }
 
+    public function setFontSize(int $size): self
+    {
+        $this->fontSize = $size;
+        return $this;
+    }
+
+    public function setFontColor(string $fontColor): self
+    {
+        $this->fontColor = $fontColor;
+        return $this;
+    }
+
+    public function setFontName(string $fontName): self
+    {
+        $this->fontName = $fontName;
+        return $this;
+    }
+
+
     public function getFontName() : string 
     {
         return $this->fontName;
@@ -42,7 +61,7 @@ final class TextRun
         return $this->fontColor;
     }
 
-    public function getFontSize() : string
+    public function getFontSize() : int
     {
         return $this->fontSize;
     }

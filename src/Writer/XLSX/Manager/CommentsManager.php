@@ -182,9 +182,18 @@ final class CommentsManager
         $drawingFilePointer = $this->drawingFilePointers[$sheetId];
         $this->shapeId++;
 
+        $style = 'position:absolute;z-index:1';
+        $style .= ';margin-left:' . $comment->getMarginLeft();
+        $style .= ';margin-top:' . $comment->getMarginTop();
+        $style .= ';width:' . $comment->getWidth();
+        $style .= ';height:' . $comment->getHeight();
+        if (!$comment->getVisible()) {
+            $style .= ';visibility:hidden';
+        }
+
         $drawingVml = '<v:shape id="_x0000_s' . $this->shapeId . '"';
-        $drawingVml .= ' type="#_x0000_t202" style="position:absolute;margin-left:59.25pt;margin-top:1.5pt;width:400pt;height:100pt;z-index:1;visibility:hidden" fillcolor="#FFFFE1" o:insetmode="auto">';
-        $drawingVml .= '<v:fill color2="#FFFFE1"/>';
+        $drawingVml .= ' type="#_x0000_t202" style="' . $style . '" fillcolor="'.$comment->getFillColor().'" o:insetmode="auto">';
+        $drawingVml .= '<v:fill color2="'.$comment->getFillColor().'"/>';
         $drawingVml .= '<v:shadow on="t" color="black" obscured="t"/>';
         $drawingVml .= '<v:path o:connecttype="none"/>';
         $drawingVml .= '<v:textbox style="mso-direction-alt:auto">';

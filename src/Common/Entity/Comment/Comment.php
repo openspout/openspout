@@ -89,6 +89,12 @@ final class Comment
         return $this;
     }
 
+    public function setFillColor(string $fillColor) : self
+    {
+        $this->fillColor = $fillColor;
+        return $this;
+    }
+
     public function getTextRuns() : array
     {
         return $this->paragraphs;
@@ -104,7 +110,7 @@ final class Comment
         return $this->width;
     }
 
-    public function getMarginToph() : string 
+    public function getMarginTop() : string 
     {
         return $this->marginTop;
     }
@@ -117,5 +123,10 @@ final class Comment
     public function getVisible() : bool
     {
         return $this->visible;
+    }
+
+    public function getFillColor() : string
+    {
+        return $this->fillColor;
     }
 }
