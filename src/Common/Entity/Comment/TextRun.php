@@ -52,6 +52,11 @@ final class TextRun
         return $this->bold;
     }
 
+    public function getItalic() : bool
+    {
+        return $this->italic;
+    }
+
     public function getText() : string
     {
         return $this->text;
