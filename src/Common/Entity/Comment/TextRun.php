@@ -50,7 +50,6 @@ final class TextRun
         return $this;
     }
 
-
     public function getFontName() : string 
     {
         return $this->fontName;

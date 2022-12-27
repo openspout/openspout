@@ -86,8 +86,7 @@ final class CommentsManager
 
         fwrite($commentFp, self::COMMENTS_XML_FILE_HEADER);
         fwrite($drawingFp, self::DRAWINGS_VML_FILE_HEADER);
-        
-        
+                
         $this->commentsFilePointers[$sheetId] = $commentFp;
         $this->drawingFilePointers[$sheetId] = $drawingFp;
     }
@@ -201,7 +200,7 @@ final class CommentsManager
         $drawingVml .= '</v:textbox>';
         $drawingVml .= '<x:ClientData ObjectType="Note">';
         $drawingVml .= '  <x:MoveWithCells/>';
-        $drawingVml .= '          <x:SizeWithCells/>';
+        $drawingVml .= '  <x:SizeWithCells/>';
         $drawingVml .= '  <x:AutoFill>False</x:AutoFill>';
         $drawingVml .= '  <x:Row>' . $rowIndexZeroBased . '</x:Row>';
         $drawingVml .= '  <x:Column>' . $columnIndexZeroBased . '</x:Column>';
