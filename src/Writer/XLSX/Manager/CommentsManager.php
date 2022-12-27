@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace OpenSpout\Writer\XLSX\Manager;
 
 use OpenSpout\Common\Helper\Escaper;
-use OpenSpout\Common\Entity\Comment;
+use OpenSpout\Common\Entity\Comment\Comment;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\Common\Entity\Worksheet;
 use OpenSpout\Writer\Common\Helper\CellHelper;
@@ -148,10 +148,21 @@ final class CommentsManager
         $columnLetters = CellHelper::getColumnLettersFromColumnIndex($columnIndexZeroBased);
 
         $commentxml = '<comment ref="'.$columnLetters.$rowIndexOneBased.'" authorId="0"><text>';
-        foreach (explode('\n', $comment->getMessage()) as $line) {
+        foreach ($comment->getTextRuns() as $line) {
             $commentxml .= '<r>';
-            $commentxml .= '<rPr><sz val="10"/><color rgb="FF000000"/><rFont val="Tahoma"/><family val="2"/></rPr>';
-            $commentxml .= '<t>' . $this->stringsEscaper->escape($line) . '</t>';
+            $commentxml .= '  <rPr>';
+            if ($line->getBold()) {
+                $commentxml .= '    <b/>';
+            }
+            if ($line->getItalic()) {
+                $commentxml .= '    <b/>';
+            }            
+            $commentxml .= '    <sz val="'.$line->getFontSize().'"/>';
+            $commentxml .= '    <color rgb="'.$line->getFontColor().'"/>';
+            $commentxml .= '    <rFont val="'.$line->getFontName().'"/>';
+            $commentxml .= '    <family val="2"/>';
+            $commentxml .= '  </rPr>';
+            $commentxml .= '  <t xml:space="preserve">' . $this->stringsEscaper->escape($line->getText()) . '</t>';
             $commentxml .= '</r>';
         }
         $commentxml .= '</text></comment>';

@@ -14,6 +14,7 @@ use OpenSpout\Common\Entity\Cell\FormulaCell;
 use OpenSpout\Common\Entity\Cell\NumericCell;
 use OpenSpout\Common\Entity\Cell\StringCell;
 use OpenSpout\Common\Entity\Style\Style;
+use OpenSpout\Common\Entity\Comment\Comment;
 
 abstract class Cell
 {
