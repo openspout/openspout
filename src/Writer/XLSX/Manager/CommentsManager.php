@@ -114,6 +114,9 @@ final class CommentsManager
 
         fwrite($commentFp, self::COMMENTS_XML_FILE_FOOTER);
         fwrite($drawingFp, self::DRAWINGS_VML_FILE_FOOTER);
+
+        fclose($commentFp);
+        fclose($drawingFp);
     }
 
     public function addComments(Worksheet $worksheet, Row $row): void

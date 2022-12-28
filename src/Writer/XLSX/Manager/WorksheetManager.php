@@ -110,8 +110,8 @@ final class WorksheetManager implements WorksheetManagerInterface
      */
     public function close(Worksheet $worksheet): void
     {
-        fclose($worksheet->getFilePointer());
         $this->commentsManager->closeWorksheetCommentFiles($worksheet);
+        fclose($worksheet->getFilePointer());
     }
 
     /**
