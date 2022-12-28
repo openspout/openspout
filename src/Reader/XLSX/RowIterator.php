@@ -8,6 +8,7 @@ use DOMElement;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Reader\Common\ColumnWidth;
 use OpenSpout\Reader\Common\Manager\RowManager;
 use OpenSpout\Reader\Common\XMLProcessor;
 use OpenSpout\Reader\Exception\InvalidValueException;
@@ -75,7 +76,7 @@ final class RowIterator implements RowIteratorInterface
     /** @var int The number of columns the sheet has (0 meaning undefined) */
     private int $numColumns = 0;
 
-    /** @var string[] The widths of the columns in the sheet, if specified */
+    /** @var ColumnWidth[] The widths of the columns in the sheet, if specified */
     private array $columnWidths = [];
 
     /** @var bool Whether empty rows should be returned or skipped */
@@ -226,7 +227,7 @@ final class RowIterator implements RowIteratorInterface
     }
 
     /**
-     * @return string[]
+     * @return ColumnWidth[]
      */
     public function getColumnWidths(): array
     {
@@ -304,13 +305,15 @@ final class RowIterator implements RowIteratorInterface
      */
     private function processColStartingNode(XMLReader $xmlReader): int
     {
-        $min = $xmlReader->getAttribute(self::XML_ATTRIBUTE_MIN);
-        $max = $xmlReader->getAttribute(self::XML_ATTRIBUTE_MAX);
-        $width = $xmlReader->getAttribute(self::XML_ATTRIBUTE_WIDTH);
+        $min = (int) $xmlReader->getAttribute(self::XML_ATTRIBUTE_MIN);
+        $max = (int) $xmlReader->getAttribute(self::XML_ATTRIBUTE_MAX);
+        $width = (float) $xmlReader->getAttribute(self::XML_ATTRIBUTE_WIDTH);
 
-        for ($i = $min; $i <= $max; ++$i) {
-            $this->columnWidths[$i] = $width;
-        }
+        \assert($min > 0);
+        \assert($max > 0);
+
+        $columnwidth = new ColumnWidth($min, $max, $width);
+        $this->columnWidths[] = $columnwidth;
 
         return XMLProcessor::PROCESSING_CONTINUE;
     }

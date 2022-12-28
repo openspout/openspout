@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OpenSpout\Reader\XLSX;
 
+use OpenSpout\Reader\Common\ColumnWidth;
 use OpenSpout\Reader\SheetWithVisibilityInterface;
 
 /**
@@ -48,7 +49,7 @@ final class Sheet implements SheetWithVisibilityInterface
     }
 
     /**
-     * @return string[] a list of column-widths
+     * @return ColumnWidth[] a list of column-widths
      */
     public function getColumnWidths(): array
     {
