@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OpenSpout\Reader\XLSX;
 
+use OpenSpout\Reader\Common\ColumnWidth;
 use OpenSpout\Reader\SheetWithVisibilityInterface;
 
 /**
@@ -45,6 +46,14 @@ final class Sheet implements SheetWithVisibilityInterface
     public function getRowIterator(): RowIterator
     {
         return $this->rowIterator;
+    }
+
+    /**
+     * @return ColumnWidth[] a list of column-widths
+     */
+    public function getColumnWidths(): array
+    {
+        return $this->rowIterator->getColumnWidths();
     }
 
     /**
