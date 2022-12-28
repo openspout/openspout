@@ -4,11 +4,18 @@ declare(strict_types=1);
 
 namespace OpenSpout\Common\Entity\Comment;
 
+use OpenSpout\Common\Entity\Comment\TextRun;
+
 /**
  * This class defines a comment that can be added to a cell.
  */
 final class Comment
 {
+    /**
+     * The textruns for this comment.
+     *
+     * @var TextRun[]
+     */
     private array $paragraphs = [];
 
     /**
@@ -95,6 +102,11 @@ final class Comment
         return $this;
     }
 
+    /**
+     * The textruns for this comment.
+     *
+     * @return TextRun[]
+     */
     public function getTextRuns() : array
     {
         return $this->paragraphs;

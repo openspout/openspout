@@ -591,7 +591,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
      */
     private function createDrawingsFolder(): self
     {
-        $this->createFolder($this->getXLFolder(), self::DRAWINGS_FOLDER_NAME);
+        $this->createFolder($this->getXlFolder(), self::DRAWINGS_FOLDER_NAME);
         return $this;
     }
 

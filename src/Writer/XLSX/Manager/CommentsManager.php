@@ -51,8 +51,16 @@ final class CommentsManager
         </xml>
         EOD;
 
+    /**
+     * Filepointers to the commentsX.xml files, where the index is the id of the worksheet
+     * @var Resource[]
+     */
     private array $commentsFilePointers;
 
+    /**
+     * Filepointers to the vmlDrawingX.vml files, where the index is the id of the worksheet
+     * @var Resource[]
+     */
     private array $drawingFilePointers;
 
     private string $xlFolder;
@@ -78,11 +86,14 @@ final class CommentsManager
      * Create the two comment-files for the given worksheet
      * @param Worksheet $sheet 
      */
-    public function createWorksheetCommentFiles(Worksheet $sheet)
+    public function createWorksheetCommentFiles(Worksheet $sheet) : void
     {
         $sheetId = $sheet->getId();
         $commentFp = fopen($this->getCommentsFilePath($sheet), 'w');
+        \assert(false !== $commentFp);
+
         $drawingFp = fopen($this->getDrawingFilePath($sheet), 'w');
+        \assert(false !== $drawingFp);
 
         fwrite($commentFp, self::COMMENTS_XML_FILE_HEADER);
         fwrite($drawingFp, self::DRAWINGS_VML_FILE_HEADER);
@@ -95,7 +106,8 @@ final class CommentsManager
      * Close the two comment-files for the given worksheet
      * @param Worksheet $sheet 
      */
-    public function closeWorksheetCommentFiles(Worksheet $sheet) {
+    public function closeWorksheetCommentFiles(Worksheet $sheet) : void
+    {
         $sheetId = $sheet->getId();
 
         $commentFp = $this->commentsFilePointers[$sheetId];
@@ -107,12 +119,12 @@ final class CommentsManager
 
     public function addComments(Worksheet $worksheet, Row $row): void
     {
-        $columnIndexZeroBased = 0 + $worksheet->getLastWrittenRowIndex();
+        $rowIndexZeroBased = 0 + $worksheet->getLastWrittenRowIndex();
         foreach ($row->getCells() as $columnIndexZeroBased => $cell) {
-            if ($cell->getComment()) {
+            if ($cell->getComment() !== null) {
                 $comment = $cell->getComment();
-                $this->addXmlComment($worksheet->getId(), $columnIndexZeroBased, $columnIndexZeroBased, $comment);
-                $this->addVmlComment($worksheet->getId(), $columnIndexZeroBased, $columnIndexZeroBased, $comment);
+                $this->addXmlComment($worksheet->getId(), $rowIndexZeroBased, $columnIndexZeroBased, $comment);
+                $this->addVmlComment($worksheet->getId(), $rowIndexZeroBased, $columnIndexZeroBased, $comment);
             }
         }
     }
