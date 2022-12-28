@@ -11,6 +11,7 @@ use OpenSpout\Writer\Common\Entity\Workbook;
 use OpenSpout\Writer\Common\Helper\ZipHelper;
 use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
 use OpenSpout\Writer\XLSX\Helper\FileSystemHelper;
+use OpenSpout\Writer\XLSX\Manager\CommentsManager;
 use OpenSpout\Writer\XLSX\Manager\SharedStringsManager;
 use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
 use OpenSpout\Writer\XLSX\Manager\Style\StyleRegistry;
@@ -51,10 +52,13 @@ final class Writer extends AbstractWriterMultiSheets
         $styleMerger = new StyleMerger();
         $styleManager = new StyleManager(new StyleRegistry($this->options->DEFAULT_ROW_STYLE));
 
+        $commentsManager = new CommentsManager($xlFolder, new XLSX());
+
         $worksheetManager = new WorksheetManager(
             $this->options,
             $styleManager,
             $styleMerger,
+            $commentsManager,
             $sharedStringsManager,
             new XLSX(),
             StringHelper::factory()

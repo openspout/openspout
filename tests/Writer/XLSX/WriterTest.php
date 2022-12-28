@@ -9,6 +9,8 @@ use DateTimeZone;
 use DOMElement;
 use finfo;
 use OpenSpout\Common\Entity\Cell;
+use OpenSpout\Common\Entity\Comment\Comment;
+use OpenSpout\Common\Entity\Comment\TextRun;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Reader\Wrapper\XMLReader;
@@ -704,6 +706,60 @@ final class WriterTest extends TestCase
         $secondFilter = $DOMNode->childNodes->item(1);
         self::assertEquals('\'Sheet Last\'!$A$1:$AA$11', $secondFilter->nodeValue, 'DefinedName is not valid.');
         self::assertEquals('1', $secondFilter->getAttribute('localSheetId'), 'Sheet Id is not valid.');
+    }
+
+    public function testAddCommentShouldBeWrittenToTwoFiles(): void
+    {
+        $fileName = 'test_add_comment_should_be_written_to_two_files.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+
+        $cell = Cell::fromValue('Test');
+        $comment = new Comment();
+
+        $comment->height = '200px';
+        $comment->width = '400px';
+        $comment->marginTop = '1.5pt';
+        $comment->marginLeft = '59.25pt';
+        $comment->fillColor = '#F0F0F0';
+        $comment->visible = false;
+
+        $textRun = new TextRun('Great comment');
+        $textRun->bold = true;
+        $textRun->italic = false;
+        $textRun->fontSize = 12;
+        $textRun->fontName = 'Arial';
+        $textRun->fontColor = 'FF0000';
+
+        $comment->addTextRun($textRun);
+
+        $cell->comment = $comment;
+        $row = new Row([Cell::fromValue('something'), $cell, Cell::fromValue('else')]);
+        $writer->addRow($row);
+        $writer->close();
+
+        // Now test if the resources contain what we need
+        $pathToCommentFile = $resourcePath.'#xl/comments1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToCommentFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString('Great comment', $xmlContents, '');
+        self::assertStringContainsString('<b/>', $xmlContents, '');
+        self::assertStringContainsString('<sz val="12"/>', $xmlContents, '');
+        self::assertStringContainsString('<color rgb="FF0000"/>', $xmlContents, '');
+        self::assertStringContainsString('<rFont val="Arial"/>', $xmlContents, '');
+
+        $pathToVmlFile = $resourcePath.'#xl/drawings/vmlDrawing1.vml';
+        $vmlContents = file_get_contents('zip://'.$pathToVmlFile);
+
+        self::assertNotFalse($vmlContents);
+        self::assertStringContainsString('<x:Row>0</x:Row>', $vmlContents, '');
+        self::assertStringContainsString('<x:Column>1</x:Column>', $vmlContents, '');
+        self::assertStringContainsString('width:400px', $vmlContents, '');
+        self::assertStringContainsString('height:200px', $vmlContents, '');
     }
 
     /**

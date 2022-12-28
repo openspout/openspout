@@ -13,10 +13,13 @@ use OpenSpout\Common\Entity\Cell\EmptyCell;
 use OpenSpout\Common\Entity\Cell\FormulaCell;
 use OpenSpout\Common\Entity\Cell\NumericCell;
 use OpenSpout\Common\Entity\Cell\StringCell;
+use OpenSpout\Common\Entity\Comment\Comment;
 use OpenSpout\Common\Entity\Style\Style;
 
 abstract class Cell
 {
+    public ?Comment $comment = null;
+
     private Style $style;
 
     public function __construct(?Style $style)
