@@ -48,6 +48,14 @@ final class Sheet implements SheetWithVisibilityInterface
     }
 
     /**
+     * @return string[] a list of column-widths
+     */
+    public function getColumnWidths(): array
+    {
+        return $this->rowIterator->getColumnWidths();
+    }
+
+    /**
      * @return int Index of the sheet, based on order in the workbook (zero-based)
      */
     public function getIndex(): int
