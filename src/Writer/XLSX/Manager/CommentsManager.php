@@ -4,22 +4,21 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer\XLSX\Manager;
 
-use OpenSpout\Common\Helper\Escaper;
 use OpenSpout\Common\Entity\Comment\Comment;
 use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Helper\Escaper;
 use OpenSpout\Writer\Common\Entity\Worksheet;
 use OpenSpout\Writer\Common\Helper\CellHelper;
 
 /**
  * @internal
- * 
+ *
  * This manager takes care of comments: writing them into two files:
  *  - commentsX.xml, containing the actual (rich) text of the comment
  *  - drawings/drawingX.vml, containing the layout of the panel showing the comment
  *
- * Each worksheets gets it's unique set of 2 files, this class will make sure that these 
+ * Each worksheets gets it's unique set of 2 files, this class will make sure that these
  * files are created, closed and filled with the required data.
- * 
  */
 final class CommentsManager
 {
@@ -30,7 +29,7 @@ final class CommentsManager
             <commentList>
         EOD;
 
-    public const COMMENTS_XML_FILE_FOOTER= <<<'EOD'
+    public const COMMENTS_XML_FILE_FOOTER = <<<'EOD'
             </commentList>
         </comments>
         EOD;
@@ -52,14 +51,16 @@ final class CommentsManager
         EOD;
 
     /**
-     * Filepointers to the commentsX.xml files, where the index is the id of the worksheet
-     * @var Resource[]
+     * Filepointers to the commentsX.xml files, where the index is the id of the worksheet.
+     *
+     * @var resource[]
      */
     private array $commentsFilePointers;
 
     /**
-     * Filepointers to the vmlDrawingX.vml files, where the index is the id of the worksheet
-     * @var Resource[]
+     * Filepointers to the vmlDrawingX.vml files, where the index is the id of the worksheet.
+     *
+     * @var resource[]
      */
     private array $drawingFilePointers;
 
@@ -83,10 +84,9 @@ final class CommentsManager
     }
 
     /**
-     * Create the two comment-files for the given worksheet
-     * @param Worksheet $sheet 
+     * Create the two comment-files for the given worksheet.
      */
-    public function createWorksheetCommentFiles(Worksheet $sheet) : void
+    public function createWorksheetCommentFiles(Worksheet $sheet): void
     {
         $sheetId = $sheet->getId();
         $commentFp = fopen($this->getCommentsFilePath($sheet), 'w');
@@ -97,22 +97,21 @@ final class CommentsManager
 
         fwrite($commentFp, self::COMMENTS_XML_FILE_HEADER);
         fwrite($drawingFp, self::DRAWINGS_VML_FILE_HEADER);
-                
+
         $this->commentsFilePointers[$sheetId] = $commentFp;
         $this->drawingFilePointers[$sheetId] = $drawingFp;
     }
 
     /**
-     * Close the two comment-files for the given worksheet
-     * @param Worksheet $sheet 
+     * Close the two comment-files for the given worksheet.
      */
-    public function closeWorksheetCommentFiles(Worksheet $sheet) : void
+    public function closeWorksheetCommentFiles(Worksheet $sheet): void
     {
         $sheetId = $sheet->getId();
 
         $commentFp = $this->commentsFilePointers[$sheetId];
         $drawingFp = $this->drawingFilePointers[$sheetId];
-        
+
         fwrite($commentFp, self::COMMENTS_XML_FILE_FOOTER);
         fwrite($drawingFp, self::DRAWINGS_VML_FILE_FOOTER);
     }
@@ -121,7 +120,7 @@ final class CommentsManager
     {
         $rowIndexZeroBased = 0 + $worksheet->getLastWrittenRowIndex();
         foreach ($row->getCells() as $columnIndexZeroBased => $cell) {
-            if ($cell->getComment() !== null) {
+            if (null !== $cell->getComment()) {
                 $comment = $cell->getComment();
                 $this->addXmlComment($worksheet->getId(), $rowIndexZeroBased, $columnIndexZeroBased, $comment);
                 $this->addVmlComment($worksheet->getId(), $rowIndexZeroBased, $columnIndexZeroBased, $comment);
@@ -134,7 +133,7 @@ final class CommentsManager
      */
     private function getCommentsFilePath(Worksheet $sheet): string
     {
-        return $this->xlFolder.\DIRECTORY_SEPARATOR.'comments'.($sheet->getId()).'.xml';
+        return $this->xlFolder.\DIRECTORY_SEPARATOR.'comments'.$sheet->getId().'.xml';
     }
 
     /**
@@ -142,14 +141,15 @@ final class CommentsManager
      */
     private function getDrawingFilePath(Worksheet $sheet): string
     {
-        return $this->xlFolder.\DIRECTORY_SEPARATOR.'drawings'.\DIRECTORY_SEPARATOR.'vmlDrawing'.($sheet->getId()).'.vml';
+        return $this->xlFolder.\DIRECTORY_SEPARATOR.'drawings'.\DIRECTORY_SEPARATOR.'vmlDrawing'.$sheet->getId().'.vml';
     }
 
     /**
      * Add a comment to the commentsX.xml file.
-     * @param int $sheetId                  The id of the sheet (starting with 1)
-     * @param int $rowIndexZeroBased        The row index, starting at 0, of the cell with the comment
-     * @param int $columnIndexZeroBased     The column index, starting at 0, of the cell with the comment
+     *
+     * @param int     $sheetId              The id of the sheet (starting with 1)
+     * @param int     $rowIndexZeroBased    The row index, starting at 0, of the cell with the comment
+     * @param int     $columnIndexZeroBased The column index, starting at 0, of the cell with the comment
      * @param Comment $comment              The actual comment
      */
     private function addXmlComment(int $sheetId, int $rowIndexZeroBased, int $columnIndexZeroBased, Comment $comment): void
@@ -167,13 +167,13 @@ final class CommentsManager
             }
             if ($line->getItalic()) {
                 $commentxml .= '    <b/>';
-            }            
+            }
             $commentxml .= '    <sz val="'.$line->getFontSize().'"/>';
             $commentxml .= '    <color rgb="'.$line->getFontColor().'"/>';
             $commentxml .= '    <rFont val="'.$line->getFontName().'"/>';
             $commentxml .= '    <family val="2"/>';
             $commentxml .= '  </rPr>';
-            $commentxml .= '  <t xml:space="preserve">' . $this->stringsEscaper->escape($line->getText()) . '</t>';
+            $commentxml .= '  <t xml:space="preserve">'.$this->stringsEscaper->escape($line->getText()).'</t>';
             $commentxml .= '</r>';
         }
         $commentxml .= '</text></comment>';
@@ -183,27 +183,28 @@ final class CommentsManager
 
     /**
      * Add a comment to the vmlDrawingX.vml file.
-     * @param int $sheetId                  The id of the sheet (starting with 1)
-     * @param int $rowIndexZeroBased        The row index, starting at 0, of the cell with the comment
-     * @param int $columnIndexZeroBased     The column index, starting at 0, of the cell with the comment
+     *
+     * @param int     $sheetId              The id of the sheet (starting with 1)
+     * @param int     $rowIndexZeroBased    The row index, starting at 0, of the cell with the comment
+     * @param int     $columnIndexZeroBased The column index, starting at 0, of the cell with the comment
      * @param Comment $comment              The actual comment
      */
     private function addVmlComment(int $sheetId, int $rowIndexZeroBased, int $columnIndexZeroBased, Comment $comment): void
     {
         $drawingFilePointer = $this->drawingFilePointers[$sheetId];
-        $this->shapeId++;
+        ++$this->shapeId;
 
         $style = 'position:absolute;z-index:1';
-        $style .= ';margin-left:' . $comment->getMarginLeft();
-        $style .= ';margin-top:' . $comment->getMarginTop();
-        $style .= ';width:' . $comment->getWidth();
-        $style .= ';height:' . $comment->getHeight();
+        $style .= ';margin-left:'.$comment->getMarginLeft();
+        $style .= ';margin-top:'.$comment->getMarginTop();
+        $style .= ';width:'.$comment->getWidth();
+        $style .= ';height:'.$comment->getHeight();
         if (!$comment->getVisible()) {
             $style .= ';visibility:hidden';
         }
 
-        $drawingVml = '<v:shape id="_x0000_s' . $this->shapeId . '"';
-        $drawingVml .= ' type="#_x0000_t202" style="' . $style . '" fillcolor="'.$comment->getFillColor().'" o:insetmode="auto">';
+        $drawingVml = '<v:shape id="_x0000_s'.$this->shapeId.'"';
+        $drawingVml .= ' type="#_x0000_t202" style="'.$style.'" fillcolor="'.$comment->getFillColor().'" o:insetmode="auto">';
         $drawingVml .= '<v:fill color2="'.$comment->getFillColor().'"/>';
         $drawingVml .= '<v:shadow on="t" color="black" obscured="t"/>';
         $drawingVml .= '<v:path o:connecttype="none"/>';
@@ -214,8 +215,8 @@ final class CommentsManager
         $drawingVml .= '  <x:MoveWithCells/>';
         $drawingVml .= '  <x:SizeWithCells/>';
         $drawingVml .= '  <x:AutoFill>False</x:AutoFill>';
-        $drawingVml .= '  <x:Row>' . $rowIndexZeroBased . '</x:Row>';
-        $drawingVml .= '  <x:Column>' . $columnIndexZeroBased . '</x:Column>';
+        $drawingVml .= '  <x:Row>'.$rowIndexZeroBased.'</x:Row>';
+        $drawingVml .= '  <x:Column>'.$columnIndexZeroBased.'</x:Column>';
         $drawingVml .= '</x:ClientData>';
         $drawingVml .= '</v:shape>';
 

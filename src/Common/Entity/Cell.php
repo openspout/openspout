@@ -13,8 +13,8 @@ use OpenSpout\Common\Entity\Cell\EmptyCell;
 use OpenSpout\Common\Entity\Cell\FormulaCell;
 use OpenSpout\Common\Entity\Cell\NumericCell;
 use OpenSpout\Common\Entity\Cell\StringCell;
-use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Common\Entity\Comment\Comment;
+use OpenSpout\Common\Entity\Style\Style;
 
 abstract class Cell
 {
@@ -48,7 +48,6 @@ abstract class Cell
     {
         return $this->comment;
     }
-
 
     final public static function fromValue(null|bool|string|int|float|DateTimeInterface|DateInterval $value, ?Style $style = null): self
     {

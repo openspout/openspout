@@ -260,7 +260,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 
     /**
      * Create the "rels" file for a given worksheet. This contains relations to the comments.xml and drawing.vml files for this worksheet.
-     * 
+     *
      * @param Worksheet[] $worksheets
      */
     public function createWorksheetRelsFiles(array $worksheets): self
@@ -280,6 +280,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 
             $this->createFileWithContents($folder, $filename, $worksheetRelsContent);
         }
+
         return $this;
     }
 
@@ -363,7 +364,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 
             // Add the legacy drawing for comments
             fwrite($worksheetFilePointer, '<legacyDrawing r:id="rId_comments_vml1"/>');
-            
+
             fwrite($worksheetFilePointer, '</worksheet>');
             fclose($worksheetFilePointer);
         }
@@ -586,12 +587,13 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 
     /**
      * Creates the "drawings" folder under the "xl" folder.
-     * 
+     *
      * @throws \OpenSpout\Common\Exception\IOException If unable to create the folder
      */
     private function createDrawingsFolder(): self
     {
         $this->createFolder($this->getXlFolder(), self::DRAWINGS_FOLDER_NAME);
+
         return $this;
     }
 

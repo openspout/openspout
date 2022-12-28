@@ -15,67 +15,73 @@ final class TextRun
     private bool $bold = false;
     private bool $italic = false;
     private string $text;
-    
-    public function __construct(string $text) {
+
+    public function __construct(string $text)
+    {
         $this->text = $text;
     }
 
-    public function setBold(bool $bold) : self
+    public function setBold(bool $bold): self
     {
         $this->bold = $bold;
+
         return $this;
     }
 
-    public function setItalic(bool $italic) : self
+    public function setItalic(bool $italic): self
     {
         $this->italic = $italic;
+
         return $this;
     }
 
     public function setFontSize(int $size): self
     {
         $this->fontSize = $size;
+
         return $this;
     }
 
     public function setFontColor(string $fontColor): self
     {
         $this->fontColor = $fontColor;
+
         return $this;
     }
 
     public function setFontName(string $fontName): self
     {
         $this->fontName = $fontName;
+
         return $this;
     }
 
-    public function getFontName() : string 
+    public function getFontName(): string
     {
         return $this->fontName;
     }
 
-    public function getFontColor() : string
+    public function getFontColor(): string
     {
         return $this->fontColor;
     }
 
-    public function getFontSize() : int
+    public function getFontSize(): int
     {
         return $this->fontSize;
     }
 
-    public function getBold() : bool
+    public function getBold(): bool
     {
         return $this->bold;
     }
 
-    public function getItalic() : bool
+    public function getItalic(): bool
     {
         return $this->italic;
     }
 
-    public function getText() : string
+    public function getText(): string
     {
         return $this->text;
     }
