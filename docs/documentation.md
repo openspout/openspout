@@ -337,25 +337,33 @@ $writer->openToFile($filePath);
 ```
 
 ## Cell comments
-The XLSX writer has support for adding comments (notes) to cells. To create a 400x200 panel, with in bold the message 'WARNING' and 2 newlines, then in italic a warning message.
+The XLSX writer has support for adding comments (notes) to cells. To create a 400x200 panel, with in **bold** the message
+'WARNING' and 2 newlines, then in *italic* a warning message.
 
 ```php
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Comment\Comment;
+use OpenSpout\Common\Entity\Comment\TextRun;
 
 $writer = new \OpenSpout\Writer\XLSX\Writer();
 $writer->openToFile('output.xlsx');
 
 $cell = Cell::fromValue('Test');
 $comment = new Comment();
-$comment->setHeight("200px");
-$comment->setWidth("400px");
+$comment->height = '200px';
+$comment->width = '400px';
 
-$comment->createTextRun("WARNING\n\n")->setBold(true)->setItalic(false);
-$comment->createTextRun("There is something wrong with this cell")->setBold(false)->setItalic(true);
+$warningTextRun = new TextRun("WARNING\n\n");
+$warningTextRun->bold = true;
 
-$cell->setComment($comment);
+$somethingWrongTextRun = new TextRun('There is something wrong with this cell');
+$somethingWrongTextRun->italic = true;
+
+$comment->addTextRun($warningTextRun);
+$comment->addTextRun($somethingWrongTextRun);
+
+$cell->comment = $comment;
 $row = new Row([$cell]);
 $writer->addRow($row);
 $writer->close();
@@ -363,22 +371,23 @@ $writer->close();
 
 A comment renders as a panel that has a height and width, of which the following can be set:
 
-- `setHeight(syring)`: height of the panel, in CSS format (can be with 'px' or 'pt')
-- `setWidth(string)`: width of the panel, in CSS format (can be with 'px' or 'pt')
-- `setMarginLeft(string)`: left margin of the panel, in CSS format (can be with 'px' or 'pt')
-- `setMarginTop(string)`: top margin of the panel, in CSS format (can be with 'px' or 'pt')
-- `setVisible(bool)`: defines whether the panel is open or hidden, the default is **false**.
-- `setFillColor(string)`: sets the background of the panel, defaults to **#FFFFE1** (light yellow)
+- `height`: height of the panel, in CSS format (can be with 'px' or 'pt')
+- `width`: width of the panel, in CSS format (can be with 'px' or 'pt')
+- `marginLeft`: left margin of the panel, in CSS format (can be with 'px' or 'pt')
+- `marginTop`: top margin of the panel, in CSS format (can be with 'px' or 'pt')
+- `visible`: defines whether the panel is open or hidden, the default is **false**.
+- `fillColor`: sets the background of the panel, defaults to **#FFFFE1** (light yellow)
 
-Within the panel, you can have multiple lines that have their own styling. Each is called a 'TextRun' and can be created by using the `createTextRun()` method that creates a new `OpenSpout\Common\Entity\Comment\Comment\TextRun` instance and adds it to the list of textruns for that comment. You can also manually instantiate it and add it to the list using the comment `addTextRun(TextRun)` method.
+Within the panel, you can have multiple lines that have their own styling.
+Each is called a `TextRun` and after instantiation is must be added to the comment with `\OpenSpout\Common\Entity\Comment\Comment::addTextRun` API.
 
 A TextRun can be styled using the following methods:
 
-- `setBold(bool)`: Defaults to **false**
-- `setItalic(bool)`: Defaults to **false**
-- `setFontName(string)`: Name of the font, defaults to **Tahoma**
-- `setFontColor(string)`: Color of the font, defaults to **000000** (note it is a 8 character 
-- `setFontSize(int)`: Size of the font in points
+- `bold`: Defaults to **false**
+- `italic`: Defaults to **false**
+- `fontName`: Name of the font, defaults to **Tahoma**
+- `fontColor`: Color of the font, defaults to **000000** (note it is a 8 character 
+- `fontSize`: Size of the font in points
 
 ## Playing with sheets
 

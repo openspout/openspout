@@ -17,7 +17,7 @@ use OpenSpout\Writer\Common\Helper\CellHelper;
  *  - commentsX.xml, containing the actual (rich) text of the comment
  *  - drawings/drawingX.vml, containing the layout of the panel showing the comment
  *
- * Each worksheets gets it's unique set of 2 files, this class will make sure that these
+ * Each worksheet gets its unique set of 2 files, this class will make sure that these
  * files are created, closed and filled with the required data.
  */
 final class CommentsManager
@@ -51,34 +51,30 @@ final class CommentsManager
         EOD;
 
     /**
-     * Filepointers to the commentsX.xml files, where the index is the id of the worksheet.
+     * File-pointers to the commentsX.xml files, where the index is the id of the worksheet.
      *
      * @var resource[]
      */
-    private array $commentsFilePointers;
+    private array $commentsFilePointers = [];
 
     /**
-     * Filepointers to the vmlDrawingX.vml files, where the index is the id of the worksheet.
+     * File-pointers to the vmlDrawingX.vml files, where the index is the id of the worksheet.
      *
      * @var resource[]
      */
-    private array $drawingFilePointers;
+    private array $drawingFilePointers = [];
 
     private string $xlFolder;
 
     private int $shapeId = 1024;
 
-    /** @var Escaper\XLSX Strings escaper */
     private Escaper\XLSX $stringsEscaper;
 
     /**
-     * @param string       $xlFolder       Path to the "xl" folder
-     * @param Escaper\XLSX $stringsEscaper Strings escaper
+     * @param string $xlFolder Path to the "xl" folder
      */
     public function __construct(string $xlFolder, Escaper\XLSX $stringsEscaper)
     {
-        $this->commentsFilePointers = [];
-        $this->drawingFilePointers = [];
         $this->xlFolder = $xlFolder;
         $this->stringsEscaper = $stringsEscaper;
     }
@@ -123,11 +119,12 @@ final class CommentsManager
     {
         $rowIndexZeroBased = 0 + $worksheet->getLastWrittenRowIndex();
         foreach ($row->getCells() as $columnIndexZeroBased => $cell) {
-            if (null !== $cell->getComment()) {
-                $comment = $cell->getComment();
-                $this->addXmlComment($worksheet->getId(), $rowIndexZeroBased, $columnIndexZeroBased, $comment);
-                $this->addVmlComment($worksheet->getId(), $rowIndexZeroBased, $columnIndexZeroBased, $comment);
+            if (null === $cell->comment) {
+                continue;
             }
+
+            $this->addXmlComment($worksheet->getId(), $rowIndexZeroBased, $columnIndexZeroBased, $cell->comment);
+            $this->addVmlComment($worksheet->getId(), $rowIndexZeroBased, $columnIndexZeroBased, $cell->comment);
         }
     }
 
@@ -165,18 +162,18 @@ final class CommentsManager
         foreach ($comment->getTextRuns() as $line) {
             $commentxml .= '<r>';
             $commentxml .= '  <rPr>';
-            if ($line->getBold()) {
+            if ($line->bold) {
                 $commentxml .= '    <b/>';
             }
-            if ($line->getItalic()) {
+            if ($line->italic) {
                 $commentxml .= '    <b/>';
             }
-            $commentxml .= '    <sz val="'.$line->getFontSize().'"/>';
-            $commentxml .= '    <color rgb="'.$line->getFontColor().'"/>';
-            $commentxml .= '    <rFont val="'.$line->getFontName().'"/>';
+            $commentxml .= '    <sz val="'.$line->fontSize.'"/>';
+            $commentxml .= '    <color rgb="'.$line->fontColor.'"/>';
+            $commentxml .= '    <rFont val="'.$line->fontName.'"/>';
             $commentxml .= '    <family val="2"/>';
             $commentxml .= '  </rPr>';
-            $commentxml .= '  <t xml:space="preserve">'.$this->stringsEscaper->escape($line->getText()).'</t>';
+            $commentxml .= '  <t xml:space="preserve">'.$this->stringsEscaper->escape($line->text).'</t>';
             $commentxml .= '</r>';
         }
         $commentxml .= '</text></comment>';
@@ -198,17 +195,17 @@ final class CommentsManager
         ++$this->shapeId;
 
         $style = 'position:absolute;z-index:1';
-        $style .= ';margin-left:'.$comment->getMarginLeft();
-        $style .= ';margin-top:'.$comment->getMarginTop();
-        $style .= ';width:'.$comment->getWidth();
-        $style .= ';height:'.$comment->getHeight();
-        if (!$comment->getVisible()) {
+        $style .= ';margin-left:'.$comment->marginLeft;
+        $style .= ';margin-top:'.$comment->marginTop;
+        $style .= ';width:'.$comment->width;
+        $style .= ';height:'.$comment->height;
+        if (!$comment->visible) {
             $style .= ';visibility:hidden';
         }
 
         $drawingVml = '<v:shape id="_x0000_s'.$this->shapeId.'"';
-        $drawingVml .= ' type="#_x0000_t202" style="'.$style.'" fillcolor="'.$comment->getFillColor().'" o:insetmode="auto">';
-        $drawingVml .= '<v:fill color2="'.$comment->getFillColor().'"/>';
+        $drawingVml .= ' type="#_x0000_t202" style="'.$style.'" fillcolor="'.$comment->fillColor.'" o:insetmode="auto">';
+        $drawingVml .= '<v:fill color2="'.$comment->fillColor.'"/>';
         $drawingVml .= '<v:shadow on="t" color="black" obscured="t"/>';
         $drawingVml .= '<v:path o:connecttype="none"/>';
         $drawingVml .= '<v:textbox style="mso-direction-alt:auto">';
