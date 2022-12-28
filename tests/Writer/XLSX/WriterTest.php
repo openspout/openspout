@@ -706,7 +706,6 @@ final class WriterTest extends TestCase
         self::assertEquals('1', $secondFilter->getAttribute('localSheetId'), 'Sheet Id is not valid.');
     }
 
-
     public function testAddCommentShouldBeWrittenToTwoFiles(): void
     {
         $fileName = 'test_add_comment_should_be_written_to_two_files.xlsx';
@@ -718,21 +717,23 @@ final class WriterTest extends TestCase
 
         $cell = Cell::fromValue('Test');
         $comment = new \OpenSpout\Common\Entity\Comment\Comment();
-        
-        $comment->setHeight("200px")
-                ->setWidth("400px")
-                ->setMarginTop("1.5pt")
-                ->setMarginLeft("59.25pt")
-                ->setFillColor("#F0F0F0")
-                ->setVisible(false);
-        
-        $paragraph = $comment->createTextRun("Great comment")
-                    ->setBold(true)
-                    ->setItalic(false)
-                    ->setFontSize(12)
-                    ->setFontName('Arial')
-                    ->setFontColor("FF0000");
-        
+
+        $comment->setHeight('200px')
+            ->setWidth('400px')
+            ->setMarginTop('1.5pt')
+            ->setMarginLeft('59.25pt')
+            ->setFillColor('#F0F0F0')
+            ->setVisible(false)
+        ;
+
+        $paragraph = $comment->createTextRun('Great comment')
+            ->setBold(true)
+            ->setItalic(false)
+            ->setFontSize(12)
+            ->setFontName('Arial')
+            ->setFontColor('FF0000')
+        ;
+
         $cell->setComment($comment);
         $row = new Row([Cell::fromValue('something'), $cell, Cell::fromValue('else')]);
         $writer->addRow($row);
@@ -743,20 +744,20 @@ final class WriterTest extends TestCase
         $xmlContents = file_get_contents('zip://'.$pathToCommentFile);
 
         self::assertNotFalse($xmlContents);
-        self::assertStringContainsString("Great comment", $xmlContents, '');
-        self::assertStringContainsString("<b/>", $xmlContents, '');
-        self::assertStringContainsString("<sz val=\"12\"/>", $xmlContents, '');
-        self::assertStringContainsString("<color rgb=\"FF0000\"/>", $xmlContents, '');
-        self::assertStringContainsString("<rFont val=\"Arial\"/>", $xmlContents, '');
+        self::assertStringContainsString('Great comment', $xmlContents, '');
+        self::assertStringContainsString('<b/>', $xmlContents, '');
+        self::assertStringContainsString('<sz val="12"/>', $xmlContents, '');
+        self::assertStringContainsString('<color rgb="FF0000"/>', $xmlContents, '');
+        self::assertStringContainsString('<rFont val="Arial"/>', $xmlContents, '');
 
         $pathToVmlFile = $resourcePath.'#xl/drawings/vmlDrawing1.vml';
         $vmlContents = file_get_contents('zip://'.$pathToVmlFile);
 
-        self::assertNotFalse($xmlContents);
-        self::assertStringContainsString("<x:Row>0</x:Row>", $vmlContents, '');
-        self::assertStringContainsString("<x:Column>1</x:Column>", $vmlContents, '');
-        self::assertStringContainsString("width:400px", $vmlContents, '');
-        self::assertStringContainsString("height:200px", $vmlContents, '');
+        self::assertNotFalse($vmlContents);
+        self::assertStringContainsString('<x:Row>0</x:Row>', $vmlContents, '');
+        self::assertStringContainsString('<x:Column>1</x:Column>', $vmlContents, '');
+        self::assertStringContainsString('width:400px', $vmlContents, '');
+        self::assertStringContainsString('height:200px', $vmlContents, '');
     }
 
     /**
