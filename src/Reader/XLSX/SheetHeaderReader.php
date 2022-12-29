@@ -53,7 +53,7 @@ final class SheetHeaderReader
         $this->xmlProcessor->registerCallback(self::XML_NODE_COL, XMLProcessor::NODE_TYPE_START, [$this, 'processColStartingNode']);
         $this->xmlProcessor->registerCallback(self::XML_NODE_SHEETDATA, XMLProcessor::NODE_TYPE_START, [$this, 'processSheetDataStartingNode']);
 
-        // The reader should be
+        // The reader should be unused, but we close to be sure
         $this->xmlReader->close();
 
         if (false === $this->xmlReader->openFileInZip($this->filePath, $this->sheetDataXMLFilePath)) {
