@@ -661,8 +661,6 @@ final class ReaderTest extends TestCase
         $reader->open($resourcePath);
 
         foreach ($reader->getSheetIterator() as $sheetIndex => $sheet) {
-            $sheet->getRowIterator()->rewind();
-
             $columnwidths = $sheet->getColumnWidths();
             // First entry should be that columns 1-3 have width 10
             self::assertSame(1, $columnwidths[0]->start);

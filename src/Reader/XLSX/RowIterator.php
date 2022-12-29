@@ -8,7 +8,6 @@ use DOMElement;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\IOException;
-use OpenSpout\Reader\Common\ColumnWidth;
 use OpenSpout\Reader\Common\Manager\RowManager;
 use OpenSpout\Reader\Common\XMLProcessor;
 use OpenSpout\Reader\Exception\InvalidValueException;
@@ -31,9 +30,6 @@ final class RowIterator implements RowIteratorInterface
     /**
      * Definition of XML attributes used to parse data.
      */
-    public const XML_ATTRIBUTE_MIN = 'min';
-    public const XML_ATTRIBUTE_MAX = 'max';
-    public const XML_ATTRIBUTE_WIDTH = 'width';
     public const XML_ATTRIBUTE_REF = 'ref';
     public const XML_ATTRIBUTE_SPANS = 'spans';
     public const XML_ATTRIBUTE_ROW_INDEX = 'r';
@@ -76,9 +72,6 @@ final class RowIterator implements RowIteratorInterface
     /** @var int The number of columns the sheet has (0 meaning undefined) */
     private int $numColumns = 0;
 
-    /** @var ColumnWidth[] The widths of the columns in the sheet, if specified */
-    private array $columnWidths = [];
-
     /** @var bool Whether empty rows should be returned or skipped */
     private bool $shouldPreserveEmptyRows;
 
@@ -119,7 +112,6 @@ final class RowIterator implements RowIteratorInterface
         // Register all callbacks to process different nodes when reading the XML file
         $this->xmlProcessor = $xmlProcessor;
         $this->xmlProcessor->registerCallback(self::XML_NODE_DIMENSION, XMLProcessor::NODE_TYPE_START, [$this, 'processDimensionStartingNode']);
-        $this->xmlProcessor->registerCallback(self::XML_NODE_COL, XMLProcessor::NODE_TYPE_START, [$this, 'processColStartingNode']);
         $this->xmlProcessor->registerCallback(self::XML_NODE_ROW, XMLProcessor::NODE_TYPE_START, [$this, 'processRowStartingNode']);
         $this->xmlProcessor->registerCallback(self::XML_NODE_CELL, XMLProcessor::NODE_TYPE_START, [$this, 'processCellStartingNode']);
         $this->xmlProcessor->registerCallback(self::XML_NODE_ROW, XMLProcessor::NODE_TYPE_END, [$this, 'processRowEndingNode']);
@@ -227,14 +219,6 @@ final class RowIterator implements RowIteratorInterface
     }
 
     /**
-     * @return ColumnWidth[]
-     */
-    public function getColumnWidths(): array
-    {
-        return $this->columnWidths;
-    }
-
-    /**
      * @param string $sheetDataXMLFilePath Path of the sheet data XML file as in [Content_Types].xml
      *
      * @return string path of the XML file containing the sheet data,
@@ -294,26 +278,6 @@ final class RowIterator implements RowIteratorInterface
         if (1 === preg_match('/[A-Z]+\d+:([A-Z]+\d+)/', $dimensionRef, $matches)) {
             $this->numColumns = CellHelper::getColumnIndexFromCellIndex($matches[1]) + 1;
         }
-
-        return XMLProcessor::PROCESSING_CONTINUE;
-    }
-
-    /**
-     * @param XMLReader $xmlReader XMLReader object, positioned on a "<col>" starting node
-     *
-     * @return int A return code that indicates what action should the processor take next
-     */
-    private function processColStartingNode(XMLReader $xmlReader): int
-    {
-        $min = (int) $xmlReader->getAttribute(self::XML_ATTRIBUTE_MIN);
-        $max = (int) $xmlReader->getAttribute(self::XML_ATTRIBUTE_MAX);
-        $width = (float) $xmlReader->getAttribute(self::XML_ATTRIBUTE_WIDTH);
-
-        \assert($min > 0);
-        \assert($max > 0);
-
-        $columnwidth = new ColumnWidth($min, $max, $width);
-        $this->columnWidths[] = $columnwidth;
 
         return XMLProcessor::PROCESSING_CONTINUE;
     }

@@ -15,6 +15,9 @@ final class Sheet implements SheetWithVisibilityInterface
     /** @var RowIterator To iterate over sheet's rows */
     private RowIterator $rowIterator;
 
+    /** @var SheetHeaderReader To read the header of the sheet, containing for instance the col widths */
+    private SheetHeaderReader $headerReader;
+
     /** @var int Index of the sheet, based on order in the workbook (zero-based) */
     private int $index;
 
@@ -34,9 +37,10 @@ final class Sheet implements SheetWithVisibilityInterface
      * @param bool        $isSheetActive  Whether the sheet was defined as active
      * @param bool        $isSheetVisible Whether the sheet is visible
      */
-    public function __construct(RowIterator $rowIterator, int $sheetIndex, string $sheetName, bool $isSheetActive, bool $isSheetVisible)
+    public function __construct(RowIterator $rowIterator, SheetHeaderReader $headerReader, int $sheetIndex, string $sheetName, bool $isSheetActive, bool $isSheetVisible)
     {
         $this->rowIterator = $rowIterator;
+        $this->headerReader = $headerReader;
         $this->index = $sheetIndex;
         $this->name = $sheetName;
         $this->isActive = $isSheetActive;
@@ -53,7 +57,7 @@ final class Sheet implements SheetWithVisibilityInterface
      */
     public function getColumnWidths(): array
     {
-        return $this->rowIterator->getColumnWidths();
+        return $this->headerReader->getColumnWidths();
     }
 
     /**
