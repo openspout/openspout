@@ -23,7 +23,6 @@ final class RowIterator implements RowIteratorInterface
      */
     public const XML_NODE_DIMENSION = 'dimension';
     public const XML_NODE_WORKSHEET = 'worksheet';
-    public const XML_NODE_COL = 'col';
     public const XML_NODE_ROW = 'row';
     public const XML_NODE_CELL = 'c';
 
