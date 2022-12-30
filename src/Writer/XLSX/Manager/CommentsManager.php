@@ -166,7 +166,7 @@ final class CommentsManager
                 $commentxml .= '    <b/>';
             }
             if ($line->italic) {
-                $commentxml .= '    <b/>';
+                $commentxml .= '    <i/>';
             }
             $commentxml .= '    <sz val="'.$line->fontSize.'"/>';
             $commentxml .= '    <color rgb="'.$line->fontColor.'"/>';
