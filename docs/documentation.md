@@ -162,7 +162,22 @@ $options->setColumnWidth(10, 1);
 $options->setColumnWidthForRange(12, 2, 3);
 $writer->close();
 ```
- 
+
+For XLSX readers, you can also retrieve the column widths:
+
+```php
+$reader = new \OpenSpout\Reader\XLSX\Reader();
+$reader->open('input.xlsx');
+
+foreach ($reader->getSheetIterator() as $sheet) {
+  $colWidths = $sheet->getColumnWidths();
+  foreach ($colWidths as $cw) {
+    print "Columns $cw->start - $cw->end have width $cw->width\n";
+  }
+}
+```
+
+
 ## Cell merging
 
 Cell can be merged with the XLSX writers:
