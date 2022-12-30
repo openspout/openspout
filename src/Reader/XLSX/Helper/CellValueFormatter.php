@@ -111,6 +111,14 @@ final class CellValueFormatter
     }
 
     /**
+     * @internal
+     */
+    public function getStyleManager() 
+    {
+        return $this->styleManager;
+    }
+
+    /**
      * Returns the cell's string value from a node's nested value node.
      *
      * @return string The value associated with the cell
