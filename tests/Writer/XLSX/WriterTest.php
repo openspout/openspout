@@ -762,6 +762,78 @@ final class WriterTest extends TestCase
         self::assertStringContainsString('height:200px', $vmlContents, '');
     }
 
+    public function testAddCommentBoldNotItalic(): void
+    {
+        $fileName = 'test_add_comment_bold_not_italic.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+
+        $cell = Cell::fromValue('Test');
+        $comment = new Comment();
+
+        $textRun = new TextRun('Great comment');
+        $textRun->bold = true;
+        $textRun->italic = false;
+        $textRun->fontSize = 12;
+        $textRun->fontName = 'Arial';
+        $textRun->fontColor = 'FF0000';
+
+        $comment->addTextRun($textRun);
+
+        $cell->comment = $comment;
+        $row = new Row([Cell::fromValue('something'), $cell, Cell::fromValue('else')]);
+        $writer->addRow($row);
+        $writer->close();
+
+        // Now test if the resources contain what we need
+        $pathToCommentFile = $resourcePath.'#xl/comments1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToCommentFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString('Great comment', $xmlContents, '');
+        self::assertStringContainsString('<b/>', $xmlContents, '');
+        self::assertStringNotContainsString('<i/>', $xmlContents, '');
+    }
+
+    public function testAddCommentItalicNotBold(): void
+    {
+        $fileName = 'test_add_comment_italic_not_bold.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+
+        $cell = Cell::fromValue('Test');
+        $comment = new Comment();
+
+        $textRun = new TextRun('Great comment');
+        $textRun->bold = false;
+        $textRun->italic = true;
+        $textRun->fontSize = 12;
+        $textRun->fontName = 'Arial';
+        $textRun->fontColor = 'FF0000';
+
+        $comment->addTextRun($textRun);
+
+        $cell->comment = $comment;
+        $row = new Row([Cell::fromValue('something'), $cell, Cell::fromValue('else')]);
+        $writer->addRow($row);
+        $writer->close();
+
+        // Now test if the resources contain what we need
+        $pathToCommentFile = $resourcePath.'#xl/comments1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToCommentFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString('Great comment', $xmlContents, '');
+        self::assertStringContainsString('<i/>', $xmlContents, '');
+        self::assertStringNotContainsString('<b/>', $xmlContents, '');
+    }
+
     /**
      * @param Row[] $allRows
      */
