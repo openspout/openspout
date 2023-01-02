@@ -83,11 +83,10 @@ class StyleManager implements StyleManagerInterface
     /** @var array<int, array<array-key, null|bool|int|string>>, Array containing all registered fonts */
     private array $fonts = [];
 
-    /*
+    /** @var array<int, null|string> The fills that are defined in the style */
     private array $fills = [];
 
-    private array $borders = [];
-    */
+    // private array $borders = [];
 
     /** @var array<Style> The list of registered styles */
     private array $stylesArray;
@@ -278,10 +277,33 @@ class StyleManager implements StyleManagerInterface
      * For simplicity, the styles attributes are kept in memory. This is possible thanks
      * to the reuse of formats. So 1 million cells should not use 1 million formats.
      *
-     * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader XML Reader positioned on the "numFmts" node
+     * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader XML Reader positioned on the "fills" node
      */
     private function extractFills(XMLReader $xmlReader): void
     {
+        while ($xmlReader->read()) {
+            if ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_FILL)) {
+                $fillNode = $xmlReader->expand();
+                \assert($fillNode instanceof DOMElement);
+
+                $patternFills = $fillNode->getElementsByTagName('patternFill');
+                \assert(1 === $patternFills->count());
+
+                $pattern = $patternFills[0];
+                $type = $pattern->getAttribute('patternType');
+
+                if ('solid' === $type) {
+                    $fgNode = $pattern->getElementsByTagName('fgColor')[0];
+                    $this->fills[] = $fgNode->getAttribute('rgb');
+                } else {
+                    $this->fills[] = null;
+                }
+                echo 'Registered fill '.\count($this->fills).': '.$this->fills[\count($this->fills) - 1]."\n";
+            } elseif ($xmlReader->isPositionedOnEndingNode(self::XML_NODE_FILLS)) {
+                // Once done reading "fills" node's children
+                break;
+            }
+        }
     }
 
     /**
@@ -334,6 +356,25 @@ class StyleManager implements StyleManagerInterface
                     $style->setFontSize((int) $font['size']);
                     $style->setFontName((string) $font['name']);
                     $style->setFontColor((string) $font['color']);
+                    if ((bool) $font['italic']) {
+                        $style->setFontItalic();
+                    }
+                    if ((bool) $font['bold']) {
+                        $style->setFontBold();
+                    }
+                    if ((bool) $font['underline']) {
+                        $style->setFontUnderline();
+                    }
+                    if ((bool) $font['strike']) {
+                        $style->setFontStrikethrough();
+                    }
+                }
+
+                if ('1' === $applyFill) {
+                    $fill = $this->fills[(int) $fillId];
+                    if (null !== $fill) {
+                        $style->setBackgroundColor($fill);
+                    }
                 }
 
                 if (null !== $normalizedNumFmtId) {
