@@ -298,7 +298,6 @@ class StyleManager implements StyleManagerInterface
                 } else {
                     $this->fills[] = null;
                 }
-                echo 'Registered fill '.\count($this->fills).': '.$this->fills[\count($this->fills) - 1]."\n";
             } elseif ($xmlReader->isPositionedOnEndingNode(self::XML_NODE_FILLS)) {
                 // Once done reading "fills" node's children
                 break;
@@ -384,7 +383,6 @@ class StyleManager implements StyleManagerInterface
                     }
                 }
 
-                echo 'Registering style with id '.\count($this->stylesArray)."\n";
                 $this->stylesArray[] = $style;
             } elseif ($xmlReader->isPositionedOnEndingNode(self::XML_NODE_CELL_XFS)) {
                 // Once done reading "cellXfs" node's children
