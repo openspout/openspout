@@ -333,6 +333,13 @@ class StyleManager implements StyleManagerInterface
                     $style->setFontName($font['name']);
                     $style->setFontColor($font['color']);
                 }
+
+                if ($normalizedNumFmtId != null) {
+                    $formatCode = $this->getFormatCodeForNumFmtId($normalizedNumFmtId);
+                    if ($formatCode !== null) {
+                        $style->setFormat($this->getFormatCodeForNumFmtId($normalizedNumFmtId));
+                    }
+                }
                 
                 print "Registering style with id " . count($this->stylesArray) . "\n";
                 $this->stylesArray[] = $style;
