@@ -118,10 +118,6 @@ final class StyleManager extends CommonStyleManager
         foreach ($registeredStyles as $style) {
             $content .= '<font>';
 
-            $content .= '<sz val="'.$style->getFontSize().'"/>';
-            $content .= '<color rgb="'.Color::toARGB($style->getFontColor()).'"/>';
-            $content .= '<name val="'.$style->getFontName().'"/>';
-
             if ($style->isFontBold()) {
                 $content .= '<b/>';
             }
@@ -134,6 +130,10 @@ final class StyleManager extends CommonStyleManager
             if ($style->isFontStrikethrough()) {
                 $content .= '<strike/>';
             }
+
+            $content .= '<sz val="'.$style->getFontSize().'"/>';
+            $content .= '<color rgb="'.Color::toARGB($style->getFontColor()).'"/>';
+            $content .= '<name val="'.$style->getFontName().'"/>';
 
             $content .= '</font>';
         }
