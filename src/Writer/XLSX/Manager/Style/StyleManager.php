@@ -9,6 +9,7 @@ use OpenSpout\Common\Entity\Style\Color;
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Writer\Common\Manager\Style\AbstractStyleManager as CommonStyleManager;
 use OpenSpout\Writer\XLSX\Helper\BorderHelper;
+use OpenSpout\Common\Helper\Escaper\XLSX;
 
 /**
  * @internal
@@ -17,9 +18,13 @@ use OpenSpout\Writer\XLSX\Helper\BorderHelper;
  */
 final class StyleManager extends CommonStyleManager
 {
+
+    private XLSX $escaper;
+
     public function __construct(StyleRegistry $styleRegistry)
     {
         parent::__construct($styleRegistry);
+        $this->escaper = new XLSX();
     }
 
     /**
@@ -90,7 +95,7 @@ final class StyleManager extends CommonStyleManager
 
             /** @var Style $style */
             $style = $this->styleRegistry->getStyleFromStyleId($styleId);
-            $format = $style->getFormat();
+            $format = $this->escaper->escape($style->getFormat());
             $tags[] = '<numFmt numFmtId="'.$numFmtId.'" formatCode="'.$format.'"/>';
         }
         $content = '<numFmts count="'.\count($tags).'">';
