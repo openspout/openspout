@@ -113,7 +113,7 @@ final class CellValueFormatter
     /**
      * @internal
      */
-    public function getStyleManager() 
+    public function getStyleManager(): StyleManagerInterface
     {
         return $this->styleManager;
     }

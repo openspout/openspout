@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace OpenSpout\Reader\XLSX\Manager;
 
-use OpenSpout\Reader\Wrapper\XMLReader;
+use DOMElement;
 use OpenSpout\Common\Entity\Style\Style;
+use OpenSpout\Reader\Wrapper\XMLReader;
 
 class StyleManager implements StyleManagerInterface
 {
@@ -18,10 +19,10 @@ class StyleManager implements StyleManagerInterface
     public const XML_NODE_XF = 'xf';
     public const XML_NODE_FONTS = 'fonts';
     public const XML_NODE_FONT = 'font';
-    public const XML_NODE_FILLS  = 'fills';
-    public const XML_NODE_FILL  = 'fill';
-    public const XML_NODE_BORDERS  = 'borders';
-    public const XML_NODE_BORDER  = 'border';
+    public const XML_NODE_FILLS = 'fills';
+    public const XML_NODE_FILL = 'fill';
+    public const XML_NODE_BORDERS = 'borders';
+    public const XML_NODE_BORDER = 'border';
 
     /**
      * Attributes used to find relevant information in the styles XML file.
@@ -79,12 +80,16 @@ class StyleManager implements StyleManagerInterface
     /** @var array<int, bool> Cache containing a mapping NUM_FMT_ID => IS_DATE_FORMAT. Used to avoid lots of recalculations */
     private array $numFmtIdToIsDateFormatCache = [];
 
+    /** @var array<int, array<array-key, null|bool|int|string>>, Array containing all registered fonts */
     private array $fonts = [];
 
+    /*
     private array $fills = [];
 
     private array $borders = [];
+    */
 
+    /** @var array<Style> The list of registered styles */
     private array $stylesArray;
 
     /**
@@ -134,6 +139,15 @@ class StyleManager implements StyleManagerInterface
         return $numberFormatCode;
     }
 
+    public function getStyleById(int $id): Style
+    {
+        if (!isset($this->stylesArray)) {
+            $this->extractRelevantInfo();
+        }
+
+        return $this->stylesArray[$id];
+    }
+
     /**
      * @return array<int, string> The custom number formats
      */
@@ -158,15 +172,6 @@ class StyleManager implements StyleManagerInterface
         return $this->stylesAttributes;
     }
 
-    public function getStyleById($id)
-    {        
-        if (!isset($this->stylesArray)) {
-            $this->extractRelevantInfo();
-        }
-
-        return $this->stylesArray[$id];
-    }
-
     /**
      * Reads the styles.xml file and extract the relevant information from the file.
      */
@@ -181,11 +186,11 @@ class StyleManager implements StyleManagerInterface
             while ($xmlReader->read()) {
                 if ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_FONTS)) {
                     $this->extractFonts($xmlReader);
-                } else if ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_FILLS)) {
+                } elseif ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_FILLS)) {
                     $this->extractFills($xmlReader);
-                } else if ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_BORDERS)) {
+                } elseif ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_BORDERS)) {
                     $this->extractBorders($xmlReader);
-                } else if ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_NUM_FMTS)) {
+                } elseif ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_NUM_FMTS)) {
                     $this->extractNumberFormats($xmlReader);
                 } elseif ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_CELL_XFS)) {
                     $this->extractStyleAttributes($xmlReader);
@@ -229,10 +234,9 @@ class StyleManager implements StyleManagerInterface
     {
         while ($xmlReader->read()) {
             if ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_FONT)) {
-
                 $fontNode = $xmlReader->expand();
-                \assert($fontNode instanceof \DOMElement);
-        
+                \assert($fontNode instanceof DOMElement);
+
                 $sizeNode = $fontNode->getElementsByTagName('sz');
                 $colorNode = $fontNode->getElementsByTagName('color');
                 $nameNode = $fontNode->getElementsByTagName('name');
@@ -241,16 +245,16 @@ class StyleManager implements StyleManagerInterface
                 $italicNode = $fontNode->getElementsByTagName('i');
                 $underlineNode = $fontNode->getElementsByTagName('u');
                 $strikeNode = $fontNode->getElementsByTagName('strike');
-                
-                $size   = $sizeNode   !== null && $sizeNode->count() == 1   ? $sizeNode[0]->getAttribute('val')   : '12';
-                $color  = $colorNode  !== null && $colorNode->count() == 1  ? $colorNode[0]->getAttribute('rgb')  : 'FF000000';
-                $family = $familyNode !== null && $familyNode->count() == 1 ? $familyNode[0]->getAttribute('val') : '2';
-                $name   = $nameNode   !== null && $nameNode->count() == 1   ? $nameNode[0]->getAttribute('val')   : 'Arial';
 
-                $italic    = $italicNode    !== null && $italicNode->count() == 1;
-                $bold      = $boldNode      !== null && $boldNode->count() == 1;
-                $underline = $underlineNode !== null && $underlineNode->count() == 1;
-                $strike    = $strikeNode    !== null && $strikeNode->count() == 1;
+                $size = 1 === $sizeNode->count() ? $sizeNode[0]->getAttribute('val') : '12';
+                $color = 1 === $colorNode->count() ? $colorNode[0]->getAttribute('rgb') : 'FF000000';
+                $family = 1 === $familyNode->count() ? $familyNode[0]->getAttribute('val') : '2';
+                $name = 1 === $nameNode->count() ? $nameNode[0]->getAttribute('val') : 'Arial';
+
+                $italic = 1 === $italicNode->count();
+                $bold = 1 === $boldNode->count();
+                $underline = 1 === $underlineNode->count();
+                $strike = 1 === $strikeNode->count();
 
                 $this->fonts[] = [
                     'name' => $name,
@@ -260,7 +264,7 @@ class StyleManager implements StyleManagerInterface
                     'italic' => $italic,
                     'bold' => $bold,
                     'underline' => $underline,
-                    'strike' => $strike
+                    'strike' => $strike,
                 ];
             } elseif ($xmlReader->isPositionedOnEndingNode(self::XML_NODE_FONTS)) {
                 // Once done reading "fonts" node's children
@@ -290,8 +294,6 @@ class StyleManager implements StyleManagerInterface
     private function extractBorders(XMLReader $xmlReader): void
     {
     }
-
-
 
     /**
      * Extracts style attributes from the "xf" nodes, inside the "cellXfs" section.
@@ -327,23 +329,22 @@ class StyleManager implements StyleManagerInterface
                 ];
 
                 $style = new Style();
-                if ($applyFont == '1') {
-                    $font = $this->fonts[$fontId];
-                    $style->setFontSize($font['size']);
-                    $style->setFontName($font['name']);
-                    $style->setFontColor($font['color']);
+                if ('1' === $applyFont) {
+                    $font = $this->fonts[(int) $fontId];
+                    $style->setFontSize((int) $font['size']);
+                    $style->setFontName((string) $font['name']);
+                    $style->setFontColor((string) $font['color']);
                 }
 
-                if ($normalizedNumFmtId != null) {
+                if (null !== $normalizedNumFmtId) {
                     $formatCode = $this->getFormatCodeForNumFmtId($normalizedNumFmtId);
-                    if ($formatCode !== null) {
+                    if (null !== $formatCode) {
                         $style->setFormat($this->getFormatCodeForNumFmtId($normalizedNumFmtId));
                     }
                 }
-                
-                print "Registering style with id " . count($this->stylesArray) . "\n";
-                $this->stylesArray[] = $style;
 
+                echo 'Registering style with id '.\count($this->stylesArray)."\n";
+                $this->stylesArray[] = $style;
             } elseif ($xmlReader->isPositionedOnEndingNode(self::XML_NODE_CELL_XFS)) {
                 // Once done reading "cellXfs" node's children
                 break;
