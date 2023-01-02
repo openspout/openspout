@@ -411,7 +411,6 @@ final class RowIterator implements RowIteratorInterface
             $styleId = $node->getAttribute(self::XML_ATTRIBUTE_STYLE_INDEX);
 
             if ($styleId !== "") {
-                print "Cell has style $styleId\n";
                 $styleManager = $this->cellValueFormatter->getStyleManager();
                 $cell->setStyle($styleManager->getStyleById($styleId));
             }
