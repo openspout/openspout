@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace OpenSpout\Reader\XLSX\Manager;
 
+use DOMElement;
+use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Reader\Wrapper\XMLReader;
 
 class StyleManager implements StyleManagerInterface
@@ -15,6 +17,12 @@ class StyleManager implements StyleManagerInterface
     public const XML_NODE_NUM_FMT = 'numFmt';
     public const XML_NODE_CELL_XFS = 'cellXfs';
     public const XML_NODE_XF = 'xf';
+    public const XML_NODE_FONTS = 'fonts';
+    public const XML_NODE_FONT = 'font';
+    public const XML_NODE_FILLS = 'fills';
+    public const XML_NODE_FILL = 'fill';
+    public const XML_NODE_BORDERS = 'borders';
+    public const XML_NODE_BORDER = 'border';
 
     /**
      * Attributes used to find relevant information in the styles XML file.
@@ -22,6 +30,13 @@ class StyleManager implements StyleManagerInterface
     public const XML_ATTRIBUTE_NUM_FMT_ID = 'numFmtId';
     public const XML_ATTRIBUTE_FORMAT_CODE = 'formatCode';
     public const XML_ATTRIBUTE_APPLY_NUMBER_FORMAT = 'applyNumberFormat';
+
+    public const XML_ATTRIBUTE_FONT_ID = 'fontId';
+    public const XML_ATTRIBUTE_APPLY_FONT = 'applyFont';
+    public const XML_ATTRIBUTE_FILL_ID = 'fillId';
+    public const XML_ATTRIBUTE_APPLY_FILL = 'applyFill';
+    public const XML_ATTRIBUTE_BORDER_ID = 'borderId';
+    public const XML_ATTRIBUTE_APPLY_BORDER = 'applyBorder';
 
     /**
      * By convention, default style ID is 0.
@@ -64,6 +79,17 @@ class StyleManager implements StyleManagerInterface
 
     /** @var array<int, bool> Cache containing a mapping NUM_FMT_ID => IS_DATE_FORMAT. Used to avoid lots of recalculations */
     private array $numFmtIdToIsDateFormatCache = [];
+
+    /** @var array<int, array<array-key, null|bool|int|string>>, Array containing all registered fonts */
+    private array $fonts = [];
+
+    /** @var array<int, null|string> The fills that are defined in the style */
+    private array $fills = [];
+
+    // private array $borders = [];
+
+    /** @var array<Style> The list of registered styles */
+    private array $stylesArray;
 
     /**
      * @param string  $filePath          Path of the XLSX file being read
@@ -112,6 +138,15 @@ class StyleManager implements StyleManagerInterface
         return $numberFormatCode;
     }
 
+    public function getStyleById(int $id): Style
+    {
+        if (!isset($this->stylesArray)) {
+            $this->extractRelevantInfo();
+        }
+
+        return $this->stylesArray[$id];
+    }
+
     /**
      * @return array<int, string> The custom number formats
      */
@@ -148,7 +183,13 @@ class StyleManager implements StyleManagerInterface
 
         if ($xmlReader->openFileInZip($this->filePath, $this->stylesXMLFilePath)) {
             while ($xmlReader->read()) {
-                if ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_NUM_FMTS)) {
+                if ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_FONTS)) {
+                    $this->extractFonts($xmlReader);
+                } elseif ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_FILLS)) {
+                    $this->extractFills($xmlReader);
+                } elseif ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_BORDERS)) {
+                    $this->extractBorders($xmlReader);
+                } elseif ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_NUM_FMTS)) {
                     $this->extractNumberFormats($xmlReader);
                 } elseif ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_CELL_XFS)) {
                     $this->extractStyleAttributes($xmlReader);
@@ -182,6 +223,100 @@ class StyleManager implements StyleManagerInterface
     }
 
     /**
+     * Extracts font formats.
+     * For simplicity, the styles attributes are kept in memory. This is possible thanks
+     * to the reuse of formats. So 1 million cells should not use 1 million formats.
+     *
+     * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader XML Reader positioned on the "numFmts" node
+     */
+    private function extractFonts(XMLReader $xmlReader): void
+    {
+        while ($xmlReader->read()) {
+            if ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_FONT)) {
+                $fontNode = $xmlReader->expand();
+                \assert($fontNode instanceof DOMElement);
+
+                $sizeNode = $fontNode->getElementsByTagName('sz');
+                $colorNode = $fontNode->getElementsByTagName('color');
+                $nameNode = $fontNode->getElementsByTagName('name');
+                $familyNode = $fontNode->getElementsByTagName('family');
+                $boldNode = $fontNode->getElementsByTagName('b');
+                $italicNode = $fontNode->getElementsByTagName('i');
+                $underlineNode = $fontNode->getElementsByTagName('u');
+                $strikeNode = $fontNode->getElementsByTagName('strike');
+
+                $size = 1 === $sizeNode->count() ? $sizeNode[0]->getAttribute('val') : '12';
+                $color = 1 === $colorNode->count() ? $colorNode[0]->getAttribute('rgb') : 'FF000000';
+                $family = 1 === $familyNode->count() ? $familyNode[0]->getAttribute('val') : '2';
+                $name = 1 === $nameNode->count() ? $nameNode[0]->getAttribute('val') : 'Arial';
+
+                $italic = 1 === $italicNode->count();
+                $bold = 1 === $boldNode->count();
+                $underline = 1 === $underlineNode->count();
+                $strike = 1 === $strikeNode->count();
+
+                $this->fonts[] = [
+                    'name' => $name,
+                    'family' => $family,
+                    'size' => (int) $size,
+                    'color' => $color,
+                    'italic' => $italic,
+                    'bold' => $bold,
+                    'underline' => $underline,
+                    'strike' => $strike,
+                ];
+            } elseif ($xmlReader->isPositionedOnEndingNode(self::XML_NODE_FONTS)) {
+                // Once done reading "fonts" node's children
+                break;
+            }
+        }
+    }
+
+    /**
+     * Extracts fills.
+     * For simplicity, the styles attributes are kept in memory. This is possible thanks
+     * to the reuse of formats. So 1 million cells should not use 1 million formats.
+     *
+     * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader XML Reader positioned on the "fills" node
+     */
+    private function extractFills(XMLReader $xmlReader): void
+    {
+        while ($xmlReader->read()) {
+            if ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_FILL)) {
+                $fillNode = $xmlReader->expand();
+                \assert($fillNode instanceof DOMElement);
+
+                $patternFills = $fillNode->getElementsByTagName('patternFill');
+                \assert(1 === $patternFills->count());
+
+                $pattern = $patternFills[0];
+                $type = $pattern->getAttribute('patternType');
+
+                if ('solid' === $type) {
+                    $fgNode = $pattern->getElementsByTagName('fgColor')[0];
+                    $this->fills[] = $fgNode->getAttribute('rgb');
+                } else {
+                    $this->fills[] = null;
+                }
+            } elseif ($xmlReader->isPositionedOnEndingNode(self::XML_NODE_FILLS)) {
+                // Once done reading "fills" node's children
+                break;
+            }
+        }
+    }
+
+    /**
+     * Extracts borders.
+     * For simplicity, the styles attributes are kept in memory. This is possible thanks
+     * to the reuse of formats. So 1 million cells should not use 1 million formats.
+     *
+     * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader XML Reader positioned on the "numFmts" node
+     */
+    private function extractBorders(XMLReader $xmlReader): void
+    {
+    }
+
+    /**
      * Extracts style attributes from the "xf" nodes, inside the "cellXfs" section.
      * For simplicity, the styles attributes are kept in memory. This is possible thanks
      * to the reuse of styles. So 1 million cells should not use 1 million styles.
@@ -190,6 +325,8 @@ class StyleManager implements StyleManagerInterface
      */
     private function extractStyleAttributes(XMLReader $xmlReader): void
     {
+        $this->stylesArray = [];
+
         while ($xmlReader->read()) {
             if ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_XF)) {
                 $numFmtId = $xmlReader->getAttribute(self::XML_ATTRIBUTE_NUM_FMT_ID);
@@ -198,10 +335,55 @@ class StyleManager implements StyleManagerInterface
                 $applyNumberFormat = $xmlReader->getAttribute(self::XML_ATTRIBUTE_APPLY_NUMBER_FORMAT);
                 $normalizedApplyNumberFormat = (null !== $applyNumberFormat) ? (bool) $applyNumberFormat : null;
 
+                $applyFont = $xmlReader->getAttribute(self::XML_ATTRIBUTE_APPLY_FONT);
+                $fontId = $xmlReader->getAttribute(self::XML_ATTRIBUTE_FONT_ID);
+
+                $applyFill = $xmlReader->getAttribute(self::XML_ATTRIBUTE_APPLY_FILL);
+                $fillId = $xmlReader->getAttribute(self::XML_ATTRIBUTE_FILL_ID);
+
+                $applyBorder = $xmlReader->getAttribute(self::XML_ATTRIBUTE_APPLY_BORDER);
+                $borderId = $xmlReader->getAttribute(self::XML_ATTRIBUTE_BORDER_ID);
+
                 $this->stylesAttributes[] = [
                     self::XML_ATTRIBUTE_NUM_FMT_ID => $normalizedNumFmtId,
                     self::XML_ATTRIBUTE_APPLY_NUMBER_FORMAT => $normalizedApplyNumberFormat,
                 ];
+
+                $style = new Style();
+                if ('1' === $applyFont) {
+                    $font = $this->fonts[(int) $fontId];
+                    $style->setFontSize((int) $font['size']);
+                    $style->setFontName((string) $font['name']);
+                    $style->setFontColor((string) $font['color']);
+                    if ((bool) $font['italic']) {
+                        $style->setFontItalic();
+                    }
+                    if ((bool) $font['bold']) {
+                        $style->setFontBold();
+                    }
+                    if ((bool) $font['underline']) {
+                        $style->setFontUnderline();
+                    }
+                    if ((bool) $font['strike']) {
+                        $style->setFontStrikethrough();
+                    }
+                }
+
+                if ('1' === $applyFill) {
+                    $fill = $this->fills[(int) $fillId];
+                    if (null !== $fill) {
+                        $style->setBackgroundColor($fill);
+                    }
+                }
+
+                if (null !== $normalizedNumFmtId) {
+                    $formatCode = $this->getFormatCodeForNumFmtId($normalizedNumFmtId);
+                    if (null !== $formatCode) {
+                        $style->setFormat($this->getFormatCodeForNumFmtId($normalizedNumFmtId));
+                    }
+                }
+
+                $this->stylesArray[] = $style;
             } elseif ($xmlReader->isPositionedOnEndingNode(self::XML_NODE_CELL_XFS)) {
                 // Once done reading "cellXfs" node's children
                 break;

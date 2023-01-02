@@ -33,6 +33,7 @@ final class RowIterator implements RowIteratorInterface
     public const XML_ATTRIBUTE_SPANS = 'spans';
     public const XML_ATTRIBUTE_ROW_INDEX = 'r';
     public const XML_ATTRIBUTE_CELL_INDEX = 'r';
+    public const XML_ATTRIBUTE_STYLE_INDEX = 's';
 
     /** @var string Path of the XLSX file being read */
     private string $filePath;
@@ -406,6 +407,13 @@ final class RowIterator implements RowIteratorInterface
         try {
             $cellValue = $this->cellValueFormatter->extractAndFormatNodeValue($node);
             $cell = Cell::fromValue($cellValue);
+
+            $styleId = $node->getAttribute(self::XML_ATTRIBUTE_STYLE_INDEX);
+
+            if ('' !== $styleId && '0' !== $styleId) {
+                $styleManager = $this->cellValueFormatter->getStyleManager();
+                $cell->setStyle($styleManager->getStyleById((int) $styleId));
+            }
         } catch (InvalidValueException $exception) {
             $cell = new Cell\ErrorCell($exception->getInvalidValue(), null);
         }

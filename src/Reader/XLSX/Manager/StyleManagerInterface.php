@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace OpenSpout\Reader\XLSX\Manager;
 
+use OpenSpout\Common\Entity\Style\Style;
+
 /**
  * @internal
  */
@@ -28,4 +30,13 @@ interface StyleManagerInterface
      * @return string The number format code associated with the given style
      */
     public function getNumberFormatCode(int $styleId): string;
+
+    /**
+     * Return a Style that has been registered under the given id.
+     *
+     * @param int $styleId Zero-based style ID
+     *
+     * @return Style The style instance registered under this ID
+     */
+    public function getStyleById(int $styleId): Style;
 }
