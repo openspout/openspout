@@ -1,3 +1,6 @@
+
+SRCS := $(shell find ./src ./tests -type f -not -path "*/resources/generated_*")
+
 LOCAL_BASE_BRANCH ?= $(shell git show-branch | sed "s/].*//" | grep "\*" | grep -v "$$(git rev-parse --abbrev-ref HEAD)" | head -n1 | sed "s/^.*\[//")
 ifeq ($(strip $(LOCAL_BASE_BRANCH)),)
 	LOCAL_BASE_BRANCH := HEAD^
@@ -20,8 +23,7 @@ csfix: vendor
 static-analysis: vendor
 	php -d zend.assertions=1 vendor/bin/phpstan analyse
 
-.PHONY: test
-test: vendor
+coverage/junit.xml: vendor $(SRCS) Makefile
 	chmod -fR u+rwX tests/resources/generated_* || true
 	rm -fr tests/resources/generated_*
 	php \
@@ -34,8 +36,11 @@ test: vendor
 		--log-junit=coverage/junit.xml \
 		$(PHPUNIT_ARGS)
 
+.PHONY: test
+test: coverage/junit.xml
+
 .PHONY: code-coverage
-code-coverage: test
+code-coverage: coverage/junit.xml
 	echo "Base branch: $(BASE_BRANCH)"
 	php -d zend.assertions=1 \
 		vendor/bin/infection \
