@@ -652,6 +652,30 @@ final class ReaderTest extends TestCase
         self::assertSame('A2Z34NJA7N2ESJ', $allRows[1][0]);
     }
 
+    public function testReadColumnWidths(): void
+    {
+        $resourcePath = TestUsingResource::getResourcePath('sheet_with_columnwidths.xlsx');
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $reader = new Reader($options, null);
+        $reader->open($resourcePath);
+
+        foreach ($reader->getSheetIterator() as $sheetIndex => $sheet) {
+            $columnwidths = $sheet->getColumnWidths();
+            // First entry should be that columns 1-3 have width 10
+            self::assertSame(1, $columnwidths[0]->start);
+            self::assertSame(3, $columnwidths[0]->end);
+            self::assertSame(10.0, $columnwidths[0]->width);
+
+            // Second entry should be that columns 4-6 have width 20
+            self::assertSame(4, $columnwidths[1]->start);
+            self::assertSame(6, $columnwidths[1]->end);
+            self::assertSame(20.0, $columnwidths[1]->width);
+        }
+
+        $reader->close();
+    }
+
     /**
      * @return mixed[][] All the read rows the given file
      */
