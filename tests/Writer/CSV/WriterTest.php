@@ -95,6 +95,17 @@ final class WriterTest extends TestCase
         self::assertSame('csv--11,,csv--13', $writtenContent, 'The null values should be replaced by empty values');
     }
 
+    public function testWriteShouldSupportBooleanValues(): void
+    {
+        $allRows = $this->createRowsFromValues([
+            [true, false],
+        ]);
+        $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_boolean_values.csv');
+        $writtenContent = $this->trimWrittenContent($writtenContent);
+
+        self::assertSame('1,0', $writtenContent);
+    }
+
     public function testWriteShouldSupportFormulaLikeContent(): void
     {
         $allRows = $this->createRowsFromValues([

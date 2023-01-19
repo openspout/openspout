@@ -50,7 +50,13 @@ final class Writer extends AbstractWriter
     protected function addRowToWriter(Row $row): void
     {
         $cells = array_map(static function (Cell\BooleanCell|Cell\EmptyCell|Cell\NumericCell|Cell\StringCell|Cell\FormulaCell $value): string {
-            return (string) $value->getValue();
+            $value = $value->getValue();
+
+            if (false === $value) {
+                return '0';
+            }
+
+            return (string) $value;
         }, $row->getCells());
 
         $wasWriteSuccessful = fputcsv(
