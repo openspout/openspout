@@ -50,6 +50,10 @@ final class Writer extends AbstractWriter
     protected function addRowToWriter(Row $row): void
     {
         $cells = array_map(static function (Cell\BooleanCell|Cell\EmptyCell|Cell\NumericCell|Cell\StringCell|Cell\FormulaCell $value): string {
+            if ($value instanceof Cell\BooleanCell) {
+                return (string) (int) $value->getValue();
+            }
+
             return (string) $value->getValue();
         }, $row->getCells());
 
