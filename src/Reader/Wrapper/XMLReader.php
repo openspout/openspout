@@ -13,6 +13,15 @@ class XMLReader extends \XMLReader
 
     public const ZIP_WRAPPER = 'zip://';
 
+    /** @var string the unprefixed name. */
+    public string $localName;
+
+    /** @var string the prefixed name. */
+    public string $name;
+
+    /** @var int node type. */
+    public int $nodeType;
+    
     /**
      * Opens the XML Reader to read a file located inside a ZIP file.
      *
