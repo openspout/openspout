@@ -22,6 +22,7 @@ class StyleManager implements StyleManagerInterface
     public const XML_ATTRIBUTE_NUM_FMT_ID = 'numFmtId';
     public const XML_ATTRIBUTE_FORMAT_CODE = 'formatCode';
     public const XML_ATTRIBUTE_APPLY_NUMBER_FORMAT = 'applyNumberFormat';
+    public const XML_ATTRIBUTE_COUNT = 'count';
 
     /**
      * By convention, default style ID is 0.
@@ -148,9 +149,11 @@ class StyleManager implements StyleManagerInterface
 
         if ($xmlReader->openFileInZip($this->filePath, $this->stylesXMLFilePath)) {
             while ($xmlReader->read()) {
-                if ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_NUM_FMTS)) {
+                if ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_NUM_FMTS)
+                    && '0' !== $xmlReader->getAttribute(self::XML_ATTRIBUTE_COUNT)) {
                     $this->extractNumberFormats($xmlReader);
-                } elseif ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_CELL_XFS)) {
+                } elseif ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_CELL_XFS)
+                    && '0' !== $xmlReader->getAttribute(self::XML_ATTRIBUTE_COUNT)) {
                     $this->extractStyleAttributes($xmlReader);
                 }
             }
