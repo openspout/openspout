@@ -152,8 +152,7 @@ class StyleManager implements StyleManagerInterface
                 if ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_NUM_FMTS)
                     && '0' !== $xmlReader->getAttribute(self::XML_ATTRIBUTE_COUNT)) {
                     $this->extractNumberFormats($xmlReader);
-                } elseif ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_CELL_XFS)
-                    && '0' !== $xmlReader->getAttribute(self::XML_ATTRIBUTE_COUNT)) {
+                } elseif ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_CELL_XFS)) {
                     $this->extractStyleAttributes($xmlReader);
                 }
             }
