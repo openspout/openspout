@@ -676,6 +676,17 @@ final class ReaderTest extends TestCase
         $reader->close();
     }
 
+    public function testReaderWithEmptyNumFmtsTagInStylesXml(): void
+    {
+        $allRows = $this->getAllRowsForFile('file_with_empty_num_fmts_tag_in_styles_xml.xlsx');
+
+        $expectedRows = [
+            [95.22, DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-03-01 19:54:58')],
+        ];
+
+        self::assertEquals($expectedRows, $allRows);
+    }
+
     /**
      * @return mixed[][] All the read rows the given file
      */
