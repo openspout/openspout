@@ -7,6 +7,7 @@ namespace OpenSpout\Writer\XLSX\Helper;
 use DateTimeImmutable;
 use OpenSpout\Common\Helper\Escaper\XLSX;
 use OpenSpout\Common\Helper\FileSystemHelper as CommonFileSystemHelper;
+use OpenSpout\Writer\Common\Entity\Sheet;
 use OpenSpout\Writer\Common\Entity\Worksheet;
 use OpenSpout\Writer\Common\Helper\CellHelper;
 use OpenSpout\Writer\Common\Helper\FileSystemWithRootFolderHelperInterface;
@@ -330,7 +331,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
                 fwrite($worksheetFilePointer, '<sheetViews>'.$sheetView->getXml().'</sheetViews>');
             }
             fwrite($worksheetFilePointer, $this->getXMLFragmentForDefaultCellSizing($options));
-            fwrite($worksheetFilePointer, $this->getXMLFragmentForColumnWidths($options));
+            fwrite($worksheetFilePointer, $this->getXMLFragmentForColumnWidths($options, $sheet));
             fwrite($worksheetFilePointer, '<sheetData>');
 
             $worksheetFilePath = $worksheet->getFilePath();
@@ -410,13 +411,21 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     /**
      * Construct column width references xml to inject into worksheet xml file.
      */
-    private function getXMLFragmentForColumnWidths(Options $options): string
+    private function getXMLFragmentForColumnWidths(Options $options, Sheet $sheet): string
     {
-        if ([] === $options->getColumnWidths()) {
+        if ([] !== $sheet->getColumnWidths()) {
+            $widths = $sheet->getColumnWidths();
+        }
+        elseif ([] !== $options->getColumnWidths()) {
+            $widths = $options->getColumnWidths();
+        }
+        else {
             return '';
         }
+
         $xml = '<cols>';
-        foreach ($options->getColumnWidths() as $columnWidth) {
+
+        foreach ($widths as $columnWidth) {
             $xml .= '<col min="'.$columnWidth->start.'" max="'.$columnWidth->end.'" width="'.$columnWidth->width.'" customWidth="true"/>';
         }
         $xml .= '</cols>';
