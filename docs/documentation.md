@@ -163,6 +163,24 @@ $options->setColumnWidthForRange(12, 2, 3);
 $writer->close();
 ```
 
+Column widths can also be set at the sheet level for XLSX writers. Sheets that have column widths defined will not inherit any column widths from options.
+
+```php
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
+use OpenSpout\Writer\XLSX\Options;
+
+$writer = new Writer;
+$writer->openToFile('/tmp/file.xlsx');
+$writer->addRow(Row::fromValues(['foo', 'bar', 'baz']));
+
+$sheet = $writer->getCurrentSheet();
+$sheet->setColumnWidth(10, 1);
+$sheet->setColumnWidthForRange(12, 2, 3);
+
+$writer->close();
+```
+
 For XLSX readers, you can also retrieve the column widths:
 
 ```php
@@ -401,7 +419,7 @@ A TextRun can be styled using the following methods:
 - `bold`: Defaults to **false**
 - `italic`: Defaults to **false**
 - `fontName`: Name of the font, defaults to **Tahoma**
-- `fontColor`: Color of the font, defaults to **000000** (note it is a 8 character 
+- `fontColor`: Color of the font, defaults to **000000** (note it is a 8 character
 - `fontSize`: Size of the font in points
 
 ## Playing with sheets

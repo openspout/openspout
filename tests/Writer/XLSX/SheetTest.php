@@ -228,6 +228,145 @@ final class SheetTest extends TestCase
         self::assertStringContainsString('<col min="1" max="3" width="50" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
     }
 
+    public function testWritesColumnWidthsToSheet(): void
+    {
+        $fileName = 'test_column_widths.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12']));
+        $sheet = $writer->getCurrentSheet();
+        $sheet->setColumnWidth(100.0, 1);
+        $writer->close();
+
+        $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString('<cols', $xmlContents, 'No cols tag found in sheet');
+        self::assertStringContainsString('<col min="1" max="1" width="100" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
+    }
+
+    public function testWritesMultipleColumnWidthsToSheet(): void
+    {
+        $fileName = 'test_multiple_column_widths.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12', 'xlsx--13']));
+        $sheet = $writer->getCurrentSheet();
+        $sheet->setColumnWidth(100.0, 1, 2, 3);
+        $writer->close();
+
+        $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString('<cols', $xmlContents, 'No cols tag found in sheet');
+        self::assertStringContainsString('<col min="1" max="3" width="100" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
+    }
+
+    public function testWritesMultipleColumnWidthsInRangesToSheet(): void
+    {
+        $fileName = 'test_multiple_column_widths_in_ranges.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12', 'xlsx--13', 'xlsx--14', 'xlsx--15', 'xlsx--16']));
+        $sheet = $writer->getCurrentSheet();
+        $sheet->setColumnWidth(50.0, 1, 3, 4, 6);
+        $sheet->setColumnWidth(100.0, 2, 5);
+        $writer->close();
+
+        $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString('<cols', $xmlContents, 'No cols tag found in sheet');
+        self::assertStringContainsString('<col min="1" max="1" width="50" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
+        self::assertStringContainsString('<col min="3" max="4" width="50" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
+        self::assertStringContainsString('<col min="6" max="6" width="50" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
+        self::assertStringContainsString('<col min="2" max="2" width="100" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
+        self::assertStringContainsString('<col min="5" max="5" width="100" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
+    }
+
+    public function testCanTakeColumnWidthsAsRangeToSheet(): void
+    {
+        $fileName = 'test_column_widths_as_ranges.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12', 'xlsx--13']));
+        $sheet = $writer->getCurrentSheet();
+        $sheet->setColumnWidthForRange(50.0, 1, 3);
+        $writer->close();
+
+        $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString('<cols', $xmlContents, 'No cols tag found in sheet');
+        self::assertStringContainsString('<col min="1" max="3" width="50" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
+    }
+
+    public function testWritesColumnWidthsToSheetOverridingOptions(): void
+    {
+        $fileName = 'test_column_widths.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12']));
+        $options->setColumnWidth(50.0, 1);
+        $sheet = $writer->getCurrentSheet();
+        $sheet->setColumnWidth(100.0, 1);
+        $writer->close();
+
+        $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString('<cols', $xmlContents, 'No cols tag found in sheet');
+        self::assertStringContainsString('<col min="1" max="1" width="100" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
+    }
+
+    public function testWritesMultipleColumnWidthsToSheetOverridingOptions(): void
+    {
+        $fileName = 'test_multiple_column_widths.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options->setColumnWidth(50.0, 1, 2, 3);
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12', 'xlsx--13']));
+        $sheet = $writer->getCurrentSheet();
+        $sheet->setColumnWidth(100.0, 1, 2, 3);
+        $writer->close();
+
+        $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString('<cols', $xmlContents, 'No cols tag found in sheet');
+        self::assertStringContainsString('<col min="1" max="3" width="100" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
+    }
+
     public function testCanWriteAFormula(): void
     {
         $fileName = 'test_formula.xlsx';
