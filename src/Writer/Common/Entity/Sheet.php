@@ -168,7 +168,7 @@ final class Sheet
     /**
      * @param positive-int ...$columns One or more columns with this width
      */
-    final public function setColumnWidth(float $width, int ...$columns): void
+    public function setColumnWidth(float $width, int ...$columns): void
     {
         // Gather sequences
         $sequence = [];
@@ -191,7 +191,7 @@ final class Sheet
      * @param positive-int $start First column index of the range
      * @param positive-int $end   Last column index of the range
      */
-    final public function setColumnWidthForRange(float $width, int $start, int $end): void
+    public function setColumnWidthForRange(float $width, int $start, int $end): void
     {
         $this->COLUMN_WIDTHS[] = new ColumnWidth($start, $end, $width);
     }
@@ -201,7 +201,7 @@ final class Sheet
      *
      * @return ColumnWidth[]
      */
-    final public function getColumnWidths(): array
+    public function getColumnWidths(): array
     {
         return $this->COLUMN_WIDTHS;
     }

@@ -415,11 +415,9 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     {
         if ([] !== $sheet->getColumnWidths()) {
             $widths = $sheet->getColumnWidths();
-        }
-        elseif ([] !== $options->getColumnWidths()) {
+        } elseif ([] !== $options->getColumnWidths()) {
             $widths = $options->getColumnWidths();
-        }
-        else {
+        } else {
             return '';
         }
 
