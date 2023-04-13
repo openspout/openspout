@@ -199,8 +199,7 @@ final class SharedStringsManager
 
                 $sharedStringValue .= $shouldPreserveWhitespace
                     ? $textNodeValue
-                    : trim($textNodeValue)
-                ;
+                    : trim($textNodeValue);
             }
         }
 

@@ -6,6 +6,7 @@ namespace OpenSpout\Reader\Common\Manager;
 
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -13,7 +14,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class RowManagerTest extends TestCase
 {
-    public function dataProviderForTestFillMissingIndexesWithEmptyCells(): array
+    public static function dataProviderForTestFillMissingIndexesWithEmptyCells(): array
     {
         $cell1 = Cell::fromValue(1);
         $cell3 = Cell::fromValue(3);
@@ -25,11 +26,10 @@ final class RowManagerTest extends TestCase
     }
 
     /**
-     * @dataProvider dataProviderForTestFillMissingIndexesWithEmptyCells
-     *
      * @param null|Cell[] $rowCells
      * @param Cell[]      $expectedFilledCells
      */
+    #[DataProvider('dataProviderForTestFillMissingIndexesWithEmptyCells')]
     public function testFillMissingIndexesWithEmptyCells(?array $rowCells, array $expectedFilledCells): void
     {
         $rowManager = new RowManager();

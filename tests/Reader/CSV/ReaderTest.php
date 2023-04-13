@@ -8,6 +8,7 @@ use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\EncodingHelper;
 use OpenSpout\Reader\Exception\ReaderNotOpenedException;
 use OpenSpout\TestUsingResource;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -112,7 +113,7 @@ final class ReaderTest extends TestCase
         self::assertSame($expectedRows, $allRows);
     }
 
-    public function dataProviderForTestReadShouldReadEmptyFile(): array
+    public static function dataProviderForTestReadShouldReadEmptyFile(): array
     {
         return [
             ['csv_empty.csv'],
@@ -120,9 +121,7 @@ final class ReaderTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataProviderForTestReadShouldReadEmptyFile
-     */
+    #[DataProvider('dataProviderForTestReadShouldReadEmptyFile')]
     public function testReadShouldReadEmptyFile(string $fileName): void
     {
         $allRows = $this->getAllRowsForFile($fileName);
@@ -189,7 +188,7 @@ final class ReaderTest extends TestCase
         self::assertSame("This is,{$newLine}a comma", $allRows[0][0]);
     }
 
-    public function dataProviderForTestReadShouldSkipBom(): array
+    public static function dataProviderForTestReadShouldSkipBom(): array
     {
         return [
             ['csv_with_utf8_bom.csv', EncodingHelper::ENCODING_UTF8],
@@ -200,9 +199,7 @@ final class ReaderTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataProviderForTestReadShouldSkipBom
-     */
+    #[DataProvider('dataProviderForTestReadShouldSkipBom')]
     public function testReadShouldSkipBom(string $fileName, string $fileEncoding): void
     {
         $allRows = $this->getAllRowsForFile($fileName, ',', '"', $fileEncoding);
@@ -215,7 +212,7 @@ final class ReaderTest extends TestCase
         self::assertSame($expectedRows, $allRows);
     }
 
-    public function dataProviderForTestReadShouldSupportNonUTF8FilesWithoutBOMs(): array
+    public static function dataProviderForTestReadShouldSupportNonUTF8FilesWithoutBOMs(): array
     {
         $shouldUseIconv = true;
         $shouldNotUseIconv = false;
@@ -228,9 +225,7 @@ final class ReaderTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataProviderForTestReadShouldSupportNonUTF8FilesWithoutBOMs
-     */
+    #[DataProvider('dataProviderForTestReadShouldSupportNonUTF8FilesWithoutBOMs')]
     public function testReadShouldSupportNonUTF8FilesWithoutBOMs(string $fileName, string $fileEncoding, bool $shouldUseIconv): void
     {
         $allRows = [];

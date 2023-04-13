@@ -63,14 +63,12 @@ final class WriterWithStyleTest extends TestCase
             ->setFontItalic()
             ->setFontUnderline()
             ->setFontStrikethrough()
-
         ;
         $style2 = (new Style())
             ->setFontSize(15)
             ->setFontColor(Color::RED)
             ->setFontName('Cambria')
             ->setBackgroundColor(Color::GREEN)
-
         ;
 
         $dataRows = [
@@ -327,8 +325,7 @@ final class WriterWithStyleTest extends TestCase
         $actualFirst = $styleElements[1]
             ->getElementsByTagName('table-cell-properties')
             ->item(0)
-            ->getAttribute('fo:border-bottom')
-        ;
+            ->getAttribute('fo:border-bottom');
 
         self::assertSame($expectedFirst, $actualFirst);
 
@@ -342,8 +339,7 @@ final class WriterWithStyleTest extends TestCase
         $actualThird = $styleElements[2]
             ->getElementsByTagName('table-cell-properties')
             ->item(0)
-            ->getAttribute('fo:border-top')
-        ;
+            ->getAttribute('fo:border-top');
 
         self::assertSame($expectedThird, $actualThird);
     }

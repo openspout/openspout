@@ -10,6 +10,7 @@ use DateTimeZone;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Reader\Exception\IteratorNotRewindableException;
 use OpenSpout\TestUsingResource;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -17,7 +18,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class ReaderTest extends TestCase
 {
-    public function dataProviderForTestReadShouldThrowException(): array
+    public static function dataProviderForTestReadShouldThrowException(): array
     {
         return [
             ['/path/to/fake/file.ods'],
@@ -26,9 +27,7 @@ final class ReaderTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataProviderForTestReadShouldThrowException
-     */
+    #[DataProvider('dataProviderForTestReadShouldThrowException')]
     public function testReadShouldThrowException(string $filePath): void
     {
         $this->expectException(IOException::class);
@@ -36,7 +35,7 @@ final class ReaderTest extends TestCase
         $this->getAllRowsForFile($filePath);
     }
 
-    public function dataProviderForTestReadForAllWorksheets(): array
+    public static function dataProviderForTestReadForAllWorksheets(): array
     {
         return [
             ['one_sheet_with_strings.ods', 2, 3],
@@ -44,9 +43,7 @@ final class ReaderTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataProviderForTestReadForAllWorksheets
-     */
+    #[DataProvider('dataProviderForTestReadForAllWorksheets')]
     public function testReadForAllWorksheets(string $resourceName, int $expectedNumOfRows, int $expectedNumOfCellsPerRow): void
     {
         $allRows = $this->getAllRowsForFile($resourceName);
@@ -87,7 +84,7 @@ final class ReaderTest extends TestCase
         self::assertSame($expectedRows, $allRows);
     }
 
-    public function dataProviderForTestReadWithFilesGeneratedByExternalSoftwares(): array
+    public static function dataProviderForTestReadWithFilesGeneratedByExternalSoftwares(): array
     {
         return [
             ['file_generated_by_libre_office.ods', true],
@@ -97,10 +94,10 @@ final class ReaderTest extends TestCase
     }
 
     /**
-     * @dataProvider dataProviderForTestReadWithFilesGeneratedByExternalSoftwares
      * The files contain styles, different value types, gaps between cells,
      * repeated values, empty row, different number of cells per row.
      */
+    #[DataProvider('dataProviderForTestReadWithFilesGeneratedByExternalSoftwares')]
     public function testReadWithFilesGeneratedByExternalSoftwares(string $fileName, bool $skipLastEmptyValues): void
     {
         $allRows = $this->getAllRowsForFile($fileName);

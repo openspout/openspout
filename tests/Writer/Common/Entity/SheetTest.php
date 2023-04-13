@@ -7,6 +7,7 @@ namespace OpenSpout\Writer\Common\Entity;
 use OpenSpout\Common\Helper\StringHelper;
 use OpenSpout\Writer\Common\Manager\SheetManager;
 use OpenSpout\Writer\Exception\InvalidSheetNameException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -38,7 +39,7 @@ final class SheetTest extends TestCase
         self::assertSame($customSheetName, $sheet->getName(), "The sheet name should have been changed to '{$customSheetName}'");
     }
 
-    public function dataProviderForInvalidSheetNames(): array
+    public static function dataProviderForInvalidSheetNames(): array
     {
         return [
             [''],
@@ -55,9 +56,7 @@ final class SheetTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataProviderForInvalidSheetNames
-     */
+    #[DataProvider('dataProviderForInvalidSheetNames')]
     public function testSetSheetNameShouldThrowOnInvalidName(string $customSheetName): void
     {
         $sheet = $this->createSheet(0, 'workbookId1');

@@ -2,23 +2,21 @@
 
 declare(strict_types=1);
 
-namespace OpenSpout\Writer\XLSX;
+namespace OpenSpout\Writer\XLSX\Helper;
 
 use DateTimeImmutable;
 use DateTimeInterface;
-use OpenSpout\Writer\XLSX\Helper\DateHelper;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
- *
- * @covers \OpenSpout\Writer\XLSX\Helper\DateHelper
  */
+#[CoversClass(DateHelper::class)]
 final class DateHelperTest extends TestCase
 {
-    /**
-     * @dataProvider provideDateTimeToExcelCases
-     */
+    #[DataProvider('provideDateTimeToExcelCases')]
     public function testToExcel(DateTimeInterface $dateTime, float $expected): void
     {
         self::assertEqualsWithDelta($expected, DateHelper::toExcel($dateTime), 1E-5);
@@ -27,7 +25,7 @@ final class DateHelperTest extends TestCase
     /**
      * @return array<array-key, array<array-key, DateTimeInterface|float|int>>
      */
-    public function provideDateTimeToExcelCases(): array
+    public static function provideDateTimeToExcelCases(): array
     {
         return [
             [new DateTimeImmutable('1900-01-01'), 1.0], // Excel 1900 base calendar date

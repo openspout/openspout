@@ -2,26 +2,22 @@
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          colors="true"
-         convertDeprecationsToExceptions="true"
          failOnRisky="true"
          failOnWarning="true"
          beStrictAboutChangesToGlobalState="true"
          beStrictAboutOutputDuringTests="true"
-         beStrictAboutTodoAnnotatedTests="true"
+         cacheDirectory=".phpunit.cache"
 >
-
   <php>
     <ini name="error_reporting" value="-1"/>
     <ini name="date.timezone" value="UTC"/>
   </php>
-
   <testsuites>
     <testsuite name="unit-tests">
       <directory>tests/</directory>
     </testsuite>
   </testsuites>
-
-  <coverage processUncoveredFiles="true">
+  <coverage>
     <include>
       <directory suffix=".php">src/</directory>
     </include>
@@ -31,9 +27,7 @@
       <xml outputDirectory="coverage/xml"/>
     </report>
   </coverage>
-
   <logging>
     <junit outputFile="coverage/junit.xml"/>
   </logging>
-
 </phpunit>

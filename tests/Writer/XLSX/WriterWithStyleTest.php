@@ -63,13 +63,11 @@ final class WriterWithStyleTest extends TestCase
             ->setFontItalic()
             ->setFontUnderline()
             ->setFontStrikethrough()
-
         ;
         $style2 = (new Style())
             ->setFontSize(15)
             ->setFontColor(Color::RED)
             ->setFontName('Cambria')
-
         ;
 
         $dataRows = [
@@ -205,12 +203,10 @@ final class WriterWithStyleTest extends TestCase
         $style = (new Style())
             ->setFontBold()
             ->setFormat('0.00')// Builtin format
-
         ;
         $style2 = (new Style())
             ->setFontBold()
             ->setFormat('0.000')
-
         ;
 
         $dataRows = [

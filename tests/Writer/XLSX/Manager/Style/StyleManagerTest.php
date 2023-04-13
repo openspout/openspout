@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer\XLSX\Manager\Style;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -11,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class StyleManagerTest extends TestCase
 {
-    public function dataProviderForTestShouldApplyStyleOnEmptyCell(): array
+    public static function dataProviderForTestShouldApplyStyleOnEmptyCell(): array
     {
         return [
             // fillId, borderId, expected result
@@ -27,9 +28,7 @@ final class StyleManagerTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataProviderForTestShouldApplyStyleOnEmptyCell
-     */
+    #[DataProvider('dataProviderForTestShouldApplyStyleOnEmptyCell')]
     public function testShouldApplyStyleOnEmptyCell(?int $fillId, ?int $borderId, bool $expectedResult): void
     {
         $styleRegistryMock = $this->getMockBuilder(StyleRegistry::class)

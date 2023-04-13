@@ -9,6 +9,7 @@ use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\MemoryLimit;
 use OpenSpout\TestUsingResource;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -16,7 +17,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class ReaderTest extends TestCase
 {
-    public function dataProviderForTestReadShouldThrowException(): array
+    public static function dataProviderForTestReadShouldThrowException(): array
     {
         return [
             ['/path/to/fake/file.xlsx'],
@@ -26,9 +27,7 @@ final class ReaderTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataProviderForTestReadShouldThrowException
-     */
+    #[DataProvider('dataProviderForTestReadShouldThrowException')]
     public function testReadShouldThrowException(string $filePath): void
     {
         $this->expectException(IOException::class);
@@ -37,7 +36,7 @@ final class ReaderTest extends TestCase
         @$this->getAllRowsForFile($filePath);
     }
 
-    public function dataProviderForTestReadForAllWorksheets(): array
+    public static function dataProviderForTestReadForAllWorksheets(): array
     {
         return [
             ['one_sheet_with_shared_strings.xlsx', 5, 5],
@@ -47,9 +46,7 @@ final class ReaderTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataProviderForTestReadForAllWorksheets
-     */
+    #[DataProvider('dataProviderForTestReadForAllWorksheets')]
     public function testReadForAllWorksheets(string $resourceName, int $expectedNumOfRows, int $expectedNumOfCellsPerRow): void
     {
         $allRows = $this->getAllRowsForFile($resourceName);
@@ -60,9 +57,7 @@ final class ReaderTest extends TestCase
         }
     }
 
-    /**
-     * @dataProvider dataProviderForTestReadForAllWorksheets
-     */
+    #[DataProvider('dataProviderForTestReadForAllWorksheets')]
     public function testReadForAllWorksheetsWithFileBasedCachingStrategy(string $resourceName, int $expectedNumOfRows, int $expectedNumOfCellsPerRow): void
     {
         $allRows = $this->getAllRowsForFile($resourceName, null, new CachingStrategyFactory(new MemoryLimit('1b')));
