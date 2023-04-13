@@ -6,61 +6,38 @@ on:
     branches:
       - "?.x"
 
+env:
+  INI_VALUES: zend.assertions=1,error_reporting=-1
+  EXTENSIONS: dom,fileinfo,xmlreader,zip
+
 jobs:
   composer-json-lint:
     name: "Lint composer.json"
-
     runs-on: "ubuntu-latest"
-
     strategy:
       matrix:
         php-version:
           - "8.1"
 
     steps:
-      - name: "Checkout"
-        uses: "actions/checkout@v3"
-
-      - name: "Install PHP"
-        uses: "shivammathur/setup-php@v2"
+      - uses: "actions/checkout@v3"
+      - uses: "shivammathur/setup-php@v2"
         with:
-          coverage: ${{ matrix.code-coverage }}
-          php-version: ${{ matrix.php-version }}
-          extensions: zip, xmlreader, dom
-          ini-values: zend.assertions=1,error_reporting=-1
+          coverage: "none"
+          php-version: "${{ matrix.php-version }}"
+          extensions: "${{ env.EXTENSIONS }}"
+          ini-values: "${{ env.INI_VALUES }}"
           tools: composer-normalize, composer-require-checker, composer-unused
+      - uses: "ramsey/composer-install@v2"
 
-      - name: "Get composer cache directory"
-        id: "composercache"
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-      - name: "Cache dependencies"
-        uses: "actions/cache@v3"
-        with:
-          path: ${{ steps.composercache.outputs.dir }}
-          key: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-${{ hashFiles('**/composer.json') }}
-          restore-keys: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-
-
-      - name: "Install dependencies"
-        run: "composer update --no-interaction --no-progress"
-
-      - name: "Validate composer.json"
-        run: "composer validate --strict"
-
-      - name: "Normalize composer.json"
-        run: "composer-normalize --dry-run"
-
-      - name: "composer-require-checker"
-        run: "composer-require-checker --config-file=$(realpath .require-checker-config.json)"
-
-      - name: "composer-unused"
-        run: "composer-unused"
+      - run: "composer validate --strict"
+      - run: "composer-normalize --dry-run"
+      - run: "composer-require-checker check --config-file=$(realpath composer-require-checker.json)"
+      - run: "composer-unused"
 
   tests:
     name: "Tests"
-
-    runs-on: ${{ matrix.os }}
-
+    runs-on: "${{ matrix.os }}"
     strategy:
       matrix:
         os:
@@ -79,92 +56,63 @@ jobs:
               code-coverage: "pcov"
 
     steps:
-      - name: "Checkout"
-        uses: "actions/checkout@v3"
-
-      - name: "Install PHP"
-        uses: "shivammathur/setup-php@v2"
+      - uses: "actions/checkout@v3"
+      - uses: "shivammathur/setup-php@v2"
         with:
-          coverage: ${{ matrix.code-coverage }}
-          php-version: ${{ matrix.php-version }}
-          extensions: dom, fileinfo, xmlreader, zip
-          ini-values: zend.assertions=1,error_reporting=-1
+          coverage: "${{ matrix.code-coverage }}"
+          php-version: "${{ matrix.php-version }}"
+          extensions: "${{ env.EXTENSIONS }}"
+          ini-values: "${{ env.INI_VALUES }}"
+      - uses: "ramsey/composer-install@v2"
 
-      - name: "Get composer cache directory"
-        id: "composercache"
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-      - name: "Cache dependencies"
-        uses: "actions/cache@v3"
-        with:
-          path: ${{ steps.composercache.outputs.dir }}
-          key: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-${{ hashFiles('**/composer.json') }}
-          restore-keys: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-
-
-      - name: "Install dependencies"
-        run: "composer update --no-interaction --no-progress"
+      - name: "Run tests without CC"
+        if: "${{matrix.code-coverage == 'none' }}"
+        timeout-minutes: 3
+        run: "vendor/bin/phpunit --no-coverage --no-logging"
 
       - name: "Run tests"
+        if: "${{matrix.code-coverage != 'none' }}"
         timeout-minutes: 3
         run: "make test"
 
       - name: "Gather base branch for diff"
-        if: ${{ github.event_name == 'pull_request' && matrix.code-coverage != 'none' }}
-        run: git fetch origin --no-tags --prune --depth=1 ${{ github.base_ref }} ${{ github.event.pull_request.base.sha }}
+        if: "${{ github.event_name == 'pull_request' && matrix.code-coverage != 'none' }}"
+        run: "git fetch origin --no-tags --prune --depth=1 ${{ github.base_ref }} ${{ github.event.pull_request.base.sha }}"
 
       - name: "Infection on DIFF"
-        if: ${{ github.event_name == 'pull_request' && matrix.code-coverage != 'none' }}
+        if: "${{ github.event_name == 'pull_request' && matrix.code-coverage != 'none' }}"
         timeout-minutes: 10
-        run: make code-coverage INFECTION_ARGS="--logger-github"
+        run: "make code-coverage INFECTION_ARGS='--logger-github'"
         env:
-          BASE_BRANCH: origin/${{ github.base_ref }}
-          INFECTION_BADGE_API_KEY: ${{ secrets.INFECTION_BADGE_API_KEY }}
+          BASE_BRANCH: "origin/${{ github.base_ref }}"
+          INFECTION_BADGE_API_KEY: "${{ secrets.INFECTION_BADGE_API_KEY }}"
 
       - name: "Infection on complete code base"
-        if: ${{ github.event_name != 'pull_request' && matrix.code-coverage != 'none' }}
+        if: "${{ github.event_name != 'pull_request' && matrix.code-coverage != 'none' }}"
         timeout-minutes: 10
         run: "vendor/bin/infection --ansi --threads=$(nproc) --skip-initial-tests --coverage=coverage"
         env:
-          INFECTION_BADGE_API_KEY: ${{ secrets.INFECTION_BADGE_API_KEY }}
+          INFECTION_BADGE_API_KEY: "${{ secrets.INFECTION_BADGE_API_KEY }}"
 
   coding-standards:
     name: "Coding Standards"
-
     runs-on: "ubuntu-latest"
-
     strategy:
       matrix:
         php-version:
           - "8.1"
 
     steps:
-      - name: "Checkout"
-        uses: "actions/checkout@v3"
-
-      - name: "Install PHP"
-        uses: "shivammathur/setup-php@v2"
+      - uses: "actions/checkout@v3"
+      - uses: "shivammathur/setup-php@v2"
         with:
           coverage: "none"
-          php-version: ${{ matrix.php-version }}
-          extensions: zip, xmlreader, dom
-          ini-values: zend.assertions=1,error_reporting=-1
+          php-version: "${{ matrix.php-version }}"
+          extensions: "${{ env.EXTENSIONS }}"
+          ini-values: "${{ env.INI_VALUES }}"
+      - uses: "ramsey/composer-install@v2"
 
-      - name: "Get composer cache directory"
-        id: "composercache"
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-      - name: "Cache dependencies"
-        uses: "actions/cache@v3"
-        with:
-          path: ${{ steps.composercache.outputs.dir }}
-          key: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-${{ hashFiles('**/composer.json') }}
-          restore-keys: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-
-
-      - name: "Install dependencies"
-        run: "composer update --no-interaction --no-progress"
-
-      - name: "Run PHP-CS-Fixer"
-        run: "vendor/bin/php-cs-fixer fix --verbose --dry-run --diff"
+      - run: "vendor/bin/php-cs-fixer fix --verbose --dry-run --diff"
 
   static-analysis:
     name: "Static Analysis"
@@ -174,42 +122,23 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - "8.1"
+          - "8.2"
 
     steps:
-      - name: "Checkout"
-        uses: "actions/checkout@v3"
-
-      - name: "Install PHP"
-        uses: "shivammathur/setup-php@v2"
+      - uses: "actions/checkout@v3"
+      - uses: "shivammathur/setup-php@v2"
         with:
           coverage: "none"
-          php-version: ${{ matrix.php-version }}
-          extensions: zip, xmlreader, dom
-          ini-values: zend.assertions=1,error_reporting=-1
+          php-version: "${{ matrix.php-version }}"
+          extensions: "${{ env.EXTENSIONS }}"
+          ini-values: "${{ env.INI_VALUES }}"
+      - uses: "ramsey/composer-install@v2"
 
-      - name: "Get composer cache directory"
-        id: "composercache"
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-      - name: "Cache dependencies"
-        uses: "actions/cache@v3"
-        with:
-          path: ${{ steps.composercache.outputs.dir }}
-          key: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-${{ hashFiles('**/composer.json') }}
-          restore-keys: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-
-
-      - name: "Install dependencies"
-        run: "composer update --no-interaction --no-progress"
-
-      - name: "Run static analysis"
-        run: "vendor/bin/phpstan analyse --no-progress --error-format=github"
+      - run: "vendor/bin/phpstan analyse --no-progress --error-format=github"
 
   benchmarks:
     name: "Benchmarks"
-
     runs-on: "ubuntu-latest"
-
     strategy:
       matrix:
         php-version:
@@ -225,34 +154,17 @@ jobs:
           - "XlsxWriterSharedBench"
 
     steps:
-      - name: "Checkout"
-        uses: "actions/checkout@v3"
-
-      - name: "Install PHP"
-        uses: "shivammathur/setup-php@v2"
+      - uses: "actions/checkout@v3"
+      - uses: "shivammathur/setup-php@v2"
         with:
           coverage: "none"
-          php-version: ${{ matrix.php-version }}
-          extensions: zip, xmlreader, dom
-          ini-values: zend.assertions=1,error_reporting=-1
-
-      - name: "Get composer cache directory"
-        id: "composercache"
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-      - name: "Cache dependencies"
-        uses: "actions/cache@v3"
-        with:
-          path: ${{ steps.composercache.outputs.dir }}
-          key: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-${{ hashFiles('**/composer.json') }}
-          restore-keys: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-
+          php-version: "${{ matrix.php-version }}"
+          extensions: "${{ env.EXTENSIONS }}"
+          ini-values: "${{ env.INI_VALUES }}"
+      - uses: "ramsey/composer-install@v2"
 
       - name: "Remove infection"
         run: "composer remove --no-progress --no-update --no-scripts --dev 'infection/infection'"
 
-      - name: "Install dependencies"
-        run: "composer update --no-interaction --no-progress"
-
-      - name: "Run benchmarks"
+      - run: "vendor/bin/phpbench run --report=default --filter ${{ matrix.bench }}"
         timeout-minutes: 3
-        run: "vendor/bin/phpbench run --report=default --filter ${{ matrix.bench }}"
