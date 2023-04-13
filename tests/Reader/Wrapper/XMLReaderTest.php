@@ -6,6 +6,7 @@ namespace OpenSpout\Reader\Wrapper;
 
 use OpenSpout\Reader\Exception\XMLProcessingException;
 use OpenSpout\TestUsingResource;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use ReflectionHelper;
 
@@ -56,7 +57,7 @@ final class XMLReaderTest extends TestCase
         }
     }
 
-    public function dataProviderForTestFileExistsWithinZip(): array
+    public static function dataProviderForTestFileExistsWithinZip(): array
     {
         return [
             ['[Content_Types].xml', true],
@@ -67,9 +68,7 @@ final class XMLReaderTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataProviderForTestFileExistsWithinZip
-     */
+    #[DataProvider('dataProviderForTestFileExistsWithinZip')]
     public function testFileExistsWithinZip(string $innerFilePath, bool $expectedResult): void
     {
         $resourcePath = TestUsingResource::getResourcePath('one_sheet_with_inline_strings.xlsx');
@@ -81,7 +80,7 @@ final class XMLReaderTest extends TestCase
         self::assertSame($expectedResult, $isZipStream);
     }
 
-    public function dataProviderForTestGetRealPathURIForFileInZip(): array
+    public static function dataProviderForTestGetRealPathURIForFileInZip(): array
     {
         $tempFolder = (new TestUsingResource())->getTempFolderPath();
         $tempFolderName = basename($tempFolder);
@@ -93,9 +92,7 @@ final class XMLReaderTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataProviderForTestGetRealPathURIForFileInZip
-     */
+    #[DataProvider('dataProviderForTestGetRealPathURIForFileInZip')]
     public function testGetRealPathURIForFileInZip(string $tempFolder, string $zipFilePath, string $fileInsideZipPath, string $expectedRealPathURI): void
     {
         touch($tempFolder.'/test.xlsx');
@@ -112,7 +109,7 @@ final class XMLReaderTest extends TestCase
         unlink($tempFolder.'/test.xlsx');
     }
 
-    public function dataProviderForTestIsPositionedOnStartingAndEndingNode(): array
+    public static function dataProviderForTestIsPositionedOnStartingAndEndingNode(): array
     {
         return [
             ['<test></test>'], // not prefixed
@@ -120,9 +117,7 @@ final class XMLReaderTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataProviderForTestIsPositionedOnStartingAndEndingNode
-     */
+    #[DataProvider('dataProviderForTestIsPositionedOnStartingAndEndingNode')]
     public function testIsPositionedOnStartingAndEndingNode(string $testXML): void
     {
         $xmlReader = new XMLReader();

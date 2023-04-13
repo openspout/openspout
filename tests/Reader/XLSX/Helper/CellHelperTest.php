@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace OpenSpout\Reader\XLSX\Helper;
 
 use OpenSpout\Common\Exception\InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -12,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class CellHelperTest extends TestCase
 {
-    public function dataProviderForTestGetColumnIndexFromCellIndex(): array
+    public static function dataProviderForTestGetColumnIndexFromCellIndex(): array
     {
         return [
             ['A1', 0],
@@ -24,9 +25,7 @@ final class CellHelperTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataProviderForTestGetColumnIndexFromCellIndex
-     */
+    #[DataProvider('dataProviderForTestGetColumnIndexFromCellIndex')]
     public function testGetColumnIndexFromCellIndex(string $cellIndex, int $expectedColumnIndex): void
     {
         self::assertSame($expectedColumnIndex, CellHelper::getColumnIndexFromCellIndex($cellIndex));

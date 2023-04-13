@@ -23,6 +23,7 @@ use OpenSpout\Writer\Exception\SheetNotFoundException;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
 use OpenSpout\Writer\ODS\Manager\WorkbookManager;
 use OpenSpout\Writer\RowCreationHelper;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use ReflectionHelper;
 
@@ -258,7 +259,7 @@ final class WriterTest extends TestCase
         }
     }
 
-    public function dataProviderForTestAddRowShouldUseNumberColumnsRepeatedForRepeatedValues(): array
+    public static function dataProviderForTestAddRowShouldUseNumberColumnsRepeatedForRepeatedValues(): array
     {
         return [
             [['ods--11', 'ods--11', 'ods--11'], 1, 3],
@@ -270,10 +271,9 @@ final class WriterTest extends TestCase
     }
 
     /**
-     * @dataProvider dataProviderForTestAddRowShouldUseNumberColumnsRepeatedForRepeatedValues
-     *
      * @param mixed[] $dataRow
      */
+    #[DataProvider('dataProviderForTestAddRowShouldUseNumberColumnsRepeatedForRepeatedValues')]
     public function testAddRowShouldUseNumberColumnsRepeatedForRepeatedValues(array $dataRow, int $expectedNumTableCells, int $expectedNumColumnsRepeated): void
     {
         $fileName = 'test_add_row_should_use_number_columns_repeated.ods';

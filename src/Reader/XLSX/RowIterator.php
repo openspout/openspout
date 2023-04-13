@@ -247,8 +247,7 @@ final class RowIterator implements RowIteratorInterface
         return
             !$hasReadAtLeastOneRow
             || !$this->shouldPreserveEmptyRows
-            || $this->lastRowIndexProcessed < $this->nextRowIndexToBeProcessed
-        ;
+            || $this->lastRowIndexProcessed < $this->nextRowIndexToBeProcessed;
     }
 
     /**

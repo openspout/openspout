@@ -1,3 +1,4 @@
+/.phpunit.cache
 /coverage
 /tests/**/resources/generated_*
 /vendor
@@ -5,4 +6,3 @@
 /.phpunit.result.cache
 /composer.lock
 /infections.log
-/.idea

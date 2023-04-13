@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace OpenSpout\Common\Helper\Escaper;
 
 use OpenSpout\Common\Helper\Escaper;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -12,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class ODSTest extends TestCase
 {
-    public function dataProviderForTestEscape(): array
+    public static function dataProviderForTestEscape(): array
     {
         return [
             ['test', 'test'],
@@ -25,9 +26,7 @@ final class ODSTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataProviderForTestEscape
-     */
+    #[DataProvider('dataProviderForTestEscape')]
     public function testEscape(string $stringToEscape, string $expectedEscapedString): void
     {
         $escaper = new Escaper\ODS();

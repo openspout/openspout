@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer\Common\Helper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -11,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class CellHelperTest extends TestCase
 {
-    public function dataProviderForTestGetColumnLettersFromColumnIndex(): array
+    public static function dataProviderForTestGetColumnLettersFromColumnIndex(): array
     {
         return [
             [0, 'A'],
@@ -22,9 +23,7 @@ final class CellHelperTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataProviderForTestGetColumnLettersFromColumnIndex
-     */
+    #[DataProvider('dataProviderForTestGetColumnLettersFromColumnIndex')]
     public function testGetColumnLettersFromColumnIndex(int $columnIndex, string $expectedColumnLetters): void
     {
         self::assertSame($expectedColumnLetters, CellHelper::getColumnLettersFromColumnIndex($columnIndex));

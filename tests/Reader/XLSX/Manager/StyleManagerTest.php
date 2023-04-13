@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OpenSpout\Reader\XLSX\Manager;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -82,7 +83,7 @@ final class StyleManagerTest extends TestCase
         self::assertFalse($shouldFormatAsDate);
     }
 
-    public function dataProviderForCustomDateFormats(): array
+    public static function dataProviderForCustomDateFormats(): array
     {
         return [
             // number format, expectedResult
@@ -113,9 +114,7 @@ final class StyleManagerTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataProviderForCustomDateFormats
-     */
+    #[DataProvider('dataProviderForCustomDateFormats')]
     public function testShouldFormatNumericValueAsDateWithCustomDateFormats(string $numberFormat, bool $expectedResult): void
     {
         $numFmtId = 165;

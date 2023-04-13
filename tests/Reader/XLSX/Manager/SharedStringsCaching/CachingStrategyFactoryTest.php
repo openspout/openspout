@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace OpenSpout\Reader\XLSX\Manager\SharedStringsCaching;
 
 use OpenSpout\TestUsingResource;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -12,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class CachingStrategyFactoryTest extends TestCase
 {
-    public function dataProviderForTestCreateBestCachingStrategy(): array
+    public static function dataProviderForTestCreateBestCachingStrategy(): array
     {
         return [
             [null, '-1', FileBasedStrategy::class],
@@ -25,9 +26,7 @@ final class CachingStrategyFactoryTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataProviderForTestCreateBestCachingStrategy
-     */
+    #[DataProvider('dataProviderForTestCreateBestCachingStrategy')]
     public function testCreateBestCachingStrategy(?int $sharedStringsUniqueCount, string $memoryLimitInKB, string $expectedStrategyClassName): void
     {
         $strategy = (new CachingStrategyFactory(new MemoryLimit($memoryLimitInKB)))
@@ -39,7 +38,7 @@ final class CachingStrategyFactoryTest extends TestCase
         $strategy->clearCache();
     }
 
-    public function dataProviderForTestGetMemoryLimitInKB(): array
+    public static function dataProviderForTestGetMemoryLimitInKB(): array
     {
         return [
             ['-1', -1],
@@ -56,9 +55,7 @@ final class CachingStrategyFactoryTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataProviderForTestGetMemoryLimitInKB
-     */
+    #[DataProvider('dataProviderForTestGetMemoryLimitInKB')]
     public function testGetMemoryLimitInKB(string $memoryLimitFormatted, float $expectedMemoryLimitInKB): void
     {
         self::assertSame($expectedMemoryLimitInKB, (new MemoryLimit($memoryLimitFormatted))->getMemoryLimitInKB());
