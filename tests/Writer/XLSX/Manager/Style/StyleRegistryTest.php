@@ -69,13 +69,11 @@ final class StyleRegistryTest extends TestCase
         $styleBuiltinFormat = (new Style())
             ->setFontBold()
             ->setFormat('0.00')// Builtin format
-
         ;
 
         $styleUserFormat = (new Style())
             ->setFontBold()
             ->setFormat('0.000')
-
         ;
         $styleNoFormat = (new Style())->setFontItalic();
 

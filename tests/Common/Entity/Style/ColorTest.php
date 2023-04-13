@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace OpenSpout\Common\Entity\Style;
 
 use OpenSpout\Common\Exception\InvalidColorException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -12,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class ColorTest extends TestCase
 {
-    public function dataProviderForTestRGB(): array
+    public static function dataProviderForTestRGB(): array
     {
         return [
             [0, 0, 0, Color::BLACK],
@@ -37,16 +38,14 @@ final class ColorTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataProviderForTestRGB
-     */
+    #[DataProvider('dataProviderForTestRGB')]
     public function testRGB(int $red, int $green, int $blue, string $expectedColor): void
     {
         $color = Color::rgb($red, $green, $blue);
         self::assertSame($expectedColor, $color);
     }
 
-    public function dataProviderForTestRGBAInvalidColorComponents(): array
+    public static function dataProviderForTestRGBAInvalidColorComponents(): array
     {
         return [
             [-1, 0, 0],
@@ -58,9 +57,7 @@ final class ColorTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataProviderForTestRGBAInvalidColorComponents
-     */
+    #[DataProvider('dataProviderForTestRGBAInvalidColorComponents')]
     public function testRGBInvalidColorComponents(int $red, int $green, int $blue): void
     {
         $this->expectException(InvalidColorException::class);

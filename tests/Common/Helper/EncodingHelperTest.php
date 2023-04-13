@@ -6,6 +6,7 @@ namespace OpenSpout\Common\Helper;
 
 use OpenSpout\Common\Exception\EncodingConversionException;
 use OpenSpout\TestUsingResource;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -13,7 +14,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class EncodingHelperTest extends TestCase
 {
-    public function dataProviderForTestGetBytesOffsetToSkipBOM(): array
+    public static function dataProviderForTestGetBytesOffsetToSkipBOM(): array
     {
         return [
             ['csv_with_utf8_bom.csv', EncodingHelper::ENCODING_UTF8, 3],
@@ -24,9 +25,7 @@ final class EncodingHelperTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataProviderForTestGetBytesOffsetToSkipBOM
-     */
+    #[DataProvider('dataProviderForTestGetBytesOffsetToSkipBOM')]
     public function testGetBytesOffsetToSkipBOM(string $fileName, string $encoding, int $expectedBytesOffset): void
     {
         $resourcePath = TestUsingResource::getResourcePath($fileName);
@@ -39,7 +38,7 @@ final class EncodingHelperTest extends TestCase
         self::assertSame($expectedBytesOffset, $bytesOffset);
     }
 
-    public function dataProviderForIconvOrMbstringUsage(): array
+    public static function dataProviderForIconvOrMbstringUsage(): array
     {
         return [
             'with-iconv' => [true],
@@ -47,9 +46,7 @@ final class EncodingHelperTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataProviderForIconvOrMbstringUsage
-     */
+    #[DataProvider('dataProviderForIconvOrMbstringUsage')]
     public function testAttemptConversionToUTF8ShouldThrowIfConversionFailed(bool $shouldUseIconv): void
     {
         $encodingHelper = new EncodingHelper($shouldUseIconv, !$shouldUseIconv);
@@ -68,9 +65,7 @@ final class EncodingHelperTest extends TestCase
         $encodingHelper->attemptConversionToUTF8('input', EncodingHelper::ENCODING_UTF16_LE);
     }
 
-    /**
-     * @dataProvider dataProviderForIconvOrMbstringUsage
-     */
+    #[DataProvider('dataProviderForIconvOrMbstringUsage')]
     public function testAttemptConversionToUTF8ShouldReturnReencodedString(bool $shouldUseIconv): void
     {
         $encodingHelper = new EncodingHelper($shouldUseIconv, !$shouldUseIconv);
@@ -89,9 +84,7 @@ final class EncodingHelperTest extends TestCase
         self::assertSame('input', $encodingHelper->attemptConversionToUTF8('input', EncodingHelper::ENCODING_UTF8));
     }
 
-    /**
-     * @dataProvider dataProviderForIconvOrMbstringUsage
-     */
+    #[DataProvider('dataProviderForIconvOrMbstringUsage')]
     public function testAttemptConversionFromUTF8ShouldThrowIfConversionFailed(bool $shouldUseIconv): void
     {
         $encodingHelper = new EncodingHelper($shouldUseIconv, !$shouldUseIconv);
@@ -110,9 +103,7 @@ final class EncodingHelperTest extends TestCase
         $encodingHelper->attemptConversionFromUTF8('input', EncodingHelper::ENCODING_UTF16_LE);
     }
 
-    /**
-     * @dataProvider dataProviderForIconvOrMbstringUsage
-     */
+    #[DataProvider('dataProviderForIconvOrMbstringUsage')]
     public function testAttemptConversionFromUTF8ShouldReturnReencodedString(bool $shouldUseIconv): void
     {
         $encodingHelper = new EncodingHelper($shouldUseIconv, !$shouldUseIconv);

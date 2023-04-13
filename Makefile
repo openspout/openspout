@@ -21,9 +21,9 @@ csfix: vendor
 
 .PHONY: static-analysis
 static-analysis: vendor
-	php -d zend.assertions=1 vendor/bin/phpstan analyse
+	php -d zend.assertions=1 vendor/bin/phpstan analyse $(PHPSTAN_ARGS)
 
-coverage/junit.xml: vendor $(SRCS) Makefile
+coverage/junit.xml: vendor $(SRCS) Makefile phpunit.xml
 	chmod -fR u+rwX tests/resources/generated_* || true
 	rm -fr tests/resources/generated_*
 	php \

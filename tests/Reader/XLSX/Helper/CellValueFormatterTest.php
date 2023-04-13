@@ -15,6 +15,7 @@ use OpenSpout\Reader\XLSX\Manager\SharedStringsManager;
 use OpenSpout\Reader\XLSX\Manager\StyleManagerInterface;
 use OpenSpout\Reader\XLSX\Manager\WorkbookRelationshipsManager;
 use OpenSpout\Reader\XLSX\Options;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use ReflectionHelper;
 
@@ -23,7 +24,7 @@ use ReflectionHelper;
  */
 final class CellValueFormatterTest extends TestCase
 {
-    public function dataProviderForTestExcelDate(): array
+    public static function dataProviderForTestExcelDate(): array
     {
         return [
             // use 1904 dates, node value, expected date as string
@@ -63,10 +64,9 @@ final class CellValueFormatterTest extends TestCase
     }
 
     /**
-     * @dataProvider dataProviderForTestExcelDate
-     *
      * @param float|int|string $nodeValue
      */
+    #[DataProvider('dataProviderForTestExcelDate')]
     public function testExcelDate(bool $shouldUse1904Dates, $nodeValue, ?string $expectedDateAsString): void
     {
         $nodeListMock = $this->createMock(DOMNodeList::class);
@@ -132,7 +132,7 @@ final class CellValueFormatterTest extends TestCase
         }
     }
 
-    public function dataProviderForTestFormatNumericCellValueWithNumbers(): array
+    public static function dataProviderForTestFormatNumericCellValueWithNumbers(): array
     {
         // Some test values exceed PHP_INT_MAX on 32-bit PHP. They are
         // therefore converted to as doubles automatically by PHP.
@@ -156,11 +156,10 @@ final class CellValueFormatterTest extends TestCase
     }
 
     /**
-     * @dataProvider dataProviderForTestFormatNumericCellValueWithNumbers
-     *
      * @param float|int|string $value
      * @param float|int        $expectedFormattedValue
      */
+    #[DataProvider('dataProviderForTestFormatNumericCellValueWithNumbers')]
     public function testFormatNumericCellValueWithNumbers($value, $expectedFormattedValue, string $expectedType): void
     {
         $styleManagerMock = $this->createMock(StyleManagerInterface::class);
@@ -188,7 +187,7 @@ final class CellValueFormatterTest extends TestCase
         self::assertSame($expectedType, \gettype($formattedValue));
     }
 
-    public function dataProviderForTestFormatStringCellValue(): array
+    public static function dataProviderForTestFormatStringCellValue(): array
     {
         return [
             ['A', 'A'],
@@ -198,9 +197,7 @@ final class CellValueFormatterTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataProviderForTestFormatStringCellValue
-     */
+    #[DataProvider('dataProviderForTestFormatStringCellValue')]
     public function testFormatInlineStringCellValue(string $value, string $expectedFormattedValue): void
     {
         $nodeListMock = $this->createMock(DOMNodeList::class);
