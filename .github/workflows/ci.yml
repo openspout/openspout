@@ -32,7 +32,7 @@ jobs:
 
       - run: "composer validate --strict"
       - run: "composer-normalize --dry-run"
-      - run: "composer-require-checker check --config-file=$(realpath composer-require-checker.json)"
+      - run: "composer-require-checker check --config-file=$(realpath .require-checker-config.json)"
       - run: "composer-unused"
 
   tests:
@@ -43,8 +43,7 @@ jobs:
         os:
           - "ubuntu-latest"
         php-version:
-          - "8.0"
-          - "8.2"
+          - "8.1"
         code-coverage:
           - "none"
         include:
@@ -52,7 +51,7 @@ jobs:
               php-version: "8.1"
               code-coverage: "none"
             - os: "ubuntu-latest"
-              php-version: "8.1"
+              php-version: "8.2"
               code-coverage: "pcov"
 
     steps:
