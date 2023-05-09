@@ -94,7 +94,6 @@ final class SharedStringsManagerTest extends TestCase
     {
         // force the file-based strategy by setting no memory limit
         $originalMemoryLimit = \ini_get('memory_limit');
-        self::assertNotFalse($originalMemoryLimit);
         ini_set('memory_limit', '-1');
 
         $sharedStringsManager = $this->createSharedStringsManager('sheet_with_lots_of_shared_strings.xlsx');
