@@ -31,7 +31,7 @@ final class XMLReader extends \XMLReader
         // We need to check first that the file we are trying to read really exist because:
         //  - PHP emits a warning when trying to open a file that does not exist.
         if ($this->fileExistsWithinZip($realPathURI)) {
-            $wasOpenSuccessful = $this->open($realPathURI, null, LIBXML_NONET);
+            $wasOpenSuccessful = $this->open($realPathURI, null, LIBXML_NONET | LIBXML_COMPACT | LIBXML_PARSEHUGE);
         }
 
         return $wasOpenSuccessful;
