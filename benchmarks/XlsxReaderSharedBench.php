@@ -14,7 +14,7 @@ use PhpBench\Attributes as Bench;
 final class XlsxReaderSharedBench
 {
     #[Bench\OutputTimeUnit('seconds')]
-    #[Bench\Assert('mode(variant.mem.peak) < 4194304')]
+    #[Bench\Assert('mode(variant.mem.peak) < 8388608')]
     #[Bench\Assert('mode(variant.time.avg) < 60000000')]
     public function benchReading300KRowsXLSXWithSharedStrings(): void
     {

@@ -38,8 +38,6 @@ final class Reader extends AbstractReader
 
         if (null === $cachingStrategyFactory) {
             $memoryLimit = \ini_get('memory_limit');
-            \assert(false !== $memoryLimit);
-
             $cachingStrategyFactory = new CachingStrategyFactory(new MemoryLimit($memoryLimit));
         }
         $this->cachingStrategyFactory = $cachingStrategyFactory;
