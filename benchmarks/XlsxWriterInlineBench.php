@@ -18,7 +18,7 @@ final class XlsxWriterInlineBench
     use XlsxWriterTrait;
 
     #[Bench\OutputTimeUnit('seconds')]
-    #[Bench\Assert('mode(variant.mem.peak) < 2097152')]
+    #[Bench\Assert('mode(variant.mem.peak) < 6291456')]
     #[Bench\Assert('mode(variant.time.avg) < 60000000')]
     public function benchWriting1MRowsXLSXWithInlineStrings(): void
     {

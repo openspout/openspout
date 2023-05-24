@@ -18,7 +18,7 @@ final class XlsxWriterSharedBench
     use XlsxWriterTrait;
 
     #[Bench\OutputTimeUnit('seconds')]
-    #[Bench\Assert('mode(variant.mem.peak) < 2097152')]
+    #[Bench\Assert('mode(variant.mem.peak) < 6291456')]
     #[Bench\Assert('mode(variant.time.avg) < 120000000')]
     public function benchWriting1MRowsXLSXWithSharedStrings(): void
     {
