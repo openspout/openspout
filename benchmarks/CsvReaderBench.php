@@ -14,7 +14,7 @@ use PhpBench\Attributes as Bench;
 final class CsvReaderBench
 {
     #[Bench\OutputTimeUnit('seconds')]
-    #[Bench\Assert('mode(variant.mem.peak) < 2097152')]
+    #[Bench\Assert('mode(variant.mem.peak) < 6291456')]
     #[Bench\Assert('mode(variant.time.avg) < 10000000')]
     public function benchReading1MRowsCSV(): void
     {

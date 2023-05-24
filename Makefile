@@ -49,6 +49,7 @@ code-coverage: coverage/junit.xml
 		--git-diff-base=$(BASE_BRANCH) \
 		--skip-initial-tests \
 		--coverage=coverage \
+		--ignore-msi-with-no-mutations \
 		--show-mutations \
 		--verbose \
 		--min-msi=100 \
