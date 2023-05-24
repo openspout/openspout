@@ -50,6 +50,8 @@ abstract class AbstractWriter implements WriterInterface
 
     /**
      * @codeCoverageIgnore
+     *
+     * @param mixed $outputFileName
      */
     final public function openToBrowser($outputFileName): void
     {
