@@ -116,6 +116,37 @@ final class WriterTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
+    public function dataProviderForTestSetCreator(): array
+    {
+        return [
+            ['Test creator', 'Test creator'],
+            [null, 'OpenSpout'],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderForTestSetCreator
+     */
+    public function testSetCreator(?string $expected, string $actual): void
+    {
+        $fileName = 'test_set_creator.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        if (\is_string($expected)) {
+            $writer->setCreator($expected);
+        }
+        $writer->openToFile($resourcePath);
+        $writer->close();
+
+        $pathToWorkbookFile = $resourcePath.'#docProps/app.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString("<Application>{$actual}</Application>", $xmlContents);
+    }
+
     public function testAddRowShouldWriteGivenDataToSheetUsingInlineStrings(): void
     {
         $fileName = 'test_add_row_should_write_given_data_to_sheet_using_inline_strings.xlsx';
