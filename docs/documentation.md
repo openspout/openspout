@@ -56,6 +56,18 @@ $options->SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY = false; // will stop writing n
 $writer = new Writer($options);
 ```
 
+### Setting custom document creator
+
+It is possible to change default document creator.
+The default creator is OpenSpout
+
+```php
+use OpenSpout\Writer\ODS\Options;
+
+$writer = new Writer();
+$writer->setCreator('Custom creator');
+```
+
 ### Sheet view (XLSX writer)
 
 Sheet view settings must be configured before any rows are added to the sheet.
