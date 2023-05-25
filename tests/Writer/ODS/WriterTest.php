@@ -113,6 +113,37 @@ final class WriterTest extends TestCase
         $writer->setCurrentSheet($dummySheet);
     }
 
+    public function dataProviderForTestSetCreator(): array
+    {
+        return [
+            ['Test creator', 'Test creator'],
+            [null, 'OpenSpout'],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderForTestSetCreator
+     */
+    public function testSetCreator(?string $expected, string $actual): void
+    {
+        $fileName = 'test_set_creator.ods';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        if (\is_string($expected)) {
+            $writer->setCreator($expected);
+        }
+        $writer->openToFile($resourcePath);
+        $writer->close();
+
+        $pathToWorkbookFile = $resourcePath.'#meta.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString("<dc:creator>{$actual}</dc:creator>", $xmlContents);
+    }
+
     public function testCloseShouldNoopWhenWriterIsNotOpened(): void
     {
         $fileName = 'test_double_close_calls.ods';
