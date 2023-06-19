@@ -113,7 +113,7 @@ final class WriterTest extends TestCase
         $writer->setCurrentSheet($dummySheet);
     }
 
-    public function dataProviderForTestSetCreator(): array
+    public static function dataProviderForTestSetCreator(): array
     {
         return [
             ['Test creator', 'Test creator'],
