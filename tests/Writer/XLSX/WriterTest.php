@@ -116,7 +116,7 @@ final class WriterTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
-    public function dataProviderForTestSetCreator(): array
+    public static function dataProviderForTestSetCreator(): array
     {
         return [
             ['Test creator', 'Test creator'],
