@@ -19,6 +19,9 @@ class SpoutTestStream
     /** @var resource */
     private $fileHandle;
 
+    /** @var null|resource */
+    public $context;
+
     /**
      * @param string $path
      * @param int    $flag

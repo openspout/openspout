@@ -260,12 +260,23 @@ class CellValueFormatter
         $baseDate = $this->shouldUse1904Dates ? '1904-01-01' : '1899-12-30';
 
         $daysSinceBaseDate = (int) $nodeValue;
+        $daysSign = '+';
+        if ($daysSinceBaseDate < 0) {
+            $daysSinceBaseDate = abs($daysSinceBaseDate);
+            $daysSign = '-';
+        }
+
         $timeRemainder = fmod($nodeValue, 1);
         $secondsRemainder = round($timeRemainder * self::NUM_SECONDS_IN_ONE_DAY, 0);
+        $secondsSign = '+';
+        if ($secondsRemainder < 0) {
+            $secondsRemainder = abs($secondsRemainder);
+            $secondsSign = '-';
+        }
 
         $dateObj = \DateTime::createFromFormat('|Y-m-d', $baseDate);
-        $dateObj->modify('+'.$daysSinceBaseDate.'days');
-        $dateObj->modify('+'.$secondsRemainder.'seconds');
+        $dateObj = $dateObj->modify($daysSign.$daysSinceBaseDate.'days');
+        $dateObj = $dateObj->modify($secondsSign.$secondsRemainder.'seconds');
 
         if ($this->shouldFormatDates) {
             $styleNumberFormatCode = $this->styleManager->getNumberFormatCode($cellStyleId);
