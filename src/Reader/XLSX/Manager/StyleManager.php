@@ -297,7 +297,7 @@ class StyleManager implements StyleManagerInterface
         \assert(null !== $formatCode);
 
         // Remove strings in double quotes, as they won't be interpreted as date format characters
-        $formatCode = preg_replace('/"[^"]+"/','', $formatCode);
+        $formatCode = preg_replace('/"[^"]+"/', '', $formatCode);
         \assert(null !== $formatCode);
 
         // custom date formats contain specific characters to represent the date:
