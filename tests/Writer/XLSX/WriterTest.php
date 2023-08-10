@@ -116,6 +116,9 @@ final class WriterTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
+    /**
+     * @return array{0: ?string, 1: string}[]
+     */
     public static function provideSetCreatorCases(): iterable
     {
         return [

@@ -113,6 +113,9 @@ final class WriterTest extends TestCase
         $writer->setCurrentSheet($dummySheet);
     }
 
+    /**
+     * @return array{0: ?string, 1: string}[]
+     */
     public static function provideSetCreatorCases(): iterable
     {
         return [
