@@ -111,6 +111,7 @@ final class StyleManagerTest extends TestCase
             ['GENERAL', false],
             ['\ma\yb\e', false],
             ['[Red]foo;', false],
+            ['foo "mm/dd/yy"', false],
         ];
     }
 

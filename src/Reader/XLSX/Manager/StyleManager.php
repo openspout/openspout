@@ -296,6 +296,10 @@ class StyleManager implements StyleManagerInterface
         $formatCode = preg_replace($pattern, '', $formatCode);
         \assert(null !== $formatCode);
 
+        // Remove strings in double quotes, as they won't be interpreted as date format characters
+        $formatCode = preg_replace('/"[^"]+"/', '', $formatCode);
+        \assert(null !== $formatCode);
+
         // custom date formats contain specific characters to represent the date:
         // e - yy - m - d - h - s
         // and all of their variants (yyyy - mm - dd...)
