@@ -57,7 +57,7 @@ abstract class Cell
             return new DateIntervalCell($value, $style);
         }
         if (isset($value[0]) && '=' === $value[0]) {
-            return new FormulaCell($value, $style);
+            return new FormulaCell($value, $style, null);
         }
 
         return new StringCell($value, $style);

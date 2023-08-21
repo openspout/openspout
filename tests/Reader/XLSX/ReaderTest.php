@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace OpenSpout\Reader\XLSX;
 
 use DateTimeImmutable;
+use OpenSpout\Common\Entity\Cell\FormulaCell;
+use OpenSpout\Common\Entity\Cell\NumericCell;
+use OpenSpout\Common\Entity\Cell\StringCell;
+use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\MemoryLimit;
@@ -494,14 +498,41 @@ final class ReaderTest extends TestCase
 
     public function testReadShouldSkipFormulas(): void
     {
-        $allRows = $this->getAllRowsForFile('sheet_with_formulas.xlsx');
+        $resourcePath = TestUsingResource::getResourcePath('sheet_with_formulas.xlsx');
+
+        $allRows = [];
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $reader = new Reader($options);
+        $reader->open($resourcePath);
+        foreach ($reader->getSheetIterator() as $sheet) {
+            foreach ($sheet->getRowIterator() as $row) {
+                $allRows[] = $row;
+            }
+        }
+        $reader->close();
 
         $expectedRows = [
-            ['val1', 'val2', 'total1', 'total2'],
-            [10, 20, '=A2+B2', '=SUM(A:A)'],
-            [11, 21, '=A3+B3', '=SUM(B:B)'],
+            new Row([
+                new StringCell('val1', null),
+                new StringCell('val2', null),
+                new StringCell('total1', null),
+                new StringCell('total2', null),
+            ]),
+            new Row([
+                new NumericCell(10, null),
+                new NumericCell(20, null),
+                new FormulaCell('=A2+B2', null, '30'),
+                new FormulaCell('=SUM(A:A)', null, '21'),
+            ]),
+            new Row([
+                new NumericCell(11, null),
+                new NumericCell(21, null),
+                new FormulaCell('=A3+B3', null, '32'),
+                new FormulaCell('=SUM(B:B)', null, '41'),
+            ]),
         ];
-        self::assertSame($expectedRows, $allRows);
+        self::assertEquals($expectedRows, $allRows);
     }
 
     public function testReadMultipleTimesShouldRewindReader(): void

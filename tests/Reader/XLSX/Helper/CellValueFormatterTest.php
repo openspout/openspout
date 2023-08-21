@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace OpenSpout\Reader\XLSX\Helper;
 
-use DateTimeImmutable;
 use DOMElement;
 use DOMNodeList;
+use OpenSpout\Common\Entity\Cell\DateTimeCell;
 use OpenSpout\Common\Helper\Escaper;
 use OpenSpout\Reader\Exception\InvalidValueException;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory;
@@ -131,8 +131,8 @@ final class CellValueFormatterTest extends TestCase
             if (null === $expectedDateAsString) {
                 self::fail('An exception should have been thrown');
             } else {
-                self::assertInstanceOf(DateTimeImmutable::class, $result);
-                self::assertSame($expectedDateAsString, $result->format('Y-m-d H:i:s'));
+                self::assertInstanceOf(DateTimeCell::class, $result);
+                self::assertSame($expectedDateAsString, $result->getValue()->format('Y-m-d H:i:s'));
             }
         } catch (InvalidValueException $exception) {
             // do nothing
@@ -162,12 +162,8 @@ final class CellValueFormatterTest extends TestCase
         ];
     }
 
-    /**
-     * @param float|int|string $value
-     * @param float|int        $expectedFormattedValue
-     */
     #[DataProvider('dataProviderForTestFormatNumericCellValueWithNumbers')]
-    public function testFormatNumericCellValueWithNumbers($value, $expectedFormattedValue, string $expectedType): void
+    public function testFormatNumericCellValueWithNumbers(float|int|string $value, float|int $expectedFormattedValue, string $expectedType): void
     {
         $styleManagerMock = $this->createMock(StyleManagerInterface::class);
         $styleManagerMock
