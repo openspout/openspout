@@ -63,11 +63,8 @@ final class CellValueFormatterTest extends TestCase
         ];
     }
 
-    /**
-     * @param float|int|string $nodeValue
-     */
     #[DataProvider('dataProviderForTestExcelDate')]
-    public function testExcelDate(bool $shouldUse1904Dates, $nodeValue, ?string $expectedDateAsString): void
+    public function testExcelDate(bool $shouldUse1904Dates, float|int|string $nodeValue, ?string $expectedDateAsString): void
     {
         $nodeListMock = $this->createMock(DOMNodeList::class);
 
@@ -89,11 +86,21 @@ final class CellValueFormatterTest extends TestCase
             ])
         ;
 
+        $formulaMock = $this->createMock(DOMNodeList::class);
+        $formulaMock
+            ->expects(self::atLeastOnce())
+            ->method('item')
+            ->with(0)
+            ->willReturn(null)
+        ;
+
         $nodeMock
             ->expects(self::atLeastOnce())
             ->method('getElementsByTagName')
-            ->with(CellValueFormatter::XML_NODE_VALUE)
-            ->willReturn($nodeListMock)
+            ->willReturnMap([
+                [CellValueFormatter::XML_NODE_FORMULA, $formulaMock],
+                [CellValueFormatter::XML_NODE_VALUE, $nodeListMock],
+            ])
         ;
 
         $styleManagerMock = $this->createMock(StyleManagerInterface::class);

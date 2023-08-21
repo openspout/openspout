@@ -498,8 +498,8 @@ final class ReaderTest extends TestCase
 
         $expectedRows = [
             ['val1', 'val2', 'total1', 'total2'],
-            [10, 20, 30, 21],
-            [11, 21, 32, 41],
+            [10, 20, '=A2+B2', '=SUM(A:A)'],
+            [11, 21, '=A3+B3', '=SUM(B:B)'],
         ];
         self::assertSame($expectedRows, $allRows);
     }
@@ -698,8 +698,8 @@ final class ReaderTest extends TestCase
         $reader = new Reader($options, $cachingStrategyFactory);
         $reader->open($resourcePath);
 
-        foreach ($reader->getSheetIterator() as $sheetIndex => $sheet) {
-            foreach ($sheet->getRowIterator() as $rowIndex => $row) {
+        foreach ($reader->getSheetIterator() as $sheet) {
+            foreach ($sheet->getRowIterator() as $row) {
                 $allRows[] = $row->toArray();
             }
         }

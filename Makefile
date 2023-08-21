@@ -23,24 +23,22 @@ csfix: vendor
 static-analysis: vendor
 	php -d zend.assertions=1 vendor/bin/phpstan analyse $(PHPSTAN_ARGS)
 
-coverage/junit.xml: vendor $(SRCS) Makefile phpunit.xml
+coverage/ok: vendor $(SRCS) Makefile phpunit.xml
 	chmod -fR u+rwX tests/resources/generated_* || true
 	rm -fr tests/resources/generated_*
-	php \
+	(php \
 		-d zend.assertions=1 \
 		-d open_basedir="$(realpath .)" \
 		-d sys_temp_dir="$(realpath .)" \
 		vendor/bin/phpunit \
-		--coverage-xml=coverage/coverage-xml \
-		--coverage-html=coverage/html \
-		--log-junit=coverage/junit.xml \
-		$(PHPUNIT_ARGS)
+		$(PHPUNIT_ARGS) \
+		&& touch $@)
 
 .PHONY: test
-test: coverage/junit.xml
+test: coverage/ok
 
 .PHONY: code-coverage
-code-coverage: coverage/junit.xml
+code-coverage: coverage/ok
 	echo "Base branch: $(BASE_BRANCH)"
 	php -d zend.assertions=1 \
 		vendor/bin/infection \

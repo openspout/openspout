@@ -33,6 +33,7 @@ final class CellValueFormatter
      */
     public const XML_NODE_VALUE = 'v';
     public const XML_NODE_INLINE_STRING_VALUE = 't';
+    public const XML_NODE_FORMULA = 'f';
 
     /**
      * Definition of XML attributes used to parse data.
@@ -91,11 +92,21 @@ final class CellValueFormatter
     public function extractAndFormatNodeValue(DOMElement $node): bool|DateTimeImmutable|float|int|string
     {
         // Default cell type is "n"
-        $cellType = $node->getAttribute(self::XML_ATTRIBUTE_TYPE) ?: self::CELL_TYPE_NUMERIC;
-        $cellStyleId = (int) $node->getAttribute(self::XML_ATTRIBUTE_STYLE_ID);
+        $cellType = $node->getAttribute(self::XML_ATTRIBUTE_TYPE);
+        if ('' === $cellType) {
+            $cellType = self::CELL_TYPE_NUMERIC;
+        }
+
+        if (self::CELL_TYPE_NUMERIC === $cellType) {
+            $fNodeValue = $node->getElementsByTagName(self::XML_NODE_FORMULA)->item(0)?->nodeValue;
+            if (null !== $fNodeValue) {
+                return '='.$fNodeValue;
+            }
+        }
+
         $vNodeValue = $this->getVNodeValue($node);
 
-        if (('' === $vNodeValue) && (self::CELL_TYPE_INLINE_STRING !== $cellType)) {
+        if ('' === $vNodeValue && self::CELL_TYPE_INLINE_STRING !== $cellType) {
             return $vNodeValue;
         }
 
@@ -104,7 +115,7 @@ final class CellValueFormatter
             self::CELL_TYPE_SHARED_STRING => $this->formatSharedStringCellValue($vNodeValue),
             self::CELL_TYPE_STR => $this->formatStrCellValue($vNodeValue),
             self::CELL_TYPE_BOOLEAN => $this->formatBooleanCellValue($vNodeValue),
-            self::CELL_TYPE_NUMERIC => $this->formatNumericCellValue($vNodeValue, $cellStyleId),
+            self::CELL_TYPE_NUMERIC => $this->formatNumericCellValue($vNodeValue, (int) $node->getAttribute(self::XML_ATTRIBUTE_STYLE_ID)),
             self::CELL_TYPE_DATE => $this->formatDateCellValue($vNodeValue),
             default => throw new InvalidValueException($vNodeValue),
         };
