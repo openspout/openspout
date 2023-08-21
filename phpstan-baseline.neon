@@ -66,11 +66,6 @@ parameters:
 			path: src/Reader/Wrapper/XMLReader.php
 
 		-
-			message: "#^Short ternary operator is not allowed\\. Use null coalesce operator if applicable or consider using long ternary\\.$#"
-			count: 1
-			path: src/Reader/XLSX/Helper/CellValueFormatter.php
-
-		-
 			message: "#^Access to an undefined property OpenSpout\\\\Reader\\\\Wrapper\\\\XMLReader\\:\\:\\$nodeType\\.$#"
 			count: 1
 			path: src/Reader/XLSX/Manager/SharedStringsManager.php

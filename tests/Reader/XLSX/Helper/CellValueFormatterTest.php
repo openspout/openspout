@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace OpenSpout\Reader\XLSX\Helper;
 
-use DateTimeImmutable;
 use DOMElement;
 use DOMNodeList;
+use OpenSpout\Common\Entity\Cell\DateTimeCell;
 use OpenSpout\Common\Helper\Escaper;
 use OpenSpout\Reader\Exception\InvalidValueException;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory;
@@ -63,11 +63,8 @@ final class CellValueFormatterTest extends TestCase
         ];
     }
 
-    /**
-     * @param float|int|string $nodeValue
-     */
     #[DataProvider('dataProviderForTestExcelDate')]
-    public function testExcelDate(bool $shouldUse1904Dates, $nodeValue, ?string $expectedDateAsString): void
+    public function testExcelDate(bool $shouldUse1904Dates, float|int|string $nodeValue, ?string $expectedDateAsString): void
     {
         $nodeListMock = $this->createMock(DOMNodeList::class);
 
@@ -89,11 +86,21 @@ final class CellValueFormatterTest extends TestCase
             ])
         ;
 
+        $formulaMock = $this->createMock(DOMNodeList::class);
+        $formulaMock
+            ->expects(self::atLeastOnce())
+            ->method('item')
+            ->with(0)
+            ->willReturn(null)
+        ;
+
         $nodeMock
             ->expects(self::atLeastOnce())
             ->method('getElementsByTagName')
-            ->with(CellValueFormatter::XML_NODE_VALUE)
-            ->willReturn($nodeListMock)
+            ->willReturnMap([
+                [CellValueFormatter::XML_NODE_FORMULA, $formulaMock],
+                [CellValueFormatter::XML_NODE_VALUE, $nodeListMock],
+            ])
         ;
 
         $styleManagerMock = $this->createMock(StyleManagerInterface::class);
@@ -124,8 +131,8 @@ final class CellValueFormatterTest extends TestCase
             if (null === $expectedDateAsString) {
                 self::fail('An exception should have been thrown');
             } else {
-                self::assertInstanceOf(DateTimeImmutable::class, $result);
-                self::assertSame($expectedDateAsString, $result->format('Y-m-d H:i:s'));
+                self::assertInstanceOf(DateTimeCell::class, $result);
+                self::assertSame($expectedDateAsString, $result->getValue()->format('Y-m-d H:i:s'));
             }
         } catch (InvalidValueException $exception) {
             // do nothing
@@ -155,12 +162,8 @@ final class CellValueFormatterTest extends TestCase
         ];
     }
 
-    /**
-     * @param float|int|string $value
-     * @param float|int        $expectedFormattedValue
-     */
     #[DataProvider('dataProviderForTestFormatNumericCellValueWithNumbers')]
-    public function testFormatNumericCellValueWithNumbers($value, $expectedFormattedValue, string $expectedType): void
+    public function testFormatNumericCellValueWithNumbers(float|int|string $value, float|int $expectedFormattedValue, string $expectedType): void
     {
         $styleManagerMock = $this->createMock(StyleManagerInterface::class);
         $styleManagerMock

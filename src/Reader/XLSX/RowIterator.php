@@ -10,7 +10,6 @@ use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Reader\Common\Manager\RowManager;
 use OpenSpout\Reader\Common\XMLProcessor;
-use OpenSpout\Reader\Exception\InvalidValueException;
 use OpenSpout\Reader\RowIteratorInterface;
 use OpenSpout\Reader\Wrapper\XMLReader;
 use OpenSpout\Reader\XLSX\Helper\CellHelper;
@@ -317,9 +316,9 @@ final class RowIterator implements RowIteratorInterface
         $currentColumnIndex = $this->getColumnIndex($xmlReader);
 
         // NOTE: expand() will automatically decode all XML entities of the child nodes
-        /** @var DOMElement $node */
         $node = $xmlReader->expand();
-        $cell = $this->getCell($node);
+        \assert($node instanceof DOMElement);
+        $cell = $this->cellValueFormatter->extractAndFormatNodeValue($node);
 
         $this->currentlyProcessedRow->setCellAtIndex($cell, $currentColumnIndex);
         $this->lastColumnIndexProcessed = $currentColumnIndex;
@@ -393,22 +392,5 @@ final class RowIterator implements RowIteratorInterface
         return (null !== $currentCellIndex) ?
                 CellHelper::getColumnIndexFromCellIndex($currentCellIndex) :
                 $this->lastColumnIndexProcessed + 1;
-    }
-
-    /**
-     * Returns the cell with (unescaped) correctly marshalled, cell value associated to the given XML node.
-     *
-     * @return Cell The cell set with the associated with the cell
-     */
-    private function getCell(DOMElement $node): Cell
-    {
-        try {
-            $cellValue = $this->cellValueFormatter->extractAndFormatNodeValue($node);
-            $cell = Cell::fromValue($cellValue);
-        } catch (InvalidValueException $exception) {
-            $cell = new Cell\ErrorCell($exception->getInvalidValue(), null);
-        }
-
-        return $cell;
     }
 }
