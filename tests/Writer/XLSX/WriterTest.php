@@ -868,6 +868,35 @@ final class WriterTest extends TestCase
         self::assertStringNotContainsString('<b/>', $xmlContents, '');
     }
 
+    public function testAddPageSetup(): void
+    {
+        $fileName = 'test_page_setup.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+
+        $options->setPageOrientation('landscape');
+        $options->setPaperSize('A4');
+        $options->setPageMargins(0.75, 0.7, 0.75, 0.7, 0.3, 0.3);
+
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+
+        $row = new Row([Cell::fromValue('something'), Cell::fromValue('else')]);
+        $writer->addRow($row);
+        $writer->close();
+
+        // Now test if the resources contain what we need
+        $pathToSheetFile = $resourcePath.'#xl/worksheets/sheet1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString('<pageMargins top="0.75" right="0.7" bottom="0.75" left="0.7" header="0.3" footer="0.3"/>', $xmlContents, '');
+        self::assertStringContainsString('<pageSetup orientation="landscape" paperSize="9" />', $xmlContents, '');
+
+
+    }
+
     /**
      * @param Row[] $allRows
      */

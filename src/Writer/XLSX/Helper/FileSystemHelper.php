@@ -424,7 +424,9 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
      */
     public function getXMLFragmentForPageMargins(Options $options): string
     {
-        if ($pageMargins = $options->getPageMargins()) {
+        $pageMargins = $options->getPageMargins();
+
+        if ((bool) $pageMargins) {
             return "<pageMargins top=\"{$pageMargins['top']}\" right=\"{$pageMargins['right']}\" bottom=\"{$pageMargins['bottom']}\" left=\"{$pageMargins['left']}\" header=\"{$pageMargins['header']}\" footer=\"{$pageMargins['footer']}\"/>";
         }
 
@@ -433,7 +435,9 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 
     public function getXMLFragmentForPageSetup(Options $options): string
     {
-        if ($pageSetup = $options->getPageSetup()) {
+        $pageSetup = $options->getPageSetup();
+
+        if ((bool) $pageSetup) {
             $xml = '<pageSetup';
             foreach ($pageSetup as $key => $value) {
                 $xml .= " {$key}=\"{$value}\"";

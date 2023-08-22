@@ -17,8 +17,10 @@ final class Options extends AbstractOptions
     /** @var MergeCell[] */
     private array $MERGE_CELLS = [];
 
+    /** @var array<string, mixed>*/
     private array $pageMargins = [];
 
+    /** @var array<string, mixed> */
     private array $pageSetup = [];
 
     public function __construct()
@@ -71,12 +73,12 @@ final class Options extends AbstractOptions
     /**
      * set Worksheets page margins.
      *
-     * @param float inches $top
-     * @param float inches $right
-     * @param float inches $bottom
-     * @param float inches $left
-     * @param float inches $header
-     * @param float inches $footer
+     * @param float $top inches
+     * @param float $right inches
+     * @param float $bottom inches
+     * @param float $left inches
+     * @param float $header inches
+     * @param float $footer inches
      */
     public function setPageMargins(
         float $top = 0.75,
@@ -97,7 +99,7 @@ final class Options extends AbstractOptions
     }
 
     /**
-     * @return $pageMargin
+     * @return array<string, mixed>
      */
     public function getPageMargins(): array
     {
@@ -105,7 +107,7 @@ final class Options extends AbstractOptions
     }
 
     /**
-     * @param string portrait|landscape $orientation
+     * @param string $orientation portrait|landscape
      */
     public function setPageOrientation(string $orientation): void
     {
@@ -153,13 +155,14 @@ final class Options extends AbstractOptions
             'US standard fanfold' => 39,
             'German standard fanfold' => 40,
             'German legal fanfold' => 41,
+            default => throw new \UnhandledMatchError("paperSize: {$size} doesn't exists."),
         };
 
         $this->pageSetup['paperSize'] = $paperSize;
     }
 
     /**
-     * @return $pageSetup
+     * @return array<string, mixed>
      */
     public function getPageSetup(): array
     {
