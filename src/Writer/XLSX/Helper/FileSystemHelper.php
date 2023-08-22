@@ -366,11 +366,11 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
                 fwrite($worksheetFilePointer, $mergeCellString);
             }
 
-            if ($options->getPageMargins()) {
+            if ((bool) $options->getPageMargins()) {
                 fwrite($worksheetFilePointer, $this->getXMLFragmentForPageMargins($options));
             }
 
-            if ($options->getPageSetup()) {
+            if ((bool) $options->getPageSetup()) {
                 fwrite($worksheetFilePointer, $this->getXMLFragmentForPageSetup($options));
             }
 
@@ -420,6 +420,32 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     }
 
     /**
+     * Construct worksheet's page margins.
+     */
+    public function getXMLFragmentForPageMargins(Options $options): string
+    {
+        if ($pageMargins = $options->getPageMargins()) {
+            return "<pageMargins top=\"{$pageMargins['top']}\" right=\"{$pageMargins['right']}\" bottom=\"{$pageMargins['bottom']}\" left=\"{$pageMargins['left']}\" header=\"{$pageMargins['header']}\" footer=\"{$pageMargins['footer']}\"/>";
+        }
+
+        return '';
+    }
+
+    public function getXMLFragmentForPageSetup(Options $options): string
+    {
+        if ($pageSetup = $options->getPageSetup()) {
+            $xml = '<pageSetup';
+            foreach ($pageSetup as $key => $value) {
+                $xml .= " {$key}=\"{$value}\"";
+            }
+
+            return $xml.' />';
+        }
+
+        return '';
+    }
+
+    /**
      * Construct column width references xml to inject into worksheet xml file.
      */
     private function getXMLFragmentForColumnWidths(Options $options, Sheet $sheet): string
@@ -456,33 +482,6 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
         $rowHeightXml = '' === $rowHeightXml ? ' defaultRowHeight="0"' : $rowHeightXml;
 
         return "<sheetFormatPr{$colWidthXml}{$rowHeightXml}/>";
-    }
-
-    /**
-     * Construct worksheet's page margins
-     */
-    public function getXMLFragmentForPageMargins(Options $options): string
-    {
-        if ($pageMargins = $options->getPageMargins()) {
-            return "<pageMargins top=\"{$pageMargins['top']}\" right=\"{$pageMargins['right']}\" bottom=\"{$pageMargins['bottom']}\" left=\"{$pageMargins['left']}\" header=\"{$pageMargins['header']}\" footer=\"{$pageMargins['footer']}\"/>";
-        }
-
-        return '';
-    }
-
-    public function getXMLFragmentForPageSetup(Options $options): string
-    {
-        if ($pageSetup = $options->getPageSetup()) {
-
-            $xml = "<pageSetup";
-            foreach ($pageSetup as $key => $value) {
-                $xml .= " {$key}=\"{$value}\"";
-            }
-
-            return $xml . " />";
-        }
-
-        return '';
     }
 
     /**
