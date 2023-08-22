@@ -226,6 +226,51 @@ $options->mergeCells(0, 1, 0, 2, $writer->getCurrentSheet()->getIndex());
 $writer->close();
 ```
 
+## Row Grouping/Outline
+
+Rows can be grouped with the XLSX writers:
+
+```php
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
+use OpenSpout\Writer\XLSX\Options;
+use OpenSpout\Writer\XLSX\RowAttributes;
+
+$options = new Options();
+
+// Required or the generated file will be corrupted
+// Looks like empty rows/cell cannot have `defaultRowHeight` equal to 0
+// which will be added when the setting is not set.
+$options->DEFAULT_ROW_HEIGHT = 15;
+
+$writer = new Writer($options);
+$writer->openToFile('/tmp/file.xlsx');
+
+$levelOne = new RowAttributes(1);
+$levelTwo = new RowAttributes(2);
+$rowA     = Row::fromValues([1, 1, 1]);
+$rowB     = Row::fromValues([2, 2, 2]);
+$rowC     = Row::fromValues([3, 3, 3]);
+$rowD     = Row::fromValues([4, 4, 4]);
+$rowE     = Row::fromValues();
+$rowF     = Row::fromValues();
+
+$options->setRowAttributes($rowA, $levelOne);
+$options->setRowAttributes($rowB, $levelOne);
+$options->setRowAttributes($rowC, $levelTwo);
+$options->setRowAttributes($rowD, $levelTwo);
+$options->setRowAttributes($rowE, $levelOne);
+
+$writer->addRow($rowA);
+$writer->addRow($rowB);
+$writer->addRow($rowC);
+$writer->addRow($rowD);
+$writer->addRow($rowE);
+$writer->addRow($rowF);
+
+$writer->close();
+```
+
 ## Styling
 
 ### Available styles
