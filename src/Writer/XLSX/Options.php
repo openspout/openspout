@@ -6,6 +6,7 @@ namespace OpenSpout\Writer\XLSX;
 
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Writer\Common\AbstractOptions;
+use UnhandledMatchError;
 
 final class Options extends AbstractOptions
 {
@@ -17,7 +18,7 @@ final class Options extends AbstractOptions
     /** @var MergeCell[] */
     private array $MERGE_CELLS = [];
 
-    /** @var array<string, mixed>*/
+    /** @var array<string, mixed> */
     private array $pageMargins = [];
 
     /** @var array<string, mixed> */
@@ -73,10 +74,10 @@ final class Options extends AbstractOptions
     /**
      * set Worksheets page margins.
      *
-     * @param float $top inches
-     * @param float $right inches
+     * @param float $top    inches
+     * @param float $right  inches
      * @param float $bottom inches
-     * @param float $left inches
+     * @param float $left   inches
      * @param float $header inches
      * @param float $footer inches
      */
@@ -155,7 +156,7 @@ final class Options extends AbstractOptions
             'US standard fanfold' => 39,
             'German standard fanfold' => 40,
             'German legal fanfold' => 41,
-            default => throw new \UnhandledMatchError("paperSize: {$size} doesn't exists."),
+            default => throw new UnhandledMatchError("paperSize: {$size} doesn't exists."),
         };
 
         $this->pageSetup['paperSize'] = $paperSize;

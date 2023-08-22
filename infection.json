@@ -16,6 +16,11 @@
         "@number": false,
         "global-ignoreSourceCodeByRegex": [
             "\\\\assert\\(.+\\);"
-        ]
+        ],
+        "MatchArmRemoval": {
+            "ignore": [
+                "OpenSpout\\Writer\\XLSX\\Options::setPaperSize"
+            ]
+        }
     }
 }

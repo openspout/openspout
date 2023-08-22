@@ -893,8 +893,6 @@ final class WriterTest extends TestCase
         self::assertNotFalse($xmlContents);
         self::assertStringContainsString('<pageMargins top="0.75" right="0.7" bottom="0.75" left="0.7" header="0.3" footer="0.3"/>', $xmlContents, '');
         self::assertStringContainsString('<pageSetup orientation="landscape" paperSize="9" />', $xmlContents, '');
-
-
     }
 
     /**

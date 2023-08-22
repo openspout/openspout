@@ -366,11 +366,13 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
                 fwrite($worksheetFilePointer, $mergeCellString);
             }
 
-            if ((bool) $options->getPageMargins()) {
+            $hasPageMargins = (bool) $options->getPageMargins();
+            if ($hasPageMargins) {
                 fwrite($worksheetFilePointer, $this->getXMLFragmentForPageMargins($options));
             }
 
-            if ((bool) $options->getPageSetup()) {
+            $hasPageSetup = (bool) $options->getPageSetup();
+            if ($hasPageSetup) {
                 fwrite($worksheetFilePointer, $this->getXMLFragmentForPageSetup($options));
             }
 
@@ -422,22 +424,24 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     /**
      * Construct worksheet's page margins.
      */
-    public function getXMLFragmentForPageMargins(Options $options): string
+    private function getXMLFragmentForPageMargins(Options $options): string
     {
         $pageMargins = $options->getPageMargins();
+        $hasPageMargins = (bool) $pageMargins;
 
-        if ((bool) $pageMargins) {
+        if ($hasPageMargins) {
             return "<pageMargins top=\"{$pageMargins['top']}\" right=\"{$pageMargins['right']}\" bottom=\"{$pageMargins['bottom']}\" left=\"{$pageMargins['left']}\" header=\"{$pageMargins['header']}\" footer=\"{$pageMargins['footer']}\"/>";
         }
 
         return '';
     }
 
-    public function getXMLFragmentForPageSetup(Options $options): string
+    private function getXMLFragmentForPageSetup(Options $options): string
     {
         $pageSetup = $options->getPageSetup();
+        $hasPageSetup = (bool) $pageSetup;
 
-        if ((bool) $pageSetup) {
+        if ($hasPageSetup) {
             $xml = '<pageSetup';
             foreach ($pageSetup as $key => $value) {
                 $xml .= " {$key}=\"{$value}\"";
