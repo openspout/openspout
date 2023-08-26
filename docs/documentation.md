@@ -228,14 +228,17 @@ $writer->close();
 
 ## Page setup
 ```php
-use  OpenSpout\Writer\XLSX\Writer;
-use  OpenSpout\Writer\XLSX\Options;
+use OpenSpout\Writer\XLSX\Writer;
+use OpenSpout\Writer\XLSX\Options;
+use OpenSpout\Writer\XLSX\Options\EnumPageOrientation;
+use OpenSpout\Writer\XLSX\Options\EnumPaperSize;
 
 $options = new Options();
-$options->setPageOrientation('landscape'); //portrait|landscape
-$options->setPaperSize('A4'); //A4|Letter|Legal|etc...
+$options->setPageOrientation(EnumPageOrientation::LANDSCAPE);
+$options->setPaperSize(EnumPaperSize::A4);
+
 //set margin in inches: top, right, bottom, left, header, footer
-$options->setPageMargins(0.75, 0.7, 0.75, 0.7, 0.3, 0.3);
+$options->setPageMargin(0.75, 0.7, 0.75, 0.7, 0.3, 0.3);
 
 $writer = new Writer($options);
 ```

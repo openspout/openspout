@@ -366,13 +366,11 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
                 fwrite($worksheetFilePointer, $mergeCellString);
             }
 
-            $hasPageMargins = (bool) $options->getPageMargins();
-            if ($hasPageMargins) {
-                fwrite($worksheetFilePointer, $this->getXMLFragmentForPageMargins($options));
+            if ($options->hasPageMargin()) {
+                fwrite($worksheetFilePointer, $this->getXMLFragmentForPageMargin($options));
             }
 
-            $hasPageSetup = (bool) $options->getPageSetup();
-            if ($hasPageSetup) {
+            if ($options->hasPageSetup()) {
                 fwrite($worksheetFilePointer, $this->getXMLFragmentForPageSetup($options));
             }
 
@@ -424,13 +422,12 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     /**
      * Construct worksheet's page margins.
      */
-    private function getXMLFragmentForPageMargins(Options $options): string
+    private function getXMLFragmentForPageMargin(Options $options): string
     {
-        $pageMargins = $options->getPageMargins();
-        $hasPageMargins = (bool) $pageMargins;
+        $pageMargin = $options->getPageMargin();
 
-        if ($hasPageMargins) {
-            return "<pageMargins top=\"{$pageMargins['top']}\" right=\"{$pageMargins['right']}\" bottom=\"{$pageMargins['bottom']}\" left=\"{$pageMargins['left']}\" header=\"{$pageMargins['header']}\" footer=\"{$pageMargins['footer']}\"/>";
+        if ($options->hasPageMargin()) {
+            return "<pageMargins top=\"{$pageMargin->top}\" right=\"{$pageMargin->right}\" bottom=\"{$pageMargin->bottom}\" left=\"{$pageMargin->left}\" header=\"{$pageMargin->header}\" footer=\"{$pageMargin->footer}\"/>";
         }
 
         return '';

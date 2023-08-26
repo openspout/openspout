@@ -19,6 +19,8 @@ use OpenSpout\Writer\AutoFilter;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
 use OpenSpout\Writer\RowCreationHelper;
 use OpenSpout\Writer\XLSX\Manager\WorkbookManager;
+use OpenSpout\Writer\XLSX\Options\EnumPageOrientation;
+use OpenSpout\Writer\XLSX\Options\EnumPaperSize;
 use PHPUnit\Framework\TestCase;
 use ReflectionHelper;
 
@@ -875,9 +877,9 @@ final class WriterTest extends TestCase
         $options = new Options();
         $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
 
-        $options->setPageOrientation('landscape');
-        $options->setPaperSize('A4');
-        $options->setPageMargins(0.75, 0.7, 0.75, 0.7, 0.3, 0.3);
+        $options->setPageOrientation(EnumPageOrientation::LANDSCAPE);
+        $options->setPaperSize(EnumPaperSize::A4);
+        $options->setPageMargin(0.75, 0.7, 0.75, 0.7, 0.3, 0.3);
 
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
