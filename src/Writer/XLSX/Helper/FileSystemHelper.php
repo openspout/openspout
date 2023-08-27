@@ -436,9 +436,8 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     private function getXMLFragmentForPageSetup(Options $options): string
     {
         $pageSetup = $options->getPageSetup();
-        $hasPageSetup = (bool) $pageSetup;
 
-        if ($hasPageSetup) {
+        if ($options->hasPageSetup()) {
             $xml = '<pageSetup';
             foreach ($pageSetup as $key => $value) {
                 $xml .= " {$key}=\"{$value}\"";
