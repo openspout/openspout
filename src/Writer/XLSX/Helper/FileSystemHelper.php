@@ -366,11 +366,11 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
                 fwrite($worksheetFilePointer, $mergeCellString);
             }
 
-            if ($options->hasPageMargin()) {
+            if (null !== $options->getPageMargin()) {
                 fwrite($worksheetFilePointer, $this->getXMLFragmentForPageMargin($options));
             }
 
-            if ($options->hasPageSetup()) {
+            if (null !== $options->getPageSetup()) {
                 fwrite($worksheetFilePointer, $this->getXMLFragmentForPageSetup($options));
             }
 
@@ -426,7 +426,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     {
         $pageMargin = $options->getPageMargin();
 
-        if ($options->hasPageMargin()) {
+        if (isset($pageMargin)) {
             return "<pageMargins top=\"{$pageMargin->top}\" right=\"{$pageMargin->right}\" bottom=\"{$pageMargin->bottom}\" left=\"{$pageMargin->left}\" header=\"{$pageMargin->header}\" footer=\"{$pageMargin->footer}\"/>";
         }
 
@@ -437,13 +437,18 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     {
         $pageSetup = $options->getPageSetup();
 
-        if ($options->hasPageSetup()) {
+        if (isset($pageSetup)) {
             $xml = '<pageSetup';
-            foreach ($pageSetup as $key => $value) {
-                $xml .= " {$key}=\"{$value}\"";
+
+            if (null !== $pageSetup->getOrientation()) {
+                $xml .= " orientation=\"{$pageSetup->getOrientation()}\"";
             }
 
-            return $xml.' />';
+            if (null !== $pageSetup->getPaperSize()) {
+                $xml .= " paperSize=\"{$pageSetup->getPaperSize()}\"";
+            }
+
+            return $xml.'/>';
         }
 
         return '';

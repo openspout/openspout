@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer\XLSX\Options;
 
-/**
- * @internal
- */
 final class PageMargin
 {
     public function __construct(

@@ -6,9 +6,8 @@ namespace OpenSpout\Writer\XLSX;
 
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Writer\Common\AbstractOptions;
-use OpenSpout\Writer\XLSX\Options\EnumPageOrientation;
-use OpenSpout\Writer\XLSX\Options\EnumPaperSize;
 use OpenSpout\Writer\XLSX\Options\PageMargin;
+use OpenSpout\Writer\XLSX\Options\PageSetup;
 
 final class Options extends AbstractOptions
 {
@@ -22,8 +21,7 @@ final class Options extends AbstractOptions
 
     private ?PageMargin $pageMargin = null;
 
-    /** @var array<string, mixed> */
-    private array $pageSetup = [];
+    private ?PageSetup $pageSetup = null;
 
     public function __construct()
     {
@@ -74,62 +72,24 @@ final class Options extends AbstractOptions
 
     /**
      * set Worksheets page margins.
-     *
-     * @param float $top    inches
-     * @param float $right  inches
-     * @param float $bottom inches
-     * @param float $left   inches
-     * @param float $header inches
-     * @param float $footer inches
      */
-    public function setPageMargin(
-        float $top = 0.75,
-        float $right = 0.7,
-        float $bottom = 0.75,
-        float $left = 0.7,
-        float $header = 0.3,
-        float $footer = 0.3
-    ): void {
-        $this->pageMargin = new PageMargin(
-            $top,
-            $right,
-            $bottom,
-            $left,
-            $header,
-            $footer,
-        );
+    public function setPageMargin(PageMargin $pageMargin): void
+    {
+        $this->pageMargin = $pageMargin;
     }
 
-    public function getPageMargin(): PageMargin
+    public function getPageMargin(): ?PageMargin
     {
         return $this->pageMargin;
     }
 
-    public function hasPageMargin(): bool
+    public function setPageSetup(PageSetup $pageSetup): void
     {
-        return (bool) $this->pageMargin;
+        $this->pageSetup = $pageSetup;
     }
 
-    public function setPageOrientation(EnumPageOrientation $orientation): void
-    {
-        $this->pageSetup['orientation'] = $orientation->value;
-    }
-
-    public function setPaperSize(EnumPaperSize $size): void
-    {
-        $this->pageSetup['paperSize'] = $size->value;
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function getPageSetup(): array
+    public function getPageSetup(): ?PageSetup
     {
         return $this->pageSetup;
-    }
-
-    public function hasPageSetup(): bool
-    {
-        return (bool) $this->pageSetup;
     }
 }
