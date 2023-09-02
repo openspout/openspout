@@ -78,11 +78,18 @@ final class DateFormatHelper
                 continue;
             }
 
-            // Make sure all characters are lowercase, as the mapping table is using lowercase characters
-            $transformedPart = strtolower($dateFormatPart);
+            // Do not set \T to lower case or remove the slash
+            $dateFormatPartSections = explode('\T', $dateFormatPart);
+            foreach($dateFormatPartSections as &$dateFormatPartSection) {
 
-            // Remove escapes related to non-format characters
-            $transformedPart = str_replace('\\', '', $transformedPart);
+                // Make sure all characters are lowercase, as the mapping table is using lowercase characters
+                $dateFormatPartSection = strtolower($dateFormatPartSection);
+
+                // Remove escapes related to non-format characters
+                $dateFormatPartSection = str_replace('\\', '', $dateFormatPartSection);
+
+            }
+            $transformedPart = implode('\T', $dateFormatPartSections);
 
             // Apply general transformation first...
             $transformedPart = strtr($transformedPart, self::excelDateFormatToPHPDateFormatMapping[self::KEY_GENERAL]);
