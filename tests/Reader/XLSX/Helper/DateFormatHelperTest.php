@@ -30,6 +30,7 @@ final class DateFormatHelperTest extends TestCase
             ['yy "Year" m "Month"', 'y \\Y\\e\\a\\r n \\M\\o\\n\\t\\h'],
             ['mmm-yy;@', 'M-y'],
             ['[$-409]hh:mm AM/PM;"foo"@', 'h:i A'],
+            ['yyyy-mm-dd\Thh:mm:ss.s', 'Y-m-d\TH:i:s'],
         ];
     }
 
