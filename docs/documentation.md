@@ -226,6 +226,28 @@ $options->mergeCells(0, 1, 0, 2, $writer->getCurrentSheet()->getIndex());
 $writer->close();
 ```
 
+## Page setup
+
+```php
+use OpenSpout\Writer\XLSX\Writer;
+use OpenSpout\Writer\XLSX\Options;
+use OpenSpout\Writer\XLSX\Options\PageMargin;
+use OpenSpout\Writer\XLSX\Options\PageOrientation;
+use OpenSpout\Writer\XLSX\Options\PageSetup;
+use OpenSpout\Writer\XLSX\Options\PaperSize;
+
+$options = new Options();
+$options->setPageSetup(new PageSetup(
+    PageOrientation::LANDSCAPE,
+    PaperSize::A4,
+));
+
+// set margin in inches: top, right, bottom, left, header, footer
+$options->setPageMargin(new PageMargin(0.75, 0.7, 0.75, 0.7, 0.3, 0.3));
+
+$writer = new Writer($options);
+```
+
 ## Styling
 
 ### Available styles

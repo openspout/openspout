@@ -366,6 +366,10 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
                 fwrite($worksheetFilePointer, $mergeCellString);
             }
 
+            $this->getXMLFragmentForPageMargin($worksheetFilePointer, $options);
+
+            $this->getXMLFragmentForPageSetup($worksheetFilePointer, $options);
+
             // Add the legacy drawing for comments
             fwrite($worksheetFilePointer, '<legacyDrawing r:id="rId_comments_vml1"/>');
 
@@ -409,6 +413,44 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 
         // once the zip is copied, remove it
         $this->deleteFile($zipFilePath);
+    }
+
+    /**
+     * @param resource $targetResource
+     */
+    private function getXMLFragmentForPageMargin($targetResource, Options $options): void
+    {
+        $pageMargin = $options->getPageMargin();
+        if (null === $pageMargin) {
+            return;
+        }
+
+        fwrite($targetResource, "<pageMargins top=\"{$pageMargin->top}\" right=\"{$pageMargin->right}\" bottom=\"{$pageMargin->bottom}\" left=\"{$pageMargin->left}\" header=\"{$pageMargin->header}\" footer=\"{$pageMargin->footer}\"/>");
+    }
+
+    /**
+     * @param resource $targetResource
+     */
+    private function getXMLFragmentForPageSetup($targetResource, Options $options): void
+    {
+        $pageSetup = $options->getPageSetup();
+        if (null === $pageSetup) {
+            return;
+        }
+
+        $xml = '<pageSetup';
+
+        if (null !== $pageSetup->pageOrientation) {
+            $xml .= " orientation=\"{$pageSetup->pageOrientation->value}\"";
+        }
+
+        if (null !== $pageSetup->paperSize) {
+            $xml .= " paperSize=\"{$pageSetup->paperSize->value}\"";
+        }
+
+        $xml .= '/>';
+
+        fwrite($targetResource, $xml);
     }
 
     /**

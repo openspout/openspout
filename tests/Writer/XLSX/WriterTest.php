@@ -19,6 +19,10 @@ use OpenSpout\Writer\AutoFilter;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
 use OpenSpout\Writer\RowCreationHelper;
 use OpenSpout\Writer\XLSX\Manager\WorkbookManager;
+use OpenSpout\Writer\XLSX\Options\PageMargin;
+use OpenSpout\Writer\XLSX\Options\PageOrientation;
+use OpenSpout\Writer\XLSX\Options\PageSetup;
+use OpenSpout\Writer\XLSX\Options\PaperSize;
 use PHPUnit\Framework\TestCase;
 use ReflectionHelper;
 
@@ -866,6 +870,35 @@ final class WriterTest extends TestCase
         self::assertStringContainsString('Great comment', $xmlContents, '');
         self::assertStringContainsString('<i/>', $xmlContents, '');
         self::assertStringNotContainsString('<b/>', $xmlContents, '');
+    }
+
+    public function testAddPageSetup(): void
+    {
+        $fileName = 'test_page_setup.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+
+        $options->setPageSetup(new PageSetup(
+            PageOrientation::LANDSCAPE,
+            PaperSize::A4,
+        ));
+        $options->setPageMargin(new PageMargin(1, 2, 3, 4, 5, 6));
+
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+
+        $row = new Row([Cell::fromValue('something'), Cell::fromValue('else')]);
+        $writer->addRow($row);
+        $writer->close();
+
+        // Now test if the resources contain what we need
+        $pathToSheetFile = $resourcePath.'#xl/worksheets/sheet1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString('<pageMargins top="1" right="2" bottom="3" left="4" header="5" footer="6"/>', $xmlContents);
+        self::assertStringContainsString('<pageSetup orientation="landscape" paperSize="9"/>', $xmlContents);
     }
 
     /**
