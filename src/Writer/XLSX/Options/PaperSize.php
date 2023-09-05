@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer\XLSX\Options;
 
-enum EnumPaperSize: int
+enum PaperSize: int
 {
     case Letter = 1;
     case Tabloid = 3;

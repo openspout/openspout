@@ -70,9 +70,6 @@ final class Options extends AbstractOptions
         return $this->MERGE_CELLS;
     }
 
-    /**
-     * set Worksheets page margins.
-     */
     public function setPageMargin(PageMargin $pageMargin): void
     {
         $this->pageMargin = $pageMargin;

@@ -19,8 +19,10 @@ use OpenSpout\Writer\AutoFilter;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
 use OpenSpout\Writer\RowCreationHelper;
 use OpenSpout\Writer\XLSX\Manager\WorkbookManager;
-use OpenSpout\Writer\XLSX\Options\EnumPageOrientation;
-use OpenSpout\Writer\XLSX\Options\EnumPaperSize;
+use OpenSpout\Writer\XLSX\Options\PageMargin;
+use OpenSpout\Writer\XLSX\Options\PageOrientation;
+use OpenSpout\Writer\XLSX\Options\PageSetup;
+use OpenSpout\Writer\XLSX\Options\PaperSize;
 use PHPUnit\Framework\TestCase;
 use ReflectionHelper;
 
@@ -877,9 +879,11 @@ final class WriterTest extends TestCase
         $options = new Options();
         $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
 
-        $options->setPageOrientation(EnumPageOrientation::LANDSCAPE);
-        $options->setPaperSize(EnumPaperSize::A4);
-        $options->setPageMargin(0.75, 0.7, 0.75, 0.7, 0.3, 0.3);
+        $options->setPageSetup(new PageSetup(
+            PageOrientation::LANDSCAPE,
+            PaperSize::A4,
+        ));
+        $options->setPageMargin(new PageMargin(1, 2, 3, 4, 5, 6));
 
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
@@ -893,8 +897,8 @@ final class WriterTest extends TestCase
         $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
 
         self::assertNotFalse($xmlContents);
-        self::assertStringContainsString('<pageMargins top="0.75" right="0.7" bottom="0.75" left="0.7" header="0.3" footer="0.3"/>', $xmlContents, '');
-        self::assertStringContainsString('<pageSetup orientation="landscape" paperSize="9" />', $xmlContents, '');
+        self::assertStringContainsString('<pageMargins top="1" right="2" bottom="3" left="4" header="5" footer="6"/>', $xmlContents);
+        self::assertStringContainsString('<pageSetup orientation="landscape" paperSize="9"/>', $xmlContents);
     }
 
     /**
