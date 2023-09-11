@@ -13,6 +13,5 @@ final class PageMargin
         public readonly float $left = 0.7,
         public readonly float $header = 0.3,
         public readonly float $footer = 0.3
-    ) {
-    }
+    ) {}
 }

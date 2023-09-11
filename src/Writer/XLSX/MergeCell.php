@@ -22,6 +22,5 @@ final class MergeCell
         public readonly int $topLeftRow,
         public readonly int $bottomRightColumn,
         public readonly int $bottomRightRow,
-    ) {
-    }
+    ) {}
 }

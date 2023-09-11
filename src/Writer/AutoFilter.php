@@ -20,6 +20,5 @@ final class AutoFilter
         public readonly int $fromRow,
         public readonly int $toColumnIndex,
         public readonly int $toRow
-    ) {
-    }
+    ) {}
 }

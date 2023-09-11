@@ -9,6 +9,5 @@ final class PageSetup
     public function __construct(
         public readonly ?PageOrientation $pageOrientation,
         public readonly ?PaperSize $paperSize,
-    ) {
-    }
+    ) {}
 }

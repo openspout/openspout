@@ -17,6 +17,5 @@ final class ColumnWidth
         public readonly int $start,
         public readonly int $end,
         public readonly float $width,
-    ) {
-    }
+    ) {}
 }
