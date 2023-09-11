@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace OpenSpout\Reader\XLSX\Helper;
 
+use DateTimeInterface;
 use DOMElement;
 use DOMNodeList;
 use OpenSpout\Common\Entity\Cell\DateTimeCell;
+use OpenSpout\Common\Entity\Cell\FormulaCell;
 use OpenSpout\Common\Helper\Escaper;
 use OpenSpout\Reader\Exception\InvalidValueException;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory;
@@ -136,6 +138,93 @@ final class CellValueFormatterTest extends TestCase
             }
         } catch (InvalidValueException $exception) {
             // do nothing
+        }
+    }
+
+    public static function excelFormulaDataProvider(): array
+    {
+        return [
+            ['TODAY()', true, 3687.4207639, '1910-02-03 10:05:54'],
+            ['TODAY()', false, 3687.4207639, 3687.4207639],
+            ['TODAY()', true, 5, '1900-01-04 00:00:00'],
+            ['TODAY()', false, 5, 5],
+        ];
+    }
+
+    #[DataProvider('excelFormulaDataProvider')]
+    public function testExcelFormula(
+        string $nodeValue,
+        bool $shouldFormatAsDate,
+        float|int|string $computedValue,
+        float|int|string $expectedComputedValue,
+    ): void {
+        $nodeListMock = $this->createMock(DOMNodeList::class);
+        $nodeListMock
+            ->expects(self::atLeastOnce())
+            ->method('item')
+            ->with(0)
+            ->willReturn((object) ['nodeValue' => $computedValue])
+        ;
+
+        $nodeMock = $this->createMock(DOMElement::class);
+
+        $nodeMock
+            ->expects(self::atLeastOnce())
+            ->method('getAttribute')
+            ->willReturnMap([
+                [CellValueFormatter::XML_ATTRIBUTE_TYPE, CellValueFormatter::CELL_TYPE_NUMERIC],
+                [CellValueFormatter::XML_ATTRIBUTE_STYLE_ID, '123'],
+            ])
+        ;
+
+        $formulaMock = $this->createMock(DOMNodeList::class);
+        $formulaMock
+            ->expects(self::atLeastOnce())
+            ->method('item')
+            ->with(0)
+            ->willReturn((object) ['nodeValue' => $nodeValue])
+        ;
+
+        $nodeMock
+            ->expects(self::atLeastOnce())
+            ->method('getElementsByTagName')
+            ->willReturnMap([
+                [CellValueFormatter::XML_NODE_FORMULA, $formulaMock],
+                [CellValueFormatter::XML_NODE_VALUE, $nodeListMock],
+            ])
+        ;
+
+        $styleManagerMock = $this->createMock(StyleManagerInterface::class);
+
+        $styleManagerMock
+            ->expects(self::once())
+            ->method('shouldFormatNumericValueAsDate')
+            ->with(123)
+            ->willReturn($shouldFormatAsDate)
+        ;
+
+        $formatter = new CellValueFormatter(
+            new SharedStringsManager(
+                uniqid(),
+                new Options(),
+                new WorkbookRelationshipsManager(uniqid()),
+                new CachingStrategyFactory(new MemoryLimit('1'))
+            ),
+            $styleManagerMock,
+            false,
+            false,
+            new Escaper\XLSX()
+        );
+
+        $result = $formatter->extractAndFormatNodeValue($nodeMock);
+
+        self::assertInstanceOf(FormulaCell::class, $result);
+        self::assertSame('='.$nodeValue, $result->getValue());
+
+        if ($result->getComputedValue() instanceof DateTimeInterface) {
+            self::assertSame($expectedComputedValue, $result->getComputedValue()->format('Y-m-d H:i:s'));
+        } else {
+            self::assertSame($expectedComputedValue, $result->getComputedValue());
         }
     }
 
