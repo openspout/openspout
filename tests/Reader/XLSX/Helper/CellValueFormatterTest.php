@@ -141,13 +141,41 @@ final class CellValueFormatterTest extends TestCase
         }
     }
 
+    /**
+     * @return array{array{
+     *      nodeValue: string,
+     *      shouldFormatAsDate: bool,
+     *      computedValue: string|float|int,
+     *      expectedComputedValue: string|float|int,
+     *  }}
+     */
     public static function excelFormulaDataProvider(): array
     {
         return [
-            ['TODAY()', true, 3687.4207639, '1910-02-03 10:05:54'],
-            ['TODAY()', false, 3687.4207639, 3687.4207639],
-            ['TODAY()', true, 5, '1900-01-04 00:00:00'],
-            ['TODAY()', false, 5, 5],
+            [
+                'nodeValue' => 'TODAY()',
+                'shouldFormatAsDate' => true,
+                'computedValue' => 3687.4207639,
+                'expectedComputedValue' => '1910-02-03 10:05:54',
+            ],
+            [
+                'nodeValue' => 'TODAY()',
+                'shouldFormatAsDate' => false,
+                'computedValue' => 3687.4207639,
+                'expectedComputedValue' => 3687.4207639,
+            ],
+            [
+                'nodeValue' => 'TODAY()',
+                'shouldFormatAsDate' => true,
+                'computedValue' => 5,
+                'expectedComputedValue' => '1900-01-04 00:00:00',
+            ],
+            [
+                'nodeValue' => 'TODAY()',
+                'shouldFormatAsDate' => false,
+                'computedValue' => 5,
+                'expectedComputedValue' => 5,
+            ],
         ];
     }
 
