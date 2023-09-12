@@ -12,8 +12,8 @@ final class FormulaCell extends Cell
 {
     public function __construct(
         private readonly string $value,
-        ?Style $style = null,
-        private readonly DateTimeImmutable|float|int|string|null $computedValue = null,
+        ?Style $style,
+        private readonly DateTimeImmutable|float|int|string|null $computedValue,
     ) {
         parent::__construct($style);
     }
