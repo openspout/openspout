@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace OpenSpout\Reader\XLSX;
 
 use DateTimeImmutable;
+use OpenSpout\Common\Entity\Cell\EmptyCell;
 use OpenSpout\Common\Entity\Cell\FormulaCell;
 use OpenSpout\Common\Entity\Cell\NumericCell;
 use OpenSpout\Common\Entity\Cell\StringCell;
@@ -518,18 +519,24 @@ final class ReaderTest extends TestCase
                 new StringCell('val2', null),
                 new StringCell('total1', null),
                 new StringCell('total2', null),
+                new StringCell('DateFunction', null),
+                new StringCell('Average', null),
             ]),
             new Row([
                 new NumericCell(10, null),
                 new NumericCell(20, null),
                 new FormulaCell('=A2+B2', null, '30'),
-                new FormulaCell('=SUM(A:A)', null, '21'),
+                new FormulaCell('=SUM(A:A)', null, 21),
+                new FormulaCell('=DATE(2022, 5, 5)', null, new DateTimeImmutable('2022-05-05')),
+                new FormulaCell('=AVERAGE(1,2)', null, 1.5),
             ]),
             new Row([
                 new NumericCell(11, null),
                 new NumericCell(21, null),
                 new FormulaCell('=A3+B3', null, '32'),
                 new FormulaCell('=SUM(B:B)', null, '41'),
+                new EmptyCell(null, null),
+                new EmptyCell(null, null),
             ]),
         ];
         self::assertEquals($expectedRows, $allRows);

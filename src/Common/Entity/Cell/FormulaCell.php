@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace OpenSpout\Common\Entity\Cell;
 
+use DateTimeImmutable;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Style\Style;
 
 final class FormulaCell extends Cell
 {
-    private string $value;
-    private ?string $computedValue;
-
-    public function __construct(string $value, ?Style $style, ?string $computedValue)
-    {
-        $this->value = $value;
-        $this->computedValue = $computedValue;
+    public function __construct(
+        private readonly string $value,
+        ?Style $style,
+        private readonly DateTimeImmutable|float|int|string|null $computedValue,
+    ) {
         parent::__construct($style);
     }
 
@@ -24,7 +23,7 @@ final class FormulaCell extends Cell
         return $this->value;
     }
 
-    public function getComputedValue(): ?string
+    public function getComputedValue(): DateTimeImmutable|float|int|string|null
     {
         return $this->computedValue;
     }

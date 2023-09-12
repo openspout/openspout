@@ -98,7 +98,9 @@ final class CellValueFormatter
         if (self::CELL_TYPE_NUMERIC === $cellType) {
             $fNodeValue = $node->getElementsByTagName(self::XML_NODE_FORMULA)->item(0)?->nodeValue;
             if (null !== $fNodeValue) {
-                return new Cell\FormulaCell('='.$fNodeValue, null, $vNodeValue);
+                $computedValue = $this->formatNumericCellValue($vNodeValue, (int) $node->getAttribute(self::XML_ATTRIBUTE_STYLE_ID));
+
+                return new Cell\FormulaCell('='.$fNodeValue, null, $computedValue);
             }
         }
 
