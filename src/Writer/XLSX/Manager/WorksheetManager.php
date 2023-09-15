@@ -17,6 +17,7 @@ use OpenSpout\Writer\Common\Manager\RegisteredStyle;
 use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
 use OpenSpout\Writer\Common\Manager\WorksheetManagerInterface;
 use OpenSpout\Writer\XLSX\Helper\DateHelper;
+use OpenSpout\Writer\XLSX\Helper\DateIntervalHelper;
 use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
 use OpenSpout\Writer\XLSX\Options;
 
@@ -200,6 +201,8 @@ final class WorksheetManager implements WorksheetManagerInterface
             $cellXML .= '><f>'.substr($cell->getValue(), 1).'</f></c>';
         } elseif ($cell instanceof Cell\DateTimeCell) {
             $cellXML .= '><v>'.DateHelper::toExcel($cell->getValue()).'</v></c>';
+        } elseif ($cell instanceof Cell\DateIntervalCell) {
+            $cellXML .= '><v>'.DateIntervalHelper::toExcel($cell->getValue()).'</v></c>';
         } elseif ($cell instanceof Cell\ErrorCell) {
             // only writes the error value if it's a string
             $cellXML .= ' t="e"><v>'.$cell->getRawValue().'</v></c>';
