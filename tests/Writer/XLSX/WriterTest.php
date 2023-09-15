@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer\XLSX;
 
+use DateInterval;
 use DateTimeImmutable;
 use DateTimeZone;
+use DOMDocument;
 use DOMElement;
 use finfo;
 use OpenSpout\Common\Entity\Cell;
@@ -899,6 +901,31 @@ final class WriterTest extends TestCase
         self::assertNotFalse($xmlContents);
         self::assertStringContainsString('<pageMargins top="1" right="2" bottom="3" left="4" header="5" footer="6"/>', $xmlContents);
         self::assertStringContainsString('<pageSetup orientation="landscape" paperSize="9"/>', $xmlContents);
+    }
+
+    public function testWriteDateInterval(): void
+    {
+        $fileName = 'test_date_interval.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+
+        $row = new Row([new Cell\DateIntervalCell(DateInterval::createFromDateString('36 hours'), null)]);
+        $writer->addRow($row);
+        $writer->close();
+
+        // Now test if the resources contain what we need
+        $pathToSheetFile = $resourcePath.'#xl/worksheets/sheet1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
+
+        self::assertNotFalse($xmlContents);
+        $xml = new DOMDocument();
+        self::assertTrue($xml->loadXML($xmlContents), 'Sheet is valid XML');
+
+        self::assertStringContainsString('<v>1.5</v>', $xmlContents, '36 hours are 1.5 days');
     }
 
     /**
