@@ -246,7 +246,7 @@ final class ReaderTest extends TestCase
             // using @ to prevent warnings/errors from being displayed
             @$this->getAllRowsForFile($fileName);
             self::fail('An exception should have been thrown');
-        } catch (IOException $exception) {
+        } catch (IOException) {
             $duration = microtime(true) - $startTime;
             self::assertLessThan(10, $duration, 'Entities should not be expanded and therefore take more than 10 seconds to be parsed.');
 
