@@ -261,7 +261,7 @@ final class WriterWithStyleTest extends TestCase
 
         $cellXfsDomElement = $this->getXmlSectionFromStylesXmlFile($fileName, 'cellXfs');
         $xfElement = $cellXfsDomElement->getElementsByTagName('xf')->item(1);
-        self::assertEquals(1, $xfElement->getAttribute('applyAlignment'));
+        self::assertSame('1', $xfElement->getAttribute('applyAlignment'));
         $this->assertFirstChildHasAttributeEquals('0', $xfElement, 'alignment', 'wrapText');
     }
 
@@ -323,7 +323,7 @@ final class WriterWithStyleTest extends TestCase
 
         $cellXfsDomElement = $this->getXmlSectionFromStylesXmlFile($fileName, 'cellXfs');
         $xfElement = $cellXfsDomElement->getElementsByTagName('xf')->item(1);
-        self::assertEquals(1, $xfElement->getAttribute('applyAlignment'));
+        self::assertSame('1', $xfElement->getAttribute('applyAlignment'));
         $this->assertFirstChildHasAttributeEquals('true', $xfElement, 'alignment', 'shrinkToFit');
     }
 
