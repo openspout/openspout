@@ -484,8 +484,8 @@ final class WriterTest extends TestCase
         $xmlReader->readUntilNodeFound('row');
         $DOMNode = $xmlReader->expand();
         self::assertInstanceOf(DOMElement::class, $DOMNode);
-        self::assertEquals(25, $DOMNode->getAttribute('ht'), 'Row height does not equal given value.');
-        self::assertEquals('1', $DOMNode->getAttribute('customHeight'), 'Row does not have custom height flag set.');
+        self::assertSame('25', $DOMNode->getAttribute('ht'), 'Row height does not equal given value.');
+        self::assertSame('1', $DOMNode->getAttribute('customHeight'), 'Row does not have custom height flag set.');
     }
 
     public function testCloseShouldAddMergeCellTags(): void
@@ -503,18 +503,18 @@ final class WriterTest extends TestCase
 
         $xmlReader = $this->getXmlReaderForSheetFromXmlFile($fileName, '1');
         $xmlReader->readUntilNodeFound('mergeCells');
-        self::assertEquals('mergeCells', $xmlReader->getCurrentNodeName(), 'Sheet does not have mergeCells tag');
+        self::assertSame('mergeCells', $xmlReader->getCurrentNodeName(), 'Sheet does not have mergeCells tag');
         $DOMNode2 = $xmlReader->expand();
         self::assertNotFalse($DOMNode2);
-        self::assertEquals(2, $DOMNode2->childNodes->length, 'Sheet does not have the specified number of mergeCell definitions');
+        self::assertSame(2, $DOMNode2->childNodes->length, 'Sheet does not have the specified number of mergeCell definitions');
         $xmlReader->readUntilNodeFound('mergeCell');
         $DOMNode = $xmlReader->expand();
         self::assertInstanceOf(DOMElement::class, $DOMNode);
-        self::assertEquals('A1:D1', $DOMNode->getAttribute('ref'), 'Merge ref for first range is not valid.');
+        self::assertSame('A1:D1', $DOMNode->getAttribute('ref'), 'Merge ref for first range is not valid.');
         $xmlReader->readUntilNodeFound('mergeCell');
         $DOMNode1 = $xmlReader->expand();
         self::assertInstanceOf(DOMElement::class, $DOMNode1);
-        self::assertEquals('C3:K3', $DOMNode1->getAttribute('ref'), 'Merge ref for second range is not valid.');
+        self::assertSame('C3:K3', $DOMNode1->getAttribute('ref'), 'Merge ref for second range is not valid.');
     }
 
     public function testMergeCellsOnSeparateSheets(): void
@@ -533,25 +533,25 @@ final class WriterTest extends TestCase
 
         $sheet1 = $this->getXmlReaderForSheetFromXmlFile($fileName, '1');
         $sheet1->readUntilNodeFound('mergeCells');
-        self::assertEquals('mergeCells', $sheet1->getCurrentNodeName(), 'Sheet 1 does not have mergeCells tag');
+        self::assertSame('mergeCells', $sheet1->getCurrentNodeName(), 'Sheet 1 does not have mergeCells tag');
 
         $mergeCells1 = $sheet1->expand();
         self::assertNotFalse($mergeCells1);
-        self::assertEquals(1, $mergeCells1->childNodes->length, 'Sheet 1 does not have the specified number of mergeCell definitions');
+        self::assertSame(1, $mergeCells1->childNodes->length, 'Sheet 1 does not have the specified number of mergeCell definitions');
         $merge1 = $mergeCells1->childNodes->item(0);
         self::assertInstanceOf(DOMElement::class, $merge1);
-        self::assertEquals('A1:D1', $merge1->getAttribute('ref'), 'Merge ref for first range is not valid.');
+        self::assertSame('A1:D1', $merge1->getAttribute('ref'), 'Merge ref for first range is not valid.');
 
         $sheet2 = $this->getXmlReaderForSheetFromXmlFile($fileName, '2');
         $sheet2->readUntilNodeFound('mergeCells');
-        self::assertEquals('mergeCells', $sheet2->getCurrentNodeName(), 'Sheet 2 does not have mergeCells tag');
+        self::assertSame('mergeCells', $sheet2->getCurrentNodeName(), 'Sheet 2 does not have mergeCells tag');
 
         $mergeCells2 = $sheet2->expand();
         self::assertNotFalse($mergeCells2);
-        self::assertEquals(1, $mergeCells2->childNodes->length, 'Sheet 2 does not have the specified number of mergeCell definitions');
+        self::assertSame(1, $mergeCells2->childNodes->length, 'Sheet 2 does not have the specified number of mergeCell definitions');
         $merge2 = $mergeCells2->childNodes->item(0);
         self::assertInstanceOf(DOMElement::class, $merge2);
-        self::assertEquals('C3:K3', $merge2->getAttribute('ref'), 'Merge ref for first range is not valid.');
+        self::assertSame('C3:K3', $merge2->getAttribute('ref'), 'Merge ref for first range is not valid.');
     }
 
     public function testGeneratedFileShouldBeValidForEmptySheets(): void
@@ -572,7 +572,7 @@ final class WriterTest extends TestCase
         self::assertTrue($xmlReader->isValid(), 'worksheet xml is not valid');
         $xmlReader->setParserProperty(XMLReader::VALIDATE, false);
         $xmlReader->readUntilNodeFound('sheetData');
-        self::assertEquals('sheetData', $xmlReader->getCurrentNodeName(), 'worksheet xml does not have sheetData');
+        self::assertSame('sheetData', $xmlReader->getCurrentNodeName(), 'worksheet xml does not have sheetData');
     }
 
     public function testGeneratedFileShouldHaveTheCorrectMimeType(): void
@@ -672,10 +672,10 @@ final class WriterTest extends TestCase
 
         $xmlReader = $this->getXmlReaderForSheetFromXmlFile($fileName, '1');
         $xmlReader->readUntilNodeFound('autoFilter');
-        self::assertEquals('autoFilter', $xmlReader->getCurrentNodeName(), 'Sheet does not have autoFilter tag');
+        self::assertSame('autoFilter', $xmlReader->getCurrentNodeName(), 'Sheet does not have autoFilter tag');
         $DOMNode = $xmlReader->expand();
         self::assertInstanceOf(DOMElement::class, $DOMNode);
-        self::assertEquals('A1:D3', $DOMNode->getAttribute('ref'), 'Merge ref for autoFilter range is not valid.');
+        self::assertSame('A1:D3', $DOMNode->getAttribute('ref'), 'Merge ref for autoFilter range is not valid.');
     }
 
     public function testRemoveAutofilterShouldDeleteAllAutofilterTag(): void
@@ -731,21 +731,21 @@ final class WriterTest extends TestCase
         $xmlReader = new XMLReader();
         $xmlReader->openFileInZip($resourcePath, 'xl/workbook.xml');
         $xmlReader->readUntilNodeFound('definedNames');
-        self::assertEquals('definedNames', $xmlReader->getCurrentNodeName(), 'Workbook does not have definedNames tag');
+        self::assertSame('definedNames', $xmlReader->getCurrentNodeName(), 'Workbook does not have definedNames tag');
 
         /** @var DOMElement $DOMNode */
         $DOMNode = $xmlReader->expand();
-        self::assertEquals(2, $DOMNode->childElementCount, 'Workbook does not have the specified number of definedName tags');
+        self::assertSame(2, $DOMNode->childElementCount, 'Workbook does not have the specified number of definedName tags');
 
         /** @var DOMElement $firstFilter */
         $firstFilter = $DOMNode->childNodes->item(0);
-        self::assertEquals('\'Sheet First\'!$A$1:$D$3', $firstFilter->nodeValue, 'DefinedName is not valid.');
-        self::assertEquals('0', $firstFilter->getAttribute('localSheetId'), 'Sheet Id is not valid.');
+        self::assertSame('\'Sheet First\'!$A$1:$D$3', $firstFilter->nodeValue, 'DefinedName is not valid.');
+        self::assertSame('0', $firstFilter->getAttribute('localSheetId'), 'Sheet Id is not valid.');
 
         /** @var DOMElement $secondFilter */
         $secondFilter = $DOMNode->childNodes->item(1);
-        self::assertEquals('\'Sheet Last\'!$A$1:$AA$11', $secondFilter->nodeValue, 'DefinedName is not valid.');
-        self::assertEquals('1', $secondFilter->getAttribute('localSheetId'), 'Sheet Id is not valid.');
+        self::assertSame('\'Sheet Last\'!$A$1:$AA$11', $secondFilter->nodeValue, 'DefinedName is not valid.');
+        self::assertSame('1', $secondFilter->getAttribute('localSheetId'), 'Sheet Id is not valid.');
     }
 
     public function testAddCommentShouldBeWrittenToTwoFiles(): void
