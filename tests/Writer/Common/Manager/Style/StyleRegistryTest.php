@@ -50,7 +50,7 @@ final class StyleRegistryTest extends TestCase
         try {
             (new Style())->getId();
             self::fail('Style::getId should never be called before registration');
-        } catch (AssertionError $assertionError) {
+        } catch (AssertionError) {
         }
     }
 
