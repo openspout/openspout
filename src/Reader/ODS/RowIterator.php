@@ -45,7 +45,7 @@ final class RowIterator implements RowIteratorInterface
     private Row $currentlyProcessedRow;
 
     /** @var null|Row Buffer used to store the current row, while checking if there are more rows to read */
-    private ?Row $rowBuffer;
+    private ?Row $rowBuffer = null;
 
     /** @var bool Indicates whether all rows have been read */
     private bool $hasReachedEndOfFile = false;
@@ -57,7 +57,7 @@ final class RowIterator implements RowIteratorInterface
     private int $nextRowIndexToBeProcessed = 1;
 
     /** @var null|Cell Last processed cell (because when reading cell at column N+1, cell N is processed) */
-    private ?Cell $lastProcessedCell;
+    private ?Cell $lastProcessedCell = null;
 
     /** @var int Number of times the last processed row should be repeated */
     private int $numRowsRepeated = 1;

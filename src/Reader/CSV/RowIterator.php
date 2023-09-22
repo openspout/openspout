@@ -26,7 +26,7 @@ final class RowIterator implements RowIteratorInterface
     private int $numReadRows = 0;
 
     /** @var null|Row Buffer used to store the current row, while checking if there are more rows to read */
-    private ?Row $rowBuffer;
+    private ?Row $rowBuffer = null;
 
     /** @var bool Indicates whether all rows have been read */
     private bool $hasReachedEndOfFile = false;
