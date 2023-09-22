@@ -262,7 +262,7 @@ class StyleManager implements StyleManagerInterface
         $customNumberFormats = $this->getCustomNumberFormats();
 
         // Using isset here because it is way faster than array_key_exists...
-        return (isset($customNumberFormats[$numFmtId])) ? $customNumberFormats[$numFmtId] : null;
+        return $customNumberFormats[$numFmtId] ?? null;
     }
 
     /**
