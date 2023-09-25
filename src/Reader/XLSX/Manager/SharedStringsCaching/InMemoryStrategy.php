@@ -20,7 +20,7 @@ final class InMemoryStrategy implements CachingStrategyInterface
     private SplFixedArray $inMemoryCache;
 
     /** @var bool Whether the cache has been closed */
-    private bool $isCacheClosed;
+    private bool $isCacheClosed = false;
 
     /**
      * @param int $sharedStringsUniqueCount Number of unique shared strings
@@ -28,7 +28,6 @@ final class InMemoryStrategy implements CachingStrategyInterface
     public function __construct(int $sharedStringsUniqueCount)
     {
         $this->inMemoryCache = new SplFixedArray($sharedStringsUniqueCount);
-        $this->isCacheClosed = false;
     }
 
     /**
