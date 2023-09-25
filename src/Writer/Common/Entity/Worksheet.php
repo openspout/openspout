@@ -19,10 +19,10 @@ final class Worksheet
     private Sheet $externalSheet;
 
     /** @var int Maximum number of columns among all the written rows */
-    private int $maxNumColumns;
+    private int $maxNumColumns = 0;
 
     /** @var int Index of the last written row */
-    private int $lastWrittenRowIndex;
+    private int $lastWrittenRowIndex = 0;
 
     /**
      * Worksheet constructor.
@@ -30,10 +30,7 @@ final class Worksheet
     public function __construct(string $worksheetFilePath, Sheet $externalSheet)
     {
         $this->filePath = $worksheetFilePath;
-        $this->filePointer = null;
         $this->externalSheet = $externalSheet;
-        $this->maxNumColumns = 0;
-        $this->lastWrittenRowIndex = 0;
     }
 
     public function getFilePath(): string

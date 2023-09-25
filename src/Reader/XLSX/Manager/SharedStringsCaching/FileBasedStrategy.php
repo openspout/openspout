@@ -61,8 +61,6 @@ final class FileBasedStrategy implements CachingStrategyInterface
         $this->tempFolder = $this->fileSystemHelper->createFolder($tempFolder, uniqid('sharedstrings'));
 
         $this->maxNumStringsPerTempFile = $maxNumStringsPerTempFile;
-
-        $this->tempFilePointer = null;
     }
 
     /**
