@@ -9,7 +9,7 @@ use OpenSpout\Common\Entity\Style\Style;
 
 final class NumericCell extends Cell
 {
-    private int|float $value;
+    private readonly int|float $value;
 
     public function __construct(int|float $value, ?Style $style)
     {

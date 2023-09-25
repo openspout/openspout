@@ -61,10 +61,10 @@ final class CellValueFormatter
     ];
 
     /** @var bool Whether date/time values should be returned as PHP objects or be formatted as strings */
-    private bool $shouldFormatDates;
+    private readonly bool $shouldFormatDates;
 
     /** @var ODS Used to unescape XML data */
-    private ODS $escaper;
+    private readonly ODS $escaper;
 
     /**
      * @param bool $shouldFormatDates Whether date/time values should be returned as PHP objects or be formatted as strings

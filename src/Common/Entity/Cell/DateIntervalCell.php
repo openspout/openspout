@@ -10,7 +10,7 @@ use OpenSpout\Common\Entity\Style\Style;
 
 final class DateIntervalCell extends Cell
 {
-    private DateInterval $value;
+    private readonly DateInterval $value;
 
     /**
      * For Excel make sure to set a format onto the style (Style::setFormat()) with the left most unit enclosed with

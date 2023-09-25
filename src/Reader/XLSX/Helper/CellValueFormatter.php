@@ -48,19 +48,19 @@ final class CellValueFormatter
     public const NUM_SECONDS_IN_ONE_DAY = 86400;
 
     /** @var SharedStringsManager Manages shared strings */
-    private SharedStringsManager $sharedStringsManager;
+    private readonly SharedStringsManager $sharedStringsManager;
 
     /** @var StyleManagerInterface Manages styles */
-    private StyleManagerInterface $styleManager;
+    private readonly StyleManagerInterface $styleManager;
 
     /** @var bool Whether date/time values should be returned as PHP objects or be formatted as strings */
-    private bool $shouldFormatDates;
+    private readonly bool $shouldFormatDates;
 
     /** @var bool Whether date/time values should use a calendar starting in 1904 instead of 1900 */
-    private bool $shouldUse1904Dates;
+    private readonly bool $shouldUse1904Dates;
 
     /** @var XLSX Used to unescape XML data */
-    private XLSX $escaper;
+    private readonly XLSX $escaper;
 
     /**
      * @param SharedStringsManager  $sharedStringsManager Manages shared strings

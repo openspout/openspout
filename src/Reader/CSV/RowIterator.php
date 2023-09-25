@@ -31,10 +31,10 @@ final class RowIterator implements RowIteratorInterface
     /** @var bool Indicates whether all rows have been read */
     private bool $hasReachedEndOfFile = false;
 
-    private Options $options;
+    private readonly Options $options;
 
     /** @var EncodingHelper Helper to work with different encodings */
-    private EncodingHelper $encodingHelper;
+    private readonly EncodingHelper $encodingHelper;
 
     /**
      * @param resource $filePointer Pointer to the CSV file to read

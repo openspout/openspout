@@ -10,13 +10,13 @@ namespace OpenSpout\Writer\Common\Entity;
 final class Worksheet
 {
     /** @var string Path to the XML file that will contain the sheet data */
-    private string $filePath;
+    private readonly string $filePath;
 
     /** @var null|resource Pointer to the sheet data file (e.g. xl/worksheets/sheet1.xml) */
     private $filePointer;
 
     /** @var Sheet The "external" sheet */
-    private Sheet $externalSheet;
+    private readonly Sheet $externalSheet;
 
     /** @var int Maximum number of columns among all the written rows */
     private int $maxNumColumns = 0;

@@ -34,22 +34,22 @@ final class RowIterator implements RowIteratorInterface
     public const XML_ATTRIBUTE_CELL_INDEX = 'r';
 
     /** @var string Path of the XLSX file being read */
-    private string $filePath;
+    private readonly string $filePath;
 
     /** @var string Path of the sheet data XML file as in [Content_Types].xml */
-    private string $sheetDataXMLFilePath;
+    private readonly string $sheetDataXMLFilePath;
 
     /** @var XMLReader The XMLReader object that will help read sheet's XML data */
-    private XMLReader $xmlReader;
+    private readonly XMLReader $xmlReader;
 
     /** @var XMLProcessor Helper Object to process XML nodes */
-    private XMLProcessor $xmlProcessor;
+    private readonly XMLProcessor $xmlProcessor;
 
     /** @var Helper\CellValueFormatter Helper to format cell values */
-    private Helper\CellValueFormatter $cellValueFormatter;
+    private readonly Helper\CellValueFormatter $cellValueFormatter;
 
     /** @var RowManager Manages rows */
-    private RowManager $rowManager;
+    private readonly RowManager $rowManager;
 
     /**
      * TODO: This variable can be deleted when row indices get preserved.
@@ -71,7 +71,7 @@ final class RowIterator implements RowIteratorInterface
     private int $numColumns = 0;
 
     /** @var bool Whether empty rows should be returned or skipped */
-    private bool $shouldPreserveEmptyRows;
+    private readonly bool $shouldPreserveEmptyRows;
 
     /** @var int Last row index processed (one-based) */
     private int $lastRowIndexProcessed = 0;

@@ -17,7 +17,7 @@ final class Reader extends AbstractReader
 {
     private ZipArchive $zip;
 
-    private Options $options;
+    private readonly Options $options;
 
     /** @var SheetIterator To iterator over the ODS sheets */
     private SheetIterator $sheetIterator;

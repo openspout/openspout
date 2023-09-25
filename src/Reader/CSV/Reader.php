@@ -22,10 +22,10 @@ final class Reader extends AbstractReader
     private string $originalAutoDetectLineEndings;
 
     /** @var bool Whether the code is running with PHP >= 8.1 */
-    private bool $isRunningAtLeastPhp81;
+    private readonly bool $isRunningAtLeastPhp81;
 
-    private Options $options;
-    private EncodingHelper $encodingHelper;
+    private readonly Options $options;
+    private readonly EncodingHelper $encodingHelper;
 
     public function __construct(
         ?Options $options = null,

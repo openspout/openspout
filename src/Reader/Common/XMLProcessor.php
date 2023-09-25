@@ -25,7 +25,7 @@ final class XMLProcessor
     public const PROCESSING_STOP = 2;
 
     /** @var XMLReader The XMLReader object that will help read sheet's XML data */
-    private XMLReader $xmlReader;
+    private readonly XMLReader $xmlReader;
 
     /** @var array<string, array{reflectionMethod: ReflectionMethod, reflectionObject: object}> Registered callbacks */
     private array $callbacks = [];

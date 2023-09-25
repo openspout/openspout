@@ -30,13 +30,13 @@ final class RowIterator implements RowIteratorInterface
     public const XML_ATTRIBUTE_NUM_ROWS_REPEATED = 'table:number-rows-repeated';
     public const XML_ATTRIBUTE_NUM_COLUMNS_REPEATED = 'table:number-columns-repeated';
 
-    private Options $options;
+    private readonly Options $options;
 
     /** @var XMLProcessor Helper Object to process XML nodes */
-    private XMLProcessor $xmlProcessor;
+    private readonly XMLProcessor $xmlProcessor;
 
     /** @var Helper\CellValueFormatter Helper to format cell values */
-    private Helper\CellValueFormatter $cellValueFormatter;
+    private readonly Helper\CellValueFormatter $cellValueFormatter;
 
     /** @var bool Whether the iterator has already been rewound once */
     private bool $hasAlreadyBeenRewound = false;

@@ -35,7 +35,7 @@ final class WorkbookRelationshipsManager
     public const XML_ATTRIBUTE_TARGET = 'Target';
 
     /** @var string Path of the XLSX file being read */
-    private string $filePath;
+    private readonly string $filePath;
 
     /** @var array<string, string> Cache of the already read workbook relationships: [TYPE] => [FILE_NAME] */
     private array $cachedWorkbookRelationships;

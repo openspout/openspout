@@ -17,10 +17,10 @@ final class Sheet
     public const DEFAULT_SHEET_NAME_PREFIX = 'Sheet';
 
     /** @var 0|positive-int Index of the sheet, based on order in the workbook (zero-based) */
-    private int $index;
+    private readonly int $index;
 
     /** @var string ID of the sheet's associated workbook. Used to restrict sheet name uniqueness enforcement to a single workbook */
-    private string $associatedWorkbookId;
+    private readonly string $associatedWorkbookId;
 
     /** @var string Name of the sheet */
     private string $name;
@@ -29,7 +29,7 @@ final class Sheet
     private bool $isVisible;
 
     /** @var SheetManager Sheet manager */
-    private SheetManager $sheetManager;
+    private readonly SheetManager $sheetManager;
 
     private ?SheetView $sheetView = null;
 
