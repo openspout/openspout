@@ -40,17 +40,17 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
         EOD;
 
-    private string $baseFolderRealPath;
-    private CommonFileSystemHelper $baseFileSystemHelper;
+    private readonly string $baseFolderRealPath;
+    private readonly CommonFileSystemHelper $baseFileSystemHelper;
 
     /** @var ZipHelper Helper to perform tasks with Zip archive */
-    private ZipHelper $zipHelper;
+    private readonly ZipHelper $zipHelper;
 
     /** @var string document creator */
-    private string $creator;
+    private readonly string $creator;
 
     /** @var XLSX Used to escape XML data */
-    private XLSX $escaper;
+    private readonly XLSX $escaper;
 
     /** @var string Path to the root folder inside the temp folder where the files to create the XLSX will be stored */
     private string $rootFolder;

@@ -16,13 +16,13 @@ final class TestUsingResource
     private const RESOURCES_PATH = 'tests/resources';
 
     /** @var string Path to the test generated resources folder */
-    private string $generatedResourcesPath;
+    private readonly string $generatedResourcesPath;
 
     /** @var string Path to the test resources folder, that does not have writing permissions */
-    private string $generatedUnwritableResourcesPath;
+    private readonly string $generatedUnwritableResourcesPath;
 
     /** @var string Path to the test temp folder */
-    private string $tempFolderPath;
+    private readonly string $tempFolderPath;
 
     public function __construct()
     {

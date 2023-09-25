@@ -51,15 +51,15 @@ final class SheetManager
     public const SHEET_STATE_HIDDEN = 'hidden';
 
     /** @var string Path of the XLSX file being read */
-    private string $filePath;
+    private readonly string $filePath;
 
-    private Options $options;
+    private readonly Options $options;
 
     /** @var SharedStringsManager Manages shared strings */
-    private SharedStringsManager $sharedStringsManager;
+    private readonly SharedStringsManager $sharedStringsManager;
 
     /** @var XLSX Used to unescape XML data */
-    private XLSX $escaper;
+    private readonly XLSX $escaper;
 
     /** @var Sheet[] List of sheets */
     private array $sheets;

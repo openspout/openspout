@@ -32,10 +32,10 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
     protected AbstractOptions $options;
 
     /** @var Workbook The workbook to manage */
-    private Workbook $workbook;
+    private readonly Workbook $workbook;
 
     /** @var StyleMerger Helper to merge styles */
-    private StyleMerger $styleMerger;
+    private readonly StyleMerger $styleMerger;
 
     /** @var Worksheet The worksheet where data will be written to */
     private Worksheet $currentWorksheet;

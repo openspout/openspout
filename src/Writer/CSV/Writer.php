@@ -15,7 +15,7 @@ final class Writer extends AbstractWriter
     /** @var string Content-Type value for the header */
     protected static string $headerContentType = 'text/csv; charset=UTF-8';
 
-    private Options $options;
+    private readonly Options $options;
 
     private int $lastWrittenRowIndex = 0;
 

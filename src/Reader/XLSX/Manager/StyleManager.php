@@ -52,10 +52,10 @@ class StyleManager implements StyleManagerInterface
     ];
 
     /** @var string Path of the XLSX file being read */
-    private string $filePath;
+    private readonly string $filePath;
 
     /** @var null|string Path of the styles XML file */
-    private ?string $stylesXMLFilePath;
+    private readonly ?string $stylesXMLFilePath;
 
     /** @var array<int, string> Array containing a mapping NUM_FMT_ID => FORMAT_CODE */
     private array $customNumberFormats;
