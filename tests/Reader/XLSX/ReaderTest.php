@@ -234,7 +234,7 @@ final class ReaderTest extends TestCase
             array_fill(0, 10, $expectedDate),
             array_fill(0, 10, $expectedDate),
             array_fill(0, 10, $expectedDate),
-            array_merge(array_fill(0, 7, $expectedDate), ['', '', '']),
+            [...array_fill(0, 7, $expectedDate), '', '', ''],
         ];
 
         self::assertEquals($expectedRows, $allRows);
