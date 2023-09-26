@@ -58,7 +58,7 @@ abstract class AbstractWriter implements WriterInterface
      */
     final public function openToBrowser($outputFileName): void
     {
-        $this->outputFilePath = basename($outputFileName);
+        $this->outputFilePath = basename((string) $outputFileName);
 
         $resource = fopen('php://output', 'w');
         \assert(false !== $resource);

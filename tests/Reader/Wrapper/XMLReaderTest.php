@@ -101,7 +101,7 @@ final class XMLReaderTest extends TestCase
         $realPathURI = ReflectionHelper::callMethodOnObject($xmlReader, 'getRealPathURIForFileInZip', $zipFilePath, $fileInsideZipPath);
 
         // Normalizing path separators for Windows support
-        $normalizedRealPathURI = str_replace('\\', '/', $realPathURI);
+        $normalizedRealPathURI = str_replace('\\', '/', (string) $realPathURI);
         $normalizedExpectedRealPathURI = str_replace('\\', '/', $expectedRealPathURI);
 
         self::assertSame($normalizedExpectedRealPathURI, $normalizedRealPathURI);

@@ -188,14 +188,14 @@ final class RowIterator implements RowIteratorInterface
                 case EncodingHelper::ENCODING_UTF16_LE:
                 case EncodingHelper::ENCODING_UTF32_LE:
                     // remove whitespace from the beginning of a string as fgetcsv() add extra whitespace when it try to explode non UTF-8 data
-                    $cellValue = ltrim($cellValue);
+                    $cellValue = ltrim((string) $cellValue);
 
                     break;
 
                 case EncodingHelper::ENCODING_UTF16_BE:
                 case EncodingHelper::ENCODING_UTF32_BE:
                     // remove whitespace from the end of a string as fgetcsv() add extra whitespace when it try to explode non UTF-8 data
-                    $cellValue = rtrim($cellValue);
+                    $cellValue = rtrim((string) $cellValue);
 
                     break;
             }
