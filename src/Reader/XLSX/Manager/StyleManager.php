@@ -11,25 +11,25 @@ class StyleManager implements StyleManagerInterface
     /**
      * Nodes used to find relevant information in the styles XML file.
      */
-    public const XML_NODE_NUM_FMTS = 'numFmts';
-    public const XML_NODE_NUM_FMT = 'numFmt';
-    public const XML_NODE_CELL_XFS = 'cellXfs';
-    public const XML_NODE_XF = 'xf';
+    final public const XML_NODE_NUM_FMTS = 'numFmts';
+    final public const XML_NODE_NUM_FMT = 'numFmt';
+    final public const XML_NODE_CELL_XFS = 'cellXfs';
+    final public const XML_NODE_XF = 'xf';
 
     /**
      * Attributes used to find relevant information in the styles XML file.
      */
-    public const XML_ATTRIBUTE_NUM_FMT_ID = 'numFmtId';
-    public const XML_ATTRIBUTE_FORMAT_CODE = 'formatCode';
-    public const XML_ATTRIBUTE_APPLY_NUMBER_FORMAT = 'applyNumberFormat';
-    public const XML_ATTRIBUTE_COUNT = 'count';
+    final public const XML_ATTRIBUTE_NUM_FMT_ID = 'numFmtId';
+    final public const XML_ATTRIBUTE_FORMAT_CODE = 'formatCode';
+    final public const XML_ATTRIBUTE_APPLY_NUMBER_FORMAT = 'applyNumberFormat';
+    final public const XML_ATTRIBUTE_COUNT = 'count';
 
     /**
      * By convention, default style ID is 0.
      */
-    public const DEFAULT_STYLE_ID = 0;
+    final public const DEFAULT_STYLE_ID = 0;
 
-    public const NUMBER_FORMAT_GENERAL = 'General';
+    final public const NUMBER_FORMAT_GENERAL = 'General';
 
     /**
      * Mapping between built-in numFmtId and the associated format - for dates only.
