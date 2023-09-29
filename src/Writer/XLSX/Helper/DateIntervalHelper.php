@@ -25,11 +25,28 @@ final class DateIntervalHelper
     {
         // For years and months we can only use the respective average of days here - this won't be accurate, but the
         // DateInterval doesn't give us more details on those:
-        return $interval->y * 365.25
+        $days = $interval->y * 365.25
             + $interval->m * 30.437
             + $interval->d
             + $interval->h / 24
             + $interval->i / 24 / 60
             + $interval->s / 24 / 60 / 60;
+
+        if (1 === $interval->invert) {
+            self::negate($days);
+        }
+
+        return $days;
+    }
+
+    /**
+     * The infection rule MulEqual doesn't understand that multiplying or dividing by -1 is mathematically identical.
+     * See https://github.com/infection/infection/issues/1884.
+     *
+     * @infection-ignore-all
+     */
+    private static function negate(float &$value): void
+    {
+        $value *= -1;
     }
 }

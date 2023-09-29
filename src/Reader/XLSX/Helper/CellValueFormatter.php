@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OpenSpout\Reader\XLSX\Helper;
 
+use DateInterval;
 use DateTimeImmutable;
 use DOMElement;
 use Exception;
@@ -193,13 +194,15 @@ final class CellValueFormatter
      *
      * @param int $cellStyleId 0 being the default style
      */
-    private function formatNumericCellValue(float|int|string $nodeValue, int $cellStyleId): DateTimeImmutable|float|int|string
+    private function formatNumericCellValue(float|int|string $nodeValue, int $cellStyleId): DateInterval|DateTimeImmutable|float|int|string
     {
         // Numeric values can represent numbers as well as timestamps.
         // We need to look at the style of the cell to determine whether it is one or the other.
-        $shouldFormatAsDate = $this->styleManager->shouldFormatNumericValueAsDate($cellStyleId);
+        $formatCode = $this->styleManager->getNumberFormatCode($cellStyleId);
 
-        if ($shouldFormatAsDate) {
+        if (DateIntervalFormatHelper::isDurationFormat($formatCode)) {
+            $cellValue = $this->formatExcelDateIntervalValue((float) $nodeValue, $formatCode);
+        } elseif ($this->styleManager->shouldFormatNumericValueAsDate($cellStyleId)) {
             $cellValue = $this->formatExcelTimestampValue((float) $nodeValue, $cellStyleId);
         } else {
             $nodeIntValue = (int) $nodeValue;
@@ -208,6 +211,16 @@ final class CellValueFormatter
         }
 
         return $cellValue;
+    }
+
+    private function formatExcelDateIntervalValue(float $nodeValue, string $excelFormat): DateInterval|string
+    {
+        $dateInterval = DateIntervalFormatHelper::createDateIntervalFromHours($nodeValue);
+        if ($this->shouldFormatDates) {
+            return DateIntervalFormatHelper::formatDateInterval($dateInterval, $excelFormat);
+        }
+
+        return $dateInterval;
     }
 
     /**

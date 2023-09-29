@@ -41,6 +41,14 @@ final class DateIntervalHelperTest extends TestCase
             [DateInterval::createFromDateString('1 second'), 1 / 24 / 60 / 60],
             [DateInterval::createFromDateString('2 seconds'), 2 / 24 / 60 / 60],
             [new DateInterval('PT12H30M0S'), 0.5 + 30 / 24 / 60],
+            [self::invert(new DateInterval('PT12H0M0S')), -0.5],
         ];
+    }
+
+    private static function invert(DateInterval $interval): DateInterval
+    {
+        $interval->invert = 1;
+
+        return $interval;
     }
 }
