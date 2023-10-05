@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - "?.x"
+      - "renovate/*"
 
 env:
   INI_VALUES: zend.assertions=1,error_reporting=-1
