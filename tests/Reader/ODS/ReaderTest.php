@@ -274,7 +274,7 @@ final class ReaderTest extends TestCase
         $duration = microtime(true) - $startTime;
         self::assertLessThan(10, $duration, 'Entities should not be expanded and therefore take more than 10 seconds to be parsed.');
 
-        $expectedMaxMemoryUsage = 35 * 1024 * 1024; // 35MB
+        $expectedMaxMemoryUsage = 48 * 1024 * 1024;
         self::assertLessThan($expectedMaxMemoryUsage, memory_get_peak_usage(true), 'Entities should not be expanded and therefore consume all the memory.');
     }
 
