@@ -150,7 +150,7 @@ final class CellValueFormatter
      *
      * @throws InvalidValueException If the value is not a valid date
      */
-    private function formatDateCellValue(DOMElement $node): string|DateTimeImmutable
+    private function formatDateCellValue(DOMElement $node): DateTimeImmutable|string
     {
         // The XML node looks like this:
         // <table:table-cell calcext:value-type="date" office:date-value="2016-05-19T16:39:00" office:value-type="date">

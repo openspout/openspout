@@ -13,7 +13,7 @@ final class FormulaCell extends Cell
     public function __construct(
         private readonly string $value,
         ?Style $style,
-        private readonly DateTimeImmutable|float|int|string|null $computedValue = null,
+        private readonly null|DateTimeImmutable|float|int|string $computedValue = null,
     ) {
         parent::__construct($style);
     }
@@ -23,7 +23,7 @@ final class FormulaCell extends Cell
         return $this->value;
     }
 
-    public function getComputedValue(): DateTimeImmutable|float|int|string|null
+    public function getComputedValue(): null|DateTimeImmutable|float|int|string
     {
         return $this->computedValue;
     }

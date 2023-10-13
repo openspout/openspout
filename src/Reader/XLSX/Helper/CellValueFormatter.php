@@ -193,7 +193,7 @@ final class CellValueFormatter
      *
      * @param int $cellStyleId 0 being the default style
      */
-    private function formatNumericCellValue(int|float|string $nodeValue, int $cellStyleId): DateTimeImmutable|float|int|string
+    private function formatNumericCellValue(float|int|string $nodeValue, int $cellStyleId): DateTimeImmutable|float|int|string
     {
         // Numeric values can represent numbers as well as timestamps.
         // We need to look at the style of the cell to determine whether it is one or the other.
@@ -222,7 +222,7 @@ final class CellValueFormatter
      *
      * @see ECMA-376 Part 1 - §18.17.4
      */
-    private function formatExcelTimestampValue(float $nodeValue, int $cellStyleId): string|DateTimeImmutable
+    private function formatExcelTimestampValue(float $nodeValue, int $cellStyleId): DateTimeImmutable|string
     {
         if (!$this->isValidTimestampValue($nodeValue)) {
             throw new InvalidValueException((string) $nodeValue);
@@ -251,7 +251,7 @@ final class CellValueFormatter
      *
      * @param int $cellStyleId 0 being the default style
      */
-    private function formatExcelTimestampValueAsDateTimeValue(float $nodeValue, int $cellStyleId): string|DateTimeImmutable
+    private function formatExcelTimestampValueAsDateTimeValue(float $nodeValue, int $cellStyleId): DateTimeImmutable|string
     {
         $baseDate = $this->shouldUse1904Dates ? '1904-01-01' : '1899-12-30';
 
@@ -304,7 +304,7 @@ final class CellValueFormatter
      *
      * @param string $nodeValue ISO 8601 Date string
      */
-    private function formatDateCellValue(string $nodeValue): string|DateTimeImmutable|Cell\ErrorCell
+    private function formatDateCellValue(string $nodeValue): Cell\ErrorCell|DateTimeImmutable|string
     {
         // Mitigate thrown Exception on invalid date-time format (http://php.net/manual/en/datetime.construct.php)
         try {
