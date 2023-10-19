@@ -9,7 +9,7 @@ use DateInterval;
 final class DateIntervalFormatHelper
 {
     /**
-     * See https://www.php.net/manual/de/dateinterval.format.php.
+     * @see https://www.php.net/manual/en/dateinterval.format.php.
      */
     private const dateIntervalFormats = [
         'hh' => '%H',
@@ -58,7 +58,7 @@ final class DateIntervalFormatHelper
     public static function isDurationFormat(string $excelFormat): bool
     {
         // Only consider formats with leading brackets as valid duration formats (e.g. "[hh]:mm", "[mm]:ss", etc.):
-        return (bool) preg_match('/^(\[hh?](:mm(:ss)?)?|\[mm?](:ss)?|\[ss?])$/', $excelFormat);
+        return 1 === preg_match('/^(\[hh?](:mm(:ss)?)?|\[mm?](:ss)?|\[ss?])$/', $excelFormat);
     }
 
     public static function toPHPDateIntervalFormat(string $excelDateFormat, ?string &$startUnit = null): string

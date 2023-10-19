@@ -33,20 +33,9 @@ final class DateIntervalHelper
             + $interval->s / 24 / 60 / 60;
 
         if (1 === $interval->invert) {
-            self::negate($days);
+            $days *= -1;
         }
 
         return $days;
-    }
-
-    /**
-     * The infection rule MulEqual doesn't understand that multiplying or dividing by -1 is mathematically identical.
-     * See https://github.com/infection/infection/issues/1884.
-     *
-     * @infection-ignore-all
-     */
-    private static function negate(float &$value): void
-    {
-        $value *= -1;
     }
 }
