@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OpenSpout\Reader\XLSX;
 
+use DateInterval;
 use DateTimeImmutable;
 use OpenSpout\Common\Entity\Cell\EmptyCell;
 use OpenSpout\Common\Entity\Cell\FormulaCell;
@@ -220,6 +221,70 @@ final class ReaderTest extends TestCase
             ],
         ];
         self::assertEquals($expectedRows, $allRows);
+    }
+
+    public function testReadShouldSupportNumericDurationsFormattedDifferentlyAsDateInterval(): void
+    {
+        // make sure dates are always created with the same timezone
+        date_default_timezone_set('UTC');
+
+        $allRows = $this->getAllRowsForFile('sheet_with_same_numeric_value_durations_formatted_differently.xlsx');
+
+        self::assertEquals(array_fill(0, 12, new DateInterval('PT3H7M5S')), $allRows[1]);
+        self::assertEquals(array_fill(0, 12, new DateInterval('PT0H7M5S')), $allRows[2]);
+        self::assertEquals(array_fill(0, 12, new DateInterval('PT0H0M5S')), $allRows[3]);
+    }
+
+    public function testReadShouldSupportNumericDurationsFormattedDifferentlyAsFormattedString(): void
+    {
+        // make sure dates are always created with the same timezone
+        date_default_timezone_set('UTC');
+
+        $options = new Options();
+        $options->SHOULD_FORMAT_DATES = true;
+        $allRows = $this->getAllRowsForFile('sheet_with_same_numeric_value_durations_formatted_differently.xlsx', $options);
+        self::assertEquals([
+            '03',
+            '03:07',
+            '03:07:05',
+            '3',
+            '3:07',
+            '3:07:05',
+            '187',
+            '187:05',
+            '187',
+            '187:05',
+            '11225',
+            '11225',
+        ], $allRows[1]);
+        self::assertEquals([
+            '00',
+            '00:07',
+            '00:07:05',
+            '0',
+            '0:07',
+            '0:07:05',
+            '07',
+            '07:05',
+            '7',
+            '7:05',
+            '425',
+            '425',
+        ], $allRows[2]);
+        self::assertEquals([
+            '00',
+            '00:00',
+            '00:00:05',
+            '0',
+            '0:00',
+            '0:00:05',
+            '00',
+            '00:05',
+            '0',
+            '0:05',
+            '05',
+            '5',
+        ], $allRows[3]);
     }
 
     public function testReadShouldSupportNumericTimestampFormattedDifferentlyAsDate(): void

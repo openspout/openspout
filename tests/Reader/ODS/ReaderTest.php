@@ -242,6 +242,11 @@ final class ReaderTest extends TestCase
         $startTime = microtime(true);
         $fileName = 'attack_billion_laughs.ods';
 
+        // Depending on whether the ".phpunit.cache" exists prior to starting this test, the peak usage is different
+        // and might be higher than the 35 MB previously expected here.
+        // PHP 8.2 memory_reset_peak_usage() doesn't seem to work here, either.
+        $expectedMaxMemoryUsage = memory_get_peak_usage(true) + 2 * 1024 * 1024; // 2MB extra
+
         try {
             // using @ to prevent warnings/errors from being displayed
             @$this->getAllRowsForFile($fileName);
@@ -250,7 +255,6 @@ final class ReaderTest extends TestCase
             $duration = microtime(true) - $startTime;
             self::assertLessThan(10, $duration, 'Entities should not be expanded and therefore take more than 10 seconds to be parsed.');
 
-            $expectedMaxMemoryUsage = 35 * 1024 * 1024; // 35MB
             self::assertLessThan($expectedMaxMemoryUsage, memory_get_peak_usage(true), 'Entities should not be expanded and therefore consume all the memory.');
         }
     }

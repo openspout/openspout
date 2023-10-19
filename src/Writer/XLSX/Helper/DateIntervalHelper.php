@@ -25,11 +25,17 @@ final class DateIntervalHelper
     {
         // For years and months we can only use the respective average of days here - this won't be accurate, but the
         // DateInterval doesn't give us more details on those:
-        return $interval->y * 365.25
+        $days = $interval->y * 365.25
             + $interval->m * 30.437
             + $interval->d
             + $interval->h / 24
             + $interval->i / 24 / 60
             + $interval->s / 24 / 60 / 60;
+
+        if (1 === $interval->invert) {
+            $days *= -1;
+        }
+
+        return $days;
     }
 }

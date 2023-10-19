@@ -107,7 +107,7 @@ class StyleManager implements StyleManagerInterface
             $numberFormatCode = self::builtinNumFmtIdToNumFormatMapping[$numFmtId];
         } else {
             $customNumberFormats = $this->getCustomNumberFormats();
-            $numberFormatCode = $customNumberFormats[$numFmtId];
+            $numberFormatCode = $customNumberFormats[$numFmtId] ?? '';
         }
 
         return $numberFormatCode;
