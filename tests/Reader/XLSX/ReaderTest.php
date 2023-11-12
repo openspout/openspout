@@ -607,6 +607,40 @@ final class ReaderTest extends TestCase
         self::assertEquals($expectedRows, $allRows);
     }
 
+    public function testReadShouldReturnFormulaValues(): void
+    {
+        $allRows = $this->getAllRowsForFile('sheet_with_formulas.xlsx');
+
+        $expectedRows = [
+            [
+                'val1',
+                'val2',
+                'total1',
+                'total2',
+                'DateFunction',
+                'Average',
+            ],
+            [
+                10,
+                20,
+                '30',
+                21,
+                new DateTimeImmutable('2022-05-05'),
+                1.5,
+            ],
+            [
+                11,
+                21,
+                '32',
+                '41',
+                null,
+                null,
+            ]
+        ];
+
+        self::assertEquals($expectedRows, $allRows);
+    }
+
     public function testReadMultipleTimesShouldRewindReader(): void
     {
         $allRows = [];

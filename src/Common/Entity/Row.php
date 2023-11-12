@@ -7,6 +7,7 @@ namespace OpenSpout\Common\Entity;
 use DateInterval;
 use DateTimeInterface;
 use OpenSpout\Common\Entity\Style\Style;
+use OpenSpout\Common\Entity\Cell\FormulaCell;
 
 final class Row
 {
@@ -135,7 +136,9 @@ final class Row
     public function toArray(): array
     {
         return array_map(static function (Cell $cell): null|bool|DateInterval|DateTimeInterface|float|int|string {
-            return $cell->getValue();
+            return $cell instanceof FormulaCell
+                ? $cell->getComputedValue()
+                : $cell->getValue();
         }, $this->cells);
     }
 
