@@ -18,12 +18,6 @@ final class Reader extends AbstractReader
     /** @var SheetIterator To iterator over the CSV unique "sheet" */
     private SheetIterator $sheetIterator;
 
-    /** @var string Original value for the "auto_detect_line_endings" INI value */
-    private string $originalAutoDetectLineEndings;
-
-    /** @var bool Whether the code is running with PHP >= 8.1 */
-    private readonly bool $isRunningAtLeastPhp81;
-
     private readonly Options $options;
     private readonly EncodingHelper $encodingHelper;
 
@@ -33,7 +27,6 @@ final class Reader extends AbstractReader
     ) {
         $this->options = $options ?? new Options();
         $this->encodingHelper = $encodingHelper ?? EncodingHelper::factory();
-        $this->isRunningAtLeastPhp81 = \PHP_VERSION_ID >= 80100;
     }
 
     public function getSheetIterator(): SheetIterator
@@ -61,16 +54,6 @@ final class Reader extends AbstractReader
      */
     protected function openReader(string $filePath): void
     {
-        // "auto_detect_line_endings" is deprecated in PHP 8.1
-        if (!$this->isRunningAtLeastPhp81) {
-            // @codeCoverageIgnoreStart
-            $originalAutoDetectLineEndings = \ini_get('auto_detect_line_endings');
-            \assert(false !== $originalAutoDetectLineEndings);
-            $this->originalAutoDetectLineEndings = $originalAutoDetectLineEndings;
-            ini_set('auto_detect_line_endings', '1');
-            // @codeCoverageIgnoreEnd
-        }
-
         $resource = fopen($filePath, 'r');
         \assert(false !== $resource);
         $this->filePointer = $resource;
@@ -92,12 +75,5 @@ final class Reader extends AbstractReader
     protected function closeReader(): void
     {
         fclose($this->filePointer);
-
-        // "auto_detect_line_endings" is deprecated in PHP 8.1
-        if (!$this->isRunningAtLeastPhp81) {
-            // @codeCoverageIgnoreStart
-            ini_set('auto_detect_line_endings', $this->originalAutoDetectLineEndings);
-            // @codeCoverageIgnoreEnd
-        }
     }
 }

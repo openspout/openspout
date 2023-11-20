@@ -35,17 +35,13 @@ final class ReflectionHelper
     {
         $reflectionClass = new ReflectionClass($class);
         $reflectionProperty = $reflectionClass->getProperty($valueName);
-        $reflectionProperty->setAccessible(true);
 
-        // to prevent side-effects in later tests, we need to remember the original value and reset it on tear down
+        // to prevent side effects in later tests, we need to remember the original value and reset it on tear down
         // @NOTE: we need to check isset in case the original value was null or array()
         if ($saveOriginalValue && (!isset(self::$privateVarsToReset[$class]) || !isset(self::$privateVarsToReset[$class][$valueName]))) {
             self::$privateVarsToReset[$class][$valueName] = $reflectionProperty->getValue();
         }
-        $reflectionProperty->setValue($value);
-
-        // clean up
-        $reflectionProperty->setAccessible(false);
+        $reflectionProperty->setValue($reflectionClass->newInstanceWithoutConstructor(), $value);
     }
 
     /**
@@ -55,13 +51,8 @@ final class ReflectionHelper
     {
         $reflectionObject = new ReflectionObject($object);
         $reflectionProperty = $reflectionObject->getProperty($valueName);
-        $reflectionProperty->setAccessible(true);
-        $value = $reflectionProperty->getValue($object);
 
-        // clean up
-        $reflectionProperty->setAccessible(false);
-
-        return $value;
+        return $reflectionProperty->getValue($object);
     }
 
     /**
@@ -78,7 +69,6 @@ final class ReflectionHelper
         $className = $object::class;
         $class = new ReflectionClass($className);
         $method = $class->getMethod($methodName);
-        $method->setAccessible(true);
 
         return $method->invokeArgs($object, $params);
     }

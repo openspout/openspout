@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - "8.1"
+          - "8.2"
 
     steps:
       - uses: "actions/checkout@v4"
@@ -44,15 +44,15 @@ jobs:
         os:
           - "ubuntu-latest"
         php-version:
-          - "8.1"
+          - "8.2"
         code-coverage:
           - "none"
         include:
             - os: "windows-latest"
-              php-version: "8.1"
+              php-version: "8.2"
               code-coverage: "none"
             - os: "ubuntu-latest"
-              php-version: "8.2"
+              php-version: "8.3"
               code-coverage: "pcov"
 
     steps:
@@ -100,7 +100,7 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - "8.1"
+          - "8.2"
 
     steps:
       - uses: "actions/checkout@v4"
@@ -122,7 +122,7 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - "8.2"
+          - "8.3"
 
     steps:
       - uses: "actions/checkout@v4"
@@ -142,7 +142,7 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - "8.1"
+          - "8.2"
         bench:
           - "CsvReaderBench"
           - "CsvWriterBench"
