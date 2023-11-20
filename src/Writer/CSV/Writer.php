@@ -49,9 +49,15 @@ final class Writer extends AbstractWriter
      */
     protected function addRowToWriter(Row $row): void
     {
-        $cells = array_map(static function (Cell\BooleanCell|Cell\EmptyCell|Cell\FormulaCell|Cell\NumericCell|Cell\StringCell $value): string {
+        $cells = array_map(static function (Cell\BooleanCell|Cell\DateIntervalCell|Cell\DateTimeCell|Cell\EmptyCell|Cell\FormulaCell|Cell\NumericCell|Cell\StringCell $value): string {
             if ($value instanceof Cell\BooleanCell) {
                 return (string) (int) $value->getValue();
+            }
+            if ($value instanceof Cell\DateTimeCell) {
+                return $value->getValue()->format(DATE_ATOM);
+            }
+            if ($value instanceof Cell\DateIntervalCell) {
+                return $value->getValue()->format('P%yY%mM%dDT%hH%iM%sS%fF');
             }
 
             return (string) $value->getValue();

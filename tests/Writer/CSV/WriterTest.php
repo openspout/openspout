@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer\CSV;
 
+use DateInterval;
+use DateTime;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\EncodingHelper;
@@ -104,6 +106,30 @@ final class WriterTest extends TestCase
         $writtenContent = $this->trimWrittenContent($writtenContent);
 
         self::assertSame('1,0', $writtenContent);
+    }
+
+    public function testWriteShouldSupportDateTimeValues(): void
+    {
+        $date = new DateTime('2023-11-20 10:43:25');
+        $allRows = $this->createRowsFromValues([
+            [$date],
+        ]);
+        $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_datetime_values.csv');
+        $writtenContent = $this->trimWrittenContent($writtenContent);
+
+        self::assertSame('2023-11-20T10:43:25+00:00', $writtenContent);
+    }
+
+    public function testWriteShouldSupportDateTimeIntervalValues(): void
+    {
+        $dateInterval = new DateInterval('P2Y3M10DT2H10M15S');
+        $allRows = $this->createRowsFromValues([
+            [$dateInterval],
+        ]);
+        $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_dateinterval_values.csv');
+        $writtenContent = $this->trimWrittenContent($writtenContent);
+
+        self::assertSame('P2Y3M10DT2H10M15S0F', $writtenContent);
     }
 
     public function testWriteShouldSupportFormulaLikeContent(): void
