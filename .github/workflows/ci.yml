@@ -52,6 +52,9 @@ jobs:
               php-version: "8.2"
               code-coverage: "none"
             - os: "ubuntu-latest"
+              php-version: "8.1"
+              code-coverage: "none"
+            - os: "ubuntu-latest"
               php-version: "8.3"
               code-coverage: "pcov"
 
@@ -122,7 +125,7 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - "8.3"
+          - "8.2"
 
     steps:
       - uses: "actions/checkout@v4"
