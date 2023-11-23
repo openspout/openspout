@@ -811,4 +811,20 @@ final class ReaderTest extends TestCase
 
         return $allRows;
     }
+
+    public function testShouldSetOptionsFromArray(): void
+    {
+        $tempFolder= (new TestUsingResource())->getTempFolderPath();
+        $options = Options::fromArray([
+            'SHOULD_FORMAT_DATES' => true,
+            'SHOULD_PRESERVE_EMPTY_ROWS' => true,
+            'SHOULD_USE_1904_DATES' => true,
+            'tempFolder' => $tempFolder,
+        ]);
+
+        self::assertTrue($options->SHOULD_FORMAT_DATES);
+        self::assertTrue($options->SHOULD_PRESERVE_EMPTY_ROWS);
+        self::assertTrue($options->SHOULD_USE_1904_DATES);
+        self::assertSame($tempFolder, $options->getTempFolder());
+    }
 }

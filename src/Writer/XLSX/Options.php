@@ -35,6 +35,19 @@ final class Options extends AbstractOptions
     }
 
     /**
+     * @param array<string, mixed> $options Array of options
+     *
+     * @return static
+     */
+    public static function fromArray(array $options): static
+    {
+        $self = parent::fromArray($options);
+        $self->SHOULD_USE_INLINE_STRINGS = $options['SHOULD_USE_INLINE_STRINGS'] ?? $self->SHOULD_USE_INLINE_STRINGS;
+
+        return $self;
+    }
+
+    /**
      * Row coordinates are indexed from 1, columns from 0 (A = 0),
      * so a merge B2:G2 looks like $writer->mergeCells(1, 2, 6, 2);.
      *

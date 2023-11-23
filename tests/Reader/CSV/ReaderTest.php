@@ -428,4 +428,22 @@ final class ReaderTest extends TestCase
 
         return $allRows;
     }
+
+    public function testShouldSetOptionsFromArray(): void
+    {
+        $FIELD_DELIMITER = ';';
+        $FIELD_ENCLOSURE = '\'';
+        $ENCODING = 'testencoding';
+        $options = Options::fromArray([
+            'SHOULD_PRESERVE_EMPTY_ROWS' => true,
+            'FIELD_DELIMITER' => $FIELD_DELIMITER,
+            'FIELD_ENCLOSURE' => $FIELD_ENCLOSURE,
+            'ENCODING' => $ENCODING,
+        ]);
+
+        self::assertTrue($options->SHOULD_PRESERVE_EMPTY_ROWS);
+        self::assertSame($FIELD_DELIMITER, $options->FIELD_DELIMITER);
+        self::assertSame($FIELD_DELIMITER, $options->FIELD_DELIMITER);
+        self::assertSame($ENCODING, $options->ENCODING);
+    }
 }

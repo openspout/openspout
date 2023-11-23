@@ -219,6 +219,25 @@ final class WriterTest extends TestCase
         self::assertSame($options->FLUSH_THRESHOLD, $writer->getOptions()->FLUSH_THRESHOLD);
     }
 
+    public function testShouldSetOptionsFromArray(): void
+    {
+        $FLUSH_THRESHOLD = random_int(100, 199);
+        $FIELD_DELIMITER = ';';
+        $FIELD_ENCLOSURE = '\'';
+        $options = Options::fromArray([
+            'FLUSH_THRESHOLD' => $FLUSH_THRESHOLD,
+            'FIELD_DELIMITER' => $FIELD_DELIMITER,
+            'FIELD_ENCLOSURE' => $FIELD_ENCLOSURE,
+            'SHOULD_ADD_BOM' => false,
+        ]);
+        $writer = new Writer($options);
+
+        self::assertSame($FLUSH_THRESHOLD, $writer->getOptions()->FLUSH_THRESHOLD);
+        self::assertSame($FIELD_DELIMITER, $writer->getOptions()->FIELD_DELIMITER);
+        self::assertSame($FIELD_ENCLOSURE, $writer->getOptions()->FIELD_ENCLOSURE);
+        self::assertFalse($writer->getOptions()->SHOULD_ADD_BOM);
+    }
+
     public function testWriteToCompressedStream(): void
     {
         $fileName = 'csv_compressed.csv.gz';

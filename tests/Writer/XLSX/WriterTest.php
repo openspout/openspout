@@ -602,6 +602,36 @@ final class WriterTest extends TestCase
         self::assertSame($options->DEFAULT_COLUMN_WIDTH, $writer->getOptions()->DEFAULT_COLUMN_WIDTH);
     }
 
+    public function testShouldSetOptionsFromArray(): void
+    {
+        $DEFAULT_FONT_SIZE = random_int(20, 99);
+        $DEFAULT_FONT_NAME = 'testfont';
+        $DEFAULT_FONT_COLOR = 'testcolor';
+        $DEFAULT_COLUMN_WIDTH = (float) random_int(100, 199);
+        $DEFAULT_ROW_HEIGHT = (float) random_int(100, 199);
+        $tempFolder= (new TestUsingResource())->getTempFolderPath();
+        $options = Options::fromArray([
+            'DEFAULT_FONT_SIZE' => $DEFAULT_FONT_SIZE,
+            'DEFAULT_FONT_NAME' => $DEFAULT_FONT_NAME,
+            'DEFAULT_FONT_COLOR' => $DEFAULT_FONT_COLOR,
+            'SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY' => false,
+            'DEFAULT_COLUMN_WIDTH' => $DEFAULT_COLUMN_WIDTH,
+            'DEFAULT_ROW_HEIGHT' => $DEFAULT_ROW_HEIGHT,
+            'SHOULD_USE_INLINE_STRINGS' => false,
+            'tempFolder' => $tempFolder,
+        ]);
+        $writer = new Writer($options);
+
+        self::assertSame($DEFAULT_FONT_SIZE, $writer->getOptions()->DEFAULT_ROW_STYLE->getFontSize());
+        self::assertSame($DEFAULT_FONT_NAME, $writer->getOptions()->DEFAULT_ROW_STYLE->getFontName());
+        self::assertSame($DEFAULT_FONT_COLOR, $writer->getOptions()->DEFAULT_ROW_STYLE->getFontColor());
+        self::assertSame($DEFAULT_COLUMN_WIDTH, $writer->getOptions()->DEFAULT_COLUMN_WIDTH);
+        self::assertFalse($writer->getOptions()->SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY);
+        self::assertSame($DEFAULT_ROW_HEIGHT, $writer->getOptions()->DEFAULT_ROW_HEIGHT);
+        self::assertFalse($writer->getOptions()->SHOULD_USE_INLINE_STRINGS);
+        self::assertSame($tempFolder, $writer->getOptions()->getTempFolder());
+    }
+
     public function testSheetFilenameAreStoredWithIndex(): void
     {
         $fileName = 'sheet_indexes.xlsx';

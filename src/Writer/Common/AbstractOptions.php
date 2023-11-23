@@ -7,6 +7,7 @@ namespace OpenSpout\Writer\Common;
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Common\TempFolderOptionTrait;
 
+/** @phpstan-consistent-constructor */
 abstract class AbstractOptions
 {
     use TempFolderOptionTrait;
@@ -22,6 +23,26 @@ abstract class AbstractOptions
     public function __construct()
     {
         $this->DEFAULT_ROW_STYLE = new Style();
+    }
+
+    /**
+     * @param array<string, mixed> $options Array of options
+     *
+     * @return static
+     */
+    public static function fromArray(array $options): static
+    {
+        $self = new static();
+        $self->DEFAULT_ROW_STYLE = $options['DEFAULT_ROW_STYLE'] ?? $self->DEFAULT_ROW_STYLE;
+        $self->DEFAULT_ROW_STYLE->setFontSize($options['DEFAULT_FONT_SIZE'] ?? $self->DEFAULT_ROW_STYLE->getFontSize());
+        $self->DEFAULT_ROW_STYLE->setFontName($options['DEFAULT_FONT_NAME'] ?? $self->DEFAULT_ROW_STYLE->getFontName());
+        $self->DEFAULT_ROW_STYLE->setFontColor($options['DEFAULT_FONT_COLOR'] ?? $self->DEFAULT_ROW_STYLE->getFontColor());
+        $self->SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY = $options['SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY'] ?? $self->SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY;
+        $self->DEFAULT_COLUMN_WIDTH = $options['DEFAULT_COLUMN_WIDTH'] ?? $self->DEFAULT_COLUMN_WIDTH;
+        $self->DEFAULT_ROW_HEIGHT = $options['DEFAULT_ROW_HEIGHT'] ?? $self->DEFAULT_ROW_HEIGHT;
+        $self->setTempFolder($options['tempFolder'] ?? $self->getTempFolder());
+
+        return $self;
     }
 
     /**

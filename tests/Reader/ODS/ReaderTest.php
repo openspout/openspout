@@ -476,4 +476,15 @@ final class ReaderTest extends TestCase
 
         return $allRows;
     }
+
+    public function testShouldSetOptionsFromArray(): void
+    {
+        $options = Options::fromArray([
+            'SHOULD_FORMAT_DATES' => true,
+            'SHOULD_PRESERVE_EMPTY_ROWS' => true,
+        ]);
+
+        self::assertTrue($options->SHOULD_FORMAT_DATES);
+        self::assertTrue($options->SHOULD_PRESERVE_EMPTY_ROWS);
+    }
 }
