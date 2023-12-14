@@ -474,7 +474,11 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             return;
         }
 
-        $xml = '<pageSetup';
+        if ($pageSetup->fitToPage) {
+            $xml = '<sheetPr><pageSetUpPr fitToPage="1"/></sheetPr>';
+        }
+
+        $xml .= '<pageSetup';
 
         if (null !== $pageSetup->pageOrientation) {
             $xml .= " orientation=\"{$pageSetup->pageOrientation->value}\"";
