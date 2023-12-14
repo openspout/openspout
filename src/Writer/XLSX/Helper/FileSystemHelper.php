@@ -482,6 +482,8 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             return;
         }
 
+        $xml = '';
+
         if ($pageSetup->fitToPage) {
             $xml = '<sheetPr><pageSetUpPr fitToPage="1"/></sheetPr>';
         }

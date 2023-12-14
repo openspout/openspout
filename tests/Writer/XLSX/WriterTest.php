@@ -885,8 +885,6 @@ final class WriterTest extends TestCase
         $options->setPageSetup(new PageSetup(
             PageOrientation::LANDSCAPE,
             PaperSize::A4,
-            0,
-            1,
         ));
         $options->setPageMargin(new PageMargin(1, 2, 3, 4, 5, 6));
 
@@ -903,6 +901,34 @@ final class WriterTest extends TestCase
 
         self::assertNotFalse($xmlContents);
         self::assertStringContainsString('<pageMargins top="1" right="2" bottom="3" left="4" header="5" footer="6"/>', $xmlContents);
+    }
+
+    public function testAddFitToPage(): void
+    {
+        $fileName = 'test_fit_to_page.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+
+        $options->setPageSetup(new PageSetup(
+            PageOrientation::LANDSCAPE,
+            PaperSize::A4,
+            0,
+            1
+        ));
+
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+
+        $row = new Row([Cell::fromValue('something'), Cell::fromValue('else')]);
+        $writer->addRow($row);
+        $writer->close();
+
+        // Now test if the resources contain what we need
+        $pathToSheetFile = $resourcePath.'#xl/worksheets/sheet1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
+
+        self::assertNotFalse($xmlContents);
         self::assertStringContainsString('<sheetPr><pageSetUpPr fitToPage="1"/></sheetPr><pageSetup orientation="landscape" paperSize="9" fitToHeight="0" fitToWidth="1"/>', $xmlContents);
     }
 
