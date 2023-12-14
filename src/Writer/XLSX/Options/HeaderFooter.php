@@ -7,10 +7,10 @@ namespace OpenSpout\Writer\XLSX\Options;
 final class HeaderFooter
 {
     public function __construct(
-        public readonly ?string $oddHeader,
-        public readonly ?string $oddFooter,
-        public readonly ?string $evenHeader,
-        public readonly ?string $evenFooter,
+        public readonly ?string $oddHeader = null,
+        public readonly ?string $oddFooter = null,
+        public readonly ?string $evenHeader = null,
+        public readonly ?string $evenFooter = null,
         public readonly bool $differentOddEven = false,
     ) {}
 }
