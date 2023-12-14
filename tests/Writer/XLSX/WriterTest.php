@@ -906,7 +906,7 @@ final class WriterTest extends TestCase
         self::assertStringContainsString('<sheetPr><pageSetUpPr fitToPage="1"/></sheetPr><pageSetup orientation="landscape" paperSize="9" fitToHeight="0" fitToWidth="1"/>', $xmlContents);
     }
 
-    public function testAddHeaderFooter(): void
+    public function testAddHeaderFooterDifferentOddEven(): void
     {
         $fileName = 'test_header_footer.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
@@ -939,6 +939,41 @@ final class WriterTest extends TestCase
             '<oddFooter>oddFooter</oddFooter>' .
             '<evenHeader>evenHeader</evenHeader>' .
             '<evenFooter>evenFooter</evenFooter>' .
+            '</headerFooter>', $xmlContents
+        );
+    }
+
+    public function testAddHeaderFooterSameOddEven(): void
+    {
+        $fileName = 'test_header_footer.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+
+        $options->setHeaderFooter(new HeaderFooter(
+            'oddHeader',
+            'oddFooter',
+            'evenHeader',
+            null,
+            false
+        ));
+
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+
+        $row = new Row([Cell::fromValue('something'), Cell::fromValue('else')]);
+        $writer->addRow($row);
+        $writer->close();
+
+        // Now test if the resources contain what we need
+        $pathToSheetFile = $resourcePath.'#xl/worksheets/sheet1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString(
+            '<headerFooter>' .
+            '<oddHeader>oddHeader</oddHeader>' .
+            '<oddFooter>oddFooter</oddFooter>' .
             '</headerFooter>', $xmlContents
         );
     }

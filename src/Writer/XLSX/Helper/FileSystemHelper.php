@@ -440,7 +440,13 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             return;
         }
        
-        $xml = "<headerFooter differentOddEven=\"{$headerFooter->differentOddEven}\">";
+        $xml = "<headerFooter";
+
+        if ($headerFooter->differentOddEven) {
+            $xml .= " differentOddEven=\"{$headerFooter->differentOddEven}\"";
+        }
+
+        $xml .= '>';
 
         if (null !== $headerFooter->oddHeader) {
             $xml .= "<oddHeader>{$headerFooter->oddHeader}</oddHeader>";
@@ -450,12 +456,14 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             $xml .= "<oddFooter>{$headerFooter->oddFooter}</oddFooter>";
         }
 
-        if (null !== $headerFooter->evenHeader) {
-            $xml .= "<evenHeader>{$headerFooter->evenHeader}</evenHeader>";
-        }
-
-        if (null !== $headerFooter->evenFooter) {
-            $xml .= "<evenFooter>{$headerFooter->evenFooter}</evenFooter>";
+        if ($headerFooter->differentOddEven) {
+            if (null !== $headerFooter->evenHeader) {
+                $xml .= "<evenHeader>{$headerFooter->evenHeader}</evenHeader>";
+            }
+    
+            if (null !== $headerFooter->evenFooter) {
+                $xml .= "<evenFooter>{$headerFooter->evenFooter}</evenFooter>";
+            }
         }
 
         $xml .= '</headerFooter>';
