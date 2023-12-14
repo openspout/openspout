@@ -21,6 +21,7 @@ use OpenSpout\Writer\AutoFilter;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
 use OpenSpout\Writer\RowCreationHelper;
 use OpenSpout\Writer\XLSX\Manager\WorkbookManager;
+use OpenSpout\Writer\XLSX\Options\HeaderFooter;
 use OpenSpout\Writer\XLSX\Options\PageMargin;
 use OpenSpout\Writer\XLSX\Options\PageOrientation;
 use OpenSpout\Writer\XLSX\Options\PageSetup;
@@ -884,6 +885,8 @@ final class WriterTest extends TestCase
         $options->setPageSetup(new PageSetup(
             PageOrientation::LANDSCAPE,
             PaperSize::A4,
+            0,
+            1,
         ));
         $options->setPageMargin(new PageMargin(1, 2, 3, 4, 5, 6));
 
@@ -900,7 +903,44 @@ final class WriterTest extends TestCase
 
         self::assertNotFalse($xmlContents);
         self::assertStringContainsString('<pageMargins top="1" right="2" bottom="3" left="4" header="5" footer="6"/>', $xmlContents);
-        self::assertStringContainsString('<pageSetup orientation="landscape" paperSize="9"/>', $xmlContents);
+        self::assertStringContainsString('<pageSetup orientation="landscape" paperSize="9" fitToHeight="0" fitToWidth="1"/>', $xmlContents);
+    }
+
+    public function testAddHeaderFooter(): void
+    {
+        $fileName = 'test_header_footer.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+
+        $options->setHeaderFooter(new HeaderFooter(
+            'oddHeader',
+            'oddFooter',
+            'evenHeader',
+            'evenFooter',
+            true
+        ));
+
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+
+        $row = new Row([Cell::fromValue('something'), Cell::fromValue('else')]);
+        $writer->addRow($row);
+        $writer->close();
+
+        // Now test if the resources contain what we need
+        $pathToSheetFile = $resourcePath.'#xl/worksheets/sheet1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString(
+            '<headerFooter differentOddEven="1">' .
+            '<oddHeader>oddHeader</oddHeader>' .
+            '<oddFooter>oddFooter</oddFooter>' .
+            '<evenHeader>evenHeader</evenHeader>' .
+            '<evenFooter>evenFooter</evenFooter>' .
+            '</headerFooter>', $xmlContents
+        );
     }
 
     public function testWriteDateInterval(): void

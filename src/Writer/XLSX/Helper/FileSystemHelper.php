@@ -370,6 +370,8 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 
             $this->getXMLFragmentForPageSetup($worksheetFilePointer, $options);
 
+            $this->getXMLFragmentForHeaderFooter($worksheetFilePointer, $options);
+
             // Add the legacy drawing for comments
             fwrite($worksheetFilePointer, '<legacyDrawing r:id="rId_comments_vml1"/>');
 
@@ -431,6 +433,40 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     /**
      * @param resource $targetResource
      */
+    private function getXMLFragmentForHeaderFooter($targetResource, Options $options): void
+    {
+        $headerFooter = $options->getHeaderFooter();
+        if (null === $headerFooter) {
+            return;
+        }
+       
+        $xml = "<headerFooter differentOddEven=\"{$headerFooter->differentOddEven}\">";
+
+        if (null !== $headerFooter->oddHeader) {
+            $xml .= "<oddHeader>{$headerFooter->oddHeader}</oddHeader>";
+        }
+
+        if (null !== $headerFooter->oddFooter) {
+            $xml .= "<oddFooter>{$headerFooter->oddFooter}</oddFooter>";
+        }
+
+        if (null !== $headerFooter->evenHeader) {
+            $xml .= "<evenHeader>{$headerFooter->evenHeader}</evenHeader>";
+        }
+
+        if (null !== $headerFooter->evenFooter) {
+            $xml .= "<evenFooter>{$headerFooter->evenFooter}</evenFooter>";
+        }
+
+        $xml .= '</headerFooter>';
+
+        fwrite($targetResource, $xml); 
+
+    }
+
+    /**
+     * @param resource $targetResource
+     */
     private function getXMLFragmentForPageSetup($targetResource, Options $options): void
     {
         $pageSetup = $options->getPageSetup();
@@ -446,6 +482,14 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 
         if (null !== $pageSetup->paperSize) {
             $xml .= " paperSize=\"{$pageSetup->paperSize->value}\"";
+        }
+
+        if (null !== $pageSetup->fitToHeight) {
+            $xml .= " fitToHeight=\"{$pageSetup->fitToHeight}\"";
+        }
+
+        if (null !== $pageSetup->fitToWidth) {
+            $xml .= " fitToWidth=\"{$pageSetup->fitToWidth}\"";
         }
 
         $xml .= '/>';

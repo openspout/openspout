@@ -8,6 +8,7 @@ use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Writer\Common\AbstractOptions;
 use OpenSpout\Writer\XLSX\Options\PageMargin;
 use OpenSpout\Writer\XLSX\Options\PageSetup;
+use OpenSpout\Writer\XLSX\Options\HeaderFooter;
 
 final class Options extends AbstractOptions
 {
@@ -22,6 +23,8 @@ final class Options extends AbstractOptions
     private ?PageMargin $pageMargin = null;
 
     private ?PageSetup $pageSetup = null;
+
+    private ?HeaderFooter $headerFooter = null;
 
     public function __construct()
     {
@@ -88,5 +91,15 @@ final class Options extends AbstractOptions
     public function getPageSetup(): ?PageSetup
     {
         return $this->pageSetup;
+    }
+
+    public function setHeaderFooter(HeaderFooter $headerFooter): void
+    {
+        $this->headerFooter = $headerFooter;
+    }
+
+    public function getHeaderFooter(): ?HeaderFooter
+    {
+        return $this->headerFooter;
     }
 }
