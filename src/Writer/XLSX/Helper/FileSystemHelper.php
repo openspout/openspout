@@ -329,10 +329,13 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
                     CellHelper::getColumnLettersFromColumnIndex($autofilter->toColumnIndex),
                     $autofilter->toRow
                 );
-                fwrite($worksheetFilePointer, '<sheetPr filterMode="false"><pageSetUpPr fitToPage="false"/></sheetPr>');
+                if (isset($pageSetup) && $pageSetup->fitToPage) {
+                    fwrite($worksheetFilePointer, '<sheetPr filterMode="false"><pageSetUpPr fitToPage="true"/></sheetPr>');
+                } else {
+                    fwrite($worksheetFilePointer, '<sheetPr filterMode="false"><pageSetUpPr fitToPage="false"/></sheetPr>');
+                }
                 fwrite($worksheetFilePointer, sprintf('<dimension ref="%s"/>', $range));
-            }
-            if (isset($pageSetup) && $pageSetup->fitToPage) {
+            } elseif (isset($pageSetup) && $pageSetup->fitToPage) {
                 fwrite($worksheetFilePointer, '<sheetPr><pageSetUpPr fitToPage="true"/></sheetPr>');
             }
             if (null !== ($sheetView = $sheet->getSheetView())) {
