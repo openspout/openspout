@@ -961,12 +961,13 @@ final class WriterTest extends TestCase
 
         self::assertNotFalse($xmlContents);
         self::assertStringContainsString(
-            '<headerFooter differentOddEven="1">' .
-            '<oddHeader>oddHeader</oddHeader>' .
-            '<oddFooter>oddFooter</oddFooter>' .
-            '<evenHeader>evenHeader</evenHeader>' .
-            '<evenFooter>evenFooter</evenFooter>' .
-            '</headerFooter>', $xmlContents
+            '<headerFooter differentOddEven="1">'.
+            '<oddHeader>oddHeader</oddHeader>'.
+            '<oddFooter>oddFooter</oddFooter>'.
+            '<evenHeader>evenHeader</evenHeader>'.
+            '<evenFooter>evenFooter</evenFooter>'.
+            '</headerFooter>',
+            $xmlContents
         );
     }
 
@@ -998,10 +999,11 @@ final class WriterTest extends TestCase
 
         self::assertNotFalse($xmlContents);
         self::assertStringContainsString(
-            '<headerFooter>' .
-            '<oddHeader>oddHeader</oddHeader>' .
-            '<oddFooter>oddFooter</oddFooter>' .
-            '</headerFooter>', $xmlContents
+            '<headerFooter>'.
+            '<oddHeader>oddHeader</oddHeader>'.
+            '<oddFooter>oddFooter</oddFooter>'.
+            '</headerFooter>',
+            $xmlContents
         );
     }
 
@@ -1025,7 +1027,8 @@ final class WriterTest extends TestCase
 
         self::assertNotFalse($xmlContents);
         self::assertStringContainsString(
-            '<definedNames><definedName name="_xlnm.Print_Titles" localSheetId="0">Sheet1!$1:$1</definedName></definedNames>', $xmlContents
+            '<definedNames><definedName name="_xlnm.Print_Titles" localSheetId="0">Sheet1!$1:$1</definedName></definedNames>',
+            $xmlContents
         );
     }
 

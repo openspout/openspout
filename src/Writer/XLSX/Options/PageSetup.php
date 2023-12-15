@@ -14,7 +14,7 @@ final class PageSetup
         public readonly ?int $fitToHeight = null,
         public readonly ?int $fitToWidth = null,
     ) {
-        if(isset($fitToHeight) || isset($fitToWidth)) {
+        if (isset($fitToHeight) || isset($fitToWidth)) {
             $this->fitToPage = true;
         }
     }

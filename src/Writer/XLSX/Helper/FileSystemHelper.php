@@ -219,11 +219,11 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
                     CellHelper::getColumnLettersFromColumnIndex($autofilter->toColumnIndex),
                     $autofilter->toRow
                 );
-                $definedNames .= '<definedName function="false" hidden="true" localSheetId="'.$sheet->getIndex().'" name="_xlnm._FilterDatabase" vbProcedure="false">'.$name.'</definedName>';              
+                $definedNames .= '<definedName function="false" hidden="true" localSheetId="'.$sheet->getIndex().'" name="_xlnm._FilterDatabase" vbProcedure="false">'.$name.'</definedName>';
             }
             if (null !== $printTitleRows = $sheet->getPrintTitleRows()) {
-                $definedNames .= '<definedName name="_xlnm.Print_Titles" localSheetId="'.$sheet->getIndex().'">' . $this->escaper->escape($sheet->getName()) . '!' . $printTitleRows . '</definedName>';
-            }              
+                $definedNames .= '<definedName name="_xlnm.Print_Titles" localSheetId="'.$sheet->getIndex().'">'.$this->escaper->escape($sheet->getName()).'!'.$printTitleRows.'</definedName>';
+            }
         }
         if ('' !== $definedNames) {
             $workbookXmlFileContents .= '<definedNames>'.$definedNames.'</definedNames>';
@@ -444,8 +444,8 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
         if (null === $headerFooter) {
             return;
         }
-       
-        $xml = "<headerFooter";
+
+        $xml = '<headerFooter';
 
         if ($headerFooter->differentOddEven) {
             $xml .= " differentOddEven=\"{$headerFooter->differentOddEven}\"";
@@ -465,7 +465,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             if (null !== $headerFooter->evenHeader) {
                 $xml .= "<evenHeader>{$headerFooter->evenHeader}</evenHeader>";
             }
-    
+
             if (null !== $headerFooter->evenFooter) {
                 $xml .= "<evenFooter>{$headerFooter->evenFooter}</evenFooter>";
             }
@@ -473,8 +473,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 
         $xml .= '</headerFooter>';
 
-        fwrite($targetResource, $xml); 
-
+        fwrite($targetResource, $xml);
     }
 
     /**

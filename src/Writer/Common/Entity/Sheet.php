@@ -208,7 +208,7 @@ final class Sheet
     {
         return $this->COLUMN_WIDTHS;
     }
-   
+
     public function getPrintTitleRows(): ?string
     {
         return $this->printTitleRows;
@@ -217,5 +217,5 @@ final class Sheet
     public function setPrintTitleRows(string $printTitleRows): void
     {
         $this->printTitleRows = $printTitleRows;
-    }    
+    }
 }
