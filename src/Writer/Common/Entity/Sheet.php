@@ -41,6 +41,9 @@ final class Sheet
     /** @var ColumnWidth[] Array of min-max-width arrays */
     private array $COLUMN_WIDTHS = [];
 
+    /** @var string rows to repeat at top */
+    private ?string $printTitleRows = null;
+
     /**
      * @param 0|positive-int $sheetIndex           Index of the sheet, based on order in the workbook (zero-based)
      * @param string         $associatedWorkbookId ID of the sheet's associated workbook
@@ -205,4 +208,14 @@ final class Sheet
     {
         return $this->COLUMN_WIDTHS;
     }
+   
+    public function getPrintTitleRows(): ?string
+    {
+        return $this->printTitleRows;
+    }
+
+    public function setPrintTitleRows(string $printTitleRows): void
+    {
+        $this->printTitleRows = $printTitleRows;
+    }    
 }

@@ -11,8 +11,8 @@ final class PageSetup
     public function __construct(
         public readonly ?PageOrientation $pageOrientation,
         public readonly ?PaperSize $paperSize,
-        public ?int $fitToHeight = null,
-        public ?int $fitToWidth = null,
+        public readonly ?int $fitToHeight = null,
+        public readonly ?int $fitToWidth = null,
     ) {
         if(isset($fitToHeight) || isset($fitToWidth)) {
             $this->fitToPage = true;

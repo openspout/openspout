@@ -219,8 +219,11 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
                     CellHelper::getColumnLettersFromColumnIndex($autofilter->toColumnIndex),
                     $autofilter->toRow
                 );
-                $definedNames .= '<definedName function="false" hidden="true" localSheetId="'.$sheet->getIndex().'" name="_xlnm._FilterDatabase" vbProcedure="false">'.$name.'</definedName>';
+                $definedNames .= '<definedName function="false" hidden="true" localSheetId="'.$sheet->getIndex().'" name="_xlnm._FilterDatabase" vbProcedure="false">'.$name.'</definedName>';              
             }
+            if (null !== $printTitleRows = $sheet->getPrintTitleRows()) {
+                $definedNames .= '<definedName name="_xlnm.Print_Titles" localSheetId="'.$sheet->getIndex().'">' . $this->escaper->escape($sheet->getName()) . '!' . $printTitleRows . '</definedName>';
+            }              
         }
         if ('' !== $definedNames) {
             $workbookXmlFileContents .= '<definedNames>'.$definedNames.'</definedNames>';

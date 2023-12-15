@@ -1004,6 +1004,30 @@ final class WriterTest extends TestCase
         );
     }
 
+    public function testAddPrintTitleRows(): void
+    {
+        $fileName = 'test_print_title_rows.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+
+        $sheet = $writer->getCurrentSheet();
+        $sheet->setPrintTitleRows('$1:$1');
+        $writer->close();
+
+        // Now test if the resources contain what we need
+        $pathToBookFile = $resourcePath.'#xl/workbook.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToBookFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString(
+            '<definedNames><definedName name="_xlnm.Print_Titles" localSheetId="0">Sheet1!$1:$1</definedName></definedNames>', $xmlContents
+        );
+    }
+
     public function testWriteDateInterval(): void
     {
         $fileName = 'test_date_interval.xlsx';
