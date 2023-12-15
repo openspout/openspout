@@ -903,7 +903,7 @@ final class WriterTest extends TestCase
         self::assertStringContainsString('<pageMargins top="1" right="2" bottom="3" left="4" header="5" footer="6"/>', $xmlContents);
     }
 
-    public function testAddFitToPage(): void
+    public function testAddfitToPageWithTwoArgs(): void
     {
         $fileName = 'test_fit_to_page.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
@@ -931,6 +931,35 @@ final class WriterTest extends TestCase
         self::assertNotFalse($xmlContents);
         self::assertStringContainsString('<sheetPr><pageSetUpPr fitToPage="true"/></sheetPr>', $xmlContents);
         self::assertStringContainsString('<pageSetup orientation="landscape" paperSize="9" fitToHeight="0" fitToWidth="1"/>', $xmlContents);
+    }
+
+    public function testAddfitToPageWithOneArgs(): void
+    {
+        $fileName = 'test_fit_to_page.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+
+        $options->setPageSetup(new PageSetup(
+            PageOrientation::LANDSCAPE,
+            PaperSize::A4,
+            1,
+        ));
+
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+
+        $row = new Row([Cell::fromValue('something'), Cell::fromValue('else')]);
+        $writer->addRow($row);
+        $writer->close();
+
+        // Now test if the resources contain what we need
+        $pathToSheetFile = $resourcePath.'#xl/worksheets/sheet1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString('<sheetPr><pageSetUpPr fitToPage="true"/></sheetPr>', $xmlContents);
+        self::assertStringContainsString('<pageSetup orientation="landscape" paperSize="9" fitToHeight="1"/>', $xmlContents);
     }
 
     public function testAddHeaderFooterDifferentOddEven(): void
@@ -966,6 +995,41 @@ final class WriterTest extends TestCase
             '<oddFooter>oddFooter</oddFooter>'.
             '<evenHeader>evenHeader</evenHeader>'.
             '<evenFooter>evenFooter</evenFooter>'.
+            '</headerFooter>',
+            $xmlContents
+        );
+    }
+
+    public function testAddHeaderFooterDifferentOddEvenWithoutArgument(): void
+    {
+        $fileName = 'test_header_footer.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+
+        $options->setHeaderFooter(new HeaderFooter(
+            'oddHeader',
+            'oddFooter',
+            'evenHeader',
+            'evenFooter',
+        ));
+
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+
+        $row = new Row([Cell::fromValue('something'), Cell::fromValue('else')]);
+        $writer->addRow($row);
+        $writer->close();
+
+        // Now test if the resources contain what we need
+        $pathToSheetFile = $resourcePath.'#xl/worksheets/sheet1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString(
+            '<headerFooter>'.
+            '<oddHeader>oddHeader</oddHeader>'.
+            '<oddFooter>oddFooter</oddFooter>'.
             '</headerFooter>',
             $xmlContents
         );
@@ -1028,6 +1092,37 @@ final class WriterTest extends TestCase
         self::assertNotFalse($xmlContents);
         self::assertStringContainsString(
             '<definedNames><definedName name="_xlnm.Print_Titles" localSheetId="0">Sheet1!$1:$1</definedName></definedNames>',
+            $xmlContents
+        );
+    }
+
+    public function testAddPrintTitleRowsNotOverwriteOtherDefinedName(): void
+    {
+        $fileName = 'test_print_title_rows_not_overwrite_other_defined_name.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+
+        $sheet = $writer->getCurrentSheet();
+        $autoFilter = new AutoFilter(0, 1, 3, 3);
+        $sheet->setAutoFilter($autoFilter);
+        $sheet->setPrintTitleRows('$1:$1');
+        $writer->close();
+
+        // Now test if the resources contain what we need
+        $pathToBookFile = $resourcePath.'#xl/workbook.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToBookFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString(
+            '<definedName function="false" hidden="true" localSheetId="0" name="_xlnm._FilterDatabase" vbProcedure="false">',
+            $xmlContents
+        );
+        self::assertStringContainsString(
+            '<definedName name="_xlnm.Print_Titles" localSheetId="0">Sheet1!$1:$1</definedName>',
             $xmlContents
         );
     }
