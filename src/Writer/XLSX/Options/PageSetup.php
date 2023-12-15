@@ -6,7 +6,7 @@ namespace OpenSpout\Writer\XLSX\Options;
 
 final class PageSetup
 {
-    public bool $fitToPage = false;
+    public readonly bool $fitToPage = false;
 
     public function __construct(
         public readonly ?PageOrientation $pageOrientation,
