@@ -929,7 +929,8 @@ final class WriterTest extends TestCase
         $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
 
         self::assertNotFalse($xmlContents);
-        self::assertStringContainsString('<sheetPr><pageSetUpPr fitToPage="1"/></sheetPr><pageSetup orientation="landscape" paperSize="9" fitToHeight="0" fitToWidth="1"/>', $xmlContents);
+        self::assertStringContainsString('<sheetPr><pageSetUpPr fitToPage="true"/></sheetPr>', $xmlContents);
+        self::assertStringContainsString('<pageSetup orientation="landscape" paperSize="9" fitToHeight="0" fitToWidth="1"/>', $xmlContents);
     }
 
     public function testAddHeaderFooterDifferentOddEven(): void

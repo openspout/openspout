@@ -310,7 +310,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     public function createContentFiles(Options $options, array $worksheets): self
     {
         $allMergeCells = $options->getMergeCells();
-
+        $pageSetup = $options->getPageSetup();
         foreach ($worksheets as $worksheet) {
             $contentXmlFilePath = $this->getXlWorksheetsFolder().\DIRECTORY_SEPARATOR.basename($worksheet->getFilePath());
             $worksheetFilePointer = fopen($contentXmlFilePath, 'w');
@@ -332,7 +332,9 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
                 fwrite($worksheetFilePointer, '<sheetPr filterMode="false"><pageSetUpPr fitToPage="false"/></sheetPr>');
                 fwrite($worksheetFilePointer, sprintf('<dimension ref="%s"/>', $range));
             }
-
+            if (isset($pageSetup) && $pageSetup->fitToPage) {
+                fwrite($worksheetFilePointer, '<sheetPr><pageSetUpPr fitToPage="true"/></sheetPr>');
+            }
             if (null !== ($sheetView = $sheet->getSheetView())) {
                 fwrite($worksheetFilePointer, '<sheetViews>'.$sheetView->getXml().'</sheetViews>');
             }
@@ -485,13 +487,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             return;
         }
 
-        $xml = '';
-
-        if ($pageSetup->fitToPage) {
-            $xml = '<sheetPr><pageSetUpPr fitToPage="1"/></sheetPr>';
-        }
-
-        $xml .= '<pageSetup';
+        $xml = '<pageSetup';
 
         if (null !== $pageSetup->pageOrientation) {
             $xml .= " orientation=\"{$pageSetup->pageOrientation->value}\"";
