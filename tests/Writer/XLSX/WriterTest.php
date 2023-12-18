@@ -900,6 +900,7 @@ final class WriterTest extends TestCase
         $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
 
         self::assertNotFalse($xmlContents);
+        self::assertStringNotContainsString('<sheetPr><pageSetUpPr fitToPage="true"/></sheetPr>', $xmlContents);
         self::assertStringContainsString('<pageMargins top="1" right="2" bottom="3" left="4" header="5" footer="6"/>', $xmlContents);
     }
 
@@ -960,6 +961,62 @@ final class WriterTest extends TestCase
         self::assertNotFalse($xmlContents);
         self::assertStringContainsString('<sheetPr><pageSetUpPr fitToPage="true"/></sheetPr>', $xmlContents);
         self::assertStringContainsString('<pageSetup orientation="landscape" paperSize="9" fitToHeight="1"/>', $xmlContents);
+    }
+
+    public function testAddAutoFilterShouldWriteCorrectSheetPr(): void
+    {
+        $fileName = 'test_auto_filter_should_write_correct_sheet_pr.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $sheet = $writer->getCurrentSheet();
+        $autoFilter = new AutoFilter(0, 1, 3, 3);
+        $sheet->setAutoFilter($autoFilter);
+
+        $row = new Row([Cell::fromValue('something'), Cell::fromValue('else')]);
+        $writer->addRow($row);
+        $writer->close();
+
+        // Now test if the resources contain what we need
+        $pathToSheetFile = $resourcePath.'#xl/worksheets/sheet1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString('<sheetPr filterMode="false"><pageSetUpPr fitToPage="false"/></sheetPr>', $xmlContents);
+    }
+
+    public function testAddAutoFilterAndfitToPageShouldWriteCorrectSheetPr(): void
+    {
+        $fileName = 'test_auto_filter_fit_to_page_should_write_correct_sheet_pr.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+
+        $options->setPageSetup(new PageSetup(
+            PageOrientation::LANDSCAPE,
+            PaperSize::A4,
+            1,
+        ));
+
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $sheet = $writer->getCurrentSheet();
+        $autoFilter = new AutoFilter(0, 1, 3, 3);
+        $sheet->setAutoFilter($autoFilter);
+
+        $row = new Row([Cell::fromValue('something'), Cell::fromValue('else')]);
+        $writer->addRow($row);
+        $writer->close();
+
+        // Now test if the resources contain what we need
+        $pathToSheetFile = $resourcePath.'#xl/worksheets/sheet1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString('<sheetPr filterMode="false"><pageSetUpPr fitToPage="true"/></sheetPr>', $xmlContents);
     }
 
     public function testAddHeaderFooterDifferentOddEven(): void
