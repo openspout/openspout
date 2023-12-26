@@ -33,8 +33,8 @@ interface WriterInterface
      *
      * @param Row $row The row to be appended to the stream
      *
-     * @throws \OpenSpout\Writer\Exception\WriterNotOpenedException If the writer has not been opened yet
-     * @throws \OpenSpout\Common\Exception\IOException              If unable to write data
+     * @throws Exception\WriterNotOpenedException      If the writer has not been opened yet
+     * @throws \OpenSpout\Common\Exception\IOException If unable to write data
      */
     public function addRow(Row $row): void;
 
@@ -44,7 +44,7 @@ interface WriterInterface
      * @param Row[] $rows The rows to be appended to the stream
      *
      * @throws \OpenSpout\Common\Exception\InvalidArgumentException If the input param is not valid
-     * @throws \OpenSpout\Writer\Exception\WriterNotOpenedException If the writer has not been opened yet
+     * @throws Exception\WriterNotOpenedException                   If the writer has not been opened yet
      * @throws \OpenSpout\Common\Exception\IOException              If unable to write data
      */
     public function addRows(array $rows): void;

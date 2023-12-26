@@ -43,7 +43,7 @@ final class SheetManager
      *
      * @param Sheet $sheet The sheet whose future name is checked
      *
-     * @throws \OpenSpout\Writer\Exception\InvalidSheetNameException if the sheet's name is invalid
+     * @throws InvalidSheetNameException if the sheet's name is invalid
      */
     public function throwIfNameIsInvalid(string $name, Sheet $sheet): void
     {
