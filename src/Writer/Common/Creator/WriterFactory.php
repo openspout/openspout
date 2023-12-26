@@ -21,7 +21,7 @@ final class WriterFactory
      *
      * @param string $path The path to the spreadsheet file. Supported extensions are .csv,.ods and .xlsx
      *
-     * @throws \OpenSpout\Common\Exception\UnsupportedTypeException
+     * @throws UnsupportedTypeException
      */
     public static function createFromFile(string $path): WriterInterface
     {

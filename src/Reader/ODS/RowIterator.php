@@ -90,7 +90,7 @@ final class RowIterator implements RowIteratorInterface
      *
      * @see http://php.net/manual/en/iterator.rewind.php
      *
-     * @throws \OpenSpout\Reader\Exception\IteratorNotRewindableException If the iterator is rewound more than once
+     * @throws IteratorNotRewindableException If the iterator is rewound more than once
      */
     public function rewind(): void
     {

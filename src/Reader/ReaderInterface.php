@@ -24,7 +24,7 @@ interface ReaderInterface
      *
      * @return T
      *
-     * @throws \OpenSpout\Reader\Exception\ReaderNotOpenedException If called before opening the reader
+     * @throws Exception\ReaderNotOpenedException If called before opening the reader
      */
     public function getSheetIterator(): SheetIteratorInterface;
 

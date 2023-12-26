@@ -59,7 +59,7 @@ final class InMemoryStrategy implements CachingStrategyInterface
      *
      * @return string The shared string at the given index
      *
-     * @throws \OpenSpout\Reader\Exception\SharedStringNotFoundException If no shared string found for the given index
+     * @throws SharedStringNotFoundException If no shared string found for the given index
      */
     public function getStringAtIndex(int $sharedStringIndex): string
     {

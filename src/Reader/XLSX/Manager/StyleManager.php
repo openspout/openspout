@@ -166,7 +166,7 @@ class StyleManager implements StyleManagerInterface
      * For simplicity, the styles attributes are kept in memory. This is possible thanks
      * to the reuse of formats. So 1 million cells should not use 1 million formats.
      *
-     * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader XML Reader positioned on the "numFmts" node
+     * @param XMLReader $xmlReader XML Reader positioned on the "numFmts" node
      */
     private function extractNumberFormats(XMLReader $xmlReader): void
     {
@@ -188,7 +188,7 @@ class StyleManager implements StyleManagerInterface
      * For simplicity, the styles attributes are kept in memory. This is possible thanks
      * to the reuse of styles. So 1 million cells should not use 1 million styles.
      *
-     * @param \OpenSpout\Reader\Wrapper\XMLReader $xmlReader XML Reader positioned on the "cellXfs" node
+     * @param XMLReader $xmlReader XML Reader positioned on the "cellXfs" node
      */
     private function extractStyleAttributes(XMLReader $xmlReader): void
     {

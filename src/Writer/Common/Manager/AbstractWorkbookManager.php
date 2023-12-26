@@ -190,7 +190,7 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
      *
      * @return Worksheet The created sheet
      *
-     * @throws \OpenSpout\Common\Exception\IOException If unable to open the sheet for writing
+     * @throws IOException If unable to open the sheet for writing
      */
     private function addNewSheet(): Worksheet
     {

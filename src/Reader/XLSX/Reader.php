@@ -66,7 +66,7 @@ final class Reader extends AbstractReader
      *
      * @param string $filePath Path of the file to be read
      *
-     * @throws \OpenSpout\Common\Exception\IOException            If the file at the given path or its content cannot be read
+     * @throws IOException                                        If the file at the given path or its content cannot be read
      * @throws \OpenSpout\Reader\Exception\NoSheetsFoundException If there are no sheets in the file
      */
     protected function openReader(string $filePath): void

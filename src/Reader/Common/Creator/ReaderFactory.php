@@ -22,7 +22,7 @@ final class ReaderFactory
      *
      * @param string $path The path to the spreadsheet file. Supported extensions are .csv,.ods and .xlsx
      *
-     * @throws \OpenSpout\Common\Exception\UnsupportedTypeException
+     * @throws UnsupportedTypeException
      */
     public static function createFromFile(string $path): ReaderInterface
     {
@@ -41,8 +41,8 @@ final class ReaderFactory
      *
      * @param string $path the path to the spreadsheet file
      *
-     * @throws \OpenSpout\Common\Exception\UnsupportedTypeException
-     * @throws \OpenSpout\Common\Exception\IOException
+     * @throws UnsupportedTypeException
+     * @throws IOException
      */
     public static function createFromFileByMimeType(string $path): ReaderInterface
     {

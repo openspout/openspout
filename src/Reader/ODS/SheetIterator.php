@@ -75,7 +75,7 @@ final class SheetIterator implements SheetIteratorInterface
      *
      * @see http://php.net/manual/en/iterator.rewind.php
      *
-     * @throws \OpenSpout\Common\Exception\IOException If unable to open the XML file containing sheets' data
+     * @throws IOException If unable to open the XML file containing sheets' data
      */
     public function rewind(): void
     {

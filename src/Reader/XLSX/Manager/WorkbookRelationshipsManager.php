@@ -114,7 +114,7 @@ final class WorkbookRelationshipsManager
      *
      * @return array<string, string>
      *
-     * @throws \OpenSpout\Common\Exception\IOException If workbook.xml.rels can't be read
+     * @throws IOException If workbook.xml.rels can't be read
      */
     private function getWorkbookRelationships(): array
     {
