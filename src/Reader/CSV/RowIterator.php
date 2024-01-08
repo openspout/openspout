@@ -6,6 +6,7 @@ namespace OpenSpout\Reader\CSV;
 
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Exception\EncodingConversionException;
 use OpenSpout\Common\Helper\EncodingHelper;
 use OpenSpout\Reader\RowIteratorInterface;
 
@@ -79,7 +80,7 @@ final class RowIterator implements RowIteratorInterface
      *
      * @see http://php.net/manual/en/iterator.next.php
      *
-     * @throws \OpenSpout\Common\Exception\EncodingConversionException If unable to convert data to UTF-8
+     * @throws EncodingConversionException If unable to convert data to UTF-8
      */
     public function next(): void
     {
@@ -123,7 +124,7 @@ final class RowIterator implements RowIteratorInterface
     }
 
     /**
-     * @throws \OpenSpout\Common\Exception\EncodingConversionException If unable to convert data to UTF-8
+     * @throws EncodingConversionException If unable to convert data to UTF-8
      */
     private function readDataForNextRow(): void
     {
@@ -168,7 +169,7 @@ final class RowIterator implements RowIteratorInterface
      *
      * @return array<int, null|string>|false The row for the current file pointer, encoded in UTF-8 or FALSE if nothing to read
      *
-     * @throws \OpenSpout\Common\Exception\EncodingConversionException If unable to convert data to UTF-8
+     * @throws EncodingConversionException If unable to convert data to UTF-8
      */
     private function getNextUTF8EncodedRow(): array|false
     {

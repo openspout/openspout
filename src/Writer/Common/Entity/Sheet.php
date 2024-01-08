@@ -7,6 +7,7 @@ namespace OpenSpout\Writer\Common\Entity;
 use OpenSpout\Writer\AutoFilter;
 use OpenSpout\Writer\Common\ColumnWidth;
 use OpenSpout\Writer\Common\Manager\SheetManager;
+use OpenSpout\Writer\Exception\InvalidSheetNameException;
 use OpenSpout\Writer\XLSX\Entity\SheetView;
 
 /**
@@ -88,7 +89,7 @@ final class Sheet
      *
      * @param string $name Name of the sheet
      *
-     * @throws \OpenSpout\Writer\Exception\InvalidSheetNameException if the sheet's name is invalid
+     * @throws InvalidSheetNameException if the sheet's name is invalid
      */
     public function setName(string $name): self
     {

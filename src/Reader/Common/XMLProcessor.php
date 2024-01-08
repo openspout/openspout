@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OpenSpout\Reader\Common;
 
+use OpenSpout\Reader\Exception\XMLProcessingException;
 use OpenSpout\Reader\Wrapper\XMLReader;
 use ReflectionMethod;
 
@@ -55,7 +56,7 @@ final class XMLProcessor
      * Resumes the reading of the XML file where it was left off.
      * Stops whenever a callback indicates that reading should stop or at the end of the file.
      *
-     * @throws \OpenSpout\Reader\Exception\XMLProcessingException
+     * @throws XMLProcessingException
      */
     public function readUntilStopped(): void
     {

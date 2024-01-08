@@ -7,11 +7,12 @@ namespace OpenSpout\Common\Entity;
 use DateInterval;
 use DateTime;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
  */
-final class RowTest extends \PHPUnit\Framework\TestCase
+final class RowTest extends TestCase
 {
     public function testSetCells(): void
     {

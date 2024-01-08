@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OpenSpout\Reader\CSV;
 
+use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\EncodingHelper;
 use OpenSpout\Reader\AbstractReader;
 
@@ -50,7 +51,7 @@ final class Reader extends AbstractReader
      *
      * @param string $filePath Path of the CSV file to be read
      *
-     * @throws \OpenSpout\Common\Exception\IOException
+     * @throws IOException
      */
     protected function openReader(string $filePath): void
     {

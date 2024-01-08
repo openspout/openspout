@@ -6,6 +6,7 @@ namespace OpenSpout\Reader\Common\Creator;
 
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Exception\UnsupportedTypeException;
+use OpenSpout\Reader\CSV\Reader;
 use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
 
@@ -18,14 +19,14 @@ final class ReaderEntityFactoryTest extends TestCase
     {
         $validCsv = TestUsingResource::getResourcePath('csv_test_create_from_file.csv');
         $reader = ReaderFactory::createFromFile($validCsv);
-        self::assertInstanceOf(\OpenSpout\Reader\CSV\Reader::class, $reader);
+        self::assertInstanceOf(Reader::class, $reader);
     }
 
     public function testCreateFromFileCSVAllCaps(): void
     {
         $validCsv = TestUsingResource::getResourcePath('csv_test_create_from_file.CSV');
         $reader = ReaderFactory::createFromFile($validCsv);
-        self::assertInstanceOf(\OpenSpout\Reader\CSV\Reader::class, $reader);
+        self::assertInstanceOf(Reader::class, $reader);
     }
 
     public function testCreateFromFileODS(): void
@@ -53,14 +54,14 @@ final class ReaderEntityFactoryTest extends TestCase
     {
         $notExistingFile = 'thereisnosuchfile.csv';
         $reader = ReaderFactory::createFromFile($notExistingFile);
-        self::assertInstanceOf(\OpenSpout\Reader\CSV\Reader::class, $reader);
+        self::assertInstanceOf(Reader::class, $reader);
     }
 
     public function testCreateFromFileByMimeTypeCSV(): void
     {
         $validCsv = TestUsingResource::getResourcePath('csv_test_create_from_file_by_mime_type.csv');
         $reader = ReaderFactory::createFromFileByMimeType($validCsv);
-        self::assertInstanceOf(\OpenSpout\Reader\CSV\Reader::class, $reader);
+        self::assertInstanceOf(Reader::class, $reader);
     }
 
     public function testCreateFromFileByMimeTypeODS(): void
