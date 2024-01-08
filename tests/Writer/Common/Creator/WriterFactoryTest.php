@@ -6,6 +6,7 @@ namespace OpenSpout\Writer\Common\Creator;
 
 use OpenSpout\Common\Exception\UnsupportedTypeException;
 use OpenSpout\TestUsingResource;
+use OpenSpout\Writer\CSV\Writer;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -17,14 +18,14 @@ final class WriterFactoryTest extends TestCase
     {
         $validCsv = TestUsingResource::getResourcePath('csv_test_create_from_file.csv');
         $writer = WriterFactory::createFromFile($validCsv);
-        self::assertInstanceOf(\OpenSpout\Writer\CSV\Writer::class, $writer);
+        self::assertInstanceOf(Writer::class, $writer);
     }
 
     public function testCreateFromFileCSVAllCaps(): void
     {
         $validCsv = TestUsingResource::getResourcePath('csv_test_create_from_file.CSV');
         $writer = WriterFactory::createFromFile($validCsv);
-        self::assertInstanceOf(\OpenSpout\Writer\CSV\Writer::class, $writer);
+        self::assertInstanceOf(Writer::class, $writer);
     }
 
     public function testCreateFromFileODS(): void

@@ -7,6 +7,7 @@ namespace OpenSpout\Reader\ODS;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\Escaper\ODS;
 use OpenSpout\Reader\AbstractReader;
+use OpenSpout\Reader\Exception\NoSheetsFoundException;
 use OpenSpout\Reader\ODS\Helper\SettingsHelper;
 use ZipArchive;
 
@@ -47,8 +48,8 @@ final class Reader extends AbstractReader
      *
      * @param string $filePath Path of the file to be read
      *
-     * @throws IOException                                        If the file at the given path or its content cannot be read
-     * @throws \OpenSpout\Reader\Exception\NoSheetsFoundException If there are no sheets in the file
+     * @throws IOException            If the file at the given path or its content cannot be read
+     * @throws NoSheetsFoundException If there are no sheets in the file
      */
     protected function openReader(string $filePath): void
     {

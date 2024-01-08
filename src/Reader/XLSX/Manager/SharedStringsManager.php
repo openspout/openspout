@@ -6,6 +6,7 @@ namespace OpenSpout\Reader\XLSX\Manager;
 
 use DOMElement;
 use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Reader\Exception\SharedStringNotFoundException;
 use OpenSpout\Reader\Exception\XMLProcessingException;
 use OpenSpout\Reader\Wrapper\XMLReader;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactoryInterface;
@@ -118,7 +119,7 @@ final class SharedStringsManager
      *
      * @return string The shared string at the given index
      *
-     * @throws \OpenSpout\Reader\Exception\SharedStringNotFoundException If no shared string found for the given index
+     * @throws SharedStringNotFoundException If no shared string found for the given index
      */
     public function getStringAtIndex(int $sharedStringIndex): string
     {
