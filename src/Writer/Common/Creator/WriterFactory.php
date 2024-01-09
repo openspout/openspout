@@ -13,6 +13,8 @@ use OpenSpout\Writer\XLSX\Writer as XLSXWriter;
 /**
  * This factory is used to create writers, based on the type of the file to be read.
  * It supports CSV, XLSX and ODS formats.
+ *
+ * @deprecated Guessing mechanisms are brittle by nature and won't be provided by this library anymore
  */
 final class WriterFactory
 {
