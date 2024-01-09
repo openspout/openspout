@@ -222,6 +222,9 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
                 );
                 $definedNames .= '<definedName function="false" hidden="true" localSheetId="'.$sheet->getIndex().'" name="_xlnm._FilterDatabase" vbProcedure="false">'.$name.'</definedName>';
             }
+            if (null !== $printTitleRows = $sheet->getPrintTitleRows()) {
+                $definedNames .= '<definedName name="_xlnm.Print_Titles" localSheetId="'.$sheet->getIndex().'">'.$this->escaper->escape($sheet->getName()).'!'.$printTitleRows.'</definedName>';
+            }
         }
         if ('' !== $definedNames) {
             $workbookXmlFileContents .= '<definedNames>'.$definedNames.'</definedNames>';
@@ -308,7 +311,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     public function createContentFiles(Options $options, array $worksheets): self
     {
         $allMergeCells = $options->getMergeCells();
-
+        $pageSetup = $options->getPageSetup();
         foreach ($worksheets as $worksheet) {
             $contentXmlFilePath = $this->getXlWorksheetsFolder().\DIRECTORY_SEPARATOR.basename($worksheet->getFilePath());
             $worksheetFilePointer = fopen($contentXmlFilePath, 'w');
@@ -327,10 +330,15 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
                     CellHelper::getColumnLettersFromColumnIndex($autofilter->toColumnIndex),
                     $autofilter->toRow
                 );
-                fwrite($worksheetFilePointer, '<sheetPr filterMode="false"><pageSetUpPr fitToPage="false"/></sheetPr>');
+                if (isset($pageSetup) && $pageSetup->fitToPage) {
+                    fwrite($worksheetFilePointer, '<sheetPr filterMode="false"><pageSetUpPr fitToPage="true"/></sheetPr>');
+                } else {
+                    fwrite($worksheetFilePointer, '<sheetPr filterMode="false"><pageSetUpPr fitToPage="false"/></sheetPr>');
+                }
                 fwrite($worksheetFilePointer, sprintf('<dimension ref="%s"/>', $range));
+            } elseif (isset($pageSetup) && $pageSetup->fitToPage) {
+                fwrite($worksheetFilePointer, '<sheetPr><pageSetUpPr fitToPage="true"/></sheetPr>');
             }
-
             if (null !== ($sheetView = $sheet->getSheetView())) {
                 fwrite($worksheetFilePointer, '<sheetViews>'.$sheetView->getXml().'</sheetViews>');
             }
@@ -370,6 +378,8 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             $this->getXMLFragmentForPageMargin($worksheetFilePointer, $options);
 
             $this->getXMLFragmentForPageSetup($worksheetFilePointer, $options);
+
+            $this->getXMLFragmentForHeaderFooter($worksheetFilePointer, $options);
 
             // Add the legacy drawing for comments
             fwrite($worksheetFilePointer, '<legacyDrawing r:id="rId_comments_vml1"/>');
@@ -432,6 +442,47 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     /**
      * @param resource $targetResource
      */
+    private function getXMLFragmentForHeaderFooter($targetResource, Options $options): void
+    {
+        $headerFooter = $options->getHeaderFooter();
+        if (null === $headerFooter) {
+            return;
+        }
+
+        $xml = '<headerFooter';
+
+        if ($headerFooter->differentOddEven) {
+            $xml .= " differentOddEven=\"{$headerFooter->differentOddEven}\"";
+        }
+
+        $xml .= '>';
+
+        if (null !== $headerFooter->oddHeader) {
+            $xml .= "<oddHeader>{$headerFooter->oddHeader}</oddHeader>";
+        }
+
+        if (null !== $headerFooter->oddFooter) {
+            $xml .= "<oddFooter>{$headerFooter->oddFooter}</oddFooter>";
+        }
+
+        if ($headerFooter->differentOddEven) {
+            if (null !== $headerFooter->evenHeader) {
+                $xml .= "<evenHeader>{$headerFooter->evenHeader}</evenHeader>";
+            }
+
+            if (null !== $headerFooter->evenFooter) {
+                $xml .= "<evenFooter>{$headerFooter->evenFooter}</evenFooter>";
+            }
+        }
+
+        $xml .= '</headerFooter>';
+
+        fwrite($targetResource, $xml);
+    }
+
+    /**
+     * @param resource $targetResource
+     */
     private function getXMLFragmentForPageSetup($targetResource, Options $options): void
     {
         $pageSetup = $options->getPageSetup();
@@ -447,6 +498,14 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 
         if (null !== $pageSetup->paperSize) {
             $xml .= " paperSize=\"{$pageSetup->paperSize->value}\"";
+        }
+
+        if (null !== $pageSetup->fitToHeight) {
+            $xml .= " fitToHeight=\"{$pageSetup->fitToHeight}\"";
+        }
+
+        if (null !== $pageSetup->fitToWidth) {
+            $xml .= " fitToWidth=\"{$pageSetup->fitToWidth}\"";
         }
 
         $xml .= '/>';
