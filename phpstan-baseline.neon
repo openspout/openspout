@@ -16,21 +16,6 @@ parameters:
 			path: src/Reader/Common/Creator/ReaderFactory.php
 
 		-
-			message: "#^Access to an undefined property OpenSpout\\\\Reader\\\\Wrapper\\\\XMLReader\\:\\:\\$localName\\.$#"
-			count: 1
-			path: src/Reader/Common/XMLProcessor.php
-
-		-
-			message: "#^Access to an undefined property OpenSpout\\\\Reader\\\\Wrapper\\\\XMLReader\\:\\:\\$name\\.$#"
-			count: 1
-			path: src/Reader/Common/XMLProcessor.php
-
-		-
-			message: "#^Access to an undefined property OpenSpout\\\\Reader\\\\Wrapper\\\\XMLReader\\:\\:\\$nodeType\\.$#"
-			count: 1
-			path: src/Reader/Common/XMLProcessor.php
-
-		-
 			message: "#^Cannot access offset 0 on callable\\(\\)\\: mixed\\.$#"
 			count: 1
 			path: src/Reader/Common/XMLProcessor.php
@@ -46,29 +31,9 @@ parameters:
 			path: src/Reader/RowIteratorInterface.php
 
 		-
-			message: "#^Access to an undefined property OpenSpout\\\\Reader\\\\Wrapper\\\\XMLReader\\:\\:\\$localName\\.$#"
-			count: 2
-			path: src/Reader/Wrapper/XMLReader.php
-
-		-
-			message: "#^Access to an undefined property OpenSpout\\\\Reader\\\\Wrapper\\\\XMLReader\\:\\:\\$name\\.$#"
-			count: 1
-			path: src/Reader/Wrapper/XMLReader.php
-
-		-
-			message: "#^Access to an undefined property OpenSpout\\\\Reader\\\\Wrapper\\\\XMLReader\\:\\:\\$nodeType\\.$#"
-			count: 1
-			path: src/Reader/Wrapper/XMLReader.php
-
-		-
 			message: "#^Dynamic call to static method XMLReader\\:\\:open\\(\\)\\.$#"
 			count: 1
 			path: src/Reader/Wrapper/XMLReader.php
-
-		-
-			message: "#^Access to an undefined property OpenSpout\\\\Reader\\\\Wrapper\\\\XMLReader\\:\\:\\$nodeType\\.$#"
-			count: 1
-			path: src/Reader/XLSX/Manager/SharedStringsManager.php
 
 		-
 			message: "#^Parameter \\#1 \\$callback of function array_map expects \\(callable\\(OpenSpout\\\\Common\\\\Entity\\\\Cell\\)\\: mixed\\)\\|null, Closure\\(OpenSpout\\\\Common\\\\Entity\\\\Cell\\\\BooleanCell\\|OpenSpout\\\\Common\\\\Entity\\\\Cell\\\\DateIntervalCell\\|OpenSpout\\\\Common\\\\Entity\\\\Cell\\\\DateTimeCell\\|OpenSpout\\\\Common\\\\Entity\\\\Cell\\\\EmptyCell\\|OpenSpout\\\\Common\\\\Entity\\\\Cell\\\\FormulaCell\\|OpenSpout\\\\Common\\\\Entity\\\\Cell\\\\NumericCell\\|OpenSpout\\\\Common\\\\Entity\\\\Cell\\\\StringCell\\)\\: string given\\.$#"
