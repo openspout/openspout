@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace OpenSpout\Reader\XLSX\Manager;
 
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -127,7 +128,7 @@ final class StyleManagerTest extends TestCase
 
     private function getStyleManagerMock(array $styleAttributes = [], array $customNumberFormats = []): StyleManager
     {
-        /** @var \PHPUnit\Framework\MockObject\MockObject|StyleManager $styleManager */
+        /** @var MockObject|StyleManager $styleManager */
         $styleManager = $this->getMockBuilder(StyleManager::class)
             ->setConstructorArgs(['/path/to/file.xlsx', uniqid()])
             ->onlyMethods(['getCustomNumberFormats', 'getStylesAttributes'])
