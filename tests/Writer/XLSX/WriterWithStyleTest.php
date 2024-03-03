@@ -335,9 +335,9 @@ final class WriterWithStyleTest extends TestCase
         $underlineStyle = (new Style())->setFontUnderline();
 
         $dataRow = new Row([
-            Cell::fromValue('xlsx--11', $boldStyle),
-            Cell::fromValue('xlsx--12', $underlineStyle),
-            Cell::fromValue('xlsx--13', $underlineStyle),
+            Cell::fromValue('xlsx--11')->setStyle($boldStyle),
+            Cell::fromValue('xlsx--12')->setStyle($underlineStyle),
+            Cell::fromValue('xlsx--13')->setStyle($underlineStyle),
         ]);
 
         $this->writeToXLSXFile([$dataRow], $fileName);

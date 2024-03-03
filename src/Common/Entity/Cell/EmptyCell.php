@@ -9,11 +9,8 @@ use OpenSpout\Common\Entity\Style\Style;
 
 final class EmptyCell extends Cell
 {
-    private readonly ?string $value;
-
-    public function __construct(?string $value, ?Style $style)
+    public function __construct(private readonly ?string $value, ?Style $style = null)
     {
-        $this->value = $value;
         parent::__construct($style);
     }
 

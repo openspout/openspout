@@ -250,9 +250,9 @@ final class WriterWithStyleTest extends TestCase
         $underlineStyle = (new Style())->setFontUnderline();
 
         $dataRow = new Row([
-            Cell::fromValue('ods--11', $boldStyle),
-            Cell::fromValue('ods--12', $underlineStyle),
-            Cell::fromValue('ods--13', $underlineStyle),
+            Cell::fromValue('ods--11')->setStyle($boldStyle),
+            Cell::fromValue('ods--12')->setStyle($underlineStyle),
+            Cell::fromValue('ods--13')->setStyle($underlineStyle),
         ]);
 
         $this->writeToODSFile([$dataRow], $fileName);
