@@ -101,7 +101,7 @@ final class CellValueFormatter
             if (null !== $fNodeValue) {
                 $computedValue = $this->formatNumericCellValue($vNodeValue, (int) $node->getAttribute(self::XML_ATTRIBUTE_STYLE_ID));
 
-                return new Cell\FormulaCell('='.$fNodeValue, null, $computedValue);
+                return new Cell\FormulaCell('='.$fNodeValue, $computedValue);
             }
         }
 

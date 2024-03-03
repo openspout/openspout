@@ -392,8 +392,8 @@ $zebraWhiteStyle->setFontColor(Color::BLACK);
 $zebraWhiteStyle->setFontItalic();
 
 $cells = [
-    Cell::fromValue('Ze', $zebraBlackStyle),
-    Cell::fromValue('bra', $zebraWhiteStyle)
+    Cell::fromValue('Ze')->withStyle($zebraBlackStyle),
+    Cell::fromValue('bra')->withStyle($zebraWhiteStyle)
 ];
 
 $rowStyle = new Style();

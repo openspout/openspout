@@ -5,16 +5,11 @@ declare(strict_types=1);
 namespace OpenSpout\Common\Entity\Cell;
 
 use OpenSpout\Common\Entity\Cell;
-use OpenSpout\Common\Entity\Style\Style;
 
 final class StringCell extends Cell
 {
-    private readonly string $value;
-
-    public function __construct(string $value, ?Style $style)
+    public function __construct(private readonly string $value)
     {
-        $this->value = $value;
-        parent::__construct($style);
     }
 
     public function getValue(): string

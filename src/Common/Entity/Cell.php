@@ -22,44 +22,41 @@ abstract class Cell
 
     private Style $style;
 
-    public function __construct(?Style $style)
+    public function withStyle(Style $style): static
     {
-        $this->setStyle($style);
+        $new = clone $this;
+        $new->style = $style;
+        return $new;
     }
 
     abstract public function getValue(): null|bool|DateInterval|DateTimeInterface|float|int|string;
 
-    final public function setStyle(?Style $style): void
-    {
-        $this->style = $style ?? new Style();
-    }
-
     final public function getStyle(): Style
     {
-        return $this->style;
+        return $this->style ?? new Style();
     }
 
-    final public static function fromValue(null|bool|DateInterval|DateTimeInterface|float|int|string $value, ?Style $style = null): self
+    final public static function fromValue(null|bool|DateInterval|DateTimeInterface|float|int|string $value): self
     {
         if (\is_bool($value)) {
-            return new BooleanCell($value, $style);
+            return new BooleanCell($value);
         }
         if (null === $value || '' === $value) {
-            return new EmptyCell($value, $style);
+            return new EmptyCell($value);
         }
         if (\is_int($value) || \is_float($value)) {
-            return new NumericCell($value, $style);
+            return new NumericCell($value);
         }
         if ($value instanceof DateTimeInterface) {
-            return new DateTimeCell($value, $style);
+            return new DateTimeCell($value);
         }
         if ($value instanceof DateInterval) {
-            return new DateIntervalCell($value, $style);
+            return new DateIntervalCell($value);
         }
         if (isset($value[0]) && '=' === $value[0]) {
-            return new FormulaCell($value, $style, null);
+            return new FormulaCell($value, null);
         }
 
-        return new StringCell($value, $style);
+        return new StringCell($value);
     }
 }
