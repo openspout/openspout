@@ -29,6 +29,6 @@ final class ErrorCell extends Cell
 
     public function __toString(): string
     {
-        return (string) $this->getValue();
+        return $this->getValue();
     }
 }
