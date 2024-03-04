@@ -22,14 +22,24 @@ abstract class Cell
 
     private Style $style;
 
-    public function withStyle(Style $style): static
+    /**
+     * @param Style|null $style
+     * @deprecated
+     */
+    public function __construct(?Style $style = null)
     {
-        $new = clone $this;
-        $new->style = $style;
-        return $new;
+        if ($style !== null) {
+            $this->setStyle($style);
+        }
     }
 
     abstract public function getValue(): null|bool|DateInterval|DateTimeInterface|float|int|string;
+
+    final public function setStyle(Style $style): static
+    {
+        $this->style = $style;
+        return $this;
+    }
 
     final public function getStyle(): Style
     {

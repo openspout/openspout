@@ -6,6 +6,7 @@ namespace OpenSpout\Common\Entity\Cell;
 
 use DateInterval;
 use OpenSpout\Common\Entity\Cell;
+use OpenSpout\Common\Entity\Style\Style;
 
 final class DateIntervalCell extends Cell
 {
@@ -15,8 +16,9 @@ final class DateIntervalCell extends Cell
      * This makes sure excel knows what to do with the remaining time that exceeds this unit. Without brackets Excel
      *   will interpret the value as date time and not duration if it is greater or equal 1.
      */
-    public function __construct(private readonly DateInterval $value)
+    public function __construct(private readonly DateInterval $value, ?Style $style = null)
     {
+        parent::__construct($style);
     }
 
     public function getValue(): DateInterval

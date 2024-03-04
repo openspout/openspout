@@ -172,7 +172,7 @@ final class WorksheetManager implements WorksheetManagerInterface
     {
         $isMatchingRowStyle = false;
         if ($cell->getStyle()->isEmpty()) {
-            $cell = $cell->withStyle($rowStyle);
+            $cell->setStyle($rowStyle);
 
             $possiblyUpdatedStyle = $this->styleManager->applyExtraStylesIfNeeded($cell);
 
@@ -184,7 +184,7 @@ final class WorksheetManager implements WorksheetManagerInterface
             }
         } else {
             $mergedCellAndRowStyle = $this->styleMerger->merge($cell->getStyle(), $rowStyle);
-            $cell = $cell->withStyle($mergedCellAndRowStyle);
+            $cell->setStyle($mergedCellAndRowStyle);
 
             $possiblyUpdatedStyle = $this->styleManager->applyExtraStylesIfNeeded($cell);
             if ($possiblyUpdatedStyle->isUpdated()) {
