@@ -41,10 +41,10 @@ final class Row
      */
     public static function fromValues(array $cellValues = [], ?Style $rowStyle = null): self
     {
-        $cells = array_map(static function (null|bool|DateInterval|DateTimeInterface|float|int|string $cellValue): Cell {
-            return Cell::fromValue($cellValue);
-        }, $cellValues);
-
+        $cells = [];
+        foreach ($cellValues as $cellValue) {
+            $cells[] = Cell::fromValue($cellValue);
+        }
         return new self($cells, $rowStyle);
     }
 

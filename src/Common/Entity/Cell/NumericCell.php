@@ -21,4 +21,9 @@ final class NumericCell extends Cell
     {
         return $this->value;
     }
+
+    public function __toString(): string
+    {
+        return (string) $this->getValue();
+    }
 }

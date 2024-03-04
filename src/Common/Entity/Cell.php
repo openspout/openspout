@@ -30,11 +30,6 @@ abstract class Cell implements Stringable
 
     abstract public function getValue(): null|bool|DateInterval|DateTimeInterface|float|int|string;
 
-    public function __toString(): string
-    {
-        return (string) $this->getValue();
-    }
-
     final public function setStyle(?Style $style): void
     {
         $this->style = $style ?? new Style();

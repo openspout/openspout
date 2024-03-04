@@ -48,14 +48,9 @@ final class Writer extends AbstractWriter
      */
     protected function addRowToWriter(Row $row): void
     {
-        $cells = [];
-        foreach ($row->getCells() as $key => $cell) {
-            $cells[$key] = (string)$cell;
-        }
-
         $wasWriteSuccessful = fputcsv(
             $this->filePointer,
-            $cells,
+            $row->getCells(),
             $this->options->FIELD_DELIMITER,
             $this->options->FIELD_ENCLOSURE,
             ''
