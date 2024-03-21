@@ -6,6 +6,7 @@ namespace OpenSpout\Common\Entity;
 
 use DateInterval;
 use DateTimeInterface;
+use OpenSpout\Common\Entity\Cell\StringCell;
 use OpenSpout\Common\Entity\Style\Style;
 
 final class Row
@@ -37,11 +38,14 @@ final class Row
     }
 
     /**
-     * @param list<null|bool|DateInterval|DateTimeInterface|float|int|string> $cellValues
+     * @param list<null|bool|DateInterval|DateTimeInterface|float|int|string|StringCell> $cellValues
      */
     public static function fromValues(array $cellValues = [], ?Style $rowStyle = null): self
     {
-        $cells = array_map(static function (null|bool|DateInterval|DateTimeInterface|float|int|string $cellValue): Cell {
+        $cells = array_map(static function (null|bool|DateInterval|DateTimeInterface|float|int|string|StringCell $cellValue): Cell {
+            if ($cellValue instanceof StringCell) {
+                return $cellValue;
+            }
             return Cell::fromValue($cellValue);
         }, $cellValues);
 
