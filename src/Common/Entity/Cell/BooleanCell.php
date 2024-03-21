@@ -9,11 +9,8 @@ use OpenSpout\Common\Entity\Style\Style;
 
 final class BooleanCell extends Cell
 {
-    private readonly bool $value;
-
-    public function __construct(bool $value, ?Style $style)
+    public function __construct(public readonly bool $value, ?Style $style = null)
     {
-        $this->value = $value;
         parent::__construct($style);
     }
 
