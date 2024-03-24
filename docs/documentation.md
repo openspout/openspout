@@ -80,6 +80,23 @@ $sheetView = new SheetView();
 $sheetView->setFreezeRow(2); // First row will be fixed
 $sheetView->setFreezeColumn('D'); // Columns A to C will be fixed
 $sheetView->setZoomScale(150); // And other options
+$sheetView->setShowFormulas(true);
+$sheetView->setShowGridLines(false);
+$sheetView->setShowRowColHeaders(false);
+$sheetView->setShowZeroes(false);
+$sheetView->setRightToLeft(true); // Change sheet direction
+$sheetView->setTabSelected(false);
+$sheetView->setShowOutlineSymbols(false);
+$sheetView->setDefaultGridColor(false);
+$sheetView->setView('normal');
+$sheetView->setTopLeftCell('A2');
+$sheetView->setColorId(1);
+$sheetView->setZoomScale(50);
+$sheetView->setZoomScaleNormal(70);
+$sheetView->setZoomScalePageLayoutView(80);
+$sheetView->setWorkbookViewId(90);
+$sheetView->setFreezeColumn('B');
+$sheetView->setFreezeRow(2);
 
 $writer = new Writer();
 $writer->getCurrentSheet()->setSheetView($sheetView);
