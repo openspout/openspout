@@ -73,7 +73,16 @@ class InternalEntityFactory implements InternalEntityFactoryInterface
     ) {
         $rowIterator = $this->createRowIterator($filePath, $sheetDataXMLFilePath, $optionsManager, $sharedStringsManager);
 
-        return new Sheet($rowIterator, $sheetIndex, $sheetName, $isSheetActive, $isSheetVisible);
+        $mergeCellsManager = $this->managerFactory->createMergeCellsManager(
+            $filePath,
+            $sheetDataXMLFilePath,
+            $optionsManager,
+            $this
+        );
+
+        $mergeCells = $mergeCellsManager->getMergeCells();
+
+        return new Sheet($rowIterator, $sheetIndex, $sheetName, $isSheetActive, $isSheetVisible, $mergeCells);
     }
 
     /**

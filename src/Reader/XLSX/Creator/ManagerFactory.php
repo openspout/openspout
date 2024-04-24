@@ -3,6 +3,7 @@
 namespace OpenSpout\Reader\XLSX\Creator;
 
 use OpenSpout\Reader\Common\Manager\RowManager;
+use OpenSpout\Reader\XLSX\Manager\MergeCellsManager;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsManager;
 use OpenSpout\Reader\XLSX\Manager\SheetManager;
@@ -90,6 +91,19 @@ class ManagerFactory
     public function createRowManager($entityFactory)
     {
         return new RowManager($entityFactory);
+    }
+
+    /**
+     * @param string $filePath                                                  Path of the XLSX file being read
+     * @param string $sheetDataXMLFilePath                                      Path of the sheet data XML file as in [Content_Types].xml
+     * @param \OpenSpout\Common\Manager\OptionsManagerInterface $optionsManager Reader's options manager
+     * @param InternalEntityFactory $entityFactory                              Factory to create entities
+     *
+     * @return MergeCellsManager
+     */
+    public function createMergeCellsManager($filePath, $sheetDataXMLFilePath, $optionsManager, $entityFactory)
+    {
+        return new MergeCellsManager($filePath, $sheetDataXMLFilePath, $optionsManager, $entityFactory);
     }
 
     /**

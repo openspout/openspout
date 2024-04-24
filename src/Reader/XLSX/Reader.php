@@ -51,6 +51,20 @@ class Reader extends ReaderAbstract
     }
 
     /**
+     * Sets whether merge cells should be loaded from sheet data xml
+     *
+     * @param bool $shouldLoadMergeCells
+     *
+     * @return ReaderAbstract
+     */
+    public function setShouldLoadMergeCells($shouldLoadMergeCells)
+    {
+        $this->optionsManager->setOption(Options::SHOULD_LOAD_MERGE_CELLS, $shouldLoadMergeCells);
+
+        return $this;
+    }
+
+    /**
      * Returns whether stream wrappers are supported.
      *
      * @return bool

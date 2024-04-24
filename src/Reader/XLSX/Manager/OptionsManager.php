@@ -20,6 +20,7 @@ class OptionsManager extends OptionsManagerAbstract
             Options::SHOULD_FORMAT_DATES,
             Options::SHOULD_PRESERVE_EMPTY_ROWS,
             Options::SHOULD_USE_1904_DATES,
+            Options::SHOULD_LOAD_MERGE_CELLS,
         ];
     }
 
@@ -32,5 +33,6 @@ class OptionsManager extends OptionsManagerAbstract
         $this->setOption(Options::SHOULD_FORMAT_DATES, false);
         $this->setOption(Options::SHOULD_PRESERVE_EMPTY_ROWS, false);
         $this->setOption(Options::SHOULD_USE_1904_DATES, false);
+        $this->setOption(Options::SHOULD_LOAD_MERGE_CELLS, false);
     }
 }

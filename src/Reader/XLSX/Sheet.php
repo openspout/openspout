@@ -24,20 +24,25 @@ class Sheet implements SheetInterface
     /** @var bool Whether the sheet is visible */
     protected $isVisible;
 
+    /** @var array Merge cells list ["C7:E7", "A9:D10"] */
+    protected $mergeCells;
+
     /**
      * @param RowIterator $rowIterator    The corresponding row iterator
      * @param int         $sheetIndex     Index of the sheet, based on order in the workbook (zero-based)
      * @param string      $sheetName      Name of the sheet
      * @param bool        $isSheetActive  Whether the sheet was defined as active
      * @param bool        $isSheetVisible Whether the sheet is visible
+     * @param array       $mergeCells     Merge cells list ["C7:E7", "A9:D10"]
      */
-    public function __construct($rowIterator, $sheetIndex, $sheetName, $isSheetActive, $isSheetVisible)
+    public function __construct($rowIterator, $sheetIndex, $sheetName, $isSheetActive, $isSheetVisible, $mergeCells)
     {
         $this->rowIterator = $rowIterator;
         $this->index = $sheetIndex;
         $this->name = $sheetName;
         $this->isActive = $isSheetActive;
         $this->isVisible = $isSheetVisible;
+        $this->mergeCells = $mergeCells;
     }
 
     /**
@@ -78,5 +83,13 @@ class Sheet implements SheetInterface
     public function isVisible()
     {
         return $this->isVisible;
+    }
+
+    /**
+     * @return array Merge cells list ["C7:E7", "A9:D10"]
+     */
+    public function getMergeCells(): array
+    {
+        return $this->mergeCells;
     }
 }

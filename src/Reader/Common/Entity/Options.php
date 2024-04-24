@@ -19,4 +19,5 @@ abstract class Options
     // XLSX specific options
     public const TEMP_FOLDER = 'tempFolder';
     public const SHOULD_USE_1904_DATES = 'shouldUse1904Dates';
+    public const SHOULD_LOAD_MERGE_CELLS = 'shouldLoadMergeCells';
 }
