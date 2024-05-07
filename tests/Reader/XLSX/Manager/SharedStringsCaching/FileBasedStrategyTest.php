@@ -36,4 +36,15 @@ final class FileBasedStrategyTest extends TestCase
         $this->expectException(SharedStringNotFoundException::class);
         $this->strategy->getStringAtIndex(99);
     }
+
+    public function testPagedStrings(): void
+    {
+        $this->strategy->addStringForIndex('a', 0);
+        $this->strategy->addStringForIndex('b', 999);
+        $this->strategy->addStringForIndex('c', 999 * 2);
+        $this->strategy->closeCache();
+        self::assertSame('a', $this->strategy->getStringAtIndex(0));
+        self::assertSame('b', $this->strategy->getStringAtIndex(999));
+        self::assertSame('c', $this->strategy->getStringAtIndex(999 * 2));
+    }
 }
