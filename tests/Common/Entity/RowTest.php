@@ -6,6 +6,7 @@ namespace OpenSpout\Common\Entity;
 
 use DateInterval;
 use DateTime;
+use OpenSpout\Common\Entity\Style\Style;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -90,6 +91,27 @@ final class RowTest extends TestCase
         ];
 
         self::assertSame($supportedValueTypes, Row::fromValues($supportedValueTypes)->toArray());
+    }
+
+    public function testRowFromValuesWithStylesHasCorrectStyles(): void
+    {
+        $cellValues = [
+            new DateTime('2024-05-10 10:00:00.0'),
+            9.18,
+            10,
+        ];
+
+        /** @var array<int, Style> $columnStyles */
+        $columnStyles = [
+            0 => (new Style())->setFormat('mm/dd/yyyy'),
+            1 => (new Style())->setFormat('0.00'),
+            2 => (new Style())->setFormat('0'),
+        ];
+
+        $row = Row::fromValuesWithStyles($cellValues, columnStyles: $columnStyles);
+        foreach ($columnStyles as $index => $style) {
+            self::assertEquals($style->getFormat(), $row->getCellAtIndex($index)->getStyle()->getFormat());
+        }
     }
 
     /**
