@@ -58,7 +58,7 @@ final class XMLReader extends \XMLReader
             throw new IOException("Could not open {$zipFilePath} for reading! File does not exist.");
         }
 
-        return self::ZIP_WRAPPER. $realpath .'#'.$fileInsideZipPathWithoutLeadingSlash;
+        return self::ZIP_WRAPPER.$realpath.'#'.$fileInsideZipPathWithoutLeadingSlash;
     }
 
     /**
