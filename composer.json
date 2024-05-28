@@ -39,7 +39,7 @@
     "require-dev": {
         "ext-zlib": "*",
         "friendsofphp/php-cs-fixer": "^3.57.2",
-        "infection/infection": "^0.28.1",
+        "infection/infection": "^0.29.0",
         "phpbench/phpbench": "^1.2.15",
         "phpstan/phpstan": "^1.11.2",
         "phpstan/phpstan-phpunit": "^1.4.0",
