@@ -238,7 +238,7 @@ final class StyleManager extends CommonStyleManager
 
             $content .= sprintf(' applyBorder="%d"', (bool) $style->getBorder());
 
-            if ($style->shouldApplyCellAlignment() || $style->shouldApplyCellVerticalAlignment() || $style->hasSetWrapText() || $style->shouldShrinkToFit()) {
+            if ($style->shouldApplyCellAlignment() || $style->shouldApplyCellVerticalAlignment() || $style->hasSetWrapText() || $style->shouldShrinkToFit() || $style->hasSetTextRotation()) {
                 $content .= ' applyAlignment="1">';
                 $content .= '<alignment';
                 if ($style->shouldApplyCellAlignment()) {
@@ -252,6 +252,9 @@ final class StyleManager extends CommonStyleManager
                 }
                 if ($style->shouldShrinkToFit()) {
                     $content .= ' shrinkToFit="true"';
+                }
+                if ($style->hasSetTextRotation()) {
+                    $content .= sprintf(' textRotation="%s"', $style->textRotation());
                 }
 
                 $content .= '/>';
