@@ -57,7 +57,7 @@ final class StyleMergerTest extends TestCase
         self::assertSame(Color::YELLOW, $mergedStyle->getFontColor());
         self::assertSame(Color::BLUE, $mergedStyle->getBackgroundColor());
         self::assertSame('0.00', $mergedStyle->getFormat());
-        self::assertSame(90, $currentStyle->textRotation());
+        self::assertSame(90, $mergedStyle->textRotation());
     }
 
     public function testMergeWithShouldPreferCurrentStylePropertyIfSetOnCurrentAndOnBase(): void
