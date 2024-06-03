@@ -397,7 +397,7 @@ final class Style
     /**
      * @param int $rotation Rotate text
      */
-    public function setTextRotation(int $rotation = 0): self
+    public function setTextRotation(int $rotation): self
     {
         $this->textRotation = $rotation;
         $this->hasSetTextRotation = true;
