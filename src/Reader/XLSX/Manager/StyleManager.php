@@ -145,19 +145,21 @@ class StyleManager implements StyleManagerInterface
         $this->customNumberFormats = [];
         $this->stylesAttributes = [];
 
-        $xmlReader = new XMLReader();
-
-        if ($xmlReader->openFileInZip($this->filePath, $this->stylesXMLFilePath)) {
-            while ($xmlReader->read()) {
-                if ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_NUM_FMTS)
-                    && '0' !== $xmlReader->getAttribute(self::XML_ATTRIBUTE_COUNT)) {
-                    $this->extractNumberFormats($xmlReader);
-                } elseif ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_CELL_XFS)) {
-                    $this->extractStyleAttributes($xmlReader);
+        if (isset($this->stylesXMLFilePath)) {
+            $xmlReader = new XMLReader();
+    
+            if ($xmlReader->openFileInZip($this->filePath, $this->stylesXMLFilePath)) {
+                while ($xmlReader->read()) {
+                    if ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_NUM_FMTS)
+                        && '0' !== $xmlReader->getAttribute(self::XML_ATTRIBUTE_COUNT)) {
+                        $this->extractNumberFormats($xmlReader);
+                    } elseif ($xmlReader->isPositionedOnStartingNode(self::XML_NODE_CELL_XFS)) {
+                        $this->extractStyleAttributes($xmlReader);
+                    }
                 }
+    
+                $xmlReader->close();
             }
-
-            $xmlReader->close();
         }
     }
 
