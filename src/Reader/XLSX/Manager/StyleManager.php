@@ -101,7 +101,7 @@ class StyleManager implements StyleManagerInterface
         if (null === $this->stylesXMLFilePath) {
             return '';
         }
-        
+
         $stylesAttributes = $this->getStylesAttributes();
         $styleAttributes = $stylesAttributes[$styleId];
         $numFmtId = $styleAttributes[self::XML_ATTRIBUTE_NUM_FMT_ID];
