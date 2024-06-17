@@ -124,9 +124,7 @@ final class WriterTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provideSetCreatorCases
-     */
+    #[DataProvider('provideSetCreatorCases')]
     public function testSetCreator(?string $expected, string $actual): void
     {
         $fileName = 'test_set_creator.ods';

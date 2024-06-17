@@ -6,6 +6,7 @@ namespace OpenSpout\Common\Helper;
 
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\TestUsingResource;
+use PHPUnit\Framework\Attributes\RequiresOperatingSystemFamily;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -36,9 +37,7 @@ final class FileSystemHelperTest extends TestCase
         $this->fileSystemHelper->createFolder('/tmp/folder_outside_base_folder', 'folder_name');
     }
 
-    /**
-     * @requires OSFAMILY Linux
-     */
+    #[RequiresOperatingSystemFamily('Linux')]
     public function testCreateFolderShouldThrowExceptionWhenFails(): void
     {
         self::assertTrue(chmod($this->baseFolder, 0500));
@@ -54,9 +53,7 @@ final class FileSystemHelperTest extends TestCase
         $this->fileSystemHelper->createFileWithContents('/tmp/folder_outside_base_folder', 'file_name', 'contents');
     }
 
-    /**
-     * @requires OSFAMILY Linux
-     */
+    #[RequiresOperatingSystemFamily('Linux')]
     public function testCreateFileWithContentsShouldThrowExceptionIfFails(): void
     {
         self::assertTrue(chmod($this->baseFolder, 0500));

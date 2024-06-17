@@ -26,6 +26,7 @@ use OpenSpout\Writer\XLSX\Options\PageMargin;
 use OpenSpout\Writer\XLSX\Options\PageOrientation;
 use OpenSpout\Writer\XLSX\Options\PageSetup;
 use OpenSpout\Writer\XLSX\Options\PaperSize;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use ReflectionHelper;
 
@@ -134,9 +135,7 @@ final class WriterTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provideSetCreatorCases
-     */
+    #[DataProvider('provideSetCreatorCases')]
     public function testSetCreator(?string $expected, string $actual): void
     {
         $fileName = 'test_set_creator.xlsx';
