@@ -99,7 +99,7 @@ class StyleManager implements StyleManagerInterface
     public function getNumberFormatCode(int $styleId): string
     {
         if (null === $this->stylesXMLFilePath) {
-            return "";
+            return '';
         }
         
         $stylesAttributes = $this->getStylesAttributes();

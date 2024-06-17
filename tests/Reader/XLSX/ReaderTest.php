@@ -617,7 +617,6 @@ final class ReaderTest extends TestCase
         $reader = new Reader($options);
         $reader->open($resourcePath);
 
-
         foreach ($reader->getSheetIterator() as $sheet) {
             foreach ($sheet->getRowIterator() as $row) {
                 $allRows[] = $row->toArray();
@@ -627,8 +626,8 @@ final class ReaderTest extends TestCase
         $reader->close();
 
         $expectedRows = [
-            ['data', 'data', 'data', 'data', 'data', 'data', 'data', 'data' ,'data'],
-            [0, 0, 0, 'data', 'data', '', 12345]
+            ['data', 'data', 'data', 'data', 'data', 'data', 'data', 'data', 'data'],
+            [0, 0, 0, 'data', 'data', '', 12345],
         ];
         self::assertSame($expectedRows, $allRows);
     }
