@@ -10,11 +10,8 @@ use OpenSpout\Common\Entity\Style\Style;
 
 final class DateTimeCell extends Cell
 {
-    private readonly DateTimeInterface $value;
-
-    public function __construct(DateTimeInterface $value, ?Style $style)
+    public function __construct(private readonly DateTimeInterface $value, ?Style $style = null)
     {
-        $this->value = $value;
         parent::__construct($style);
     }
 

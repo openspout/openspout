@@ -13,7 +13,7 @@ final class FormulaCell extends Cell
 {
     public function __construct(
         private readonly string $value,
-        ?Style $style,
+        ?Style $style = null,
         private readonly null|DateInterval|DateTimeImmutable|float|int|string $computedValue = null,
     ) {
         parent::__construct($style);
