@@ -657,6 +657,28 @@ final class WriterTest extends TestCase
         self::assertSame(6, $writer->getWrittenRowCount());
     }
 
+    public function testCloseShouldAddDimensionTag(): void
+    {
+        $fileName = 'test_close_should_add_dimension_tag.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $writer->addRow(Row::fromValues(['csv-1', null]));
+        $writer->addRow(Row::fromValues(['csv-2-1', 'csv-2-2']));
+        $writer->addRow(Row::fromValues([null, 'csv-3']));
+        $writer->close();
+
+        $xmlReader = $this->getXmlReaderForSheetFromXmlFile($fileName, '1');
+        $xmlReader->readUntilNodeFound('dimension');
+        self::assertSame('dimension', $xmlReader->getCurrentNodeName(), 'Sheet does not have dimension tag');
+        $DOMNode = $xmlReader->expand();
+        self::assertInstanceOf(DOMElement::class, $DOMNode);
+        self::assertSame('A1:B3', $DOMNode->getAttribute('ref'), 'Merge ref for dimension range is not valid.');
+    }
+
     public function testCloseShouldAddAutofilterTag(): void
     {
         $fileName = 'test_close_should_add_autofilter_tag.xlsx';
