@@ -158,7 +158,23 @@ $options->SHOULD_FORMAT_DATES = false; // default value
 $options->SHOULD_FORMAT_DATES = true; // will return formatted dates
 $reader = new Reader($options);
 ```
- 
+
+### Reading Excel formulas
+
+When reading a spreadsheet cells containing formulas, OpenSpout returns the computed value of those cells, but ignores
+the formula by default. It is possible to change this behavior and have the cells containing formulas returned as 
+`FormulaCell` objects that will retain both the formula and the computed value.
+
+```php
+use OpenSpout\Reader\XLSX\Reader;
+use OpenSpout\Reader\XLSX\Options;
+
+$options = new Options();
+$options->SHOULD_READ_FORMULAS = false; // default value - will read only the computed value of the cells containing formulas
+$options->SHOULD_READ_FORMULAS = true; // will read cells containing formulas into FormulaCell objects
+$reader = new Reader($options);
+```
+
 ## Empty rows
 
 By default, when OpenSpout reads a spreadsheet it skips empty rows and only return rows containing data.

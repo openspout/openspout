@@ -562,12 +562,13 @@ final class ReaderTest extends TestCase
         self::assertSame([], $allRows, 'Sheet with no cells should be correctly processed.');
     }
 
-    public function testReadShouldSkipFormulas(): void
+    public function testReadShouldReadFormulas(): void
     {
         $resourcePath = TestUsingResource::getResourcePath('sheet_with_formulas.xlsx');
 
         $allRows = [];
         $options = new Options();
+        $options->SHOULD_READ_FORMULAS = true;
         $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
         $reader = new Reader($options);
         $reader->open($resourcePath);

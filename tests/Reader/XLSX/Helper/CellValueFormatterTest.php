@@ -124,6 +124,7 @@ final class CellValueFormatterTest extends TestCase
             $styleManagerMock,
             false,
             $shouldUse1904Dates,
+            false,
             new Escaper\XLSX()
         );
 
@@ -253,6 +254,7 @@ final class CellValueFormatterTest extends TestCase
             $styleManagerMock,
             false,
             false,
+            true,
             new Escaper\XLSX()
         );
 
@@ -311,6 +313,7 @@ final class CellValueFormatterTest extends TestCase
             $styleManagerMock,
             false,
             false,
+            false,
             new Escaper\XLSX()
         );
         $formattedValue = ReflectionHelper::callMethodOnObject($formatter, 'formatNumericCellValue', $value, 0);
@@ -361,6 +364,7 @@ final class CellValueFormatterTest extends TestCase
                 new CachingStrategyFactory(new MemoryLimit('1'))
             ),
             $this->createMock(StyleManagerInterface::class),
+            false,
             false,
             false,
             new Escaper\XLSX()

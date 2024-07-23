@@ -255,6 +255,7 @@ final class SheetManager
             $styleManager,
             $options->SHOULD_FORMAT_DATES,
             $options->SHOULD_USE_1904_DATES,
+            $options->SHOULD_READ_FORMULAS,
             new XLSX()
         );
 

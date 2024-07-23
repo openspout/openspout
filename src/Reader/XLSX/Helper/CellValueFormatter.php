@@ -60,6 +60,9 @@ final class CellValueFormatter
     /** @var bool Whether date/time values should use a calendar starting in 1904 instead of 1900 */
     private readonly bool $shouldUse1904Dates;
 
+    /** @var bool Whether formulas should be read - if false, computed value will be used */
+    private readonly bool $shouldReadFormulas;
+
     /** @var XLSX Used to unescape XML data */
     private readonly XLSX $escaper;
 
@@ -75,12 +78,14 @@ final class CellValueFormatter
         StyleManagerInterface $styleManager,
         bool $shouldFormatDates,
         bool $shouldUse1904Dates,
+        bool $shouldReadFormulas,
         XLSX $escaper
     ) {
         $this->sharedStringsManager = $sharedStringsManager;
         $this->styleManager = $styleManager;
         $this->shouldFormatDates = $shouldFormatDates;
         $this->shouldUse1904Dates = $shouldUse1904Dates;
+        $this->shouldReadFormulas = $shouldReadFormulas;
         $this->escaper = $escaper;
     }
 
@@ -97,7 +102,7 @@ final class CellValueFormatter
         $vNodeValue = $this->getVNodeValue($node);
 
         $fNodeValue = $node->getElementsByTagName(self::XML_NODE_FORMULA)->item(0)?->nodeValue;
-        if (null !== $fNodeValue) {
+        if ($this->shouldReadFormulas && null !== $fNodeValue) {
             $computedValue = $this->formatRawValueForCellType($cellType, $node, $vNodeValue);
 
             return new Cell\FormulaCell(
