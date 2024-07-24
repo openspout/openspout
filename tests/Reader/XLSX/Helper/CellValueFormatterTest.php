@@ -157,24 +157,35 @@ final class CellValueFormatterTest extends TestCase
                 'shouldFormatAsDate' => true,
                 'computedValue' => 3687.4207639,
                 'expectedComputedValue' => '1910-02-03 10:05:54',
+                'cellType' => CellValueFormatter::CELL_TYPE_NUMERIC,
             ],
             [
                 'nodeValue' => 'TODAY()',
                 'shouldFormatAsDate' => false,
                 'computedValue' => 3687.4207639,
                 'expectedComputedValue' => 3687.4207639,
+                'cellType' => CellValueFormatter::CELL_TYPE_NUMERIC,
             ],
             [
                 'nodeValue' => 'TODAY()',
                 'shouldFormatAsDate' => true,
                 'computedValue' => 5,
                 'expectedComputedValue' => '1900-01-04 00:00:00',
+                'cellType' => CellValueFormatter::CELL_TYPE_NUMERIC,
             ],
             [
                 'nodeValue' => 'TODAY()',
                 'shouldFormatAsDate' => false,
                 'computedValue' => 5,
                 'expectedComputedValue' => 5,
+                'cellType' => CellValueFormatter::CELL_TYPE_NUMERIC,
+            ],
+            [
+                'nodeValue' => 'TODAY()',
+                'shouldFormatAsDate' => true,
+                'computedValue' => 'non-valid-date',
+                'expectedComputedValue' => null,
+                'cellType' => CellValueFormatter::CELL_TYPE_DATE,
             ],
         ];
     }
@@ -183,8 +194,9 @@ final class CellValueFormatterTest extends TestCase
     public function testExcelFormula(
         string $nodeValue,
         bool $shouldFormatAsDate,
-        float|int|string $computedValue,
-        float|int|string $expectedComputedValue,
+        null|float|int|string $computedValue,
+        null|float|int|string $expectedComputedValue,
+        string $cellType
     ): void {
         $nodeListMock = $this->createMock(DOMNodeList::class);
         $nodeListMock
@@ -200,7 +212,7 @@ final class CellValueFormatterTest extends TestCase
             ->expects(self::atLeastOnce())
             ->method('getAttribute')
             ->willReturnMap([
-                [CellValueFormatter::XML_ATTRIBUTE_TYPE, CellValueFormatter::CELL_TYPE_NUMERIC],
+                [CellValueFormatter::XML_ATTRIBUTE_TYPE, $cellType],
                 [CellValueFormatter::XML_ATTRIBUTE_STYLE_ID, '123'],
             ])
         ;
@@ -225,7 +237,7 @@ final class CellValueFormatterTest extends TestCase
         $styleManagerMock = $this->createMock(StyleManagerInterface::class);
 
         $styleManagerMock
-            ->expects(self::once())
+            ->expects(self::atMost(1))
             ->method('shouldFormatNumericValueAsDate')
             ->with(123)
             ->willReturn($shouldFormatAsDate)
