@@ -212,7 +212,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             $sheet = $worksheet->getExternalSheet();
             if (null !== $autofilter = $sheet->getAutoFilter()) {
                 $worksheetName = $sheet->getName();
-                $name = sprintf(
+                $name = \sprintf(
                     '\'%s\'!$%s$%s:$%s$%s',
                     $this->escaper->escape($worksheetName),
                     CellHelper::getColumnLettersFromColumnIndex($autofilter->fromColumnIndex),
@@ -330,14 +330,14 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             } elseif (isset($pageSetup) && $pageSetup->fitToPage) {
                 fwrite($worksheetFilePointer, '<sheetPr><pageSetUpPr fitToPage="true"/></sheetPr>');
             }
-            $sheetRange = sprintf(
+            $sheetRange = \sprintf(
                 '%s%s:%s%s',
                 CellHelper::getColumnLettersFromColumnIndex(0),
                 1,
                 CellHelper::getColumnLettersFromColumnIndex($worksheet->getMaxNumColumns() - 1),
                 $worksheet->getLastWrittenRowIndex()
             );
-            fwrite($worksheetFilePointer, sprintf('<dimension ref="%s"/>', $sheetRange));
+            fwrite($worksheetFilePointer, \sprintf('<dimension ref="%s"/>', $sheetRange));
             if (null !== ($sheetView = $sheet->getSheetView())) {
                 fwrite($worksheetFilePointer, '<sheetViews>'.$sheetView->getXml().'</sheetViews>');
             }
@@ -351,14 +351,14 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 
             // AutoFilter tag
             if (null !== $autofilter) {
-                $autoFilterRange = sprintf(
+                $autoFilterRange = \sprintf(
                     '%s%s:%s%s',
                     CellHelper::getColumnLettersFromColumnIndex($autofilter->fromColumnIndex),
                     $autofilter->fromRow,
                     CellHelper::getColumnLettersFromColumnIndex($autofilter->toColumnIndex),
                     $autofilter->toRow
                 );
-                fwrite($worksheetFilePointer, sprintf('<autoFilter ref="%s"/>', $autoFilterRange));
+                fwrite($worksheetFilePointer, \sprintf('<autoFilter ref="%s"/>', $autoFilterRange));
             }
 
             // create nodes for merge cells
@@ -371,7 +371,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
                 foreach ($mergeCells as $mergeCell) {
                     $topLeft = CellHelper::getColumnLettersFromColumnIndex($mergeCell->topLeftColumn).$mergeCell->topLeftRow;
                     $bottomRight = CellHelper::getColumnLettersFromColumnIndex($mergeCell->bottomRightColumn).$mergeCell->bottomRightRow;
-                    $mergeCellString .= sprintf(
+                    $mergeCellString .= \sprintf(
                         '<mergeCell ref="%s:%s"/>',
                         $topLeft,
                         $bottomRight

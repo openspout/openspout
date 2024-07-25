@@ -147,7 +147,7 @@ final class StyleManager extends CommonStyleManager
 
         // Excel reserves two default fills
         $fillsCount = \count($registeredFills) + 2;
-        $content = sprintf('<fills count="%d">', $fillsCount);
+        $content = \sprintf('<fills count="%d">', $fillsCount);
 
         $content .= '<fill><patternFill patternType="none"/></fill>';
         $content .= '<fill><patternFill patternType="gray125"/></fill>';
@@ -158,7 +158,7 @@ final class StyleManager extends CommonStyleManager
             $style = $this->styleRegistry->getStyleFromStyleId($styleId);
 
             $backgroundColor = $style->getBackgroundColor();
-            $content .= sprintf(
+            $content .= \sprintf(
                 '<fill><patternFill patternType="solid"><fgColor rgb="%s"/></patternFill></fill>',
                 $backgroundColor
             );
@@ -236,16 +236,16 @@ final class StyleManager extends CommonStyleManager
                 $content .= ' applyFont="1"';
             }
 
-            $content .= sprintf(' applyBorder="%d"', (bool) $style->getBorder());
+            $content .= \sprintf(' applyBorder="%d"', (bool) $style->getBorder());
 
             if ($style->shouldApplyCellAlignment() || $style->shouldApplyCellVerticalAlignment() || $style->hasSetWrapText() || $style->shouldShrinkToFit()) {
                 $content .= ' applyAlignment="1">';
                 $content .= '<alignment';
                 if ($style->shouldApplyCellAlignment()) {
-                    $content .= sprintf(' horizontal="%s"', $style->getCellAlignment());
+                    $content .= \sprintf(' horizontal="%s"', $style->getCellAlignment());
                 }
                 if ($style->shouldApplyCellVerticalAlignment()) {
-                    $content .= sprintf(' vertical="%s"', $style->getCellVerticalAlignment());
+                    $content .= \sprintf(' vertical="%s"', $style->getCellVerticalAlignment());
                 }
                 if ($style->hasSetWrapText()) {
                     $content .= ' wrapText="'.($style->shouldWrapText() ? '1' : '0').'"';
