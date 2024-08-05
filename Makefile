@@ -1,4 +1,4 @@
-DOCKER_PHP_EXEC := docker compose run php
+DOCKER_PHP_EXEC := docker compose run --rm php
 
 SRCS := $(shell find ./src ./tests -type f -not -path "*/resources/generated_*")
 

@@ -67,8 +67,7 @@ class StyleManager implements StyleManagerInterface
     private array $numFmtIdToIsDateFormatCache = [];
 
     /**
-     * @param string  $filePath          Path of the XLSX file being read
-     * @param ?string $stylesXMLFilePath
+     * @param string $filePath Path of the XLSX file being read
      */
     public function __construct(string $filePath, ?string $stylesXMLFilePath)
     {
