@@ -14,7 +14,7 @@ final class TempFolderOptionTraitTest extends TestCase
 {
     public function testTempFolderDefaultsToSysTmp(): void
     {
-        $options = new class() {
+        $options = new class {
             use TempFolderOptionTrait;
         };
 
@@ -23,7 +23,7 @@ final class TempFolderOptionTraitTest extends TestCase
 
     public function testTempFolderMustBeWritable(): void
     {
-        $options = new class() {
+        $options = new class {
             use TempFolderOptionTrait;
         };
         $this->expectException(InvalidArgumentException::class);
