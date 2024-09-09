@@ -28,4 +28,9 @@ final class FormulaCell extends Cell
     {
         return $this->computedValue;
     }
+
+    public function __toString(): string
+    {
+        return $this->getValue();
+    }
 }

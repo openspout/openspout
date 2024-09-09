@@ -15,8 +15,9 @@ use OpenSpout\Common\Entity\Cell\NumericCell;
 use OpenSpout\Common\Entity\Cell\StringCell;
 use OpenSpout\Common\Entity\Comment\Comment;
 use OpenSpout\Common\Entity\Style\Style;
+use Stringable;
 
-abstract class Cell
+abstract class Cell implements Stringable
 {
     public ?Comment $comment = null;
 

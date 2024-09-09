@@ -22,4 +22,9 @@ final class DateTimeCell extends Cell
     {
         return $this->value;
     }
+
+    public function __toString(): string
+    {
+        return $this->getValue()->format(DATE_ATOM);
+    }
 }

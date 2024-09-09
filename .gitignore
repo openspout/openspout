@@ -7,3 +7,4 @@
 /.phpunit.result.cache
 /composer.lock
 /infections.log
+/.idea

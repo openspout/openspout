@@ -28,4 +28,9 @@ final class DateIntervalCell extends Cell
     {
         return $this->value;
     }
+
+    public function __toString(): string
+    {
+        return $this->getValue()->format('P%yY%mM%dDT%hH%iM%sS%fF');
+    }
 }
