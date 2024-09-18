@@ -13,6 +13,7 @@ use OpenSpout\Reader\XLSX\Options;
 use OpenSpout\Reader\XLSX\RowIterator;
 use OpenSpout\Reader\XLSX\Sheet;
 use OpenSpout\Reader\XLSX\SheetHeaderReader;
+use OpenSpout\Reader\XLSX\SheetMergeCellsReader;
 
 /**
  * @internal
@@ -186,13 +187,20 @@ final class SheetManager
 
         $sheetDataXMLFilePath = $this->getSheetDataXMLFilePathForSheetId($sheetId);
 
+        $mergeCells = [];
+        if ($this->options->SHOULD_LOAD_MERGE_CELLS) {
+            $mergeCellsReader = $this->createMergeCellsReader($this->filePath, $sheetDataXMLFilePath);
+            $mergeCells = $mergeCellsReader->getMergeCells();
+        }
+
         return new Sheet(
             $this->createRowIterator($this->filePath, $sheetDataXMLFilePath, $this->options, $this->sharedStringsManager),
             $this->createSheetHeaderReader($this->filePath, $sheetDataXMLFilePath),
             $sheetIndexZeroBased,
             $sheetName,
             $isSheetActive,
-            $isSheetVisible
+            $isSheetVisible,
+            $mergeCells
         );
     }
 
@@ -276,6 +284,20 @@ final class SheetManager
         $xmlReader = new XMLReader();
 
         return new SheetHeaderReader(
+            $filePath,
+            $sheetDataXMLFilePath,
+            $xmlReader,
+            new XMLProcessor($xmlReader)
+        );
+    }
+
+    private function createMergeCellsReader(
+        string $filePath,
+        string $sheetDataXMLFilePath
+    ): SheetMergeCellsReader {
+        $xmlReader = new XMLReader();
+
+        return new SheetMergeCellsReader(
             $filePath,
             $sheetDataXMLFilePath,
             $xmlReader,

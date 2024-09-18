@@ -47,14 +47,43 @@ final class SheetTest extends TestCase
         $reader->close();
     }
 
+    public function testReaderShouldReturnEmptySheetMergedCellsByDefault(): void
+    {
+        $sheets = $this->openFileAndReturnSheets('two_sheets_with_merged_cells.xlsx');
+
+        self::assertEmpty($sheets[0]->getMergeCells());
+        self::assertEmpty($sheets[1]->getMergeCells());
+    }
+
+    public function testReaderShouldReturnCorrectSheetMergedCells(): void
+    {
+        $sheets = $this->openFileAndReturnSheets('two_sheets_with_merged_cells.xlsx', true);
+        $mergedCellsExpected = [
+            ['A1:B1', 'A2:A3', 'C3:E5', 'B2:E2'],
+            ['A1:A4', 'A5:D5', 'E2:E5', 'C1:E1', 'B1:B3', 'B4:C4', 'D3:D4', 'C2:D2'],
+        ];
+        $mergedCellsActual = [
+            $sheets[0]->getMergeCells(),
+            $sheets[1]->getMergeCells(),
+        ];
+
+        self::assertSameSize($mergedCellsExpected[0], $mergedCellsActual[0]);
+        self::assertEmpty(array_diff($mergedCellsActual[0], $mergedCellsExpected[0]), 'There should be no difference between merged cells on first sheet');
+        self::assertEmpty(array_diff($mergedCellsExpected[0], $mergedCellsActual[0]), 'There should be no difference between merged cells on first sheet');
+        self::assertSameSize($mergedCellsExpected[1], $mergedCellsActual[1]);
+        self::assertEmpty(array_diff($mergedCellsActual[1], $mergedCellsExpected[1]), 'There should be no difference between merged cells on second sheet');
+        self::assertEmpty(array_diff($mergedCellsExpected[1], $mergedCellsActual[1]), 'There should be no difference between merged cells on second sheet');
+    }
+
     /**
      * @return Sheet[]
      */
-    private function openFileAndReturnSheets(string $fileName): array
+    private function openFileAndReturnSheets(string $fileName, bool $withMergedCells = false): array
     {
         $resourcePath = TestUsingResource::getResourcePath($fileName);
         $options = new Options();
         $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options->SHOULD_LOAD_MERGE_CELLS = $withMergedCells;
         $reader = new Reader($options);
         $reader->open($resourcePath);
 
