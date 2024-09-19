@@ -94,10 +94,10 @@ class ManagerFactory
     }
 
     /**
-     * @param string $filePath                                                  Path of the XLSX file being read
-     * @param string $sheetDataXMLFilePath                                      Path of the sheet data XML file as in [Content_Types].xml
-     * @param \OpenSpout\Common\Manager\OptionsManagerInterface $optionsManager Reader's options manager
-     * @param InternalEntityFactory $entityFactory                              Factory to create entities
+     * @param string                                            $filePath             Path of the XLSX file being read
+     * @param string                                            $sheetDataXMLFilePath Path of the sheet data XML file as in [Content_Types].xml
+     * @param \OpenSpout\Common\Manager\OptionsManagerInterface $optionsManager       Reader's options manager
+     * @param InternalEntityFactory                             $entityFactory        Factory to create entities
      *
      * @return MergeCellsManager
      */

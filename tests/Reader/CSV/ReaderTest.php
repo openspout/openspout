@@ -47,6 +47,7 @@ final class ReaderTest extends TestCase
 
         $resourcePath = $this->getResourcePath('csv_standard.csv');
 
+        /** @var null|\OpenSpout\Common\Manager\OptionsManagerInterface $helperStub */
         $reader = $this->createCSVReader(null, $helperStub);
         $reader->open($resourcePath);
     }
@@ -64,6 +65,7 @@ final class ReaderTest extends TestCase
 
         $resourcePath = $this->getResourcePath('csv_standard.csv');
 
+        /** @var null|\OpenSpout\Common\Manager\OptionsManagerInterface $helperStub */
         $reader = $this->createCSVReader(null, $helperStub);
         $reader->open($resourcePath);
     }
@@ -273,6 +275,7 @@ final class ReaderTest extends TestCase
         ];
         $helperStub->method('function_exists')->willReturnMap($returnValueMap);
 
+        /** @var null|\OpenSpout\Common\Manager\OptionsManagerInterface $helperStub */
         /** @var \OpenSpout\Reader\CSV\Reader $reader */
         $reader = $this->createCSVReader(null, $helperStub);
         $reader

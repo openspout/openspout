@@ -68,6 +68,7 @@ final class SheetTest extends TestCase
 
     /**
      * @param string $fileName
+     * @param bool   $withMergedCells
      *
      * @return SheetInterface[]
      */

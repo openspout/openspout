@@ -51,7 +51,7 @@ class Reader extends ReaderAbstract
     }
 
     /**
-     * Sets whether merge cells should be loaded from sheet data xml
+     * Sets whether merge cells should be loaded from sheet data xml.
      *
      * @param bool $shouldLoadMergeCells
      *

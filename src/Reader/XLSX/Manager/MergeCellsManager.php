@@ -8,7 +8,7 @@ use OpenSpout\Reader\Common\Entity\Options;
 use OpenSpout\Reader\XLSX\Creator\InternalEntityFactory;
 
 /**
- * This class manages the merge cells collection defined in
+ * This class manages the merge cells collection defined in.
  */
 class MergeCellsManager
 {
@@ -18,27 +18,21 @@ class MergeCellsManager
     /** Definition of XML attributes used to parse data */
     public const XML_ATTRIBUTE_REF = 'ref';
 
-    /** @var string Path of the XLSX file being read */
-    private $filePath;
-
-    /** @var string Path of the sheet data XML file as in [Content_Types].xml */
-    private $sheetDataXMLFilePath;
-
     /** @var OptionsManagerInterface Reader's options manager */
     protected $optionsManager;
 
     /** @var InternalEntityFactory Factory to create entities */
     protected $entityFactory;
 
+    /** @var string Path of the XLSX file being read */
+    private $filePath;
+
+    /** @var string Path of the sheet data XML file as in [Content_Types].xml */
+    private $sheetDataXMLFilePath;
+
     /** @var null|array Cache of the already read merge cells */
     private $cachedMergeCells;
 
-    /**
-     * @param string $filePath
-     * @param string $sheetDataXMLFilePath
-     * @param OptionsManagerInterface $optionsManager
-     * @param InternalEntityFactory $entityFactory
-     */
     public function __construct(
         string $filePath,
         string $sheetDataXMLFilePath,
@@ -51,7 +45,6 @@ class MergeCellsManager
         $this->entityFactory = $entityFactory;
         $this->cachedMergeCells = null;
     }
-
 
     /**
      * Reads the sheet data xml and extracts the merge cells list.
@@ -70,8 +63,8 @@ class MergeCellsManager
                     throw new IOException('Could not open "'.$this->sheetDataXMLFilePath.'".');
                 }
 
-                while($xmlReader->readUntilNodeFound(self::XML_NODE_MERGE_CELL)){
-                    $this->cachedMergeCells[]=$xmlReader->getAttribute(self::XML_ATTRIBUTE_REF);
+                while ($xmlReader->readUntilNodeFound(self::XML_NODE_MERGE_CELL)) {
+                    $this->cachedMergeCells[] = $xmlReader->getAttribute(self::XML_ATTRIBUTE_REF);
                 }
             }
         }

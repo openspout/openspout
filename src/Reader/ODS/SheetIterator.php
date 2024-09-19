@@ -196,6 +196,7 @@ class SheetIterator implements IteratorInterface
         foreach ($tableStyleNodes as $tableStyleNode) {
             $isSheetVisible = ('false' !== $tableStyleNode->getAttribute(self::XML_ATTRIBUTE_TABLE_DISPLAY));
 
+            /** @var \DOMElement $parentStyleNode */
             $parentStyleNode = $tableStyleNode->parentNode;
             $styleName = $parentStyleNode->getAttribute(self::XML_ATTRIBUTE_STYLE_NAME);
 
