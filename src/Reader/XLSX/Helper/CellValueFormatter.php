@@ -96,28 +96,22 @@ final class CellValueFormatter
         }
         $vNodeValue = $this->getVNodeValue($node);
 
-        if (self::CELL_TYPE_NUMERIC === $cellType) {
-            $fNodeValue = $node->getElementsByTagName(self::XML_NODE_FORMULA)->item(0)?->nodeValue;
-            if (null !== $fNodeValue) {
-                $computedValue = $this->formatNumericCellValue($vNodeValue, (int) $node->getAttribute(self::XML_ATTRIBUTE_STYLE_ID));
+        $fNodeValue = $node->getElementsByTagName(self::XML_NODE_FORMULA)->item(0)?->nodeValue;
+        if (null !== $fNodeValue) {
+            $computedValue = $this->formatRawValueForCellType($cellType, $node, $vNodeValue);
 
-                return new Cell\FormulaCell('='.$fNodeValue, null, $computedValue);
-            }
+            return new Cell\FormulaCell(
+                '='.$fNodeValue,
+                null,
+                $computedValue instanceof Cell\ErrorCell ? null : $computedValue
+            );
         }
 
         if ('' === $vNodeValue && self::CELL_TYPE_INLINE_STRING !== $cellType) {
             return Cell::fromValue($vNodeValue);
         }
 
-        $rawValue = match ($cellType) {
-            self::CELL_TYPE_INLINE_STRING => $this->formatInlineStringCellValue($node),
-            self::CELL_TYPE_SHARED_STRING => $this->formatSharedStringCellValue($vNodeValue),
-            self::CELL_TYPE_STR => $this->formatStrCellValue($vNodeValue),
-            self::CELL_TYPE_BOOLEAN => $this->formatBooleanCellValue($vNodeValue),
-            self::CELL_TYPE_NUMERIC => $this->formatNumericCellValue($vNodeValue, (int) $node->getAttribute(self::XML_ATTRIBUTE_STYLE_ID)),
-            self::CELL_TYPE_DATE => $this->formatDateCellValue($vNodeValue),
-            default => new Cell\ErrorCell($vNodeValue, null),
-        };
+        $rawValue = $this->formatRawValueForCellType($cellType, $node, $vNodeValue);
 
         if ($rawValue instanceof Cell) {
             return $rawValue;
@@ -327,5 +321,24 @@ final class CellValueFormatter
         }
 
         return $cellValue;
+    }
+
+    private function formatRawValueForCellType(
+        string $cellType,
+        DOMElement $node,
+        string $vNodeValue
+    ): bool|Cell\ErrorCell|DateInterval|DateTimeImmutable|float|int|string {
+        return match ($cellType) {
+            self::CELL_TYPE_INLINE_STRING => $this->formatInlineStringCellValue($node),
+            self::CELL_TYPE_SHARED_STRING => $this->formatSharedStringCellValue($vNodeValue),
+            self::CELL_TYPE_STR => $this->formatStrCellValue($vNodeValue),
+            self::CELL_TYPE_BOOLEAN => $this->formatBooleanCellValue($vNodeValue),
+            self::CELL_TYPE_NUMERIC => $this->formatNumericCellValue(
+                $vNodeValue,
+                (int) $node->getAttribute(self::XML_ATTRIBUTE_STYLE_ID)
+            ),
+            self::CELL_TYPE_DATE => $this->formatDateCellValue($vNodeValue),
+            default => new Cell\ErrorCell($vNodeValue, null),
+        };
     }
 }

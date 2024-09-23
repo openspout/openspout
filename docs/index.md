@@ -83,6 +83,12 @@ $values = ['Carl', 'is', 'great!'];
 $rowFromValues = Row::fromValues($values);
 $writer->addRow($rowFromValues);
 
+/** Shortcut: add a row from an array of values with cell-specific formatting */
+$values = ['Today', 'is', new DateTime('2024-05-10 10:00:00.0')];
+$styles = [2 => (new Style())->setFormat('mm/dd/yyyy')];
+$rowFromValuesWithStyles = Row::fromValuesWithStyles($values, columnStyles: $styles);
+$writer->addRow($rowFromValuesWithStyles);
+
 $writer->close();
 /**
  * in case of streaming data directly to the browser with $writer->openToBrowser() ensure

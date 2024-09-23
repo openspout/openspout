@@ -76,7 +76,7 @@ jobs:
       - name: "Run tests"
         if: "${{matrix.code-coverage != 'none' }}"
         timeout-minutes: 3
-        run: "make test"
+        run: "vendor/bin/phpunit"
 
       - name: "Gather base branch for diff"
         if: "${{ github.event_name == 'pull_request' && matrix.code-coverage != 'none' }}"
@@ -85,9 +85,8 @@ jobs:
       - name: "Infection on DIFF"
         if: "${{ github.event_name == 'pull_request' && matrix.code-coverage != 'none' }}"
         timeout-minutes: 10
-        run: "make code-coverage INFECTION_ARGS='--logger-github'"
+        run: "vendor/bin/infection --ansi --threads=$(nproc) --skip-initial-tests --coverage=coverage --git-diff-lines --git-diff-base=origin/${{ github.base_ref }} --show-mutations --verbose --ignore-msi-with-no-mutations --min-msi=100"
         env:
-          BASE_BRANCH: "origin/${{ github.base_ref }}"
           INFECTION_BADGE_API_KEY: "${{ secrets.INFECTION_BADGE_API_KEY }}"
 
       - name: "Infection on complete code base"

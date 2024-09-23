@@ -9,6 +9,7 @@ use OpenSpout\Common\Helper\EncodingHelper;
 use OpenSpout\Reader\Exception\ReaderNotOpenedException;
 use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\RequiresOperatingSystemFamily;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -31,9 +32,7 @@ final class ReaderTest extends TestCase
         $this->createCSVReader(null, null)->getSheetIterator();
     }
 
-    /**
-     * @requires OSFAMILY Linux
-     */
+    #[RequiresOperatingSystemFamily('Linux')]
     public function testOpenShouldThrowExceptionIfFileNotReadable(): void
     {
         $resourcePath = TestUsingResource::getResourcePath('csv_standard.csv');

@@ -88,7 +88,7 @@ final class WorksheetManager implements WorksheetManagerInterface
         $databaseRange = '';
 
         if (null !== $autofilter = $externalSheet->getAutoFilter()) {
-            $rangeAddress = sprintf(
+            $rangeAddress = \sprintf(
                 '\'%s\'.%s%s:\'%s\'.%s%s',
                 $escapedSheetName,
                 CellHelper::getColumnLettersFromColumnIndex($autofilter->fromColumnIndex),

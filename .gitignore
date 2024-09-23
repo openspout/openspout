@@ -2,6 +2,7 @@
 /coverage
 /tests/**/resources/generated_*
 /vendor
+/.env
 /.php-cs-fixer.cache
 /.phpunit.result.cache
 /composer.lock

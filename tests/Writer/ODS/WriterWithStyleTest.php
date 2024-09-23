@@ -315,7 +315,7 @@ final class WriterWithStyleTest extends TestCase
         $widthMap = BorderHelper::widthMap;
         $styleMap = BorderHelper::styleMap;
 
-        $expectedFirst = sprintf(
+        $expectedFirst = \sprintf(
             '%s %s #%s',
             $widthMap[Border::WIDTH_THICK],
             $styleMap[Border::STYLE_SOLID],
@@ -330,7 +330,7 @@ final class WriterWithStyleTest extends TestCase
 
         self::assertSame($expectedFirst, $actualFirst);
 
-        $expectedThird = sprintf(
+        $expectedThird = \sprintf(
             '%s %s #%s',
             $widthMap[Border::WIDTH_THIN],
             $styleMap[Border::STYLE_DASHED],

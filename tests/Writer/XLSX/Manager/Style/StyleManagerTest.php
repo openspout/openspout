@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer\XLSX\Manager\Style;
 
+use OpenSpout\Common\Entity\Style\Style;
+use OpenSpout\Common\Helper\Escaper\XLSX as XLSXEscaper;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -47,9 +49,20 @@ final class StyleManagerTest extends TestCase
             ->willReturn($borderId)
         ;
 
-        $styleManager = new StyleManager($styleRegistryMock);
+        $styleManager = new StyleManager($styleRegistryMock, new XLSXEscaper());
         $shouldApply = $styleManager->shouldApplyStyleOnEmptyCell(99);
 
         self::assertSame($expectedResult, $shouldApply);
+    }
+
+    public function testFormatCodeEscapeInSectionContent(): void
+    {
+        $registry = new StyleRegistry(new Style());
+
+        $registry->registerStyle((new Style())->setId(1)->setFormat('"€"* #,##0.00_-'));
+
+        $styleManager = new StyleManager($registry, new XLSXEscaper());
+        $output = $styleManager->getStylesXMLFileContent();
+        self::assertStringContainsString('formatCode="&quot;€&quot;* #,##0.00_-"', $output);
     }
 }
