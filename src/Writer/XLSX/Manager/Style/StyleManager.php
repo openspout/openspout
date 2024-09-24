@@ -259,7 +259,7 @@ final class StyleManager extends CommonStyleManager
                     $content .= ' shrinkToFit="true"';
                 }
                 if ($style->hasSetTextRotation()) {
-                    $content .= sprintf(' textRotation="%s"', $style->textRotation());
+                    $content .= \sprintf(' textRotation="%s"', $style->textRotation());
                 }
 
                 $content .= '/>';
