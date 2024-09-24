@@ -39,6 +39,7 @@ final class StyleMergerTest extends TestCase
             ->setFontColor(Color::YELLOW)
             ->setBackgroundColor(Color::BLUE)
             ->setFormat('0.00')
+            ->setTextRotation(90)
         ;
         $currentStyle = (new Style())->setFontName('Font')->setFontUnderline();
         $mergedStyle = $this->styleMerger->merge($currentStyle, $baseStyle);
@@ -47,6 +48,7 @@ final class StyleMergerTest extends TestCase
         self::assertFalse($currentStyle->isFontBold());
         self::assertSame(Style::DEFAULT_FONT_COLOR, $currentStyle->getFontColor());
         self::assertNull($currentStyle->getBackgroundColor());
+        self::assertNotSame(90, $currentStyle->textRotation());
 
         self::assertSame(99, $mergedStyle->getFontSize());
         self::assertTrue($mergedStyle->isFontBold());
@@ -55,6 +57,7 @@ final class StyleMergerTest extends TestCase
         self::assertSame(Color::YELLOW, $mergedStyle->getFontColor());
         self::assertSame(Color::BLUE, $mergedStyle->getBackgroundColor());
         self::assertSame('0.00', $mergedStyle->getFormat());
+        self::assertSame(90, $mergedStyle->textRotation());
     }
 
     public function testMergeWithShouldPreferCurrentStylePropertyIfSetOnCurrentAndOnBase(): void
@@ -91,6 +94,7 @@ final class StyleMergerTest extends TestCase
             ->setFontStrikethrough()
             ->setShouldWrapText()
             ->setShouldShrinkToFit()
+            ->setTextRotation(90)
             ->setCellAlignment(CellAlignment::JUSTIFY)
             ->setCellVerticalAlignment(CellVerticalAlignment::BASELINE)
         ;
@@ -105,6 +109,9 @@ final class StyleMergerTest extends TestCase
 
         self::assertFalse($currentStyle->shouldShrinkToFit());
         self::assertTrue($mergedStyle->shouldShrinkToFit());
+
+        self::assertFalse($currentStyle->hasSetTextRotation());
+        self::assertTrue($mergedStyle->hasSetTextRotation());
 
         self::assertFalse($currentStyle->hasSetCellAlignment());
         self::assertTrue($mergedStyle->hasSetCellAlignment());
