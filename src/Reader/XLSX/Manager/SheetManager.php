@@ -189,8 +189,12 @@ final class SheetManager
 
         $mergeCells = [];
         if ($this->options->SHOULD_LOAD_MERGE_CELLS) {
-            $mergeCellsReader = $this->createMergeCellsReader($this->filePath, $sheetDataXMLFilePath);
-            $mergeCells = $mergeCellsReader->getMergeCells();
+            $mergeCells = (new SheetMergeCellsReader(
+                $this->filePath,
+                $sheetDataXMLFilePath,
+                $xmlReader = new XMLReader(),
+                new XMLProcessor($xmlReader)
+            ))->getMergeCells();
         }
 
         return new Sheet(
@@ -248,8 +252,6 @@ final class SheetManager
         Options $options,
         SharedStringsManager $sharedStringsManager
     ): RowIterator {
-        $xmlReader = new XMLReader();
-
         $workbookRelationshipsManager = new WorkbookRelationshipsManager($filePath);
         $styleManager = new StyleManager(
             $filePath,
@@ -270,7 +272,7 @@ final class SheetManager
             $filePath,
             $sheetDataXMLFilePath,
             $options->SHOULD_PRESERVE_EMPTY_ROWS,
-            $xmlReader,
+            $xmlReader = new XMLReader(),
             new XMLProcessor($xmlReader),
             $cellValueFormatter,
             new RowManager()
@@ -284,20 +286,6 @@ final class SheetManager
         $xmlReader = new XMLReader();
 
         return new SheetHeaderReader(
-            $filePath,
-            $sheetDataXMLFilePath,
-            $xmlReader,
-            new XMLProcessor($xmlReader)
-        );
-    }
-
-    private function createMergeCellsReader(
-        string $filePath,
-        string $sheetDataXMLFilePath
-    ): SheetMergeCellsReader {
-        $xmlReader = new XMLReader();
-
-        return new SheetMergeCellsReader(
             $filePath,
             $sheetDataXMLFilePath,
             $xmlReader,

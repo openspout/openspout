@@ -36,15 +36,22 @@ final class Sheet implements SheetWithVisibilityInterface, SheetWithMergeCellsIn
     private readonly array $mergeCells;
 
     /**
-     * @param RowIterator $rowIterator    The corresponding row iterator
-     * @param int         $sheetIndex     Index of the sheet, based on order in the workbook (zero-based)
-     * @param string      $sheetName      Name of the sheet
-     * @param bool        $isSheetActive  Whether the sheet was defined as active
-     * @param bool        $isSheetVisible Whether the sheet is visible
-     * @param string[]    $mergeCells     Merge cells list ["C7:E7", "A9:D10"]
+     * @param RowIterator  $rowIterator    The corresponding row iterator
+     * @param int          $sheetIndex     Index of the sheet, based on order in the workbook (zero-based)
+     * @param string       $sheetName      Name of the sheet
+     * @param bool         $isSheetActive  Whether the sheet was defined as active
+     * @param bool         $isSheetVisible Whether the sheet is visible
+     * @param list<string> $mergeCells     Merge cells list ["C7:E7", "A9:D10"]
      */
-    public function __construct(RowIterator $rowIterator, SheetHeaderReader $headerReader, int $sheetIndex, string $sheetName, bool $isSheetActive, bool $isSheetVisible, array $mergeCells)
-    {
+    public function __construct(
+        RowIterator $rowIterator,
+        SheetHeaderReader $headerReader,
+        int $sheetIndex,
+        string $sheetName,
+        bool $isSheetActive,
+        bool $isSheetVisible,
+        array $mergeCells
+    ) {
         $this->rowIterator = $rowIterator;
         $this->headerReader = $headerReader;
         $this->index = $sheetIndex;
@@ -100,7 +107,7 @@ final class Sheet implements SheetWithVisibilityInterface, SheetWithMergeCellsIn
     }
 
     /**
-     * @return string[] Merge cells list ["C7:E7", "A9:D10"]
+     * @return list<string> Merge cells list ["C7:E7", "A9:D10"]
      */
     public function getMergeCells(): array
     {

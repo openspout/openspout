@@ -8,6 +8,8 @@ use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Reader\Common\XMLProcessor;
 use OpenSpout\Reader\Wrapper\XMLReader;
 
+use function ltrim;
+
 /**
  * @internal
  */
@@ -16,7 +18,7 @@ final class SheetMergeCellsReader
     public const XML_NODE_MERGE_CELL = 'mergeCell';
     public const XML_ATTRIBUTE_REF = 'ref';
 
-    /** @var string[] Merged cells list */
+    /** @var list<string> Merged cells list */
     private array $mergeCells = [];
 
     /**
@@ -30,7 +32,7 @@ final class SheetMergeCellsReader
         XMLReader $xmlReader,
         XMLProcessor $xmlProcessor
     ) {
-        $sheetDataXMLFilePath = $this->normalizeSheetDataXMLFilePath($sheetDataXMLFilePath);
+        $sheetDataXMLFilePath = ltrim($sheetDataXMLFilePath, '/');
 
         // Register all callbacks to process different nodes when reading the XML file
         $xmlProcessor->registerCallback(self::XML_NODE_MERGE_CELL, XMLProcessor::NODE_TYPE_START, [$this, 'processMergeCellsStartingNode']);
@@ -46,9 +48,7 @@ final class SheetMergeCellsReader
     }
 
     /**
-     * @internal
-     *
-     * @return string[]
+     * @return list<string>
      */
     public function getMergeCells(): array
     {
@@ -65,18 +65,5 @@ final class SheetMergeCellsReader
         $this->mergeCells[] = $xmlReader->getAttribute(self::XML_ATTRIBUTE_REF);
 
         return XMLProcessor::PROCESSING_CONTINUE;
-    }
-
-    /**
-     * @param string $sheetDataXMLFilePath Path of the sheet data XML file as in [Content_Types].xml
-     *
-     * @return string path of the XML file containing the sheet data,
-     *                without the leading slash
-     *
-     * @infection-ignore-all
-     */
-    private function normalizeSheetDataXMLFilePath(string $sheetDataXMLFilePath): string
-    {
-        return ltrim($sheetDataXMLFilePath, '/');
     }
 }

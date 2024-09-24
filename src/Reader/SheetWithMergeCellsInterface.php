@@ -12,7 +12,7 @@ namespace OpenSpout\Reader;
 interface SheetWithMergeCellsInterface extends SheetInterface
 {
     /**
-     * @return string[] Merge cells list ["C7:E7", "A9:D10"]
+     * @return list<string> Merge cells list ["C7:E7", "A9:D10"]
      */
     public function getMergeCells(): array;
 }
