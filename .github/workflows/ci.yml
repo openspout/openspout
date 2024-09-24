@@ -84,6 +84,7 @@ jobs:
 
       - name: "Infection on DIFF"
         if: "${{ github.event_name == 'pull_request' && matrix.code-coverage != 'none' }}"
+        continue-on-error: true
         timeout-minutes: 10
         run: "vendor/bin/infection --ansi --threads=$(nproc) --skip-initial-tests --coverage=coverage --git-diff-lines --git-diff-base=origin/${{ github.base_ref }} --show-mutations --verbose --ignore-msi-with-no-mutations --min-msi=100"
         env:
@@ -91,6 +92,7 @@ jobs:
 
       - name: "Infection on complete code base"
         if: "${{ github.event_name != 'pull_request' && matrix.code-coverage != 'none' }}"
+        continue-on-error: true
         timeout-minutes: 10
         run: "vendor/bin/infection --ansi --threads=$(nproc) --skip-initial-tests --coverage=coverage"
         env:

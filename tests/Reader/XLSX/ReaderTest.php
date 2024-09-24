@@ -42,6 +42,17 @@ final class ReaderTest extends TestCase
         @$this->getAllRowsForFile($filePath);
     }
 
+    #[DataProvider('dataProviderForTestReadShouldThrowException')]
+    public function testReadShouldThrowExceptionWithMergeCells(string $filePath): void
+    {
+        $options = new Options();
+        $options->SHOULD_LOAD_MERGE_CELLS = true;
+
+        $this->expectException(IOException::class);
+
+        $this->getAllRowsForFile($filePath, $options);
+    }
+
     public static function dataProviderForTestReadForAllWorksheets(): array
     {
         return [
