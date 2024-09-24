@@ -51,7 +51,12 @@ final class Writer extends AbstractWriterMultiSheets
         $sharedStringsManager = new SharedStringsManager($xlFolder, new XLSX());
 
         $styleMerger = new StyleMerger();
-        $styleManager = new StyleManager(new StyleRegistry($this->options->DEFAULT_ROW_STYLE));
+        $escaper = new XLSX();
+
+        $styleManager = new StyleManager(
+            new StyleRegistry($this->options->DEFAULT_ROW_STYLE),
+            $escaper
+        );
 
         $commentsManager = new CommentsManager($xlFolder, new XLSX());
 
@@ -61,7 +66,7 @@ final class Writer extends AbstractWriterMultiSheets
             $styleMerger,
             $commentsManager,
             $sharedStringsManager,
-            new XLSX(),
+            $escaper,
             StringHelper::factory()
         );
 

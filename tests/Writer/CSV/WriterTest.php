@@ -206,7 +206,7 @@ final class WriterTest extends TestCase
         $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_escaped_characters.csv');
         $writtenContent = $this->trimWrittenContent($writtenContent);
 
-        self::assertSame('"""csv--11""",csv--12\\,csv--13\\\\,csv--14\\\\\\', $writtenContent, 'The \'"\' and \'\\\' characters should be properly escaped');
+        self::assertSame('"""csv--11""",csv--12\,csv--13\\\,csv--14\\\\\\', $writtenContent, 'The \'"\' and \'\\\' characters should be properly escaped');
     }
 
     public function testShouldSetOptionWithGetter(): void

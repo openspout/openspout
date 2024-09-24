@@ -42,6 +42,17 @@ final class ReaderTest extends TestCase
         @$this->getAllRowsForFile($filePath);
     }
 
+    #[DataProvider('dataProviderForTestReadShouldThrowException')]
+    public function testReadShouldThrowExceptionWithMergeCells(string $filePath): void
+    {
+        $options = new Options();
+        $options->SHOULD_LOAD_MERGE_CELLS = true;
+
+        $this->expectException(IOException::class);
+
+        $this->getAllRowsForFile($filePath, $options);
+    }
+
     public static function dataProviderForTestReadForAllWorksheets(): array
     {
         return [
@@ -605,6 +616,31 @@ final class ReaderTest extends TestCase
             ]),
         ];
         self::assertEquals($expectedRows, $allRows);
+    }
+
+    public function testReadXlsxWithoutStyles(): void
+    {
+        $allRows = [];
+        $resourcePath = TestUsingResource::getResourcePath('xlsx_without_styles_file.xlsx');
+
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $reader = new Reader($options);
+        $reader->open($resourcePath);
+
+        foreach ($reader->getSheetIterator() as $sheet) {
+            foreach ($sheet->getRowIterator() as $row) {
+                $allRows[] = $row->toArray();
+            }
+        }
+
+        $reader->close();
+
+        $expectedRows = [
+            ['data', 'data', 'data', 'data', 'data', 'data', 'data', 'data', 'data'],
+            [0, 0, 0, 'data', 'data', '', 12345],
+        ];
+        self::assertSame($expectedRows, $allRows);
     }
 
     public function testReadMultipleTimesShouldRewindReader(): void

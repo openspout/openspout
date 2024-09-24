@@ -7,6 +7,8 @@
 /.php-cs-fixer.dist.php         export-ignore
 /.require-checker-config.json   export-ignore
 /Makefile                       export-ignore
+/Dockerfile                     export-ignore
+/docker-compose.yml             export-ignore
 /infection.json                 export-ignore 
 /mkdocs.yml                     export-ignore
 /phpbench.json                  export-ignore
