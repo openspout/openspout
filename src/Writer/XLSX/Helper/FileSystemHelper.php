@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\Escaper\XLSX;
 use OpenSpout\Common\Helper\FileSystemHelper as CommonFileSystemHelper;
+use OpenSpout\Writer\Common\ColumnAttributes;
 use OpenSpout\Writer\Common\Entity\Sheet;
 use OpenSpout\Writer\Common\Entity\Worksheet;
 use OpenSpout\Writer\Common\Helper\CellHelper;
@@ -535,9 +536,38 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
         $xml = '<cols>';
 
         foreach ($widths as $columnWidth) {
-            $xml .= '<col min="'.$columnWidth->start.'" max="'.$columnWidth->end.'" width="'.$columnWidth->width.'" customWidth="true"/>';
+            $columnAttributes = $this->getXMLFragmentForColumnAttributes($columnWidth->getColumnAttributes());
+            $xml .= '<col min="'.$columnWidth->start.'" max="'.$columnWidth->end.'" width="'.$columnWidth->width.'" customWidth="true"'.$columnAttributes.'/>';
+
+            // If the column has an outline level set, we add an empty <col> element.
+            // This is necessary to ensure proper formatting in the generated XML,
+            // as some applications may expect an empty column entry for visual separation
+            // or for maintaining the structure of the spreadsheet.
+            if (null !== $columnWidth->getColumnAttributes()->getOutlineLevel()) {
+                $xml .= '<col min="'.$columnWidth->end.'" max="'.$columnWidth->end.'" width="'.$columnWidth->width.'" customWidth="true"/>';
+            }
         }
+
         $xml .= '</cols>';
+
+        return $xml;
+    }
+
+    private function getXMLFragmentForColumnAttributes(ColumnAttributes $columnAttributes): string
+    {
+        $xml = '';
+
+        if (null !== $columnAttributes->getOutlineLevel()) {
+            $xml .= ' outlineLevel="'.$columnAttributes->getOutlineLevel().'"';
+        }
+
+        if ($columnAttributes->isCollapsed()) {
+            $xml .= ' collapsed="true"';
+        }
+
+        if ($columnAttributes->isHidden()) {
+            $xml .= ' hidden="true"';
+        }
 
         return $xml;
     }

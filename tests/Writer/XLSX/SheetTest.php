@@ -367,6 +367,33 @@ final class SheetTest extends TestCase
         self::assertStringContainsString('<col min="1" max="3" width="100" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
     }
 
+    public function testColumnAttributes(): void
+    {
+        $fileName = 'test_column_attributes.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        
+        $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12', 'xlsx--13']));
+        $sheet = $writer->getCurrentSheet();
+
+        $sheet->setColumnAttributes(1, false, true, 1, 2, 3);
+        $sheet->setColumnWidthForRange(50.0, 1, 3);
+
+        $writer->close();
+
+        $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString('<cols', $xmlContents, 'No cols tag found in sheet');
+        self::assertStringContainsString('<col min="1" max="3" width="50" customWidth="true" outlineLevel="1" hidden="true"', $xmlContents, 'No expected outline attributes for column width definition found in sheet');
+        self::assertStringContainsString('<col min="3" max="3" width="50" customWidth="true"', $xmlContents, 'No expected empty column found in sheet');
+    }
+
     public function testCanWriteAFormula(): void
     {
         $fileName = 'test_formula.xlsx';
