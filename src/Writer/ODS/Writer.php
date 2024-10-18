@@ -24,6 +24,8 @@ final class Writer extends AbstractWriterMultiSheets
     public function __construct(?Options $options = null)
     {
         $this->options = $options ?? new Options();
+
+        $this->shouldLockFileForWriting = $this->options->SHOULD_LOCK_FILE_FOR_WRITING;
     }
 
     public function getOptions(): Options
