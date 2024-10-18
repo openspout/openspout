@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace OpenSpout\Writer\Common\Entity;
 
 use OpenSpout\Writer\AutoFilter;
+use OpenSpout\Writer\Common\ColumnAttributes;
 use OpenSpout\Writer\Common\ColumnWidth;
 use OpenSpout\Writer\Common\Manager\SheetManager;
 use OpenSpout\Writer\Exception\InvalidSheetNameException;
@@ -44,6 +45,9 @@ final class Sheet
 
     /** @var string rows to repeat at top */
     private ?string $printTitleRows = null;
+
+    /** @var ColumnAttributes[] Array to store attributes for each column */
+    private array $columnAttributes = [];
 
     /**
      * @param 0|positive-int $sheetIndex           Index of the sheet, based on order in the workbook (zero-based)
@@ -197,7 +201,12 @@ final class Sheet
      */
     public function setColumnWidthForRange(float $width, int $start, int $end): void
     {
-        $this->COLUMN_WIDTHS[] = new ColumnWidth($start, $end, $width);
+        $columnWidth = new ColumnWidth($start, $end, $width);
+        for ($columnIndex = $start; $columnIndex <= $end; $columnIndex++) {
+            $attributes = $this->getColumnAttributes($columnIndex);
+            $columnWidth->setColumnAttributes($attributes);
+        }
+        $this->COLUMN_WIDTHS[] = $columnWidth;  
     }
 
     /**
@@ -218,5 +227,35 @@ final class Sheet
     public function setPrintTitleRows(string $printTitleRows): void
     {
         $this->printTitleRows = $printTitleRows;
+    }
+
+    /**
+     * Set attributes for multiple columns.
+     *
+     * @param int $outlineLevel The outline level to set
+     * @param bool $collapsed Whether the columns should be collapsed
+     * @param bool $hidden Whether the columns should be hidden
+     * @param positive-int ...$columns One or more columns to set the attributes for
+     */
+    public function setColumnAttributes(?int $outlineLevel, bool $collapsed, bool $hidden, int ...$columns): void
+    {
+        foreach ($columns as $columnIndex) {
+            $this->columnAttributes[$columnIndex] = new ColumnAttributes($outlineLevel, $collapsed, $hidden);
+        }
+    }
+
+    /**
+     * Get the attributes for a specific column.
+     *
+     * @param positive-int $columnIndex The column index
+     * @return ColumnAttributes|null The attributes for the column, or null if not set
+     */
+    public function getColumnAttributes(int $columnIndex): ColumnAttributes
+    {
+        if (!isset($this->columnAttributes[$columnIndex])) {
+            $this->columnAttributes[$columnIndex] = new ColumnAttributes();
+        }
+
+        return $this->columnAttributes[$columnIndex];
     }
 }

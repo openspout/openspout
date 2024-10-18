@@ -9,6 +9,8 @@ namespace OpenSpout\Writer\Common;
  */
 final class ColumnWidth
 {
+    private ColumnAttributes $columnAttributes;
+
     /**
      * @param positive-int $start
      * @param positive-int $end
@@ -17,5 +19,17 @@ final class ColumnWidth
         public readonly int $start,
         public readonly int $end,
         public readonly float $width,
-    ) {}
+    ) {
+        $this->columnAttributes = new ColumnAttributes();
+    }
+
+    public function setColumnAttributes(ColumnAttributes $columnAttributes) : ColumnAttributes {
+        $this->columnAttributes = $columnAttributes;
+
+        return $this->columnAttributes;
+    }
+
+    public function getColumnAttributes() : ColumnAttributes {
+        return $this->columnAttributes;
+    }
 }
