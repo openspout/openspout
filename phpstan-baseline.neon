@@ -1,77 +1,140 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Return type \\(OpenSpout\\\\Common\\\\Entity\\\\Row\\|null\\) of method OpenSpout\\\\Reader\\\\CSV\\\\RowIterator\\:\\:current\\(\\) should be covariant with return type \\(OpenSpout\\\\Common\\\\Entity\\\\Row\\) of method Iterator\\<mixed,OpenSpout\\\\Common\\\\Entity\\\\Row\\>\\:\\:current\\(\\)$#"
+			message: '#^Method OpenSpout\\Common\\Entity\\Row\:\:toArray\(\) should return list\<bool\|DateInterval\|DateTimeInterface\|float\|int\|string\|null\> but returns array\<bool\|DateInterval\|DateTimeInterface\|float\|int\|string\|null\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Common/Entity/Row.php
+
+		-
+			message: '#^Return type \(OpenSpout\\Common\\Entity\\Row\|null\) of method OpenSpout\\Reader\\CSV\\RowIterator\:\:current\(\) should be covariant with return type \(OpenSpout\\Common\\Entity\\Row\) of method Iterator\<mixed,OpenSpout\\Common\\Entity\\Row\>\:\:current\(\)$#'
+			identifier: method.childReturnType
 			count: 1
 			path: src/Reader/CSV/RowIterator.php
 
 		-
-			message: "#^Method OpenSpout\\\\Reader\\\\Common\\\\Creator\\\\ReaderFactory\\:\\:createFromFile\\(\\) return type with generic interface OpenSpout\\\\Reader\\\\ReaderInterface does not specify its types\\: T$#"
+			message: '#^Method OpenSpout\\Reader\\Common\\Creator\\ReaderFactory\:\:createFromFile\(\) return type with generic interface OpenSpout\\Reader\\ReaderInterface does not specify its types\: T$#'
+			identifier: missingType.generics
 			count: 1
 			path: src/Reader/Common/Creator/ReaderFactory.php
 
 		-
-			message: "#^Method OpenSpout\\\\Reader\\\\Common\\\\Creator\\\\ReaderFactory\\:\\:createFromFileByMimeType\\(\\) return type with generic interface OpenSpout\\\\Reader\\\\ReaderInterface does not specify its types\\: T$#"
+			message: '#^Method OpenSpout\\Reader\\Common\\Creator\\ReaderFactory\:\:createFromFileByMimeType\(\) return type with generic interface OpenSpout\\Reader\\ReaderInterface does not specify its types\: T$#'
+			identifier: missingType.generics
 			count: 1
 			path: src/Reader/Common/Creator/ReaderFactory.php
 
 		-
-			message: "#^Cannot access offset 0 on callable\\(\\)\\: mixed\\.$#"
+			message: '#^Cannot access offset 0 on callable\(\)\: mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: src/Reader/Common/XMLProcessor.php
 
 		-
-			message: "#^Cannot access offset 1 on callable\\(\\)\\: mixed\\.$#"
+			message: '#^Cannot access offset 1 on callable\(\)\: mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: src/Reader/Common/XMLProcessor.php
 
 		-
-			message: "#^Return type \\(OpenSpout\\\\Common\\\\Entity\\\\Row\\|null\\) of method OpenSpout\\\\Reader\\\\RowIteratorInterface\\:\\:current\\(\\) should be covariant with return type \\(OpenSpout\\\\Common\\\\Entity\\\\Row\\) of method Iterator\\<mixed,OpenSpout\\\\Common\\\\Entity\\\\Row\\>\\:\\:current\\(\\)$#"
+			message: '#^Return type \(OpenSpout\\Common\\Entity\\Row\|null\) of method OpenSpout\\Reader\\RowIteratorInterface\:\:current\(\) should be covariant with return type \(OpenSpout\\Common\\Entity\\Row\) of method Iterator\<mixed,OpenSpout\\Common\\Entity\\Row\>\:\:current\(\)$#'
+			identifier: method.childReturnType
 			count: 1
 			path: src/Reader/RowIteratorInterface.php
 
 		-
-			message: "#^Dynamic call to static method XMLReader\\:\\:open\\(\\)\\.$#"
+			message: '#^Dynamic call to static method XMLReader\:\:open\(\)\.$#'
+			identifier: staticMethod.dynamicCall
 			count: 1
 			path: src/Reader/Wrapper/XMLReader.php
 
 		-
-			message: "#^Parameter \\#1 \\$callback of function array_map expects \\(callable\\(OpenSpout\\\\Common\\\\Entity\\\\Cell\\)\\: mixed\\)\\|null, Closure\\(OpenSpout\\\\Common\\\\Entity\\\\Cell\\\\BooleanCell\\|OpenSpout\\\\Common\\\\Entity\\\\Cell\\\\DateIntervalCell\\|OpenSpout\\\\Common\\\\Entity\\\\Cell\\\\DateTimeCell\\|OpenSpout\\\\Common\\\\Entity\\\\Cell\\\\EmptyCell\\|OpenSpout\\\\Common\\\\Entity\\\\Cell\\\\FormulaCell\\|OpenSpout\\\\Common\\\\Entity\\\\Cell\\\\NumericCell\\|OpenSpout\\\\Common\\\\Entity\\\\Cell\\\\StringCell\\)\\: string given\\.$#"
+			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(OpenSpout\\Common\\Entity\\Cell\)\: mixed\)\|null, Closure\(OpenSpout\\Common\\Entity\\Cell\\BooleanCell\|OpenSpout\\Common\\Entity\\Cell\\DateIntervalCell\|OpenSpout\\Common\\Entity\\Cell\\DateTimeCell\|OpenSpout\\Common\\Entity\\Cell\\EmptyCell\|OpenSpout\\Common\\Entity\\Cell\\FormulaCell\|OpenSpout\\Common\\Entity\\Cell\\NumericCell\|OpenSpout\\Common\\Entity\\Cell\\StringCell\)\: string given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/Writer/CSV/Writer.php
 
 		-
-			message: "#^Short ternary operator is not allowed\\. Use null coalesce operator if applicable or consider using long ternary\\.$#"
+			message: '#^Short ternary operator is not allowed\. Use null coalesce operator if applicable or consider using long ternary\.$#'
+			identifier: ternary.shortNotAllowed
 			count: 1
 			path: src/Writer/ODS/Manager/WorksheetManager.php
 
 		-
-			message: "#^Comparison operation \"\\<\" between int\\<1, max\\> and 1 is always false\\.$#"
+			message: '#^Comparison operation "\<" between int\<1, max\> and 1 is always false\.$#'
+			identifier: smaller.alwaysFalse
 			count: 1
 			path: src/Writer/XLSX/Entity/SheetView.php
 
 		-
-			message: "#^Method OpenSpout\\\\Reader\\\\CSV\\\\SpoutTestStream\\:\\:url_stat\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method OpenSpout\\Reader\\CSV\\SpoutTestStream\:\:url_stat\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Reader/CSV/SpoutTestStream.php
 
 		-
-			message: "#^Dynamic call to static method XMLReader\\:\\:XML\\(\\)\\.$#"
+			message: '#^Dynamic call to static method XMLReader\:\:XML\(\)\.$#'
+			identifier: staticMethod.dynamicCall
 			count: 1
 			path: tests/Reader/Wrapper/XMLReaderTest.php
 
 		-
-			message: "#^Parameter \\#1 \\$freezeRow of method OpenSpout\\\\Writer\\\\XLSX\\\\Entity\\\\SheetView\\:\\:setFreezeRow\\(\\) expects int\\<1, max\\>, \\-1 given\\.$#"
+			message: '#^Parameter \#1 \$freezeRow of method OpenSpout\\Writer\\XLSX\\Entity\\SheetView\:\:setFreezeRow\(\) expects int\<1, max\>, \-1 given\.$#'
+			identifier: argument.type
 			count: 1
 			path: tests/Reader/XLSX/Entity/SheetViewTest.php
 
 		-
-			message: "#^Method OpenSpout\\\\Reader\\\\XLSX\\\\Manager\\\\StyleManagerTest\\:\\:getStyleManagerMock\\(\\) has parameter \\$customNumberFormats with no value type specified in iterable type array\\.$#"
+			message: '#^Method OpenSpout\\Reader\\XLSX\\Manager\\StyleManagerTest\:\:getStyleManagerMock\(\) has parameter \$customNumberFormats with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Reader/XLSX/Manager/StyleManagerTest.php
 
 		-
-			message: "#^Method OpenSpout\\\\Reader\\\\XLSX\\\\Manager\\\\StyleManagerTest\\:\\:getStyleManagerMock\\(\\) has parameter \\$styleAttributes with no value type specified in iterable type array\\.$#"
+			message: '#^Method OpenSpout\\Reader\\XLSX\\Manager\\StyleManagerTest\:\:getStyleManagerMock\(\) has parameter \$styleAttributes with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Reader/XLSX/Manager/StyleManagerTest.php
+
+		-
+			message: '#^Parameter \#1 \$cellValues of static method OpenSpout\\Common\\Entity\\Row\:\:fromValues\(\) expects list\<bool\|DateInterval\|DateTimeInterface\|float\|int\|string\|null\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Writer/CSV/WriterTest.php
+
+		-
+			message: '#^Parameter \#1 \$cellValues of static method OpenSpout\\Common\\Entity\\Row\:\:fromValues\(\) expects list\<bool\|DateInterval\|DateTimeInterface\|float\|int\|string\|null\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Writer/ODS/SheetTest.php
+
+		-
+			message: '#^Parameter \#1 \$cellValues of static method OpenSpout\\Common\\Entity\\Row\:\:fromValues\(\) expects list\<bool\|DateInterval\|DateTimeInterface\|float\|int\|string\|null\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Writer/ODS/WriterTest.php
+
+		-
+			message: '#^Parameter \#1 \$cellValues of static method OpenSpout\\Common\\Entity\\Row\:\:fromValues\(\) expects list\<bool\|DateInterval\|DateTimeInterface\|float\|int\|string\|null\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Writer/ODS/WriterWithStyleTest.php
+
+		-
+			message: '#^Parameter \#1 \$cellValues of static method OpenSpout\\Common\\Entity\\Row\:\:fromValues\(\) expects list\<bool\|DateInterval\|DateTimeInterface\|float\|int\|string\|null\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Writer/XLSX/SheetTest.php
+
+		-
+			message: '#^Parameter \#1 \$cellValues of static method OpenSpout\\Common\\Entity\\Row\:\:fromValues\(\) expects list\<bool\|DateInterval\|DateTimeInterface\|float\|int\|string\|null\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Writer/XLSX/WriterTest.php
+
+		-
+			message: '#^Parameter \#1 \$cellValues of static method OpenSpout\\Common\\Entity\\Row\:\:fromValues\(\) expects list\<bool\|DateInterval\|DateTimeInterface\|float\|int\|string\|null\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Writer/XLSX/WriterWithStyleTest.php
 

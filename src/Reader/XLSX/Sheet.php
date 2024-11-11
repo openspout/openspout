@@ -32,7 +32,7 @@ final class Sheet implements SheetWithVisibilityInterface, SheetWithMergeCellsIn
     /** @var bool Whether the sheet is visible */
     private readonly bool $isVisible;
 
-    /** @var string[] Merge cells list ["C7:E7", "A9:D10"] */
+    /** @var list<string> Merge cells list ["C7:E7", "A9:D10"] */
     private readonly array $mergeCells;
 
     /**
