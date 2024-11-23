@@ -6,23 +6,23 @@ namespace OpenSpout\Writer\XLSX\Options;
 
 final class SheetProtection
 {
-    public ?string $passwordHash = null;
-    public bool $lockSheet = false;
-    public bool $lockColumnInsert = false;
-    public bool $lockColumnDelete = false;
-    public bool $lockColumnFormatting = false;
-    public bool $lockRowInsert = false;
-    public bool $lockRowDelete = false;
-    public bool $lockRowFormatting = false;
-    public bool $lockAutoFilter = false;
-    public bool $lockSort = false;
-    public bool $lockCellFormatting = false;
-    public bool $lockLockedCellSelection = false;
-    public bool $lockUnlockedCellsSelection = false;
-    public bool $lockObjects = false;
-    public bool $lockHyperlinkInsert = false;
-    public bool $lockPivotTables = false;
-    public bool $lockScenarios = false;
+    private ?string $passwordHash = null;
+    private bool $lockSheet = false;
+    private bool $lockColumnInsert = false;
+    private bool $lockColumnDelete = false;
+    private bool $lockColumnFormatting = false;
+    private bool $lockRowInsert = false;
+    private bool $lockRowDelete = false;
+    private bool $lockRowFormatting = false;
+    private bool $lockAutoFilter = false;
+    private bool $lockSort = false;
+    private bool $lockCellFormatting = false;
+    private bool $lockLockedCellSelection = false;
+    private bool $lockUnlockedCellsSelection = false;
+    private bool $lockObjects = false;
+    private bool $lockHyperlinkInsert = false;
+    private bool $lockPivotTables = false;
+    private bool $lockScenarios = false;
 
     /**
      * @return $this
