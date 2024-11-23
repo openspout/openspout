@@ -591,6 +591,10 @@ There are a number of ways to protect the editing of a spreadsheet.
 
 ### Workbook Protection
 
+> #### Note on LibreOffice support
+>
+> LibreOffice does not respect workbook protection.
+
 ```php
 use OpenSpout\Writer\XLSX\Writer;
 use \OpenSpout\Writer\XLSX\Options
