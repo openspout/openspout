@@ -27,6 +27,7 @@ use OpenSpout\Writer\XLSX\Options\PageOrientation;
 use OpenSpout\Writer\XLSX\Options\PageSetup;
 use OpenSpout\Writer\XLSX\Options\PaperSize;
 use OpenSpout\Writer\XLSX\Options\SheetProtection;
+use OpenSpout\Writer\XLSX\Options\WorkbookProtection;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use ReflectionHelper;
@@ -1385,5 +1386,32 @@ final class WriterTest extends TestCase
 
         self::assertNotFalse($xmlContents);
         self::assertStringContainsString('<sheetProtection password="83AF" sheet="true" objects="true" scenarios="false" formatCells="false" formatColumns="false" formatRows="true" insertColumns="false" insertRows="true" deleteColumns="true" deleteRows="false" selectLockedCells="true" selectUnlockedCells="false" autoFilter="false" sort="true" hyperlink="false" pivotTables="true"></sheetProtection>', $xmlContents);
+    }
+
+    public function testSetWorkbookProtection(): void
+    {
+        $fileName = 'test_set_workbook_protection.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options->setWorkbookProtection(
+            (new WorkbookProtection())
+                ->setPassword('password')
+                ->setLockRevisions(true)
+                ->setLockStructure(true)
+                ->setLockWindows(true)
+        );
+
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $writer->close();
+
+        // Now test if the resources contain what we need
+        $pathToSheetFile = $resourcePath.'#xl/workbook.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString('<workbookProtection workbookPassword="83AF" lockStructure="true" lockWindows="true" lockRevisions="true"/>', $xmlContents);
     }
 }

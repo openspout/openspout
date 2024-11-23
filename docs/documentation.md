@@ -580,21 +580,43 @@ $reader->open($file));
 $reader->close();
 ```
 
-## Worksheet Protection
+## Protection
 
-There are a number of ways to protect the editing of individual worksheets.
+There are a number of ways to protect the editing of a spreadsheet.
 
-> #### Note on security and support
+> #### Note on security
 >
 > These protections are trivial to remove/bypass. They are only enforced if the application reading the spreadsheet
 > chooses to respect them. They should not be relied upon.
-> 
+
+### Workbook Protection
+
+```php
+use OpenSpout\Writer\XLSX\Writer;
+use \OpenSpout\Writer\XLSX\Options
+use OpenSpout\Writer\XLSX\Options\WorkbookProtection;
+
+$protection = (new WorkbookProtection())
+        ->setPassword('password')
+        ->setLockStructure(true) // Prevents adding, deleting, renaming, or rearranging worksheets
+        ->setLockRevisions(true) // Restricts revision history
+        ->setLockWindows(true); // Prevents resizing or moving the Excel window
+
+$options = new Options()
+$options->setWorkbookProtection($protection);
+
+$writer = new Writer($options);
+```
+
+
+### Single Worksheet Protection
+
+> #### Note on LibreOffice support
+>
 > LibreOffice only respects the following protections, all others will be ignored:
-> - Select protected cells
-> - Select unprotected cells
+> - Select (un)protected cells
 > - Insert rows/columns
 > - Delete rows/columns
-
 
 ```php
 use OpenSpout\Writer\XLSX\Writer;
