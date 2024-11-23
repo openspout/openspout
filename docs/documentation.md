@@ -579,3 +579,61 @@ $reader->open($file));
 
 $reader->close();
 ```
+
+## Worksheet Protection
+
+There are a number of ways to protect the editing of individual worksheets.
+
+> #### Note on security and support
+>
+> These protections are trivial to remove/bypass. They are only enforced if the application reading the spreadsheet
+> chooses to respect them. They should not be relied upon.
+> 
+> LibreOffice only respects the following protections, all others will be ignored:
+> - Select protected cells
+> - Select unprotected cells
+> - Insert rows/columns
+> - Delete rows/columns
+
+
+```php
+use OpenSpout\Writer\XLSX\Writer;
+use OpenSpout\Writer\XLSX\Options\SheetProtection;
+
+$writer = new Writer();
+
+$protection = (new SheetProtection())
+    ->setPassword('password')
+    ->setLockSheet(true)
+    ->setLockColumnInsert(true)
+    ->setLockColumnDelete(true)
+    ->setLockColumnFormatting(true)
+    ->setLockRowInsert(true)
+    ->setLockRowDelete(true)
+    ->setLockRowFormatting(true)
+    ->setLockAutoFilter(true)
+    ->setLockSort(true)
+    ->setLockCellFormatting(true)
+    ->setLockLockedCellSelection(true)
+    ->setLockUnlockedCellsSelection(true)
+    ->setLockObjects(true)
+    ->setLockHyperlinkInsert(true)
+    ->setLockPivotTables(true)
+    ->setLockScenarios(true);
+
+$writer
+    ->getCurrentSheet()
+    ->setSheetProtection($protection);
+```
+
+**Shortcuts for rows/columns**
+
+There are two helper methods to apply all row/column protections.
+
+```php
+use OpenSpout\Writer\XLSX\Options\SheetProtection;
+
+$protection = (new SheetProtection())
+    ->setLockRows(true)
+    ->setLockColumns(true);
+```

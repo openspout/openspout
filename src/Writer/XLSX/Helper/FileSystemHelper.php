@@ -390,6 +390,10 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             // Add the legacy drawing for comments
             fwrite($worksheetFilePointer, '<legacyDrawing r:id="rId_comments_vml1"/>');
 
+            if (null !== $sheet->getSheetProtection()) {
+                fwrite($worksheetFilePointer, $sheet->getSheetProtection()->getXml());
+            }
+
             fwrite($worksheetFilePointer, '</worksheet>');
             fclose($worksheetFilePointer);
         }
