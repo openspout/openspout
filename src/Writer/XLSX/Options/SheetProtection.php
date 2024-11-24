@@ -218,28 +218,28 @@ final class SheetProtection
         return $this;
     }
 
+    public function getXml(): string
+    {
+        return '<sheetProtection'.$this->getSheetViewAttributes().'></sheetProtection>';
+    }
+
     private function createPasswordHash(string $password): string
     {
         $verifier = 0;
-        $pwlen = strlen($password);
-        $passwordArray = pack('c', $pwlen) . $password;
+        $pwlen = \strlen($password);
+        $passwordArray = pack('c', $pwlen).$password;
 
         for ($i = $pwlen; $i >= 0; --$i) {
             $intermediate1 = (($verifier & 0x4000) === 0) ? 0 : 1;
             $intermediate2 = 2 * $verifier;
-            $intermediate2 &= 0x7fff;
+            $intermediate2 &= 0x7FFF;
             $intermediate3 = $intermediate1 | $intermediate2;
-            $verifier = $intermediate3 ^ ord($passwordArray[$i]);
+            $verifier = $intermediate3 ^ \ord($passwordArray[$i]);
         }
 
         $verifier ^= 0xCE4B;
 
         return strtoupper(dechex($verifier));
-    }
-
-    public function getXml(): string
-    {
-        return '<sheetProtection'.$this->getSheetViewAttributes().'></sheetProtection>';
     }
 
     private function getSheetViewAttributes(): string
@@ -266,7 +266,7 @@ final class SheetProtection
     }
 
     /**
-     * @param array<string, bool|int|string> $data with key containing the attribute name and value containing the attribute value
+     * @param array<string, bool|string> $data with key containing the attribute name and value containing the attribute value
      */
     private function generateAttributes(array $data): string
     {

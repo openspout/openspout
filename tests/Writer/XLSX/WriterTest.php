@@ -1232,6 +1232,79 @@ final class WriterTest extends TestCase
         self::assertStringContainsString('<v>1.5</v>', $xmlContents, '36 hours are 1.5 days');
     }
 
+    public function testAddSheetProtection(): void
+    {
+        $fileName = 'test_sheet_protection_setup.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+
+        $protection = (new SheetProtection())
+            ->setPassword('password')
+            ->setLockSheet(true)
+            ->setLockColumnInsert(false)
+            ->setLockColumnDelete(true)
+            ->setLockColumnFormatting(false)
+            ->setLockRowInsert(true)
+            ->setLockRowDelete(false)
+            ->setLockRowFormatting(true)
+            ->setLockAutoFilter(false)
+            ->setLockSort(true)
+            ->setLockCellFormatting(false)
+            ->setLockLockedCellSelection(true)
+            ->setLockUnlockedCellsSelection(false)
+            ->setLockObjects(true)
+            ->setLockHyperlinkInsert(false)
+            ->setLockPivotTables(true)
+            ->setLockScenarios(false)
+        ;
+
+        $writer->getCurrentSheet()
+            ->setSheetProtection($protection)
+        ;
+
+        $row = new Row([Cell::fromValue('something'), Cell::fromValue('else')]);
+        $writer->addRow($row);
+        $writer->close();
+
+        // Now test if the resources contain what we need
+        $pathToSheetFile = $resourcePath.'#xl/worksheets/sheet1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString('<sheetProtection password="83AF" sheet="true" objects="true" scenarios="false" formatCells="false" formatColumns="false" formatRows="true" insertColumns="false" insertRows="true" deleteColumns="true" deleteRows="false" selectLockedCells="true" selectUnlockedCells="false" autoFilter="false" sort="true" hyperlink="false" pivotTables="true"></sheetProtection>', $xmlContents);
+    }
+
+    public function testSetWorkbookProtection(): void
+    {
+        $fileName = 'test_set_workbook_protection.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options->setWorkbookProtection(
+            (new WorkbookProtection())
+                ->setPassword('password')
+                ->setLockRevisions(true)
+                ->setLockStructure(true)
+                ->setLockWindows(true)
+        );
+
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $writer->close();
+
+        // Now test if the resources contain what we need
+        $pathToSheetFile = $resourcePath.'#xl/workbook.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString('<workbookProtection workbookPassword="83AF" lockStructure="true" lockWindows="true" lockRevisions="true"/>', $xmlContents);
+    }
+
     /**
      * @param Row[] $allRows
      */
@@ -1342,76 +1415,5 @@ final class WriterTest extends TestCase
         $xmlReader->openFileInZip($resourcePath, 'xl/worksheets/sheet'.$sheetIndex.'.xml');
 
         return $xmlReader;
-    }
-
-    public function testAddSheetProtection(): void
-    {
-        $fileName = 'test_sheet_protection_setup.xlsx';
-        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
-
-        $writer = new Writer($options);
-        $writer->openToFile($resourcePath);
-
-        $protection = (new SheetProtection())
-            ->setPassword('password')
-            ->setLockSheet(true)
-            ->setLockColumnInsert(false)
-            ->setLockColumnDelete(true)
-            ->setLockColumnFormatting(false)
-            ->setLockRowInsert(true)
-            ->setLockRowDelete(false)
-            ->setLockRowFormatting(true)
-            ->setLockAutoFilter(false)
-            ->setLockSort(true)
-            ->setLockCellFormatting(false)
-            ->setLockLockedCellSelection(true)
-            ->setLockUnlockedCellsSelection(false)
-            ->setLockObjects(true)
-            ->setLockHyperlinkInsert(false)
-            ->setLockPivotTables(true)
-            ->setLockScenarios(false);
-
-        $writer->getCurrentSheet()
-            ->setSheetProtection($protection);
-
-        $row = new Row([Cell::fromValue('something'), Cell::fromValue('else')]);
-        $writer->addRow($row);
-        $writer->close();
-
-        // Now test if the resources contain what we need
-        $pathToSheetFile = $resourcePath.'#xl/worksheets/sheet1.xml';
-        $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
-
-        self::assertNotFalse($xmlContents);
-        self::assertStringContainsString('<sheetProtection password="83AF" sheet="true" objects="true" scenarios="false" formatCells="false" formatColumns="false" formatRows="true" insertColumns="false" insertRows="true" deleteColumns="true" deleteRows="false" selectLockedCells="true" selectUnlockedCells="false" autoFilter="false" sort="true" hyperlink="false" pivotTables="true"></sheetProtection>', $xmlContents);
-    }
-
-    public function testSetWorkbookProtection(): void
-    {
-        $fileName = 'test_set_workbook_protection.xlsx';
-        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
-
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
-        $options->setWorkbookProtection(
-            (new WorkbookProtection())
-                ->setPassword('password')
-                ->setLockRevisions(true)
-                ->setLockStructure(true)
-                ->setLockWindows(true)
-        );
-
-        $writer = new Writer($options);
-        $writer->openToFile($resourcePath);
-        $writer->close();
-
-        // Now test if the resources contain what we need
-        $pathToSheetFile = $resourcePath.'#xl/workbook.xml';
-        $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
-
-        self::assertNotFalse($xmlContents);
-        self::assertStringContainsString('<workbookProtection workbookPassword="83AF" lockStructure="true" lockWindows="true" lockRevisions="true"/>', $xmlContents);
     }
 }
