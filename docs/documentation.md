@@ -653,15 +653,3 @@ $writer
     ->getCurrentSheet()
     ->setSheetProtection($protection);
 ```
-
-**Shortcuts for rows/columns**
-
-There are two helper methods to apply all row/column protections.
-
-```php
-use OpenSpout\Writer\XLSX\Options\SheetProtection;
-
-$protection = (new SheetProtection())
-    ->setLockRows(true)
-    ->setLockColumns(true);
-```
