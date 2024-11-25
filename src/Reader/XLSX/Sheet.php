@@ -12,28 +12,28 @@ use OpenSpout\Reader\SheetWithVisibilityInterface;
  * @implements SheetWithVisibilityInterface<RowIterator>
  * @implements SheetWithMergeCellsInterface<RowIterator>
  */
-final class Sheet implements SheetWithVisibilityInterface, SheetWithMergeCellsInterface
+final readonly class Sheet implements SheetWithVisibilityInterface, SheetWithMergeCellsInterface
 {
     /** @var RowIterator To iterate over sheet's rows */
-    private readonly RowIterator $rowIterator;
+    private RowIterator $rowIterator;
 
     /** @var SheetHeaderReader To read the header of the sheet, containing for instance the col widths */
-    private readonly SheetHeaderReader $headerReader;
+    private SheetHeaderReader $headerReader;
 
     /** @var int Index of the sheet, based on order in the workbook (zero-based) */
-    private readonly int $index;
+    private int $index;
 
     /** @var string Name of the sheet */
-    private readonly string $name;
+    private string $name;
 
     /** @var bool Whether the sheet was the active one */
-    private readonly bool $isActive;
+    private bool $isActive;
 
     /** @var bool Whether the sheet is visible */
-    private readonly bool $isVisible;
+    private bool $isVisible;
 
     /** @var list<string> Merge cells list ["C7:E7", "A9:D10"] */
-    private readonly array $mergeCells;
+    private array $mergeCells;
 
     /**
      * @param RowIterator  $rowIterator    The corresponding row iterator
