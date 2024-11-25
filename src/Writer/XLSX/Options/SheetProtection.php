@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer\XLSX\Options;
 
+use OpenSpout\Writer\XLSX\Helper\PasswordHashHelper;
+
 final readonly class SheetProtection
 {
     public function __construct(
@@ -31,29 +33,10 @@ final readonly class SheetProtection
         return '<sheetProtection'.$this->getSheetViewAttributes().'></sheetProtection>';
     }
 
-    private function createPasswordHash(string $password): string
-    {
-        $verifier = 0;
-        $pwlen = \strlen($password);
-        $passwordArray = pack('c', $pwlen).$password;
-
-        for ($i = $pwlen; $i >= 0; --$i) {
-            $intermediate1 = (($verifier & 0x4000) === 0) ? 0 : 1;
-            $intermediate2 = 2 * $verifier;
-            $intermediate2 &= 0x7FFF;
-            $intermediate3 = $intermediate1 | $intermediate2;
-            $verifier = $intermediate3 ^ \ord($passwordArray[$i]);
-        }
-
-        $verifier ^= 0xCE4B;
-
-        return strtoupper(dechex($verifier));
-    }
-
     private function getSheetViewAttributes(): string
     {
         return $this->generateAttributes([
-            'password' => null !== $this->password ? $this->createPasswordHash($this->password) : '',
+            'password' => null !== $this->password ? PasswordHashHelper::make($this->password) : '',
             'sheet' => $this->lockSheet,
             'objects' => $this->lockObjects,
             'scenarios' => $this->lockScenarios,
