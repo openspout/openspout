@@ -11,18 +11,18 @@ use RecursiveIteratorIterator;
 /**
  * @internal
  */
-final class TestUsingResource
+final readonly class TestUsingResource
 {
     private const RESOURCES_PATH = 'tests/resources';
 
     /** @var string Path to the test generated resources folder */
-    private readonly string $generatedResourcesPath;
+    private string $generatedResourcesPath;
 
     /** @var string Path to the test resources folder, that does not have writing permissions */
-    private readonly string $generatedUnwritableResourcesPath;
+    private string $generatedUnwritableResourcesPath;
 
     /** @var string Path to the test temp folder */
-    private readonly string $tempFolderPath;
+    private string $tempFolderPath;
 
     public function __construct()
     {
