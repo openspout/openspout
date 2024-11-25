@@ -600,11 +600,12 @@ use OpenSpout\Writer\XLSX\Writer;
 use \OpenSpout\Writer\XLSX\Options
 use OpenSpout\Writer\XLSX\Options\WorkbookProtection;
 
-$protection = (new WorkbookProtection())
-        ->setPassword('password')
-        ->setLockStructure(true) // Prevents adding, deleting, renaming, or rearranging worksheets
-        ->setLockRevisions(true) // Restricts revision history
-        ->setLockWindows(true); // Prevents resizing or moving the Excel window
+$protection = new WorkbookProtection(
+    password: 'password',
+    lockStructure: true, // Prevents adding, deleting, renaming, or rearranging worksheets
+    lockRevisions: true, // Restricts revision history
+    lockWindows: true, // Prevents resizing or moving the Excel window
+);
 
 $options = new Options()
 $options->setWorkbookProtection($protection);
@@ -628,24 +629,25 @@ use OpenSpout\Writer\XLSX\Options\SheetProtection;
 
 $writer = new Writer();
 
-$protection = (new SheetProtection())
-    ->setPassword('password')
-    ->setLockSheet(true)
-    ->setLockColumnInsert(true)
-    ->setLockColumnDelete(true)
-    ->setLockColumnFormatting(true)
-    ->setLockRowInsert(true)
-    ->setLockRowDelete(true)
-    ->setLockRowFormatting(true)
-    ->setLockAutoFilter(true)
-    ->setLockSort(true)
-    ->setLockCellFormatting(true)
-    ->setLockLockedCellSelection(true)
-    ->setLockUnlockedCellsSelection(true)
-    ->setLockObjects(true)
-    ->setLockHyperlinkInsert(true)
-    ->setLockPivotTables(true)
-    ->setLockScenarios(true);
+$protection = new SheetProtection(
+    password: 'password',
+    lockSheet: true,
+    lockColumnInsert: true,
+    lockColumnDelete: true,
+    lockColumnFormatting: true,
+    lockRowInsert: true,
+    lockRowDelete: true,
+    lockRowFormatting: true,
+    lockAutoFilter: true,
+    lockSort: true,
+    lockCellFormatting: true,
+    lockLockedCellSelection: true,
+    lockUnlockedCellsSelection: true,
+    lockObjects: true,
+    lockHyperlinkInsert: true,
+    lockPivotTables: true,
+    lockScenarios: true,
+);
 
 $writer
     ->getCurrentSheet()

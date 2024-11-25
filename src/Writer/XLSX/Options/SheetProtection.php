@@ -4,219 +4,27 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer\XLSX\Options;
 
-final class SheetProtection
+final readonly class SheetProtection
 {
-    private ?string $passwordHash = null;
-    private bool $lockSheet = false;
-    private bool $lockColumnInsert = false;
-    private bool $lockColumnDelete = false;
-    private bool $lockColumnFormatting = false;
-    private bool $lockRowInsert = false;
-    private bool $lockRowDelete = false;
-    private bool $lockRowFormatting = false;
-    private bool $lockAutoFilter = false;
-    private bool $lockSort = false;
-    private bool $lockCellFormatting = false;
-    private bool $lockLockedCellSelection = false;
-    private bool $lockUnlockedCellsSelection = false;
-    private bool $lockObjects = false;
-    private bool $lockHyperlinkInsert = false;
-    private bool $lockPivotTables = false;
-    private bool $lockScenarios = false;
-
-    /**
-     * @return $this
-     */
-    public function setPassword(string $password): self
-    {
-        $this->passwordHash = $this->createPasswordHash($password);
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function setLockSheet(bool $lockSheet): self
-    {
-        $this->lockSheet = $lockSheet;
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function setLockColumns(bool $lockColumn): self
-    {
-        $this->setLockColumnInsert($lockColumn);
-        $this->setLockColumnDelete($lockColumn);
-        $this->setLockColumnFormatting($lockColumn);
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function setLockColumnInsert(bool $lockColumnInsert): self
-    {
-        $this->lockColumnInsert = $lockColumnInsert;
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function setLockColumnDelete(bool $lockColumnDelete): self
-    {
-        $this->lockColumnDelete = $lockColumnDelete;
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function setLockColumnFormatting(bool $lockColumnFormatting): self
-    {
-        $this->lockColumnFormatting = $lockColumnFormatting;
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function setLockRows(bool $lockRow): self
-    {
-        $this->setLockRowInsert($lockRow);
-        $this->setLockRowDelete($lockRow);
-        $this->setLockRowFormatting($lockRow);
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function setLockRowInsert(bool $lockRowInsert): self
-    {
-        $this->lockRowInsert = $lockRowInsert;
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function setLockRowDelete(bool $lockRowDelete): self
-    {
-        $this->lockRowDelete = $lockRowDelete;
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function setLockRowFormatting(bool $lockRowFormatting): self
-    {
-        $this->lockRowFormatting = $lockRowFormatting;
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function setLockAutoFilter(bool $lockAutoFilter): self
-    {
-        $this->lockAutoFilter = $lockAutoFilter;
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function setLockSort(bool $lockSort): self
-    {
-        $this->lockSort = $lockSort;
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function setLockCellFormatting(bool $lockCellFormatting): self
-    {
-        $this->lockCellFormatting = $lockCellFormatting;
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function setLockLockedCellSelection(bool $lockLockedCellSelection): self
-    {
-        $this->lockLockedCellSelection = $lockLockedCellSelection;
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function setLockUnlockedCellsSelection(bool $lockUnlockedCellsSelection): self
-    {
-        $this->lockUnlockedCellsSelection = $lockUnlockedCellsSelection;
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function setLockObjects(bool $lockObjects): self
-    {
-        $this->lockObjects = $lockObjects;
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function setLockHyperlinkInsert(bool $lockHyperlinkInsert): self
-    {
-        $this->lockHyperlinkInsert = $lockHyperlinkInsert;
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function setLockPivotTables(bool $lockPivotTables): self
-    {
-        $this->lockPivotTables = $lockPivotTables;
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function setLockScenarios(bool $lockScenarios): self
-    {
-        $this->lockScenarios = $lockScenarios;
-
-        return $this;
-    }
+    public function __construct(
+        public ?string $password = null,
+        public bool $lockSheet = false,
+        public bool $lockColumnInsert = false,
+        public bool $lockColumnDelete = false,
+        public bool $lockColumnFormatting = false,
+        public bool $lockRowInsert = false,
+        public bool $lockRowDelete = false,
+        public bool $lockRowFormatting = false,
+        public bool $lockAutoFilter = false,
+        public bool $lockSort = false,
+        public bool $lockCellFormatting = false,
+        public bool $lockLockedCellSelection = false,
+        public bool $lockUnlockedCellsSelection = false,
+        public bool $lockObjects = false,
+        public bool $lockHyperlinkInsert = false,
+        public bool $lockPivotTables = false,
+        public bool $lockScenarios = false,
+    ) {}
 
     public function getXml(): string
     {
@@ -245,7 +53,7 @@ final class SheetProtection
     private function getSheetViewAttributes(): string
     {
         return $this->generateAttributes([
-            'password' => $this->passwordHash ?? '',
+            'password' => null !== $this->password ? $this->createPasswordHash($this->password) : '',
             'sheet' => $this->lockSheet,
             'objects' => $this->lockObjects,
             'scenarios' => $this->lockScenarios,

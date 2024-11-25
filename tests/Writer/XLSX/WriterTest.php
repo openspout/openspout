@@ -1242,25 +1242,25 @@ final class WriterTest extends TestCase
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
 
-        $protection = (new SheetProtection())
-            ->setPassword('password')
-            ->setLockSheet(true)
-            ->setLockColumnInsert(false)
-            ->setLockColumnDelete(true)
-            ->setLockColumnFormatting(false)
-            ->setLockRowInsert(true)
-            ->setLockRowDelete(false)
-            ->setLockRowFormatting(true)
-            ->setLockAutoFilter(false)
-            ->setLockSort(true)
-            ->setLockCellFormatting(false)
-            ->setLockLockedCellSelection(true)
-            ->setLockUnlockedCellsSelection(false)
-            ->setLockObjects(true)
-            ->setLockHyperlinkInsert(false)
-            ->setLockPivotTables(true)
-            ->setLockScenarios(false)
-        ;
+        $protection = new SheetProtection(
+            password: 'password',
+            lockSheet: true,
+            lockColumnInsert: false,
+            lockColumnDelete: true,
+            lockColumnFormatting: false,
+            lockRowInsert: true,
+            lockRowDelete: false,
+            lockRowFormatting: true,
+            lockAutoFilter: false,
+            lockSort: true,
+            lockCellFormatting: false,
+            lockLockedCellSelection: true,
+            lockUnlockedCellsSelection: false,
+            lockObjects: true,
+            lockHyperlinkInsert: false,
+            lockPivotTables: true,
+            lockScenarios: false,
+        );
 
         $writer->getCurrentSheet()
             ->setSheetProtection($protection)
@@ -1286,11 +1286,12 @@ final class WriterTest extends TestCase
         $options = new Options();
         $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
         $options->setWorkbookProtection(
-            (new WorkbookProtection())
-                ->setPassword('password')
-                ->setLockRevisions(true)
-                ->setLockStructure(true)
-                ->setLockWindows(true)
+            new WorkbookProtection(
+                password: 'password',
+                lockStructure: true,
+                lockRevisions: true,
+                lockWindows: true,
+            )
         );
 
         $writer = new Writer($options);

@@ -4,52 +4,14 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer\XLSX\Options;
 
-final class WorkbookProtection
+final readonly class WorkbookProtection
 {
-    private ?string $passwordHash = null;
-    private bool $lockStructure = false;
-    private bool $lockWindows = false;
-    private bool $lockRevisions = false;
-
-    /**
-     * @return $this
-     */
-    public function setPassword(string $password): self
-    {
-        $this->passwordHash = $this->createPasswordHash($password);
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function setLockStructure(bool $lockStructure): self
-    {
-        $this->lockStructure = $lockStructure;
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function setLockWindows(bool $lockWindows): self
-    {
-        $this->lockWindows = $lockWindows;
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function setLockRevisions(bool $lockRevisions): self
-    {
-        $this->lockRevisions = $lockRevisions;
-
-        return $this;
-    }
+    public function __construct(
+        public ?string $password = null,
+        public bool $lockStructure = false,
+        public bool $lockWindows = false,
+        public bool $lockRevisions = false,
+    ) {}
 
     public function getXml(): string
     {
@@ -78,7 +40,7 @@ final class WorkbookProtection
     private function getSheetViewAttributes(): string
     {
         return $this->generateAttributes([
-            'workbookPassword' => $this->passwordHash ?? '',
+            'workbookPassword' => null !== $this->password ? $this->createPasswordHash($this->password) : '',
             'lockStructure' => $this->lockStructure,
             'lockWindows' => $this->lockWindows,
             'lockRevisions' => $this->lockRevisions,
