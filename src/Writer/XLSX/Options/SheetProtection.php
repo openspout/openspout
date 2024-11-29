@@ -30,7 +30,7 @@ final readonly class SheetProtection
 
     public function getXml(): string
     {
-        return '<sheetProtection'.$this->getSheetViewAttributes().'></sheetProtection>';
+        return '<sheetProtection'.$this->getSheetViewAttributes().'/>';
     }
 
     private function getSheetViewAttributes(): string
