@@ -1346,7 +1346,7 @@ final class WriterTest extends TestCase
         $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
 
         self::assertNotFalse($xmlContents);
-        self::assertStringContainsString('<sheetProtection password="83AF" sheet="true" objects="true" scenarios="false" formatCells="false" formatColumns="false" formatRows="true" insertColumns="false" insertRows="true" deleteColumns="true" deleteRows="false" selectLockedCells="true" selectUnlockedCells="false" autoFilter="false" sort="true" hyperlink="false" pivotTables="true"></sheetProtection>', $xmlContents);
+        self::assertStringContainsString('<sheetProtection password="83AF" sheet="true" objects="true" scenarios="false" formatCells="false" formatColumns="false" formatRows="true" insertColumns="false" insertRows="true" deleteColumns="true" deleteRows="false" selectLockedCells="true" selectUnlockedCells="false" autoFilter="false" sort="true" hyperlink="false" pivotTables="true"/>', $xmlContents);
     }
 
     public function testSetWorkbookProtection(): void
