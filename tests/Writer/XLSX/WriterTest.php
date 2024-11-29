@@ -1349,6 +1349,34 @@ final class WriterTest extends TestCase
         self::assertStringContainsString('<sheetProtection password="83AF" sheet="true" objects="true" scenarios="false" formatCells="false" formatColumns="false" formatRows="true" insertColumns="false" insertRows="true" deleteColumns="true" deleteRows="false" selectLockedCells="true" selectUnlockedCells="false" autoFilter="false" sort="true" hyperlink="false" pivotTables="true"/>', $xmlContents);
     }
 
+    public function testSheetProtectionElementIsCorrectlyPositioned(): void
+    {
+        $fileName = 'test_sheet_protection_setup.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $options = new Options();
+        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+
+        $protection = new SheetProtection(
+            password: 'password',
+        );
+
+        $writer->getCurrentSheet()->setSheetProtection($protection);
+
+        $row = new Row([Cell::fromValue('something'), Cell::fromValue('else')]);
+        $writer->addRow($row);
+        $writer->close();
+
+        // Now test if the resources contain what we need
+        $pathToSheetFile = $resourcePath.'#xl/worksheets/sheet1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString('</sheetData><sheetProtection ', $xmlContents);
+    }
+
     public function testSetWorkbookProtection(): void
     {
         $fileName = 'test_set_workbook_protection.xlsx';
