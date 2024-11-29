@@ -367,6 +367,10 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             $this->copyFileContentsToTarget($worksheetFilePath, $worksheetFilePointer);
             fwrite($worksheetFilePointer, '</sheetData>');
 
+            if (null !== $sheet->getSheetProtection()) {
+                fwrite($worksheetFilePointer, $sheet->getSheetProtection()->getXml());
+            }
+
             // AutoFilter tag
             if (null !== $autofilter) {
                 $autoFilterRange = \sprintf(
@@ -407,10 +411,6 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 
             // Add the legacy drawing for comments
             fwrite($worksheetFilePointer, '<legacyDrawing r:id="rId_comments_vml1"/>');
-
-            if (null !== $sheet->getSheetProtection()) {
-                fwrite($worksheetFilePointer, $sheet->getSheetProtection()->getXml());
-            }
 
             fwrite($worksheetFilePointer, '</worksheet>');
             fclose($worksheetFilePointer);
