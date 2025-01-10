@@ -133,6 +133,20 @@ $writer = new Writer();
 $writer->getCurrentSheet()->setSheetView($sheetView);
 ```
 
+### AutoFilter (XLSX Writer)
+
+AutoFilter can be configured using the `AutoFilter` class:
+
+```
+use OpenSpout\Writer\AutoFilter;
+use OpenSpout\Writer\XLSX\Writer;
+
+$autoFilter = new AutoFilter(0, 10, 5, 20);
+$writer->setAutoFilter($autoFilter);
+```
+
+Note that columns are 0-indexed, while rows are 1-indexed.
+
 ### Using a custom temporary folder
 
 Processing XLSX and ODS files requires temporary files to be created. By default, OpenSpout will use the system default
