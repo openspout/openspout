@@ -44,7 +44,7 @@
         "phpstan/phpstan": "^2.1.5",
         "phpstan/phpstan-phpunit": "^2.0.4",
         "phpstan/phpstan-strict-rules": "^2.0.3",
-        "phpunit/phpunit": "^11.5.7"
+        "phpunit/phpunit": "^12.0.2"
     },
     "suggest": {
         "ext-iconv": "To handle non UTF-8 CSV files (if \"php-mbstring\" is not already installed or is too limited)",
