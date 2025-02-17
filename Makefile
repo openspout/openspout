@@ -1,4 +1,4 @@
-DOCKER_PHP_EXEC := docker compose run --rm php
+DOCKER_PHP_EXEC := docker compose run --rm --env PHP_CS_FIXER_IGNORE_ENV=1 -it php
 
 SRCS := $(shell find ./src ./tests -type f -not -path "*/resources/generated_*")
 

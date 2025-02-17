@@ -28,7 +28,7 @@
     ],
     "homepage": "https://github.com/openspout/openspout",
     "require": {
-        "php": "~8.2.0 || ~8.3.0 || ~8.4.0",
+        "php": "~8.3.0 || ~8.4.0",
         "ext-dom": "*",
         "ext-fileinfo": "*",
         "ext-filter": "*",
@@ -43,7 +43,7 @@
         "phpbench/phpbench": "^1.4.0",
         "phpstan/phpstan": "^2.1.5",
         "phpstan/phpstan-phpunit": "^2.0.4",
-        "phpstan/phpstan-strict-rules": "^2",
+        "phpstan/phpstan-strict-rules": "^2.0.3",
         "phpunit/phpunit": "^11.5.7"
     },
     "suggest": {
