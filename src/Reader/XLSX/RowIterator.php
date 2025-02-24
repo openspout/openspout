@@ -213,9 +213,9 @@ final class RowIterator implements RowIteratorInterface
         // TODO: This should return $this->nextRowIndexToBeProcessed
         //       but to avoid a breaking change, the return value for
         //       this function has been kept as the number of rows read.
-        return $this->shouldPreserveEmptyRows ?
-                $this->nextRowIndexToBeProcessed :
-                $this->numReadRows;
+        return $this->shouldPreserveEmptyRows
+                ? $this->nextRowIndexToBeProcessed
+                : $this->numReadRows;
     }
 
     /**
@@ -374,9 +374,9 @@ final class RowIterator implements RowIteratorInterface
         // Get "r" attribute if present (from something like <row r="3"...>
         $currentRowIndex = $xmlReader->getAttribute(self::XML_ATTRIBUTE_ROW_INDEX);
 
-        return (null !== $currentRowIndex) ?
-                (int) $currentRowIndex :
-                $this->lastRowIndexProcessed + 1;
+        return (null !== $currentRowIndex)
+                ? (int) $currentRowIndex
+                : $this->lastRowIndexProcessed + 1;
     }
 
     /**
@@ -391,8 +391,8 @@ final class RowIterator implements RowIteratorInterface
         // Get "r" attribute if present (from something like <c r="A1"...>
         $currentCellIndex = $xmlReader->getAttribute(self::XML_ATTRIBUTE_CELL_INDEX);
 
-        return (null !== $currentCellIndex) ?
-                CellHelper::getColumnIndexFromCellIndex($currentCellIndex) :
-                $this->lastColumnIndexProcessed + 1;
+        return (null !== $currentCellIndex)
+                ? CellHelper::getColumnIndexFromCellIndex($currentCellIndex)
+                : $this->lastColumnIndexProcessed + 1;
     }
 }

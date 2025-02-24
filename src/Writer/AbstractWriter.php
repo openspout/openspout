@@ -83,9 +83,9 @@ abstract class AbstractWriter implements WriterInterface
          */
         header('Content-Type: '.static::$headerContentType);
         header(
-            'Content-Disposition: attachment; '.
-            'filename="'.rawurlencode($this->outputFilePath).'"; '.
-            'filename*=UTF-8\'\''.rawurlencode($this->outputFilePath)
+            'Content-Disposition: attachment; '
+            .'filename="'.rawurlencode($this->outputFilePath).'"; '
+            .'filename*=UTF-8\'\''.rawurlencode($this->outputFilePath)
         );
 
         /*

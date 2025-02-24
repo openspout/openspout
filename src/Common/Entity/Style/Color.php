@@ -43,9 +43,9 @@ final class Color
         self::throwIfInvalidColorComponentValue($blue);
 
         return strtoupper(
-            self::convertColorComponentToHex($red).
-            self::convertColorComponentToHex($green).
-            self::convertColorComponentToHex($blue)
+            self::convertColorComponentToHex($red)
+            .self::convertColorComponentToHex($green)
+            .self::convertColorComponentToHex($blue)
         );
     }
 

@@ -1141,12 +1141,12 @@ final class WriterTest extends TestCase
 
         self::assertNotFalse($xmlContents);
         self::assertStringContainsString(
-            '<headerFooter differentOddEven="1">'.
-            '<oddHeader>oddHeader</oddHeader>'.
-            '<oddFooter>oddFooter</oddFooter>'.
-            '<evenHeader>evenHeader</evenHeader>'.
-            '<evenFooter>evenFooter</evenFooter>'.
-            '</headerFooter>',
+            '<headerFooter differentOddEven="1">'
+            .'<oddHeader>oddHeader</oddHeader>'
+            .'<oddFooter>oddFooter</oddFooter>'
+            .'<evenHeader>evenHeader</evenHeader>'
+            .'<evenFooter>evenFooter</evenFooter>'
+            .'</headerFooter>',
             $xmlContents
         );
     }
@@ -1178,10 +1178,10 @@ final class WriterTest extends TestCase
 
         self::assertNotFalse($xmlContents);
         self::assertStringContainsString(
-            '<headerFooter>'.
-            '<oddHeader>oddHeader</oddHeader>'.
-            '<oddFooter>oddFooter</oddFooter>'.
-            '</headerFooter>',
+            '<headerFooter>'
+            .'<oddHeader>oddHeader</oddHeader>'
+            .'<oddFooter>oddFooter</oddFooter>'
+            .'</headerFooter>',
             $xmlContents
         );
     }
@@ -1214,10 +1214,10 @@ final class WriterTest extends TestCase
 
         self::assertNotFalse($xmlContents);
         self::assertStringContainsString(
-            '<headerFooter>'.
-            '<oddHeader>oddHeader</oddHeader>'.
-            '<oddFooter>oddFooter</oddFooter>'.
-            '</headerFooter>',
+            '<headerFooter>'
+            .'<oddHeader>oddHeader</oddHeader>'
+            .'<oddFooter>oddFooter</oddFooter>'
+            .'</headerFooter>',
             $xmlContents
         );
     }

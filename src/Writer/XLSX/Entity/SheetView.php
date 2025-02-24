@@ -207,9 +207,9 @@ final class SheetView
 
     public function getXml(): string
     {
-        return '<sheetView'.$this->getSheetViewAttributes().'>'.
-        $this->getFreezeCellPaneXml().
-        '</sheetView>';
+        return '<sheetView'.$this->getSheetViewAttributes().'>'
+        .$this->getFreezeCellPaneXml()
+        .'</sheetView>';
     }
 
     private function getSheetViewAttributes(): string

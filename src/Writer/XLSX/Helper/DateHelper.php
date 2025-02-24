@@ -41,8 +41,8 @@ final class DateHelper
         //    Calculate the Julian Date, then subtract the Excel base date (JD 2415020 = 31-Dec-1899 Giving Excel Date of 0)
         $century = (int) substr((string) $year, 0, 2);
         $decade = (int) substr((string) $year, 2, 2);
-        $excelDate =
-            floor((146097 * $century) / 4)
+        $excelDate
+            = floor((146097 * $century) / 4)
             + floor((1461 * $decade) / 4)
             + floor((153 * $month + 2) / 5)
             + $day
