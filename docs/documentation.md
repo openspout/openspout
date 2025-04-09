@@ -142,7 +142,7 @@ use OpenSpout\Writer\AutoFilter;
 use OpenSpout\Writer\XLSX\Writer;
 
 $autoFilter = new AutoFilter(0, 10, 5, 20);
-$writer->setAutoFilter($autoFilter);
+$writer->getCurrentSheet()->setAutoFilter($autoFilter);
 ```
 
 Note that columns are 0-indexed, while rows are 1-indexed.
