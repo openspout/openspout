@@ -218,7 +218,7 @@ final class SheetView
             'showFormulas' => $this->showFormulas,
             'showGridLines' => $this->showGridLines,
             'showRowColHeaders' => $this->showRowColHeaders,
-            'showZeroes' => $this->showZeroes,
+            'showZeros' => $this->showZeroes,
             'rightToLeft' => $this->rightToLeft,
             'tabSelected' => $this->tabSelected,
             'showOutlineSymbols' => $this->showOutlineSymbols,
