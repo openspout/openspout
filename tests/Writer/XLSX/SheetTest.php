@@ -403,7 +403,7 @@ final class SheetTest extends TestCase
                 ->setShowFormulas(true)
                 ->setShowGridLines(false)
                 ->setShowRowColHeaders(false)
-                ->setShowZeroes(false)
+                ->setShowZeros(false)
                 ->setRightToLeft(false)
                 ->setTabSelected(false)
                 ->setShowOutlineSymbols(false)

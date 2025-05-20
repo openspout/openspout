@@ -40,7 +40,7 @@ final class FileSystemHelperTest extends TestCase
     #[RequiresOperatingSystemFamily('Linux')]
     public function testCreateFolderShouldThrowExceptionWhenFails(): void
     {
-        self::assertTrue(chmod($this->baseFolder, 0500));
+        self::assertTrue(chmod($this->baseFolder, 0o500));
         $this->expectException(IOException::class);
         $this->expectExceptionMessage('Permission denied');
         $this->fileSystemHelper->createFolder($this->baseFolder, 'folder_name');
@@ -56,7 +56,7 @@ final class FileSystemHelperTest extends TestCase
     #[RequiresOperatingSystemFamily('Linux')]
     public function testCreateFileWithContentsShouldThrowExceptionIfFails(): void
     {
-        self::assertTrue(chmod($this->baseFolder, 0500));
+        self::assertTrue(chmod($this->baseFolder, 0o500));
         $this->expectException(IOException::class);
         $this->expectExceptionMessage('Permission denied');
         $this->fileSystemHelper->createFileWithContents($this->baseFolder, 'folder_name', 'contents');

@@ -114,7 +114,7 @@ $sheetView->setZoomScale(150); // And other options
 $sheetView->setShowFormulas(true);
 $sheetView->setShowGridLines(false);
 $sheetView->setShowRowColHeaders(false);
-$sheetView->setShowZeroes(false);
+$sheetView->setShowZeros(false);
 $sheetView->setRightToLeft(true); // Change sheet direction
 $sheetView->setTabSelected(false);
 $sheetView->setShowOutlineSymbols(false);

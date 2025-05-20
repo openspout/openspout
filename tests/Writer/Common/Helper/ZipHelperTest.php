@@ -23,7 +23,7 @@ final class ZipHelperTest extends TestCase
         ;
 
         $tempFolder = (new TestUsingResource())->getTempFolderPath();
-        mkdir($tempFolder.'/xl', 0700, true);
+        mkdir($tempFolder.'/xl', 0o700, true);
         touch($tempFolder.'/xl/workbook.xml');
 
         $rootFolderPath = $tempFolder;

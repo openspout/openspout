@@ -53,7 +53,7 @@ final readonly class FileSystemHelper implements FileSystemHelperInterface
 
             return true;
         });
-        $wasCreationSuccessful = mkdir($folderPath, 0777, true);
+        $wasCreationSuccessful = mkdir($folderPath, 0o777, true);
         restore_error_handler();
 
         if (!$wasCreationSuccessful) {

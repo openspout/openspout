@@ -28,7 +28,7 @@ final class CellTest extends TestCase
         self::assertInstanceOf(NumericCell::class, Cell::fromValue(10.2));
         self::assertInstanceOf(NumericCell::class, Cell::fromValue(10.10000000000000000000001));
         self::assertInstanceOf(NumericCell::class, Cell::fromValue(0x539));
-        self::assertInstanceOf(NumericCell::class, Cell::fromValue(02471));
+        self::assertInstanceOf(NumericCell::class, Cell::fromValue(0o2471));
         self::assertInstanceOf(NumericCell::class, Cell::fromValue(0b10100111001));
         self::assertInstanceOf(NumericCell::class, Cell::fromValue(1337e0));
     }
