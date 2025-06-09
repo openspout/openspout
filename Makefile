@@ -34,7 +34,6 @@ coverage/ok: vendor $(SRCS) Makefile phpunit.xml
 	($(DOCKER_PHP_EXEC) php \
 		-d zend.assertions=1 \
 		-d pcov.enabled=1 \
-		-d open_basedir="$(realpath .)" \
 		-d sys_temp_dir="$(realpath .)" \
 		vendor/bin/phpunit \
 		$(PHPUNIT_ARGS) \
