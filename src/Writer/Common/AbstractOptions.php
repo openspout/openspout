@@ -25,6 +25,8 @@ abstract class AbstractOptions
     }
 
     /**
+     * Columns are indexed from 1 (A = 1).
+     *
      * @param positive-int ...$columns One or more columns with this width
      */
     final public function setColumnWidth(float $width, int ...$columns): void
@@ -46,6 +48,8 @@ abstract class AbstractOptions
     }
 
     /**
+     * Columns are indexed from 1 (A = 1).
+     *
      * @param float        $width The width to set
      * @param positive-int $start First column index of the range
      * @param positive-int $end   Last column index of the range
