@@ -162,8 +162,8 @@ final class StyleManagerTest extends TestCase
         $styleManager = $this->getStyleManagerMock(
             [
                 1 => [
-                    "numFmtId" => 165,
-                    "applyNumberFormat" => null,
+                    'numFmtId' => 165,
+                    'applyNumberFormat' => null,
                 ],
             ],
             [
