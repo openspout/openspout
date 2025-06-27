@@ -164,11 +164,11 @@ final class StyleManagerTest extends TestCase
                 1 => [
                     "numFmtId" => 165,
                     "applyNumberFormat" => null,
-                ]
+                ],
             ],
             [
-                165 => '0.00E+00'
-            ]
+                165 => '0.00E+00',
+            ],
         );
         $shouldFormatAsDate = $styleManager->shouldFormatNumericValueAsDate(1);
         self::assertFalse($shouldFormatAsDate);
