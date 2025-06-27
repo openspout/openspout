@@ -156,4 +156,21 @@ final class StyleManagerTest extends TestCase
 
         return $styleManager;
     }
+
+    public function testShouldFormatScientificNotationAsDate(): void
+    {
+        $styleManager = $this->getStyleManagerMock(
+            [
+                1 => [
+                    "numFmtId" => 165,
+                    "applyNumberFormat" => null,
+                ]
+            ],
+            [
+                165 => '0.00E+00'
+            ]
+        );
+        $shouldFormatAsDate = $styleManager->shouldFormatNumericValueAsDate(1);
+        self::assertFalse($shouldFormatAsDate);
+    }
 }
