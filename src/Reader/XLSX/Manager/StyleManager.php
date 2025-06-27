@@ -30,6 +30,7 @@ class StyleManager implements StyleManagerInterface
     final public const DEFAULT_STYLE_ID = 0;
 
     final public const NUMBER_FORMAT_GENERAL = 'General';
+    final public const NUMBER_FORMAT_SCIENTIFIC = '0.00E+00';
 
     /**
      * Mapping between built-in numFmtId and the associated format - for dates only.
@@ -304,6 +305,11 @@ class StyleManager implements StyleManagerInterface
      */
     private function isFormatCodeMatchingDateFormatPattern(string $formatCode): bool
     {
+        // Scientific notation format containts "E", and will therefore be incorrectly considered as a date
+        if (self::NUMBER_FORMAT_SCIENTIFIC === $formatCode) {
+            return false;
+        }
+
         // Remove extra formatting (what's between [ ], the brackets should not be preceded by a "\")
         $pattern = '((?<!\\\)\[.+?(?<!\\\)\])';
         $formatCode = preg_replace($pattern, '', $formatCode);
