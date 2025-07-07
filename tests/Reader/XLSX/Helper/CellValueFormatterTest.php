@@ -26,46 +26,7 @@ use ReflectionHelper;
  */
 final class CellValueFormatterTest extends TestCase
 {
-    public static function dataProviderForTestExcelDate(): array
-    {
-        return [
-            // use 1904 dates, node value, expected date as string
-
-            // 1900 calendar
-            [false, 3687.4207639, '1910-02-03 10:05:54'],
-            [false, 2.5000000, '1900-01-01 12:00:00'],
-            [false, 2958465.9999884, '9999-12-31 23:59:59'],
-            [false, 2958465.9999885, null],
-            [false, -2337.999989, '1893-08-05 00:00:01'],
-            [false, -693593, '0001-01-01 00:00:00'],
-            [false, -693593.0000001, null],
-            [false, 0, '1899-12-30 00:00:00'],
-            [false, 0.25, '1899-12-30 06:00:00'],
-            [false, 0.5, '1899-12-30 12:00:00'],
-            [false, 0.75, '1899-12-30 18:00:00'],
-            [false, 0.99999, '1899-12-30 23:59:59'],
-            [false, 1, '1899-12-31 00:00:00'],
-            [false, '3687.4207639', '1910-02-03 10:05:54'],
-
-            // 1904 calendar
-            [true, 2225.4207639, '1910-02-03 10:05:54'],
-            [true, 2.5000000, '1904-01-03 12:00:00'],
-            [true, 2957003.9999884, '9999-12-31 23:59:59'],
-            [true, 2957003.9999885, null],
-            [true, -3799.999989, '1893-08-05 00:00:01'],
-            [true, -695055, '0001-01-01 00:00:00'],
-            [true, -695055.0000001, null],
-            [true, 0, '1904-01-01 00:00:00'],
-            [true, 0.25, '1904-01-01 06:00:00'],
-            [true, 0.5, '1904-01-01 12:00:00'],
-            [true, 0.75, '1904-01-01 18:00:00'],
-            [true, 0.99999, '1904-01-01 23:59:59'],
-            [true, 1, '1904-01-02 00:00:00'],
-            [true, '2225.4207639', '1910-02-03 10:05:54'],
-        ];
-    }
-
-    #[DataProvider('dataProviderForTestExcelDate')]
+    #[DataProvider('provideExcelDateCases')]
     public function testExcelDate(bool $shouldUse1904Dates, float|int|string $nodeValue, ?string $expectedDateAsString): void
     {
         $nodeListMock = $this->createMock(DOMNodeList::class);
@@ -141,60 +102,50 @@ final class CellValueFormatterTest extends TestCase
         }
     }
 
-    /**
-     * @return array{array{
-     *      nodeValue: string,
-     *      shouldFormatAsDate: bool,
-     *      computedValue: string|float|int,
-     *      expectedComputedValue: string|float|int,
-     *  }}
-     */
-    public static function excelFormulaDataProvider(): array
+    public static function provideExcelDateCases(): iterable
     {
         return [
-            [
-                'nodeValue' => 'TODAY()',
-                'shouldFormatAsDate' => true,
-                'computedValue' => 3687.4207639,
-                'expectedComputedValue' => '1910-02-03 10:05:54',
-                'cellType' => CellValueFormatter::CELL_TYPE_NUMERIC,
-            ],
-            [
-                'nodeValue' => 'TODAY()',
-                'shouldFormatAsDate' => false,
-                'computedValue' => 3687.4207639,
-                'expectedComputedValue' => 3687.4207639,
-                'cellType' => CellValueFormatter::CELL_TYPE_NUMERIC,
-            ],
-            [
-                'nodeValue' => 'TODAY()',
-                'shouldFormatAsDate' => true,
-                'computedValue' => 5,
-                'expectedComputedValue' => '1900-01-04 00:00:00',
-                'cellType' => CellValueFormatter::CELL_TYPE_NUMERIC,
-            ],
-            [
-                'nodeValue' => 'TODAY()',
-                'shouldFormatAsDate' => false,
-                'computedValue' => 5,
-                'expectedComputedValue' => 5,
-                'cellType' => CellValueFormatter::CELL_TYPE_NUMERIC,
-            ],
-            [
-                'nodeValue' => 'TODAY()',
-                'shouldFormatAsDate' => true,
-                'computedValue' => 'non-valid-date',
-                'expectedComputedValue' => null,
-                'cellType' => CellValueFormatter::CELL_TYPE_DATE,
-            ],
+            // use 1904 dates, node value, expected date as string
+
+            // 1900 calendar
+            [false, 3687.4207639, '1910-02-03 10:05:54'],
+            [false, 2.5000000, '1900-01-01 12:00:00'],
+            [false, 2958465.9999884, '9999-12-31 23:59:59'],
+            [false, 2958465.9999885, null],
+            [false, -2337.999989, '1893-08-05 00:00:01'],
+            [false, -693593, '0001-01-01 00:00:00'],
+            [false, -693593.0000001, null],
+            [false, 0, '1899-12-30 00:00:00'],
+            [false, 0.25, '1899-12-30 06:00:00'],
+            [false, 0.5, '1899-12-30 12:00:00'],
+            [false, 0.75, '1899-12-30 18:00:00'],
+            [false, 0.99999, '1899-12-30 23:59:59'],
+            [false, 1, '1899-12-31 00:00:00'],
+            [false, '3687.4207639', '1910-02-03 10:05:54'],
+
+            // 1904 calendar
+            [true, 2225.4207639, '1910-02-03 10:05:54'],
+            [true, 2.5000000, '1904-01-03 12:00:00'],
+            [true, 2957003.9999884, '9999-12-31 23:59:59'],
+            [true, 2957003.9999885, null],
+            [true, -3799.999989, '1893-08-05 00:00:01'],
+            [true, -695055, '0001-01-01 00:00:00'],
+            [true, -695055.0000001, null],
+            [true, 0, '1904-01-01 00:00:00'],
+            [true, 0.25, '1904-01-01 06:00:00'],
+            [true, 0.5, '1904-01-01 12:00:00'],
+            [true, 0.75, '1904-01-01 18:00:00'],
+            [true, 0.99999, '1904-01-01 23:59:59'],
+            [true, 1, '1904-01-02 00:00:00'],
+            [true, '2225.4207639', '1910-02-03 10:05:54'],
         ];
     }
 
-    #[DataProvider('excelFormulaDataProvider')]
+    #[DataProvider('provideExcelFormulaCases')]
     public function testExcelFormula(
         string $nodeValue,
         bool $shouldFormatAsDate,
-        null|float|int|string $computedValue,
+        float|int|string $computedValue,
         null|float|int|string $expectedComputedValue,
         string $cellType
     ): void {
@@ -268,30 +219,48 @@ final class CellValueFormatterTest extends TestCase
         }
     }
 
-    public static function dataProviderForTestFormatNumericCellValueWithNumbers(): array
+    public static function provideExcelFormulaCases(): iterable
     {
-        // Some test values exceed PHP_INT_MAX on 32-bit PHP. They are
-        // therefore converted to as doubles automatically by PHP.
-        $expectedBigNumberType = (\PHP_INT_SIZE < 8 ? 'double' : 'integer');
-
         return [
-            [42, 42, 'integer'],
-            [42.5, 42.5, 'double'],
-            [-42, -42, 'integer'],
-            [-42.5, -42.5, 'double'],
-            ['42', 42, 'integer'],
-            ['42.5', 42.5, 'double'],
-            [865640023012945, 865640023012945, $expectedBigNumberType],
-            ['865640023012945', 865640023012945, $expectedBigNumberType],
-            [865640023012945.5, 865640023012945.5, 'double'],
-            ['865640023012945.5', 865640023012945.5, 'double'],
-            [PHP_INT_MAX, PHP_INT_MAX, 'integer'],
-            [~PHP_INT_MAX + 1, ~PHP_INT_MAX + 1, 'integer'], // ~PHP_INT_MAX === PHP_INT_MIN, PHP_INT_MIN being PHP7+
-            [PHP_INT_MAX + 1, PHP_INT_MAX + 1, 'double'],
+            [
+                'nodeValue' => 'TODAY()',
+                'shouldFormatAsDate' => true,
+                'computedValue' => 3687.4207639,
+                'expectedComputedValue' => '1910-02-03 10:05:54',
+                'cellType' => CellValueFormatter::CELL_TYPE_NUMERIC,
+            ],
+            [
+                'nodeValue' => 'TODAY()',
+                'shouldFormatAsDate' => false,
+                'computedValue' => 3687.4207639,
+                'expectedComputedValue' => 3687.4207639,
+                'cellType' => CellValueFormatter::CELL_TYPE_NUMERIC,
+            ],
+            [
+                'nodeValue' => 'TODAY()',
+                'shouldFormatAsDate' => true,
+                'computedValue' => 5,
+                'expectedComputedValue' => '1900-01-04 00:00:00',
+                'cellType' => CellValueFormatter::CELL_TYPE_NUMERIC,
+            ],
+            [
+                'nodeValue' => 'TODAY()',
+                'shouldFormatAsDate' => false,
+                'computedValue' => 5,
+                'expectedComputedValue' => 5,
+                'cellType' => CellValueFormatter::CELL_TYPE_NUMERIC,
+            ],
+            [
+                'nodeValue' => 'TODAY()',
+                'shouldFormatAsDate' => true,
+                'computedValue' => 'non-valid-date',
+                'expectedComputedValue' => null,
+                'cellType' => CellValueFormatter::CELL_TYPE_DATE,
+            ],
         ];
     }
 
-    #[DataProvider('dataProviderForTestFormatNumericCellValueWithNumbers')]
+    #[DataProvider('provideFormatNumericCellValueWithNumbersCases')]
     public function testFormatNumericCellValueWithNumbers(float|int|string $value, float|int $expectedFormattedValue, string $expectedType): void
     {
         $styleManagerMock = $this->createMock(StyleManagerInterface::class);
@@ -319,17 +288,30 @@ final class CellValueFormatterTest extends TestCase
         self::assertSame($expectedType, \gettype($formattedValue));
     }
 
-    public static function dataProviderForTestFormatStringCellValue(): array
+    public static function provideFormatNumericCellValueWithNumbersCases(): iterable
     {
+        // Some test values exceed PHP_INT_MAX on 32-bit PHP. They are
+        // therefore converted to as doubles automatically by PHP.
+        $expectedBigNumberType = (\PHP_INT_SIZE < 8 ? 'double' : 'integer');
+
         return [
-            ['A', 'A'],
-            [' A ', ' A '],
-            ["\n\tA\n\t", "\n\tA\n\t"],
-            [' ', ' '],
+            [42, 42, 'integer'],
+            [42.5, 42.5, 'double'],
+            [-42, -42, 'integer'],
+            [-42.5, -42.5, 'double'],
+            ['42', 42, 'integer'],
+            ['42.5', 42.5, 'double'],
+            [865640023012945, 865640023012945, $expectedBigNumberType],
+            ['865640023012945', 865640023012945, $expectedBigNumberType],
+            [865640023012945.5, 865640023012945.5, 'double'],
+            ['865640023012945.5', 865640023012945.5, 'double'],
+            [PHP_INT_MAX, PHP_INT_MAX, 'integer'],
+            [~PHP_INT_MAX + 1, ~PHP_INT_MAX + 1, 'integer'], // ~PHP_INT_MAX === PHP_INT_MIN, PHP_INT_MIN being PHP7+
+            [PHP_INT_MAX + 1, PHP_INT_MAX + 1, 'double'],
         ];
     }
 
-    #[DataProvider('dataProviderForTestFormatStringCellValue')]
+    #[DataProvider('provideFormatInlineStringCellValueCases')]
     public function testFormatInlineStringCellValue(string $value, string $expectedFormattedValue): void
     {
         $nodeListMock = $this->createMock(DOMNodeList::class);
@@ -368,5 +350,15 @@ final class CellValueFormatterTest extends TestCase
         $formattedValue = ReflectionHelper::callMethodOnObject($formatter, 'formatInlineStringCellValue', $nodeMock);
 
         self::assertSame($expectedFormattedValue, $formattedValue);
+    }
+
+    public static function provideFormatInlineStringCellValueCases(): iterable
+    {
+        return [
+            ['A', 'A'],
+            [' A ', ' A '],
+            ["\n\tA\n\t", "\n\tA\n\t"],
+            [' ', ' '],
+        ];
     }
 }

@@ -113,17 +113,6 @@ final class WriterTest extends TestCase
         $writer->setCurrentSheet($dummySheet);
     }
 
-    /**
-     * @return array{0: ?string, 1: string}[]
-     */
-    public static function provideSetCreatorCases(): iterable
-    {
-        return [
-            ['Test creator', 'Test creator'],
-            [null, 'OpenSpout'],
-        ];
-    }
-
     #[DataProvider('provideSetCreatorCases')]
     public function testSetCreator(?string $expected, string $actual): void
     {
@@ -143,6 +132,17 @@ final class WriterTest extends TestCase
         $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
         self::assertNotFalse($xmlContents);
         self::assertStringContainsString("<dc:creator>{$actual}</dc:creator>", $xmlContents);
+    }
+
+    /**
+     * @return array{0: ?string, 1: string}[]
+     */
+    public static function provideSetCreatorCases(): iterable
+    {
+        return [
+            ['Test creator', 'Test creator'],
+            [null, 'OpenSpout'],
+        ];
     }
 
     public function testCloseShouldNoopWhenWriterIsNotOpened(): void
@@ -291,21 +291,10 @@ final class WriterTest extends TestCase
         }
     }
 
-    public static function dataProviderForTestAddRowShouldUseNumberColumnsRepeatedForRepeatedValues(): array
-    {
-        return [
-            [['ods--11', 'ods--11', 'ods--11'], 1, 3],
-            [['', ''], 1, 2],
-            [[true, true, true, true], 1, 4],
-            [[1.1, 1.1], 1, 2],
-            [['foo', 'bar'], 2, 0],
-        ];
-    }
-
     /**
      * @param mixed[] $dataRow
      */
-    #[DataProvider('dataProviderForTestAddRowShouldUseNumberColumnsRepeatedForRepeatedValues')]
+    #[DataProvider('provideAddRowShouldUseNumberColumnsRepeatedForRepeatedValuesCases')]
     public function testAddRowShouldUseNumberColumnsRepeatedForRepeatedValues(array $dataRow, int $expectedNumTableCells, int $expectedNumColumnsRepeated): void
     {
         $fileName = 'test_add_row_should_use_number_columns_repeated.ods';
@@ -326,6 +315,17 @@ final class WriterTest extends TestCase
                 self::assertFalse($tableCellNode->hasAttribute('table:number-columns-repeated'));
             }
         }
+    }
+
+    public static function provideAddRowShouldUseNumberColumnsRepeatedForRepeatedValuesCases(): iterable
+    {
+        return [
+            [['ods--11', 'ods--11', 'ods--11'], 1, 3],
+            [['', ''], 1, 2],
+            [[true, true, true, true], 1, 4],
+            [[1.1, 1.1], 1, 2],
+            [['foo', 'bar'], 2, 0],
+        ];
     }
 
     public function testAddRowShouldSupportCellInError(): void

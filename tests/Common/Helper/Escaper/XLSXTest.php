@@ -12,7 +12,16 @@ use PHPUnit\Framework\TestCase;
  */
 final class XLSXTest extends TestCase
 {
-    public static function dataProviderForTestEscape(): array
+    #[DataProvider('provideEscapeCases')]
+    public function testEscape(string $stringToEscape, string $expectedEscapedString): void
+    {
+        $escaper = new XLSX();
+        $escapedString = $escaper->escape($stringToEscape);
+
+        self::assertSame($expectedEscapedString, $escapedString, 'Incorrect escaped string');
+    }
+
+    public static function provideEscapeCases(): iterable
     {
         return [
             ['test', 'test'],
@@ -29,16 +38,16 @@ final class XLSXTest extends TestCase
         ];
     }
 
-    #[DataProvider('dataProviderForTestEscape')]
-    public function testEscape(string $stringToEscape, string $expectedEscapedString): void
+    #[DataProvider('provideUnescapeCases')]
+    public function testUnescape(string $stringToUnescape, string $expectedUnescapedString): void
     {
         $escaper = new XLSX();
-        $escapedString = $escaper->escape($stringToEscape);
+        $unescapedString = $escaper->unescape($stringToUnescape);
 
-        self::assertSame($expectedEscapedString, $escapedString, 'Incorrect escaped string');
+        self::assertSame($expectedUnescapedString, $unescapedString, 'Incorrect escaped string');
     }
 
-    public static function dataProviderForTestUnescape(): array
+    public static function provideUnescapeCases(): iterable
     {
         return [
             ['test', 'test'],
@@ -53,14 +62,5 @@ final class XLSXTest extends TestCase
             ['control _x0015_ character', 'control '.\chr(21).' character'],
             ['control&#039;s _x0015_ &quot;character&quot;', 'control&#039;s '.\chr(21).' &quot;character&quot;'],
         ];
-    }
-
-    #[DataProvider('dataProviderForTestUnescape')]
-    public function testUnescape(string $stringToUnescape, string $expectedUnescapedString): void
-    {
-        $escaper = new XLSX();
-        $unescapedString = $escaper->unescape($stringToUnescape);
-
-        self::assertSame($expectedUnescapedString, $unescapedString, 'Incorrect escaped string');
     }
 }

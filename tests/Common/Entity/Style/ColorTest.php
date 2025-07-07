@@ -13,7 +13,14 @@ use PHPUnit\Framework\TestCase;
  */
 final class ColorTest extends TestCase
 {
-    public static function dataProviderForTestRGB(): array
+    #[DataProvider('provideRGBCases')]
+    public function testRGB(int $red, int $green, int $blue, string $expectedColor): void
+    {
+        $color = Color::rgb($red, $green, $blue);
+        self::assertSame($expectedColor, $color);
+    }
+
+    public static function provideRGBCases(): iterable
     {
         return [
             [0, 0, 0, Color::BLACK],
@@ -38,14 +45,15 @@ final class ColorTest extends TestCase
         ];
     }
 
-    #[DataProvider('dataProviderForTestRGB')]
-    public function testRGB(int $red, int $green, int $blue, string $expectedColor): void
+    #[DataProvider('provideRGBInvalidColorComponentsCases')]
+    public function testRGBInvalidColorComponents(int $red, int $green, int $blue): void
     {
-        $color = Color::rgb($red, $green, $blue);
-        self::assertSame($expectedColor, $color);
+        $this->expectException(InvalidColorException::class);
+
+        Color::rgb($red, $green, $blue);
     }
 
-    public static function dataProviderForTestRGBAInvalidColorComponents(): array
+    public static function provideRGBInvalidColorComponentsCases(): iterable
     {
         return [
             [-1, 0, 0],
@@ -55,13 +63,5 @@ final class ColorTest extends TestCase
             [0, 999, 0],
             [0, 0, 999],
         ];
-    }
-
-    #[DataProvider('dataProviderForTestRGBAInvalidColorComponents')]
-    public function testRGBInvalidColorComponents(int $red, int $green, int $blue): void
-    {
-        $this->expectException(InvalidColorException::class);
-
-        Color::rgb($red, $green, $blue);
     }
 }

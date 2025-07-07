@@ -14,23 +14,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class StyleManagerTest extends TestCase
 {
-    public static function dataProviderForTestShouldApplyStyleOnEmptyCell(): array
-    {
-        return [
-            // fillId, borderId, expected result
-            [null, null, false],
-            [0, null, false],
-            [null, 0, false],
-            [0, 0, false],
-            [12, null, true],
-            [null, 12, true],
-            [12, 0, true],
-            [0, 12, true],
-            [12, 13, true],
-        ];
-    }
-
-    #[DataProvider('dataProviderForTestShouldApplyStyleOnEmptyCell')]
+    #[DataProvider('provideShouldApplyStyleOnEmptyCellCases')]
     public function testShouldApplyStyleOnEmptyCell(?int $fillId, ?int $borderId, bool $expectedResult): void
     {
         $styleRegistryMock = $this->getMockBuilder(StyleRegistry::class)
@@ -53,6 +37,22 @@ final class StyleManagerTest extends TestCase
         $shouldApply = $styleManager->shouldApplyStyleOnEmptyCell(99);
 
         self::assertSame($expectedResult, $shouldApply);
+    }
+
+    public static function provideShouldApplyStyleOnEmptyCellCases(): iterable
+    {
+        return [
+            // fillId, borderId, expected result
+            [null, null, false],
+            [0, null, false],
+            [null, 0, false],
+            [0, 0, false],
+            [12, null, true],
+            [null, 12, true],
+            [12, 0, true],
+            [0, 12, true],
+            [12, 13, true],
+        ];
     }
 
     public function testFormatCodeEscapeInSectionContent(): void

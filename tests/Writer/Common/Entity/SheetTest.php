@@ -39,7 +39,16 @@ final class SheetTest extends TestCase
         self::assertSame($customSheetName, $sheet->getName(), "The sheet name should have been changed to '{$customSheetName}'");
     }
 
-    public static function dataProviderForInvalidSheetNames(): array
+    #[DataProvider('provideSetSheetNameShouldThrowOnInvalidNameCases')]
+    public function testSetSheetNameShouldThrowOnInvalidName(string $customSheetName): void
+    {
+        $sheet = $this->createSheet(0, 'workbookId1');
+
+        $this->expectException(InvalidSheetNameException::class);
+        $sheet->setName($customSheetName);
+    }
+
+    public static function provideSetSheetNameShouldThrowOnInvalidNameCases(): iterable
     {
         return [
             [''],
@@ -54,15 +63,6 @@ final class SheetTest extends TestCase
             ['\'Illegal start'],
             ['Illegal end\''],
         ];
-    }
-
-    #[DataProvider('dataProviderForInvalidSheetNames')]
-    public function testSetSheetNameShouldThrowOnInvalidName(string $customSheetName): void
-    {
-        $sheet = $this->createSheet(0, 'workbookId1');
-
-        $this->expectException(InvalidSheetNameException::class);
-        $sheet->setName($customSheetName);
     }
 
     public function testSetSheetNameShouldNotThrowWhenSettingSameNameAsCurrentOne(): void

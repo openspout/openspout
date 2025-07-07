@@ -13,7 +13,19 @@ use PHPUnit\Framework\TestCase;
  */
 final class CachingStrategyFactoryTest extends TestCase
 {
-    public static function dataProviderForTestCreateBestCachingStrategy(): array
+    #[DataProvider('provideCreateBestCachingStrategyCases')]
+    public function testCreateBestCachingStrategy(?int $sharedStringsUniqueCount, string $memoryLimitInKB, string $expectedStrategyClassName): void
+    {
+        $strategy = (new CachingStrategyFactory(new MemoryLimit($memoryLimitInKB)))
+            ->createBestCachingStrategy($sharedStringsUniqueCount, (new TestUsingResource())->getTempFolderPath())
+        ;
+
+        self::assertSame($expectedStrategyClassName, $strategy::class);
+
+        $strategy->clearCache();
+    }
+
+    public static function provideCreateBestCachingStrategyCases(): iterable
     {
         return [
             [null, '-1', FileBasedStrategy::class],
@@ -26,19 +38,13 @@ final class CachingStrategyFactoryTest extends TestCase
         ];
     }
 
-    #[DataProvider('dataProviderForTestCreateBestCachingStrategy')]
-    public function testCreateBestCachingStrategy(?int $sharedStringsUniqueCount, string $memoryLimitInKB, string $expectedStrategyClassName): void
+    #[DataProvider('provideGetMemoryLimitInKBCases')]
+    public function testGetMemoryLimitInKB(string $memoryLimitFormatted, float $expectedMemoryLimitInKB): void
     {
-        $strategy = (new CachingStrategyFactory(new MemoryLimit($memoryLimitInKB)))
-            ->createBestCachingStrategy($sharedStringsUniqueCount, (new TestUsingResource())->getTempFolderPath())
-        ;
-
-        self::assertSame($expectedStrategyClassName, $strategy::class);
-
-        $strategy->clearCache();
+        self::assertSame($expectedMemoryLimitInKB, (new MemoryLimit($memoryLimitFormatted))->getMemoryLimitInKB());
     }
 
-    public static function dataProviderForTestGetMemoryLimitInKB(): array
+    public static function provideGetMemoryLimitInKBCases(): iterable
     {
         return [
             ['-1', -1],
@@ -53,11 +59,5 @@ final class CachingStrategyFactoryTest extends TestCase
             ['2T', 2 * 1024 * 1024 * 1024],
             ['5TB', 5 * 1024 * 1024 * 1024],
         ];
-    }
-
-    #[DataProvider('dataProviderForTestGetMemoryLimitInKB')]
-    public function testGetMemoryLimitInKB(string $memoryLimitFormatted, float $expectedMemoryLimitInKB): void
-    {
-        self::assertSame($expectedMemoryLimitInKB, (new MemoryLimit($memoryLimitFormatted))->getMemoryLimitInKB());
     }
 }

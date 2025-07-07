@@ -117,7 +117,7 @@ final class RowTest extends TestCase
     /**
      * @param Cell[] $cells
      */
-    #[DataProvider('dataProviderForTestIsEmptyRow')]
+    #[DataProvider('provideIsEmptyRowCases')]
     public function testIsEmptyRow(array $cells, bool $expectedIsEmpty): void
     {
         $row = new Row($cells, null);
@@ -125,7 +125,7 @@ final class RowTest extends TestCase
         self::assertSame($expectedIsEmpty, $row->isEmpty());
     }
 
-    public static function dataProviderForTestIsEmptyRow(): array
+    public static function provideIsEmptyRowCases(): iterable
     {
         return [
             // cells, expected isEmpty

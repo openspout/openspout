@@ -14,27 +14,6 @@ use PHPUnit\Framework\TestCase;
  */
 final class DateIntervalFormatHelperTest extends TestCase
 {
-    /**
-     * @return string[][]
-     */
-    public static function getExcelFormatsToPhpFormats(): array
-    {
-        return [
-            ['[hh]', '%r%H'],
-            ['[hh]:mm', '%r%H:%I'],
-            ['[hh]:mm:ss', '%r%H:%I:%S'],
-            ['[h]', '%r%h'],
-            ['[h]:mm', '%r%h:%I'],
-            ['[h]:mm:ss', '%r%h:%I:%S'],
-            ['[mm]', '%r%I'],
-            ['[mm]:ss', '%r%I:%S'],
-            ['[m]', '%r%i'],
-            ['[m]:ss', '%r%i:%S'],
-            ['[ss]', '%r%S'],
-            ['[s]', '%r%s'],
-        ];
-    }
-
     #[DataProvider('getExcelFormatsToPhpFormats')]
     public function testIsDurationFormatValid(string $excelDateFormat, string $expectedPHPDateFormat): void
     {
@@ -55,7 +34,35 @@ final class DateIntervalFormatHelperTest extends TestCase
         self::assertSame($expectedPHPDateFormat, $phpDateFormat);
     }
 
-    public static function dataProviderForTestCreateDateIntervalFromHours(): array
+    /**
+     * @return string[][]
+     */
+    public static function getExcelFormatsToPhpFormats(): iterable
+    {
+        return [
+            ['[hh]', '%r%H'],
+            ['[hh]:mm', '%r%H:%I'],
+            ['[hh]:mm:ss', '%r%H:%I:%S'],
+            ['[h]', '%r%h'],
+            ['[h]:mm', '%r%h:%I'],
+            ['[h]:mm:ss', '%r%h:%I:%S'],
+            ['[mm]', '%r%I'],
+            ['[mm]:ss', '%r%I:%S'],
+            ['[m]', '%r%i'],
+            ['[m]:ss', '%r%i:%S'],
+            ['[ss]', '%r%S'],
+            ['[s]', '%r%s'],
+        ];
+    }
+
+    #[DataProvider('provideCreateDateIntervalFromHoursCases')]
+    public function testCreateDateIntervalFromHours(float $dayFractions, string $expected): void
+    {
+        $interval = DateIntervalFormatHelper::createDateIntervalFromHours($dayFractions);
+        self::assertSame($expected, $interval->format('%R%H:%I:%S'));
+    }
+
+    public static function provideCreateDateIntervalFromHoursCases(): iterable
     {
         return [
             [0, '+00:00:00'],
@@ -72,13 +79,6 @@ final class DateIntervalFormatHelperTest extends TestCase
             [59 / 24 / 60 + 59.9 / 24 / 60 / 60, '+01:00:00'], // rounding gain bubbling up
             [59.9 / 24 / 60 / 60, '+00:01:00'], // rounding gain bubbling up
         ];
-    }
-
-    #[DataProvider('dataProviderForTestCreateDateIntervalFromHours')]
-    public function testCreateDateIntervalFromHours(float $dayFractions, string $expected): void
-    {
-        $interval = DateIntervalFormatHelper::createDateIntervalFromHours($dayFractions);
-        self::assertSame($expected, $interval->format('%R%H:%I:%S'));
     }
 
     public function testFormatDateIntervalDoesNotMutateInterval(): void

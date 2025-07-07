@@ -112,19 +112,19 @@ final class ReaderTest extends TestCase
         self::assertSame($expectedRows, $allRows);
     }
 
-    public static function dataProviderForTestReadShouldReadEmptyFile(): array
+    #[DataProvider('provideReadShouldReadEmptyFileCases')]
+    public function testReadShouldReadEmptyFile(string $fileName): void
+    {
+        $allRows = $this->getAllRowsForFile($fileName);
+        self::assertSame([], $allRows);
+    }
+
+    public static function provideReadShouldReadEmptyFileCases(): iterable
     {
         return [
             ['csv_empty.csv'],
             ['csv_all_lines_empty.csv'],
         ];
-    }
-
-    #[DataProvider('dataProviderForTestReadShouldReadEmptyFile')]
-    public function testReadShouldReadEmptyFile(string $fileName): void
-    {
-        $allRows = $this->getAllRowsForFile($fileName);
-        self::assertSame([], $allRows);
     }
 
     public function testReadShouldReadEmptyFileUsingRowIteratorWithNullRow(): void
@@ -187,18 +187,7 @@ final class ReaderTest extends TestCase
         self::assertSame("This is,{$newLine}a comma", $allRows[0][0]);
     }
 
-    public static function dataProviderForTestReadShouldSkipBom(): array
-    {
-        return [
-            ['csv_with_utf8_bom.csv', EncodingHelper::ENCODING_UTF8],
-            ['csv_with_utf16le_bom.csv', EncodingHelper::ENCODING_UTF16_LE],
-            ['csv_with_utf16be_bom.csv', EncodingHelper::ENCODING_UTF16_BE],
-            ['csv_with_utf32le_bom.csv', EncodingHelper::ENCODING_UTF32_LE],
-            ['csv_with_utf32be_bom.csv', EncodingHelper::ENCODING_UTF32_BE],
-        ];
-    }
-
-    #[DataProvider('dataProviderForTestReadShouldSkipBom')]
+    #[DataProvider('provideReadShouldSkipBomCases')]
     public function testReadShouldSkipBom(string $fileName, string $fileEncoding): void
     {
         $allRows = $this->getAllRowsForFile($fileName, ',', '"', $fileEncoding);
@@ -211,20 +200,18 @@ final class ReaderTest extends TestCase
         self::assertSame($expectedRows, $allRows);
     }
 
-    public static function dataProviderForTestReadShouldSupportNonUTF8FilesWithoutBOMs(): array
+    public static function provideReadShouldSkipBomCases(): iterable
     {
-        $shouldUseIconv = true;
-        $shouldNotUseIconv = false;
-
         return [
-            ['csv_with_encoding_utf16le_no_bom.csv', EncodingHelper::ENCODING_UTF16_LE, $shouldUseIconv],
-            ['csv_with_encoding_utf16le_no_bom.csv', EncodingHelper::ENCODING_UTF16_LE, $shouldNotUseIconv],
-            ['csv_with_encoding_cp1252.csv', 'CP1252', $shouldUseIconv],
-            ['csv_with_encoding_cp1252.csv', 'CP1252', $shouldNotUseIconv],
+            ['csv_with_utf8_bom.csv', EncodingHelper::ENCODING_UTF8],
+            ['csv_with_utf16le_bom.csv', EncodingHelper::ENCODING_UTF16_LE],
+            ['csv_with_utf16be_bom.csv', EncodingHelper::ENCODING_UTF16_BE],
+            ['csv_with_utf32le_bom.csv', EncodingHelper::ENCODING_UTF32_LE],
+            ['csv_with_utf32be_bom.csv', EncodingHelper::ENCODING_UTF32_BE],
         ];
     }
 
-    #[DataProvider('dataProviderForTestReadShouldSupportNonUTF8FilesWithoutBOMs')]
+    #[DataProvider('provideReadShouldSupportNonUTF8FilesWithoutBOMsCases')]
     public function testReadShouldSupportNonUTF8FilesWithoutBOMs(string $fileName, string $fileEncoding, bool $shouldUseIconv): void
     {
         $allRows = [];
@@ -249,6 +236,19 @@ final class ReaderTest extends TestCase
             ['csv--31', 'csv--32', 'csv--33'],
         ];
         self::assertSame($expectedRows, $allRows);
+    }
+
+    public static function provideReadShouldSupportNonUTF8FilesWithoutBOMsCases(): iterable
+    {
+        $shouldUseIconv = true;
+        $shouldNotUseIconv = false;
+
+        return [
+            ['csv_with_encoding_utf16le_no_bom.csv', EncodingHelper::ENCODING_UTF16_LE, $shouldUseIconv],
+            ['csv_with_encoding_utf16le_no_bom.csv', EncodingHelper::ENCODING_UTF16_LE, $shouldNotUseIconv],
+            ['csv_with_encoding_cp1252.csv', 'CP1252', $shouldUseIconv],
+            ['csv_with_encoding_cp1252.csv', 'CP1252', $shouldNotUseIconv],
+        ];
     }
 
     public function testReadMultipleTimesShouldRewindReader(): void

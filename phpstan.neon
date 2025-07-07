@@ -11,6 +11,6 @@ parameters:
         - tests
     ignoreErrors:
         -
-            message: "#^Method .+Test::dataProvider.+\\(\\) return type has no value type specified in iterable type array\\.$#"
+            message: "#^Method .+Test::provide.+Cases\\(\\) return type has no value type specified in iterable type iterable\\.$#"
             paths:
                 - tests/

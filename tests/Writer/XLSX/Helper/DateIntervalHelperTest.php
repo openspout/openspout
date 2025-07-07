@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(DateIntervalHelper::class)]
 final class DateIntervalHelperTest extends TestCase
 {
-    #[DataProvider('provideDateIntervalToExcelCases')]
+    #[DataProvider('provideToExcelCases')]
     public function testToExcel(DateInterval $dateTime, float $expected): void
     {
         self::assertEqualsWithDelta($expected, DateIntervalHelper::toExcel($dateTime), 1E-5);
@@ -25,7 +25,7 @@ final class DateIntervalHelperTest extends TestCase
     /**
      * @return array<array-key, array<array-key, DateInterval|float|int>>
      */
-    public static function provideDateIntervalToExcelCases(): array
+    public static function provideToExcelCases(): iterable
     {
         return [
             [DateInterval::createFromDateString('1 year'), 365.25],

@@ -12,7 +12,13 @@ use PHPUnit\Framework\TestCase;
  */
 final class CellHelperTest extends TestCase
 {
-    public static function dataProviderForTestGetColumnLettersFromColumnIndex(): array
+    #[DataProvider('provideGetColumnLettersFromColumnIndexCases')]
+    public function testGetColumnLettersFromColumnIndex(int $columnIndex, string $expectedColumnLetters): void
+    {
+        self::assertSame($expectedColumnLetters, CellHelper::getColumnLettersFromColumnIndex($columnIndex));
+    }
+
+    public static function provideGetColumnLettersFromColumnIndexCases(): iterable
     {
         return [
             [0, 'A'],
@@ -21,11 +27,5 @@ final class CellHelperTest extends TestCase
             [26, 'AA'],
             [28, 'AC'],
         ];
-    }
-
-    #[DataProvider('dataProviderForTestGetColumnLettersFromColumnIndex')]
-    public function testGetColumnLettersFromColumnIndex(int $columnIndex, string $expectedColumnLetters): void
-    {
-        self::assertSame($expectedColumnLetters, CellHelper::getColumnLettersFromColumnIndex($columnIndex));
     }
 }
