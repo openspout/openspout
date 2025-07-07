@@ -100,7 +100,17 @@ final class StyleManagerTest extends TestCase
         self::assertFalse($shouldFormatAsDate);
     }
 
-    public static function dataProviderForCustomDateFormats(): array
+    #[DataProvider('provideShouldFormatNumericValueAsDateWithCustomDateFormatsCases')]
+    public function testShouldFormatNumericValueAsDateWithCustomDateFormats(string $numberFormat, bool $expectedResult): void
+    {
+        $numFmtId = 165;
+        $styleManager = $this->getStyleManagerMock([[], ['applyNumberFormat' => true, 'numFmtId' => $numFmtId]], [$numFmtId => $numberFormat]);
+        $shouldFormatAsDate = $styleManager->shouldFormatNumericValueAsDate(1);
+
+        self::assertSame($expectedResult, $shouldFormatAsDate);
+    }
+
+    public static function provideShouldFormatNumericValueAsDateWithCustomDateFormatsCases(): iterable
     {
         return [
             // number format, expectedResult
@@ -130,16 +140,6 @@ final class StyleManagerTest extends TestCase
             ['[Red]foo;', false],
             ['foo "mm/dd/yy"', false],
         ];
-    }
-
-    #[DataProvider('dataProviderForCustomDateFormats')]
-    public function testShouldFormatNumericValueAsDateWithCustomDateFormats(string $numberFormat, bool $expectedResult): void
-    {
-        $numFmtId = 165;
-        $styleManager = $this->getStyleManagerMock([[], ['applyNumberFormat' => true, 'numFmtId' => $numFmtId]], [$numFmtId => $numberFormat]);
-        $shouldFormatAsDate = $styleManager->shouldFormatNumericValueAsDate(1);
-
-        self::assertSame($expectedResult, $shouldFormatAsDate);
     }
 
     private function getStyleManagerMock(array $styleAttributes = [], array $customNumberFormats = []): StyleManager

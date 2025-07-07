@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(DateHelper::class)]
 final class DateHelperTest extends TestCase
 {
-    #[DataProvider('provideDateTimeToExcelCases')]
+    #[DataProvider('provideToExcelCases')]
     public function testToExcel(DateTimeInterface $dateTime, float $expected): void
     {
         self::assertEqualsWithDelta($expected, DateHelper::toExcel($dateTime), 1E-5);
@@ -25,7 +25,7 @@ final class DateHelperTest extends TestCase
     /**
      * @return array<array-key, array<array-key, DateTimeInterface|float|int>>
      */
-    public static function provideDateTimeToExcelCases(): array
+    public static function provideToExcelCases(): iterable
     {
         return [
             [new DateTimeImmutable('1900-01-01'), 1.0], // Excel 1900 base calendar date

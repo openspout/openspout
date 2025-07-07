@@ -18,7 +18,15 @@ use PHPUnit\Framework\TestCase;
  */
 final class ReaderTest extends TestCase
 {
-    public static function dataProviderForTestReadShouldThrowException(): array
+    #[DataProvider('provideReadShouldThrowExceptionCases')]
+    public function testReadShouldThrowException(string $filePath): void
+    {
+        $this->expectException(IOException::class);
+
+        $this->getAllRowsForFile($filePath);
+    }
+
+    public static function provideReadShouldThrowExceptionCases(): iterable
     {
         return [
             ['/path/to/fake/file.ods'],
@@ -27,23 +35,7 @@ final class ReaderTest extends TestCase
         ];
     }
 
-    #[DataProvider('dataProviderForTestReadShouldThrowException')]
-    public function testReadShouldThrowException(string $filePath): void
-    {
-        $this->expectException(IOException::class);
-
-        $this->getAllRowsForFile($filePath);
-    }
-
-    public static function dataProviderForTestReadForAllWorksheets(): array
-    {
-        return [
-            ['one_sheet_with_strings.ods', 2, 3],
-            ['two_sheets_with_strings.ods', 4, 3],
-        ];
-    }
-
-    #[DataProvider('dataProviderForTestReadForAllWorksheets')]
+    #[DataProvider('provideReadForAllWorksheetsCases')]
     public function testReadForAllWorksheets(string $resourceName, int $expectedNumOfRows, int $expectedNumOfCellsPerRow): void
     {
         $allRows = $this->getAllRowsForFile($resourceName);
@@ -52,6 +44,14 @@ final class ReaderTest extends TestCase
         foreach ($allRows as $row) {
             self::assertCount($expectedNumOfCellsPerRow, $row, "There should be {$expectedNumOfCellsPerRow} cells for every row");
         }
+    }
+
+    public static function provideReadForAllWorksheetsCases(): iterable
+    {
+        return [
+            ['one_sheet_with_strings.ods', 2, 3],
+            ['two_sheets_with_strings.ods', 4, 3],
+        ];
     }
 
     public function testReadShouldSupportRowWithOnlyOneCell(): void
@@ -84,20 +84,11 @@ final class ReaderTest extends TestCase
         self::assertSame($expectedRows, $allRows);
     }
 
-    public static function dataProviderForTestReadWithFilesGeneratedByExternalSoftwares(): array
-    {
-        return [
-            ['file_generated_by_libre_office.ods', true],
-            ['file_generated_by_excel_2010_windows.ods', false],
-            ['file_generated_by_excel_office_online.ods', false],
-        ];
-    }
-
     /**
      * The files contain styles, different value types, gaps between cells,
      * repeated values, empty row, different number of cells per row.
      */
-    #[DataProvider('dataProviderForTestReadWithFilesGeneratedByExternalSoftwares')]
+    #[DataProvider('provideReadWithFilesGeneratedByExternalSoftwaresCases')]
     public function testReadWithFilesGeneratedByExternalSoftwares(string $fileName, bool $skipLastEmptyValues): void
     {
         $allRows = $this->getAllRowsForFile($fileName);
@@ -117,6 +108,15 @@ final class ReaderTest extends TestCase
         }
 
         self::assertEquals($expectedRows, $allRows);
+    }
+
+    public static function provideReadWithFilesGeneratedByExternalSoftwaresCases(): iterable
+    {
+        return [
+            ['file_generated_by_libre_office.ods', true],
+            ['file_generated_by_excel_2010_windows.ods', false],
+            ['file_generated_by_excel_office_online.ods', false],
+        ];
     }
 
     public function testReadShouldSupportAllCellTypes(): void

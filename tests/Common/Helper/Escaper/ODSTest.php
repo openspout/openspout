@@ -12,7 +12,16 @@ use PHPUnit\Framework\TestCase;
  */
 final class ODSTest extends TestCase
 {
-    public static function dataProviderForTestEscape(): array
+    #[DataProvider('provideEscapeCases')]
+    public function testEscape(string $stringToEscape, string $expectedEscapedString): void
+    {
+        $escaper = new ODS();
+        $escapedString = $escaper->escape($stringToEscape);
+
+        self::assertSame($expectedEscapedString, $escapedString, 'Incorrect escaped string');
+    }
+
+    public static function provideEscapeCases(): iterable
     {
         return [
             ['test', 'test'],
@@ -23,14 +32,5 @@ final class ODSTest extends TestCase
             ["\v", '�'],
             ["\f", '�'],
         ];
-    }
-
-    #[DataProvider('dataProviderForTestEscape')]
-    public function testEscape(string $stringToEscape, string $expectedEscapedString): void
-    {
-        $escaper = new ODS();
-        $escapedString = $escaper->escape($stringToEscape);
-
-        self::assertSame($expectedEscapedString, $escapedString, 'Incorrect escaped string');
     }
 }

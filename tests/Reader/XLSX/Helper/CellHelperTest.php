@@ -13,7 +13,13 @@ use PHPUnit\Framework\TestCase;
  */
 final class CellHelperTest extends TestCase
 {
-    public static function dataProviderForTestGetColumnIndexFromCellIndex(): array
+    #[DataProvider('provideGetColumnIndexFromCellIndexCases')]
+    public function testGetColumnIndexFromCellIndex(string $cellIndex, int $expectedColumnIndex): void
+    {
+        self::assertSame($expectedColumnIndex, CellHelper::getColumnIndexFromCellIndex($cellIndex));
+    }
+
+    public static function provideGetColumnIndexFromCellIndexCases(): iterable
     {
         return [
             ['A1', 0],
@@ -23,12 +29,6 @@ final class CellHelperTest extends TestCase
             ['BC5', 54],
             ['BCZ99', 1455],
         ];
-    }
-
-    #[DataProvider('dataProviderForTestGetColumnIndexFromCellIndex')]
-    public function testGetColumnIndexFromCellIndex(string $cellIndex, int $expectedColumnIndex): void
-    {
-        self::assertSame($expectedColumnIndex, CellHelper::getColumnIndexFromCellIndex($cellIndex));
     }
 
     public function testGetColumnIndexFromCellIndexShouldThrowIfInvalidCellIndex(): void

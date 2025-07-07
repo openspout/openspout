@@ -57,18 +57,7 @@ final class XMLReaderTest extends TestCase
         }
     }
 
-    public static function dataProviderForTestFileExistsWithinZip(): array
-    {
-        return [
-            ['[Content_Types].xml', true],
-            ['xl/sharedStrings.xml', true],
-            ['xl/worksheets/sheet1.xml', true],
-            ['/invalid/file.xml', false],
-            ['another/invalid/file.xml', false],
-        ];
-    }
-
-    #[DataProvider('dataProviderForTestFileExistsWithinZip')]
+    #[DataProvider('provideFileExistsWithinZipCases')]
     public function testFileExistsWithinZip(string $innerFilePath, bool $expectedResult): void
     {
         $resourcePath = TestUsingResource::getResourcePath('one_sheet_with_inline_strings.xlsx');
@@ -80,19 +69,18 @@ final class XMLReaderTest extends TestCase
         self::assertSame($expectedResult, $isZipStream);
     }
 
-    public static function dataProviderForTestGetRealPathURIForFileInZip(): array
+    public static function provideFileExistsWithinZipCases(): iterable
     {
-        $tempFolder = (new TestUsingResource())->getTempFolderPath();
-        $tempFolderName = basename($tempFolder);
-        $expectedRealPathURI = 'zip://'.$tempFolder.'/test.xlsx#test.xml';
-
         return [
-            [$tempFolder, "{$tempFolder}/test.xlsx", 'test.xml', $expectedRealPathURI],
-            [$tempFolder, "{$tempFolder}/../{$tempFolderName}/test.xlsx", 'test.xml', $expectedRealPathURI],
+            ['[Content_Types].xml', true],
+            ['xl/sharedStrings.xml', true],
+            ['xl/worksheets/sheet1.xml', true],
+            ['/invalid/file.xml', false],
+            ['another/invalid/file.xml', false],
         ];
     }
 
-    #[DataProvider('dataProviderForTestGetRealPathURIForFileInZip')]
+    #[DataProvider('provideGetRealPathURIForFileInZipCases')]
     public function testGetRealPathURIForFileInZip(string $tempFolder, string $zipFilePath, string $fileInsideZipPath, string $expectedRealPathURI): void
     {
         touch($tempFolder.'/test.xlsx');
@@ -109,15 +97,19 @@ final class XMLReaderTest extends TestCase
         unlink($tempFolder.'/test.xlsx');
     }
 
-    public static function dataProviderForTestIsPositionedOnStartingAndEndingNode(): array
+    public static function provideGetRealPathURIForFileInZipCases(): iterable
     {
+        $tempFolder = (new TestUsingResource())->getTempFolderPath();
+        $tempFolderName = basename($tempFolder);
+        $expectedRealPathURI = 'zip://'.$tempFolder.'/test.xlsx#test.xml';
+
         return [
-            ['<test></test>'], // not prefixed
-            ['<x:test xmlns:x="foo"></x:test>'], // prefixed
+            [$tempFolder, "{$tempFolder}/test.xlsx", 'test.xml', $expectedRealPathURI],
+            [$tempFolder, "{$tempFolder}/../{$tempFolderName}/test.xlsx", 'test.xml', $expectedRealPathURI],
         ];
     }
 
-    #[DataProvider('dataProviderForTestIsPositionedOnStartingAndEndingNode')]
+    #[DataProvider('provideIsPositionedOnStartingAndEndingNodeCases')]
     public function testIsPositionedOnStartingAndEndingNode(string $testXML): void
     {
         $xmlReader = new XMLReader();
@@ -134,5 +126,13 @@ final class XMLReaderTest extends TestCase
         self::assertTrue($xmlReader->isPositionedOnEndingNode('test'));
 
         $xmlReader->close();
+    }
+
+    public static function provideIsPositionedOnStartingAndEndingNodeCases(): iterable
+    {
+        return [
+            ['<test></test>'], // not prefixed
+            ['<x:test xmlns:x="foo"></x:test>'], // prefixed
+        ];
     }
 }

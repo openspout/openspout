@@ -14,22 +14,11 @@ use PHPUnit\Framework\TestCase;
  */
 final class RowManagerTest extends TestCase
 {
-    public static function dataProviderForTestFillMissingIndexesWithEmptyCells(): array
-    {
-        $cell1 = Cell::fromValue(1);
-        $cell3 = Cell::fromValue(3);
-
-        return [
-            [[], []],
-            [[1 => $cell1, 3 => $cell3], [Cell::fromValue(''), $cell1, Cell::fromValue(''), $cell3]],
-        ];
-    }
-
     /**
      * @param null|Cell[] $rowCells
      * @param Cell[]      $expectedFilledCells
      */
-    #[DataProvider('dataProviderForTestFillMissingIndexesWithEmptyCells')]
+    #[DataProvider('provideFillMissingIndexesWithEmptyCellsCases')]
     public function testFillMissingIndexesWithEmptyCells(?array $rowCells, array $expectedFilledCells): void
     {
         $rowManager = new RowManager();
@@ -42,5 +31,16 @@ final class RowManagerTest extends TestCase
         $rowManager->fillMissingIndexesWithEmptyCells($rowToFill);
 
         self::assertEquals($expectedFilledCells, $rowToFill->getCells());
+    }
+
+    public static function provideFillMissingIndexesWithEmptyCellsCases(): iterable
+    {
+        $cell1 = Cell::fromValue(1);
+        $cell3 = Cell::fromValue(3);
+
+        return [
+            [[], []],
+            [[1 => $cell1, 3 => $cell3], [Cell::fromValue(''), $cell1, Cell::fromValue(''), $cell3]],
+        ];
     }
 }
