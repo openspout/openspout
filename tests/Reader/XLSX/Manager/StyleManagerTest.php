@@ -142,21 +142,6 @@ final class StyleManagerTest extends TestCase
         ];
     }
 
-    private function getStyleManagerMock(array $styleAttributes = [], array $customNumberFormats = []): StyleManager
-    {
-        /** @var MockObject|StyleManager $styleManager */
-        $styleManager = $this->getMockBuilder(StyleManager::class)
-            ->setConstructorArgs(['/path/to/file.xlsx', uniqid()])
-            ->onlyMethods(['getCustomNumberFormats', 'getStylesAttributes'])
-            ->getMock()
-        ;
-
-        $styleManager->method('getStylesAttributes')->willReturn($styleAttributes);
-        $styleManager->method('getCustomNumberFormats')->willReturn($customNumberFormats);
-
-        return $styleManager;
-    }
-
     public function testShouldFormatScientificNotationAsDate(): void
     {
         $styleManager = $this->getStyleManagerMock(
@@ -172,5 +157,20 @@ final class StyleManagerTest extends TestCase
         );
         $shouldFormatAsDate = $styleManager->shouldFormatNumericValueAsDate(1);
         self::assertFalse($shouldFormatAsDate);
+    }
+
+    private function getStyleManagerMock(array $styleAttributes = [], array $customNumberFormats = []): StyleManager
+    {
+        /** @var MockObject|StyleManager $styleManager */
+        $styleManager = $this->getMockBuilder(StyleManager::class)
+            ->setConstructorArgs(['/path/to/file.xlsx', uniqid()])
+            ->onlyMethods(['getCustomNumberFormats', 'getStylesAttributes'])
+            ->getMock()
+        ;
+
+        $styleManager->method('getStylesAttributes')->willReturn($styleAttributes);
+        $styleManager->method('getCustomNumberFormats')->willReturn($customNumberFormats);
+
+        return $styleManager;
     }
 }
