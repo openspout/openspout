@@ -54,6 +54,9 @@ jobs:
             - os: "ubuntu-latest"
               php-version: "8.4"
               code-coverage: "pcov"
+            - os: "ubuntu-latest"
+              php-version: "8.5"
+              code-coverage: "none"
 
     steps:
       - uses: "actions/checkout@v5"
