@@ -104,7 +104,9 @@ final class XMLProcessor
         $callbackObject = $callback[0];
         $callbackMethodName = $callback[1];
         $reflectionMethod = new ReflectionMethod($callbackObject, $callbackMethodName);
-        $reflectionMethod->setAccessible(true);
+        if (PHP_VERSION_ID < 80500) {
+            $reflectionMethod->setAccessible(true);
+        }
 
         return [
             self::CALLBACK_REFLECTION_METHOD => $reflectionMethod,
