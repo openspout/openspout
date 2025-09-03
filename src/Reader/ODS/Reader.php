@@ -55,8 +55,22 @@ final class Reader extends AbstractReader
     {
         $this->zip = new ZipArchive();
 
-        if (true !== $this->zip->open($filePath)) {
-            throw new IOException("Could not open {$filePath} for reading.");
+        $openResult = $this->zip->open($filePath);
+
+        if (true !== $openResult) {
+            $errorMessage = match ($openResult) {
+                ZipArchive::ER_INCONS => 'Zip archive inconsistent',
+                ZipArchive::ER_INVAL => 'Invalid argument',
+                ZipArchive::ER_MEMORY => 'Malloc failure',
+                ZipArchive::ER_NOENT => 'No such file',
+                ZipArchive::ER_NOZIP => 'Not a zip archive',
+                ZipArchive::ER_OPEN => 'Can\'t open file',
+                ZipArchive::ER_READ => 'Read error',
+                ZipArchive::ER_SEEK => 'Seek error',
+                default => 'Unknown error',
+            };
+
+            throw new IOException("Could not open {$filePath} for reading: {$errorMessage}.");
         }
 
         $this->sheetIterator = new SheetIterator($filePath, $this->options, new ODS(), new SettingsHelper());
