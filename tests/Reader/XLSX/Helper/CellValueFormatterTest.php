@@ -146,7 +146,7 @@ final class CellValueFormatterTest extends TestCase
         string $nodeValue,
         bool $shouldFormatAsDate,
         float|int|string $computedValue,
-        null|float|int|string $expectedComputedValue,
+        float|int|string|null $expectedComputedValue,
         string $cellType
     ): void {
         $nodeListMock = $this->createMock(DOMNodeList::class);
