@@ -39,6 +39,7 @@ final class CellHelper
 
         // Remove row information
         $columnLetters = preg_replace('/\d/', '', $cellIndex);
+        \assert(null !== $columnLetters);
 
         // strlen() is super slow too... Using isset() is way faster and not too unreadable,
         // since we checked before that there are between 1 and 3 letters.
