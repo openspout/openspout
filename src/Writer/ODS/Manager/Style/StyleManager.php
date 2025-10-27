@@ -323,7 +323,7 @@ final class StyleManager extends CommonStyleManager
 
         return '<style:paragraph-properties '
             .$this->getCellAlignmentSectionContent($style)
-            .$this->getCellVerticalAlignmentSectionContent($style)
+    //        .$this->getCellVerticalAlignmentSectionContent($style)
             .'/>';
     }
 
@@ -352,7 +352,7 @@ final class StyleManager extends CommonStyleManager
         }
 
         return \sprintf(
-            ' fo:vertical-align="%s" ',
+            ' style:vertical-align="%s" ',
             $this->transformCellVerticalAlignment($style->getCellVerticalAlignment())
         );
     }
@@ -401,6 +401,8 @@ final class StyleManager extends CommonStyleManager
             $content .= $this->getBackgroundColorXMLContent($bgColor);
         }
 
+		$content.=$this->getCellVerticalAlignmentSectionContent($style);
+		
         $content .= '/>';
 
         return $content;
@@ -411,7 +413,7 @@ final class StyleManager extends CommonStyleManager
      */
     private function getWrapTextXMLContent(bool $shouldWrapText): string
     {
-        return ' fo:wrap-option="'.($shouldWrapText ? '' : 'no-').'wrap" style:vertical-align="automatic" ';
+        return ' fo:wrap-option="'.($shouldWrapText ? '' : 'no-').'wrap" ';
     }
 
     /**
