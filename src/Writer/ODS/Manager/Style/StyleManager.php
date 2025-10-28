@@ -347,15 +347,15 @@ final class StyleManager extends CommonStyleManager
      */
     private function getCellVerticalAlignmentSectionContent(Style $style): string
     {
-        if (!$style->hasSetCellVerticalAlignment()) {
-            return '';
-        }
-
+        // Si pas défini, on utilise 'baseline' par défaut
+        $vertical = $style->hasSetCellVerticalAlignment()
+        ? $style->getCellVerticalAlignment()
+        : CellVerticalAlignment::BOTTOM; // ou 'baseline', selon ton test
+        
         return \sprintf(
             ' style:vertical-align="%s" ',
-            $this->transformCellVerticalAlignment($style->getCellVerticalAlignment())
-        );
-    }
+            $this->transformCellVerticalAlignment($vertical)
+            );}
 
     /**
      * Even though "left" and "right" alignments are part of the spec, and interpreted
@@ -401,7 +401,7 @@ final class StyleManager extends CommonStyleManager
             $content .= $this->getBackgroundColorXMLContent($bgColor);
         }
 
-		$content.=$this->getCellVerticalAlignmentSectionContent($style);
+		$content .= $this->getCellVerticalAlignmentSectionContent($style);
 		
         $content .= '/>';
 
