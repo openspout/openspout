@@ -323,8 +323,7 @@ final class StyleManager extends CommonStyleManager
 
         return '<style:paragraph-properties '
             .$this->getCellAlignmentSectionContent($style)
-    //        .$this->getCellVerticalAlignmentSectionContent($style)
-            .'/>';
+             .'/>';
     }
 
     /**
