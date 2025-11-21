@@ -49,6 +49,12 @@ parameters:
 			path: src/Reader/Wrapper/XMLReader.php
 
 		-
+			message: '#^Offset string\|null might not exist on array\{A\: 0, B\: 1, C\: 2, D\: 3, E\: 4, F\: 5, G\: 6, H\: 7, \.\.\.\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: src/Reader/XLSX/Helper/CellHelper.php
+
+		-
 			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(OpenSpout\\Common\\Entity\\Cell\)\: mixed\)\|null, Closure\(OpenSpout\\Common\\Entity\\Cell\\BooleanCell\|OpenSpout\\Common\\Entity\\Cell\\DateIntervalCell\|OpenSpout\\Common\\Entity\\Cell\\DateTimeCell\|OpenSpout\\Common\\Entity\\Cell\\EmptyCell\|OpenSpout\\Common\\Entity\\Cell\\FormulaCell\|OpenSpout\\Common\\Entity\\Cell\\NumericCell\|OpenSpout\\Common\\Entity\\Cell\\StringCell\)\: string given\.$#'
 			identifier: argument.type
 			count: 1

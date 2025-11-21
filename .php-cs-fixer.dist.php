@@ -9,9 +9,9 @@ $config = (new PhpCsFixer\Config())
     ->setParallelConfig(ParallelConfigFactory::detect())
     ->setRules([
         '@DoctrineAnnotation' => true,
-        '@PHP83Migration' => true,
-        '@PHP80Migration:risky' => true,
-        '@PHPUnit100Migration:risky' => true,
+        '@PHP8x3Migration' => true,
+        '@PHP8x0Migration:risky' => true,
+        '@PHPUnit10x0Migration:risky' => true,
         '@PhpCsFixer' => true,
         '@PhpCsFixer:risky' => true,
         'comment_to_phpdoc' => false,
