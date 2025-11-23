@@ -13,6 +13,7 @@ abstract class AbstractOptions
 
     public Style $DEFAULT_ROW_STYLE;
     public bool $SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY = true;
+    public bool $SHOULD_LOCK_FILE_FOR_WRITING = false;
     public ?float $DEFAULT_COLUMN_WIDTH = null;
     public ?float $DEFAULT_ROW_HEIGHT = null;
 

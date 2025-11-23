@@ -25,6 +25,9 @@ abstract class AbstractWriter implements WriterInterface
     /** @var 0|positive-int */
     private int $writtenRowCount = 0;
 
+    /** @var false|bool */
+    public bool $shouldLockFileForWriting = false;
+
     final public function openToFile($outputFilePath): void
     {
         $this->outputFilePath = $outputFilePath;
@@ -37,7 +40,13 @@ abstract class AbstractWriter implements WriterInterface
         });
 
         $resource = fopen($this->outputFilePath, 'w');
+
+        if ($this->shouldLockFileForWriting) {
+            flock($resource, LOCK_EX);
+        }
+
         restore_error_handler();
+
         if (null !== $errorMessage) {
             throw new IOException("Unable to open file {$this->outputFilePath}: {$errorMessage}");
         }
@@ -131,6 +140,10 @@ abstract class AbstractWriter implements WriterInterface
         }
 
         $this->closeWriter();
+
+        if ($this->shouldLockFileForWriting) {
+            flock($this->filePointer, LOCK_UN);
+        }
 
         fclose($this->filePointer);
 
