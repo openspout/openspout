@@ -11,7 +11,7 @@ use PhpBench\Attributes as Bench;
 /**
  * @internal
  */
-final class XlsxReaderSharedBench
+final readonly class XlsxReaderSharedBench
 {
     #[Bench\OutputTimeUnit('seconds')]
     #[Bench\Assert('mode(variant.mem.peak) < 8388608')]

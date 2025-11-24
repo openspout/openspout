@@ -7,7 +7,7 @@ namespace OpenSpout\Writer\XLSX\Helper;
 /**
  * @internal
  */
-final class PasswordHashHelper
+final readonly class PasswordHashHelper
 {
     public static function make(string $password): string
     {

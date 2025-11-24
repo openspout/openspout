@@ -102,8 +102,8 @@ final readonly class CellValueFormatter
 
             return new Cell\FormulaCell(
                 '='.$fNodeValue,
+                $computedValue instanceof Cell\ErrorCell ? null : $computedValue,
                 null,
-                $computedValue instanceof Cell\ErrorCell ? null : $computedValue
             );
         }
 

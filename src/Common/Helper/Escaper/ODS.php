@@ -7,7 +7,7 @@ namespace OpenSpout\Common\Helper\Escaper;
 /**
  * @internal
  */
-final class ODS implements EscaperInterface
+final readonly class ODS implements EscaperInterface
 {
     /**
      * Escapes the given string to make it compatible with XLSX.
@@ -41,7 +41,7 @@ final class ODS implements EscaperInterface
         // ==============
         // It is assumed that the given string has already had its XML entities decoded.
         // This is true if the string is coming from a DOMNode (as DOMNode already decode XML entities on creation).
-        // Therefore there is no need to call "htmlspecialchars_decode()".
+        // Therefore, there is no need to call "htmlspecialchars_decode()".
         return $string;
     }
 }

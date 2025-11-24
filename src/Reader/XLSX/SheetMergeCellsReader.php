@@ -15,8 +15,8 @@ use function ltrim;
  */
 final class SheetMergeCellsReader
 {
-    public const XML_NODE_MERGE_CELL = 'mergeCell';
-    public const XML_ATTRIBUTE_REF = 'ref';
+    public const string XML_NODE_MERGE_CELL = 'mergeCell';
+    public const string XML_ATTRIBUTE_REF = 'ref';
 
     /** @var list<string> Merged cells list */
     private array $mergeCells = [];

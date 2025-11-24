@@ -13,7 +13,7 @@ use PhpBench\Attributes as Bench;
 /**
  * @internal
  */
-final class XlsxWriterSharedBench
+final readonly class XlsxWriterSharedBench
 {
     use XlsxWriterTrait;
 
@@ -26,9 +26,10 @@ final class XlsxWriterSharedBench
         $fileName = 'xlsx_with_one_million_rows_and_shared_strings.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->SHOULD_USE_INLINE_STRINGS = false;
-        $options->SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY = true;
+        $options = new Options(
+            SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY: true,
+            SHOULD_USE_INLINE_STRINGS: false,
+        );
         $writer = new Writer($options);
 
         $writer->openToFile($resourcePath);

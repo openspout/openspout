@@ -11,7 +11,7 @@ use OpenSpout\Common\Entity\Style\Style;
  */
 abstract class AbstractStyleRegistry
 {
-    /** @var array<string, int> [SERIALIZED_STYLE] => [STYLE_ID] mapping table, keeping track of the registered styles */
+    /** @var array<string, non-negative-int> [SERIALIZED_STYLE] => [STYLE_ID] mapping table, keeping track of the registered styles */
     private array $serializedStyleToStyleIdMappingTable = [];
 
     /** @var array<int, Style> [STYLE_ID] => [STYLE] mapping table, keeping track of the registered styles */
@@ -29,29 +29,29 @@ abstract class AbstractStyleRegistry
      *
      * @param Style $style The style to be registered
      *
-     * @return Style the registered style, updated with an internal ID
+     * @return non-negative-int
      */
-    public function registerStyle(Style $style): Style
+    final public function registerStyle(Style $style): int
     {
-        $serializedStyle = $this->serialize($style);
-
-        if (!$this->hasSerializedStyleAlreadyBeenRegistered($serializedStyle)) {
-            $nextStyleId = \count($this->serializedStyleToStyleIdMappingTable);
-            $style->markAsRegistered($nextStyleId);
-
-            $this->serializedStyleToStyleIdMappingTable[$serializedStyle] = $nextStyleId;
-            $this->styleIdToStyleMappingTable[$nextStyleId] = $style;
+        $serializedStyle = spl_object_hash($style);
+        if (\array_key_exists($serializedStyle, $this->serializedStyleToStyleIdMappingTable)) {
+            return $this->serializedStyleToStyleIdMappingTable[$serializedStyle];
         }
 
-        return $this->getStyleFromSerializedStyle($serializedStyle);
+        $nextStyleId = \count($this->serializedStyleToStyleIdMappingTable);
+        $this->serializedStyleToStyleIdMappingTable[$serializedStyle] = $nextStyleId;
+        $this->styleIdToStyleMappingTable[$nextStyleId] = $style;
+        $this->customRegisterStyle($nextStyleId, $style);
+
+        return $nextStyleId;
     }
 
     /**
-     * @return Style[] List of registered styles
+     * @return array<int, Style> List of registered styles
      */
     final public function getRegisteredStyles(): array
     {
-        return array_values($this->styleIdToStyleMappingTable);
+        return $this->styleIdToStyleMappingTable;
     }
 
     final public function getStyleFromStyleId(int $styleId): Style
@@ -59,38 +59,5 @@ abstract class AbstractStyleRegistry
         return $this->styleIdToStyleMappingTable[$styleId];
     }
 
-    /**
-     * Serializes the style for future comparison with other styles.
-     * The ID is excluded from the comparison, as we only care about
-     * actual style properties.
-     *
-     * @return string The serialized style
-     */
-    final public function serialize(Style $style): string
-    {
-        return serialize($style);
-    }
-
-    /**
-     * Returns whether the serialized style has already been registered.
-     *
-     * @param string $serializedStyle The serialized style
-     */
-    private function hasSerializedStyleAlreadyBeenRegistered(string $serializedStyle): bool
-    {
-        // Using isset here because it is way faster than array_key_exists...
-        return isset($this->serializedStyleToStyleIdMappingTable[$serializedStyle]);
-    }
-
-    /**
-     * Returns the registered style associated to the given serialization.
-     *
-     * @param string $serializedStyle The serialized style from which the actual style should be fetched from
-     */
-    private function getStyleFromSerializedStyle(string $serializedStyle): Style
-    {
-        $styleId = $this->serializedStyleToStyleIdMappingTable[$serializedStyle];
-
-        return $this->styleIdToStyleMappingTable[$styleId];
-    }
+    protected function customRegisterStyle(int $styleId, Style $style): void {}
 }

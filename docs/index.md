@@ -28,7 +28,7 @@ $reader->open('/path/to/file.ext');
 foreach ($reader->getSheetIterator() as $sheet) {
     foreach ($sheet->getRowIterator() as $row) {
         // do stuff with the row
-        $cells = $row->getCells();
+        $cells = $row->cells;
     }
 }
 

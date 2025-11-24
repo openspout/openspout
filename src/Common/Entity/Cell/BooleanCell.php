@@ -5,16 +5,20 @@ declare(strict_types=1);
 namespace OpenSpout\Common\Entity\Cell;
 
 use OpenSpout\Common\Entity\Cell;
+use OpenSpout\Common\Entity\Comment\Comment;
 use OpenSpout\Common\Entity\Style\Style;
 
-final class BooleanCell extends Cell
+final readonly class BooleanCell extends Cell
 {
-    private readonly bool $value;
+    private bool $value;
 
-    public function __construct(bool $value, ?Style $style)
-    {
+    public function __construct(
+        bool $value,
+        ?Style $style = null,
+        ?Comment $comment = null,
+    ) {
+        parent::__construct($style, $comment);
         $this->value = $value;
-        parent::__construct($style);
     }
 
     public function getValue(): bool

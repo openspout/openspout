@@ -4,40 +4,27 @@ declare(strict_types=1);
 
 namespace OpenSpout\Common\Entity\Style;
 
-final class Border
+final readonly class Border
 {
-    public const LEFT = 'left';
-    public const RIGHT = 'right';
-    public const TOP = 'top';
-    public const BOTTOM = 'bottom';
-
-    public const STYLE_NONE = 'none';
-    public const STYLE_SOLID = 'solid';
-    public const STYLE_DASHED = 'dashed';
-    public const STYLE_DOTTED = 'dotted';
-    public const STYLE_DOUBLE = 'double';
-
-    public const WIDTH_THIN = 'thin';
-    public const WIDTH_MEDIUM = 'medium';
-    public const WIDTH_THICK = 'thick';
-
-    /** @var array<string, BorderPart> */
-    private array $parts = [];
+    /** @var array<non-empty-string, BorderPart> */
+    private array $parts;
 
     public function __construct(BorderPart ...$borderParts)
     {
+        $parts = [];
         foreach ($borderParts as $borderPart) {
-            $this->parts[$borderPart->getName()] = $borderPart;
+            $parts[$borderPart->name->value] = $borderPart;
         }
+        $this->parts = $parts;
     }
 
-    public function getPart(string $name): ?BorderPart
+    public function getPart(BorderName $name): ?BorderPart
     {
-        return $this->parts[$name] ?? null;
+        return $this->parts[$name->value] ?? null;
     }
 
     /**
-     * @return array<string, BorderPart>
+     * @return array<non-empty-string, BorderPart>
      */
     public function getParts(): array
     {

@@ -103,23 +103,6 @@ class StyleRegistry extends CommonStyleRegistry
     private array $styleIdToBorderMappingTable = [];
 
     /**
-     * XLSX specific operations on the registered styles.
-     */
-    public function registerStyle(Style $style): Style
-    {
-        if ($style->isRegistered()) {
-            return $style;
-        }
-
-        $registeredStyle = parent::registerStyle($style);
-        $this->registerFill($registeredStyle);
-        $this->registerFormat($registeredStyle);
-        $this->registerBorder($registeredStyle);
-
-        return $registeredStyle;
-    }
-
-    /**
      * @return null|int Format ID associated to the given style ID
      */
     public function getFormatIdForStyleId(int $styleId): ?int
@@ -168,87 +151,87 @@ class StyleRegistry extends CommonStyleRegistry
     }
 
     /**
-     * Register a format definition.
+     * XLSX specific operations on the registered styles.
      */
-    private function registerFormat(Style $style): void
+    protected function customRegisterStyle(int $styleId, Style $style): void
     {
-        $styleId = $style->getId();
+        $this->registerFill($styleId, $style);
+        $this->registerFormat($styleId, $style);
+        $this->registerBorder($styleId, $style);
+    }
 
-        $format = $style->getFormat();
-        if (null !== $format) {
-            $isFormatRegistered = isset($this->registeredFormats[$format]);
-
-            // We need to track the already registered format definitions
-            if ($isFormatRegistered) {
-                $registeredStyleId = $this->registeredFormats[$format];
-                $registeredFormatId = $this->styleIdToFormatsMappingTable[$registeredStyleId];
-                $this->styleIdToFormatsMappingTable[$styleId] = $registeredFormatId;
-            } else {
-                $this->registeredFormats[$format] = $styleId;
-
-                $id = self::builtinNumFormatToIdMapping[$format] ?? $this->formatIndex++;
-                $this->styleIdToFormatsMappingTable[$styleId] = $id;
-            }
-        } else {
+    private function registerFormat(int $styleId, Style $style): void
+    {
+        $format = $style->format;
+        if (null === $format) {
             // The formatId maps a style to a format declaration
             // When there is no format definition - we default to 0 ( General )
             $this->styleIdToFormatsMappingTable[$styleId] = 0;
+
+            return;
+        }
+
+        $isFormatRegistered = isset($this->registeredFormats[$format]);
+
+        // We need to track the already registered format definitions
+        if ($isFormatRegistered) {
+            $registeredStyleId = $this->registeredFormats[$format];
+            $registeredFormatId = $this->styleIdToFormatsMappingTable[$registeredStyleId];
+            $this->styleIdToFormatsMappingTable[$styleId] = $registeredFormatId;
+        } else {
+            $this->registeredFormats[$format] = $styleId;
+
+            $id = self::builtinNumFormatToIdMapping[$format] ?? $this->formatIndex++;
+            $this->styleIdToFormatsMappingTable[$styleId] = $id;
         }
     }
 
-    /**
-     * Register a fill definition.
-     */
-    private function registerFill(Style $style): void
+    private function registerFill(int $styleId, Style $style): void
     {
-        $styleId = $style->getId();
-
         // Currently - only solid backgrounds are supported
         // so $backgroundColor is a scalar value (RGB Color)
-        $backgroundColor = $style->getBackgroundColor();
+        $backgroundColor = $style->backgroundColor;
 
-        if (null !== $backgroundColor) {
-            $isBackgroundColorRegistered = isset($this->registeredFills[$backgroundColor]);
-
-            // We need to track the already registered background definitions
-            if ($isBackgroundColorRegistered) {
-                $registeredStyleId = $this->registeredFills[$backgroundColor];
-                $registeredFillId = $this->styleIdToFillMappingTable[$registeredStyleId];
-                $this->styleIdToFillMappingTable[$styleId] = $registeredFillId;
-            } else {
-                $this->registeredFills[$backgroundColor] = $styleId;
-                $this->styleIdToFillMappingTable[$styleId] = $this->fillIndex++;
-            }
-        } else {
+        if (null === $backgroundColor) {
             // The fillId maps a style to a fill declaration
             // When there is no background color definition - we default to 0
             $this->styleIdToFillMappingTable[$styleId] = 0;
+
+            return;
+        }
+
+        $isBackgroundColorRegistered = isset($this->registeredFills[$backgroundColor]);
+
+        // We need to track the already registered background definitions
+        if ($isBackgroundColorRegistered) {
+            $registeredStyleId = $this->registeredFills[$backgroundColor];
+            $registeredFillId = $this->styleIdToFillMappingTable[$registeredStyleId];
+            $this->styleIdToFillMappingTable[$styleId] = $registeredFillId;
+        } else {
+            $this->registeredFills[$backgroundColor] = $styleId;
+            $this->styleIdToFillMappingTable[$styleId] = $this->fillIndex++;
         }
     }
 
-    /**
-     * Register a border definition.
-     */
-    private function registerBorder(Style $style): void
+    private function registerBorder(int $styleId, Style $style): void
     {
-        $styleId = $style->getId();
-
-        if (null !== ($border = $style->getBorder())) {
-            $serializedBorder = serialize($border);
-
-            $isBorderAlreadyRegistered = isset($this->registeredBorders[$serializedBorder]);
-
-            if ($isBorderAlreadyRegistered) {
-                $registeredStyleId = $this->registeredBorders[$serializedBorder];
-                $registeredBorderId = $this->styleIdToBorderMappingTable[$registeredStyleId];
-                $this->styleIdToBorderMappingTable[$styleId] = $registeredBorderId;
-            } else {
-                $this->registeredBorders[$serializedBorder] = $styleId;
-                $this->styleIdToBorderMappingTable[$styleId] = \count($this->registeredBorders);
-            }
-        } else {
+        if (null === ($border = $style->border)) {
             // If no border should be applied - the mapping is the default border: 0
             $this->styleIdToBorderMappingTable[$styleId] = 0;
+
+            return;
+        }
+
+        $serializedBorder = serialize($border);
+        $isBorderAlreadyRegistered = isset($this->registeredBorders[$serializedBorder]);
+
+        if ($isBorderAlreadyRegistered) {
+            $registeredStyleId = $this->registeredBorders[$serializedBorder];
+            $registeredBorderId = $this->styleIdToBorderMappingTable[$registeredStyleId];
+            $this->styleIdToBorderMappingTable[$styleId] = $registeredBorderId;
+        } else {
+            $this->registeredBorders[$serializedBorder] = $styleId;
+            $this->styleIdToBorderMappingTable[$styleId] = \count($this->registeredBorders);
         }
     }
 }

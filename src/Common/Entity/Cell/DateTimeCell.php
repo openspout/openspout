@@ -6,16 +6,20 @@ namespace OpenSpout\Common\Entity\Cell;
 
 use DateTimeInterface;
 use OpenSpout\Common\Entity\Cell;
+use OpenSpout\Common\Entity\Comment\Comment;
 use OpenSpout\Common\Entity\Style\Style;
 
-final class DateTimeCell extends Cell
+final readonly class DateTimeCell extends Cell
 {
-    private readonly DateTimeInterface $value;
+    private DateTimeInterface $value;
 
-    public function __construct(DateTimeInterface $value, ?Style $style)
-    {
+    public function __construct(
+        DateTimeInterface $value,
+        ?Style $style = null,
+        ?Comment $comment = null,
+    ) {
+        parent::__construct($style, $comment);
         $this->value = $value;
-        parent::__construct($style);
     }
 
     public function getValue(): DateTimeInterface

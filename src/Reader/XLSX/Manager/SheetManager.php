@@ -23,39 +23,39 @@ final class SheetManager
     /**
      * Paths of XML files relative to the XLSX file root.
      */
-    public const WORKBOOK_XML_RELS_FILE_PATH = 'xl/_rels/workbook.xml.rels';
-    public const WORKBOOK_XML_FILE_PATH = 'xl/workbook.xml';
+    public const string WORKBOOK_XML_RELS_FILE_PATH = 'xl/_rels/workbook.xml.rels';
+    public const string WORKBOOK_XML_FILE_PATH = 'xl/workbook.xml';
 
     /**
      * Definition of XML node names used to parse data.
      */
-    public const XML_NODE_WORKBOOK_PROPERTIES = 'workbookPr';
-    public const XML_NODE_WORKBOOK_VIEW = 'workbookView';
-    public const XML_NODE_SHEET = 'sheet';
-    public const XML_NODE_SHEETS = 'sheets';
-    public const XML_NODE_RELATIONSHIP = 'Relationship';
+    public const string XML_NODE_WORKBOOK_PROPERTIES = 'workbookPr';
+    public const string XML_NODE_WORKBOOK_VIEW = 'workbookView';
+    public const string XML_NODE_SHEET = 'sheet';
+    public const string XML_NODE_SHEETS = 'sheets';
+    public const string XML_NODE_RELATIONSHIP = 'Relationship';
 
     /**
      * Definition of XML attributes used to parse data.
      */
-    public const XML_ATTRIBUTE_DATE_1904 = 'date1904';
-    public const XML_ATTRIBUTE_ACTIVE_TAB = 'activeTab';
-    public const XML_ATTRIBUTE_R_ID = 'r:id';
-    public const XML_ATTRIBUTE_NAME = 'name';
-    public const XML_ATTRIBUTE_STATE = 'state';
-    public const XML_ATTRIBUTE_ID = 'Id';
-    public const XML_ATTRIBUTE_TARGET = 'Target';
+    public const string XML_ATTRIBUTE_DATE_1904 = 'date1904';
+    public const string XML_ATTRIBUTE_ACTIVE_TAB = 'activeTab';
+    public const string XML_ATTRIBUTE_R_ID = 'r:id';
+    public const string XML_ATTRIBUTE_NAME = 'name';
+    public const string XML_ATTRIBUTE_STATE = 'state';
+    public const string XML_ATTRIBUTE_ID = 'Id';
+    public const string XML_ATTRIBUTE_TARGET = 'Target';
 
     /**
      * State value to represent a hidden sheet.
      */
-    public const SHEET_STATE_HIDDEN = 'hidden';
-    public const SHEET_STATE_VERY_HIDDEN = 'veryHidden';
+    public const string SHEET_STATE_HIDDEN = 'hidden';
+    public const string SHEET_STATE_VERY_HIDDEN = 'veryHidden';
 
     /** @var string Path of the XLSX file being read */
     private readonly string $filePath;
 
-    private readonly Options $options;
+    private Options $options;
 
     /** @var SharedStringsManager Manages shared strings */
     private readonly SharedStringsManager $sharedStringsManager;
@@ -122,7 +122,7 @@ final class SheetManager
         // Using "filter_var($x, FILTER_VALIDATE_BOOLEAN)" here because the value of the "date1904" attribute
         // may be the string "false", that is not mapped to the boolean "false" by default...
         $shouldUse1904Dates = filter_var($xmlReader->getAttribute(self::XML_ATTRIBUTE_DATE_1904), FILTER_VALIDATE_BOOLEAN);
-        $this->options->SHOULD_USE_1904_DATES = $shouldUse1904Dates;
+        $this->options = $this->options->withShouldUse1904Dates($shouldUse1904Dates);
 
         return XMLProcessor::PROCESSING_CONTINUE;
     }

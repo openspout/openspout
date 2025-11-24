@@ -11,7 +11,7 @@ use PhpBench\Attributes as Bench;
 /**
  * @internal
  */
-final class CsvReaderBench
+final readonly class CsvReaderBench
 {
     #[Bench\OutputTimeUnit('seconds')]
     #[Bench\Assert('mode(variant.mem.peak) < 6291456')]

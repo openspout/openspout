@@ -8,14 +8,11 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
-use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Common\Exception\InvalidArgumentException;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\Escaper\ODS as ODSEscaper;
 use OpenSpout\Writer\Common\Entity\Worksheet;
 use OpenSpout\Writer\Common\Helper\CellHelper;
-use OpenSpout\Writer\Common\Manager\RegisteredStyle;
-use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
 use OpenSpout\Writer\Common\Manager\WorksheetManagerInterface;
 use OpenSpout\Writer\ODS\Manager\Style\StyleManager;
 
@@ -24,27 +21,10 @@ use OpenSpout\Writer\ODS\Manager\Style\StyleManager;
  */
 final readonly class WorksheetManager implements WorksheetManagerInterface
 {
-    /** @var ODSEscaper Strings escaper */
-    private ODSEscaper $stringsEscaper;
-
-    /** @var StyleManager Manages styles */
-    private StyleManager $styleManager;
-
-    /** @var StyleMerger Helper to merge styles together */
-    private StyleMerger $styleMerger;
-
-    /**
-     * WorksheetManager constructor.
-     */
     public function __construct(
-        StyleManager $styleManager,
-        StyleMerger $styleMerger,
-        ODSEscaper $stringsEscaper
-    ) {
-        $this->styleManager = $styleManager;
-        $this->styleMerger = $styleMerger;
-        $this->stringsEscaper = $stringsEscaper;
-    }
+        private StyleManager $styleManager,
+        private ODSEscaper $stringsEscaper
+    ) {}
 
     /**
      * Prepares the worksheet to accept data.
@@ -114,8 +94,7 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
      */
     public function addRow(Worksheet $worksheet, Row $row): void
     {
-        $cells = $row->getCells();
-        $rowStyle = $row->getStyle();
+        $cells = $row->cells;
 
         $data = '<table:table-row table:style-name="ro1">';
 
@@ -123,20 +102,16 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
         $nextCellIndex = 1;
 
         for ($i = 0; $i < $row->getNumCells(); ++$i) {
-            /** @var Cell $cell */
             $cell = $cells[$currentCellIndex];
-
-            /** @var null|Cell $nextCell */
             $nextCell = $cells[$nextCellIndex] ?? null;
 
             if (null === $nextCell || $cell->getValue() !== $nextCell->getValue()) {
-                $registeredStyle = $this->applyStyleAndRegister($cell, $rowStyle);
-                $cellStyle = $registeredStyle->getStyle();
-                if ($registeredStyle->isMatchingRowStyle()) {
-                    $rowStyle = $cellStyle; // Replace actual rowStyle (possibly with null id) by registered style (with id)
+                $styleId = 0;
+                if (null !== $cell->style) {
+                    $styleId = $this->styleManager->registerStyle($cell->style);
                 }
 
-                $data .= $this->getCellXMLWithStyle($cell, $cellStyle, $currentCellIndex, $nextCellIndex);
+                $data .= $this->getCellXMLWithStyle($cell, $styleId, $currentCellIndex, $nextCellIndex);
                 $currentCellIndex = $nextCellIndex;
             }
 
@@ -164,64 +139,17 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
     }
 
     /**
-     * Applies styles to the given style, merging the cell's style with its row's style.
-     *
-     * @throws InvalidArgumentException If a cell value's type is not supported
+     * @param non-negative-int $styleId
      */
-    private function applyStyleAndRegister(Cell $cell, Style $rowStyle): RegisteredStyle
-    {
-        $isMatchingRowStyle = false;
-        if ($cell->getStyle()->isEmpty()) {
-            $cell->setStyle($rowStyle);
-
-            $possiblyUpdatedStyle = $this->styleManager->applyExtraStylesIfNeeded($cell);
-
-            if ($possiblyUpdatedStyle->isUpdated()) {
-                $registeredStyle = $this->styleManager->registerStyle($possiblyUpdatedStyle->getStyle());
-            } else {
-                $registeredStyle = $this->styleManager->registerStyle($rowStyle);
-                $isMatchingRowStyle = true;
-            }
-        } else {
-            $mergedCellAndRowStyle = $this->styleMerger->merge($cell->getStyle(), $rowStyle);
-            $cell->setStyle($mergedCellAndRowStyle);
-
-            $possiblyUpdatedStyle = $this->styleManager->applyExtraStylesIfNeeded($cell);
-            if ($possiblyUpdatedStyle->isUpdated()) {
-                $newCellStyle = $possiblyUpdatedStyle->getStyle();
-            } else {
-                $newCellStyle = $mergedCellAndRowStyle;
-            }
-
-            $registeredStyle = $this->styleManager->registerStyle($newCellStyle);
-        }
-
-        return new RegisteredStyle($registeredStyle, $isMatchingRowStyle);
-    }
-
-    private function getCellXMLWithStyle(Cell $cell, Style $style, int $currentCellIndex, int $nextCellIndex): string
-    {
-        $styleIndex = $style->getId() + 1; // 1-based
-
+    private function getCellXMLWithStyle(
+        Cell $cell,
+        int $styleId,
+        int $currentCellIndex,
+        int $nextCellIndex,
+    ): string {
         $numTimesValueRepeated = ($nextCellIndex - $currentCellIndex);
 
-        return $this->getCellXML($cell, $styleIndex, $numTimesValueRepeated);
-    }
-
-    /**
-     * Returns the cell XML content, given its value.
-     *
-     * @param Cell $cell                  The cell to be written
-     * @param int  $styleIndex            Index of the used style
-     * @param int  $numTimesValueRepeated Number of times the value is consecutively repeated
-     *
-     * @return string The cell XML content
-     *
-     * @throws InvalidArgumentException If a cell value's type is not supported
-     */
-    private function getCellXML(Cell $cell, int $styleIndex, int $numTimesValueRepeated): string
-    {
-        $data = '<table:table-cell table:style-name="ce'.$styleIndex.'"';
+        $data = '<table:table-cell table:style-name="ce'.(1 + $styleId).'"';
 
         if (1 !== $numTimesValueRepeated) {
             $data .= ' table:number-columns-repeated="'.$numTimesValueRepeated.'"';

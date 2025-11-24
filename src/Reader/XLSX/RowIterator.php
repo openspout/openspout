@@ -194,7 +194,7 @@ final class RowIterator implements RowIteratorInterface
             if ($this->lastRowIndexProcessed !== $this->nextRowIndexToBeProcessed) {
                 // return empty row if mismatch between last processed row
                 // and the row that needs to be returned
-                $rowToBeProcessed = new Row([], null);
+                $rowToBeProcessed = new Row([]);
             }
         }
 
@@ -257,7 +257,7 @@ final class RowIterator implements RowIteratorInterface
      */
     private function readDataForNextRow(): void
     {
-        $this->currentlyProcessedRow = new Row([], null);
+        $this->currentlyProcessedRow = new Row([]);
 
         $this->xmlProcessor->readUntilStopped();
 
@@ -303,7 +303,7 @@ final class RowIterator implements RowIteratorInterface
         }
 
         $cells = array_fill(0, $numberOfColumnsForRow, Cell::fromValue(''));
-        $this->currentlyProcessedRow->setCells($cells);
+        $this->currentlyProcessedRow = $this->currentlyProcessedRow->withCells($cells);
 
         return XMLProcessor::PROCESSING_CONTINUE;
     }
@@ -322,7 +322,9 @@ final class RowIterator implements RowIteratorInterface
         \assert($node instanceof DOMElement);
         $cell = $this->cellValueFormatter->extractAndFormatNodeValue($node);
 
-        $this->currentlyProcessedRow->setCellAtIndex($cell, $currentColumnIndex);
+        $cells = $this->currentlyProcessedRow->cells;
+        $cells[$currentColumnIndex] = $cell;
+        $this->currentlyProcessedRow = $this->currentlyProcessedRow->withCells($cells);
         $this->lastColumnIndexProcessed = $currentColumnIndex;
 
         return XMLProcessor::PROCESSING_CONTINUE;
@@ -343,7 +345,7 @@ final class RowIterator implements RowIteratorInterface
 
         // If needed, we fill the empty cells
         if (0 === $this->numColumns) {
-            $this->rowManager->fillMissingIndexesWithEmptyCells($this->currentlyProcessedRow);
+            $this->currentlyProcessedRow = $this->rowManager->fillMissingIndexesWithEmptyCells($this->currentlyProcessedRow);
         }
 
         // at this point, we have all the data we need for the row

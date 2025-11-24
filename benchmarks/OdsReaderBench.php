@@ -11,7 +11,7 @@ use PhpBench\Attributes as Bench;
 /**
  * @internal
  */
-final class OdsReaderBench
+final readonly class OdsReaderBench
 {
     #[Bench\OutputTimeUnit('seconds')]
     #[Bench\Assert('mode(variant.mem.peak) < 6291456')]

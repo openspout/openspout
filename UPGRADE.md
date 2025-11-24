@@ -1,5 +1,18 @@
 # Upgrade guide
 
+## Upgrading from 4.x to 5.0
+
+It has been discovered that the operation of merging a cell's Style with a defined default row Style was very expensive:
+when writing tens of thousand row with hundreds of column, each with a different style and a custom default row style,
+just the style merging operation could take up to 80% of the overall spreadsheet creation.
+In v5 therefore you can have either a fallback row style when a Cell has none, or a custom style for the Cell.
+If you want for example zebra striping over a column of custom formatted cells, now you have to have 2 distinct
+styles and apply them manually in alternation to even and odd cells.
+
+Moreover, to ensure deterministic outcomes, most of the classes you are dealing with are `readonly` now, so
+their properties can only be set once on the constructor, or with `with***` methods that return a new instance
+of the object with just the new property overwritten.
+
 ## Upgrading from 3.x to 4.0
 
 Beginning with v4, only actively supported [PHP version](https://www.php.net/supported-versions.php) will be supported.
@@ -102,7 +115,7 @@ foreach ($reader->getSheetIterator() as $sheet) {
     foreach ($sheet->getRowIterator() as $row) { // $row is a "Row" object, not an array
         $rowAsArray = $row->toArray();  // this is the 2.x equivalent
         // OR
-        $cellsArray = $row->getCells(); // this can be used to get access to cells' details
+        $cellsArray = $row->cells;// this can be used to get access to cells' details
         ... 
     }
 }

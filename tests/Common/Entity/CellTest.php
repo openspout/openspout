@@ -14,6 +14,7 @@ use OpenSpout\Common\Entity\Cell\ErrorCell;
 use OpenSpout\Common\Entity\Cell\FormulaCell;
 use OpenSpout\Common\Entity\Cell\NumericCell;
 use OpenSpout\Common\Entity\Cell\StringCell;
+use OpenSpout\Common\Entity\Style\Style;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -70,5 +71,28 @@ final class CellTest extends TestCase
         $cell = new ErrorCell('#DIV/0', null);
         self::assertNull($cell->getValue());
         self::assertSame('#DIV/0', $cell->getRawValue());
+    }
+
+    public function testApplyExtraStylesIfNeededShouldApplyWrapTextIfCellContainsNewLine(): void
+    {
+        $cell = Cell::fromValue("multi\nlines");
+
+        self::assertTrue($cell->style->shouldWrapText);
+    }
+
+    public function testApplyExtraStylesIfNeededShouldReturnNullIfWrapTextNotNeeded(): void
+    {
+        $cell = Cell::fromValue('oneline');
+
+        self::assertNull($cell->style?->shouldWrapText);
+    }
+
+    public function testApplyExtraStylesIfNeededShouldReturnNullIfWrapTextAlreadyApplied(): void
+    {
+        $style = new Style(shouldWrapText: true);
+
+        $cell = Cell::fromValue("multi\nlines", $style);
+
+        self::assertTrue($cell->style->shouldWrapText);
     }
 }

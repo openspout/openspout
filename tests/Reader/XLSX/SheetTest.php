@@ -42,8 +42,7 @@ final class SheetTest extends TestCase
     public function testReaderSheetIteratorKeyMethodShouldReturnFirstKey(): void
     {
         $resourcePath = TestUsingResource::getResourcePath('two_sheets_with_custom_names_and_custom_active_tab.xlsx');
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $reader = new Reader($options);
         $reader->open($resourcePath);
 
@@ -86,9 +85,10 @@ final class SheetTest extends TestCase
     private function openFileAndReturnSheets(string $fileName, bool $withMergedCells = false): array
     {
         $resourcePath = TestUsingResource::getResourcePath($fileName);
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
-        $options->SHOULD_LOAD_MERGE_CELLS = $withMergedCells;
+        $options = new Options(
+            SHOULD_LOAD_MERGE_CELLS: $withMergedCells,
+            tempFolder: (new TestUsingResource())->getTempFolderPath(),
+        );
         $reader = new Reader($options);
         $reader->open($resourcePath);
 

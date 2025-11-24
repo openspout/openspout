@@ -11,11 +11,11 @@ use OpenSpout\Reader\Wrapper\XMLReader;
 
 final class SheetHeaderReader
 {
-    public const XML_NODE_COL = 'col';
-    public const XML_NODE_SHEETDATA = 'sheetData';
-    public const XML_ATTRIBUTE_MIN = 'min';
-    public const XML_ATTRIBUTE_MAX = 'max';
-    public const XML_ATTRIBUTE_WIDTH = 'width';
+    public const string XML_NODE_COL = 'col';
+    public const string XML_NODE_SHEETDATA = 'sheetData';
+    public const string XML_ATTRIBUTE_MIN = 'min';
+    public const string XML_ATTRIBUTE_MAX = 'max';
+    public const string XML_ATTRIBUTE_WIDTH = 'width';
 
     /** @var string Path of the XLSX file being read */
     private readonly string $filePath;

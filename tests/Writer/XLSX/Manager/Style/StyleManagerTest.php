@@ -59,7 +59,7 @@ final class StyleManagerTest extends TestCase
     {
         $registry = new StyleRegistry(new Style());
 
-        $registry->registerStyle((new Style())->setId(1)->setFormat('"€"* #,##0.00_-'));
+        $registry->registerStyle(new Style(format: '"€"* #,##0.00_-'));
 
         $styleManager = new StyleManager($registry, new XLSXEscaper());
         $output = $styleManager->getStylesXMLFileContent();

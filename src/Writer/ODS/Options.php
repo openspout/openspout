@@ -6,4 +6,4 @@ namespace OpenSpout\Writer\ODS;
 
 use OpenSpout\Writer\Common\AbstractOptions;
 
-final class Options extends AbstractOptions {}
+final readonly class Options extends AbstractOptions {}

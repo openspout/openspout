@@ -7,16 +7,18 @@ namespace OpenSpout\Common\Entity\Cell;
 use DateInterval;
 use DateTimeImmutable;
 use OpenSpout\Common\Entity\Cell;
+use OpenSpout\Common\Entity\Comment\Comment;
 use OpenSpout\Common\Entity\Style\Style;
 
-final class FormulaCell extends Cell
+final readonly class FormulaCell extends Cell
 {
     public function __construct(
-        private readonly string $value,
-        ?Style $style,
-        private readonly bool|DateInterval|DateTimeImmutable|float|int|string|null $computedValue = null,
+        private string $value,
+        private bool|DateInterval|DateTimeImmutable|float|int|string|null $computedValue = null,
+        ?Style $style = null,
+        ?Comment $comment = null,
     ) {
-        parent::__construct($style);
+        parent::__construct($style, $comment);
     }
 
     public function getValue(): string

@@ -4,44 +4,34 @@ declare(strict_types=1);
 
 namespace OpenSpout\Common\Entity\Comment;
 
+use InvalidArgumentException;
+
 /**
  * This class defines a comment that can be added to a cell.
  */
-final class Comment
+final readonly class Comment
 {
-    /** Comment height (CSS style, i.e. XXpx or YYpt). */
-    public string $height = '55.5pt';
-
-    /** Comment width (CSS style, i.e. XXpx or YYpt). */
-    public string $width = '96pt';
-
-    /** Left margin (CSS style, i.e. XXpx or YYpt). */
-    public string $marginLeft = '59.25pt';
-
-    /** Top margin (CSS style, i.e. XXpx or YYpt). */
-    public string $marginTop = '1.5pt';
-
-    /** Visible. */
-    public bool $visible = false;
-
-    /** Comment fill color. */
-    public string $fillColor = '#FFFFE1';
-
-    /** @var TextRun[] */
-    private array $textRuns = [];
-
-    public function addTextRun(?TextRun $textRun): void
-    {
-        $this->textRuns[] = $textRun;
-    }
-
     /**
-     * The TextRuns for this comment.
-     *
-     * @return TextRun[]
+     * @param list<TextRun> $textRuns
      */
-    public function getTextRuns(): array
-    {
-        return $this->textRuns;
+    public function __construct(
+        public string $height = '55.5pt',
+        public string $width = '96pt',
+        public string $marginLeft = '59.25pt',
+        public string $marginTop = '1.5pt',
+        public bool $visible = false,
+        public string $fillColor = '#FFFFE1',
+        public array $textRuns = [],
+    ) {
+        foreach ($this->textRuns as $index => $textRun) {
+            if (!$textRun instanceof TextRun) {
+                throw new InvalidArgumentException(\sprintf(
+                    'TextRuns must be instance of %s, %s provided at index %s',
+                    TextRun::class,
+                    get_debug_type($textRun),
+                    $index
+                ));
+            }
+        }
     }
 }

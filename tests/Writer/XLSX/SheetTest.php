@@ -9,7 +9,6 @@ use OpenSpout\TestUsingResource;
 use OpenSpout\Writer\Common\Entity\Sheet;
 use OpenSpout\Writer\Exception\InvalidSheetNameException;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
-use OpenSpout\Writer\RowCreationHelper;
 use OpenSpout\Writer\XLSX\Entity\SheetView;
 use PHPUnit\Framework\TestCase;
 
@@ -18,8 +17,6 @@ use PHPUnit\Framework\TestCase;
  */
 final class SheetTest extends TestCase
 {
-    use RowCreationHelper;
-
     public function testGetSheetIndex(): void
     {
         $sheets = $this->writeDataToMultipleSheetsAndReturnSheets('test_get_sheet_index.xlsx');
@@ -54,8 +51,7 @@ final class SheetTest extends TestCase
         $fileName = 'test_set_name_with_non_unique_name.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
 
@@ -84,8 +80,7 @@ final class SheetTest extends TestCase
 
     public function testThrowsIfWorkbookIsNotInitialized(): void
     {
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $this->expectException(WriterNotOpenedException::class);
 
@@ -97,10 +92,11 @@ final class SheetTest extends TestCase
         $fileName = 'test_writes_default_cell_sizes_if_set.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
-        $options->DEFAULT_COLUMN_WIDTH = 10.0;
-        $options->DEFAULT_ROW_HEIGHT = 20.0;
+        $options = new Options(
+            DEFAULT_COLUMN_WIDTH: 10.0,
+            DEFAULT_ROW_HEIGHT: 20.0,
+            tempFolder: (new TestUsingResource())->getTempFolderPath(),
+        );
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12']));
@@ -121,9 +117,10 @@ final class SheetTest extends TestCase
         $fileName = 'test_writes_default_required_row_height_if_omitted.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
-        $options->DEFAULT_COLUMN_WIDTH = 10.0;
+        $options = new Options(
+            DEFAULT_COLUMN_WIDTH: 10.0,
+            tempFolder: (new TestUsingResource())->getTempFolderPath(),
+        );
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
 
@@ -144,8 +141,7 @@ final class SheetTest extends TestCase
         $fileName = 'test_column_widths.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12']));
@@ -165,8 +161,7 @@ final class SheetTest extends TestCase
         $fileName = 'test_multiple_column_widths.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12', 'xlsx--13']));
@@ -186,8 +181,7 @@ final class SheetTest extends TestCase
         $fileName = 'test_multiple_column_widths_in_ranges.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12', 'xlsx--13', 'xlsx--14', 'xlsx--15', 'xlsx--16']));
@@ -212,8 +206,7 @@ final class SheetTest extends TestCase
         $fileName = 'test_column_widths_as_ranges.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12', 'xlsx--13']));
@@ -233,8 +226,7 @@ final class SheetTest extends TestCase
         $fileName = 'test_column_widths.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12']));
@@ -255,8 +247,7 @@ final class SheetTest extends TestCase
         $fileName = 'test_multiple_column_widths.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12', 'xlsx--13']));
@@ -277,8 +268,7 @@ final class SheetTest extends TestCase
         $fileName = 'test_multiple_column_widths_in_ranges.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12', 'xlsx--13', 'xlsx--14', 'xlsx--15', 'xlsx--16']));
@@ -304,8 +294,7 @@ final class SheetTest extends TestCase
         $fileName = 'test_column_widths_as_ranges.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12', 'xlsx--13']));
@@ -326,8 +315,7 @@ final class SheetTest extends TestCase
         $fileName = 'test_column_widths.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->addRow(Row::fromValues(['xlsx--11', 'xlsx--12']));
@@ -349,8 +337,7 @@ final class SheetTest extends TestCase
         $fileName = 'test_multiple_column_widths.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $options->setColumnWidth(50.0, 1, 2, 3);
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
@@ -372,8 +359,7 @@ final class SheetTest extends TestCase
         $fileName = 'test_formula.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->addRow(Row::fromValues([1]));
@@ -393,30 +379,30 @@ final class SheetTest extends TestCase
         $fileName = 'test_sheetview_properties.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
 
         $writer->getCurrentSheet()->setSheetView(
-            (new SheetView())
-                ->setShowFormulas(true)
-                ->setShowGridLines(false)
-                ->setShowRowColHeaders(false)
-                ->setShowZeros(false)
-                ->setRightToLeft(false)
-                ->setTabSelected(false)
-                ->setShowOutlineSymbols(false)
-                ->setDefaultGridColor(false)
-                ->setView('normal')
-                ->setTopLeftCell('A2')
-                ->setColorId(1)
-                ->setZoomScale(50)
-                ->setZoomScaleNormal(70)
-                ->setZoomScalePageLayoutView(80)
-                ->setWorkbookViewId(90)
-                ->setFreezeColumn('B')
-                ->setFreezeRow(2)
+            new SheetView(
+                showFormulas: true,
+                showGridLines: false,
+                showRowColHeaders: false,
+                showZeros: false,
+                rightToLeft: false,
+                tabSelected: false,
+                showOutlineSymbols: false,
+                defaultGridColor: false,
+                view: 'normal',
+                topLeftCell: 'A2',
+                colorId: 1,
+                zoomScale: 50,
+                zoomScaleNormal: 70,
+                zoomScalePageLayoutView: 80,
+                workbookViewId: 90,
+                freezeRow: 2,
+                freezeColumn: 'B',
+            )
         );
 
         $writer->addRow(Row::fromValues([1]));
@@ -436,8 +422,7 @@ final class SheetTest extends TestCase
     {
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
 
@@ -457,8 +442,7 @@ final class SheetTest extends TestCase
     {
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
 
@@ -475,8 +459,7 @@ final class SheetTest extends TestCase
     {
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
 

@@ -8,7 +8,10 @@ use DOMElement;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\Border;
+use OpenSpout\Common\Entity\Style\BorderName;
 use OpenSpout\Common\Entity\Style\BorderPart;
+use OpenSpout\Common\Entity\Style\BorderStyle;
+use OpenSpout\Common\Entity\Style\BorderWidth;
 use OpenSpout\Common\Entity\Style\CellAlignment;
 use OpenSpout\Common\Entity\Style\CellVerticalAlignment;
 use OpenSpout\Common\Entity\Style\Color;
@@ -17,7 +20,6 @@ use OpenSpout\Reader\Wrapper\XMLReader;
 use OpenSpout\TestUsingResource;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
 use OpenSpout\Writer\ODS\Helper\BorderHelper;
-use OpenSpout\Writer\RowCreationHelper;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -25,55 +27,44 @@ use PHPUnit\Framework\TestCase;
  */
 final class WriterWithStyleTest extends TestCase
 {
-    use RowCreationHelper;
-
-    private Style $defaultStyle;
-
-    protected function setUp(): void
-    {
-        $this->defaultStyle = (new Style());
-    }
-
     public function testAddRowShouldThrowExceptionIfCallAddRowBeforeOpeningWriter(): void
     {
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $this->expectException(WriterNotOpenedException::class);
 
-        $writer->addRow(Row::fromValues(['ods--11', 'ods--12'], $this->defaultStyle));
+        $writer->addRow(Row::fromValues(['ods--11', 'ods--12']));
     }
 
     public function testAddRowShouldThrowExceptionIfCalledBeforeOpeningWriter(): void
     {
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $this->expectException(WriterNotOpenedException::class);
 
-        $writer->addRow(Row::fromValues(['ods--11', 'ods--12'], $this->defaultStyle));
+        $writer->addRow(Row::fromValues(['ods--11', 'ods--12']));
     }
 
     public function testAddRowShouldListAllUsedStylesInCreatedContentXmlFile(): void
     {
         $fileName = 'test_add_row_should_list_all_used_fonts.ods';
 
-        $style = (new Style())
-            ->setFontBold()
-            ->setFontItalic()
-            ->setFontUnderline()
-            ->setFontStrikethrough()
-        ;
-        $style2 = (new Style())
-            ->setFontSize(15)
-            ->setFontColor(Color::RED)
-            ->setFontName('Cambria')
-            ->setBackgroundColor(Color::GREEN)
-        ;
+        $style = new Style(
+            fontBold: true,
+            fontItalic: true,
+            fontUnderline: true,
+            fontStrikethrough: true,
+        );
+        $style2 = new Style(
+            fontSize: 15,
+            fontColor: Color::RED,
+            fontName: 'Cambria',
+            backgroundColor: Color::GREEN,
+        );
 
         $dataRows = [
-            Row::fromValues(['ods--11', 'ods--12'], $style),
-            Row::fromValues(['ods--21', 'ods--22'], $style2),
+            Row::fromValuesWithStyles(['ods--11', 'ods--12'], [$style, $style]),
+            Row::fromValuesWithStyles(['ods--21', 'ods--22'], [$style2, $style2]),
         ];
 
         $this->writeToODSFile($dataRows, $fileName);
@@ -101,7 +92,7 @@ final class WriterWithStyleTest extends TestCase
     public function testAddRowShouldWriteDefaultStyleSettings(): void
     {
         $fileName = 'test_add_row_should_write_default_style_settings.ods';
-        $dataRow = Row::fromValues(['ods--11', 'ods--12'], $this->defaultStyle);
+        $dataRow = Row::fromValues(['ods--11', 'ods--12']);
 
         $this->writeToODSFile([$dataRow], $fileName);
 
@@ -115,11 +106,11 @@ final class WriterWithStyleTest extends TestCase
     {
         $fileName = 'test_add_row_should_apply_style_to_cells.ods';
 
-        $style = (new Style())->setFontBold();
-        $style2 = (new Style())->setFontSize(15);
+        $style = new Style(fontBold: true);
+        $style2 = new Style(fontSize: 15);
         $dataRows = [
-            Row::fromValues(['ods--11'], $style),
-            Row::fromValues(['ods--21'], $style2),
+            Row::fromValuesWithStyles(['ods--11'], [$style]),
+            Row::fromValuesWithStyles(['ods--21'], [$style2]),
             Row::fromValues(['ods--31']),
         ];
 
@@ -137,11 +128,11 @@ final class WriterWithStyleTest extends TestCase
     {
         $fileName = 'test_add_row_should_reuse_duplicate_styles.ods';
 
-        $style = (new Style())->setFontBold();
-        $dataRows = $this->createStyledRowsFromValues([
-            ['ods--11'],
-            ['ods--21'],
-        ], $style);
+        $style = new Style(fontBold: true);
+        $dataRows = [
+            Row::fromValuesWithStyles(['ods--11'], [$style]),
+            Row::fromValuesWithStyles(['ods--21'], [$style]),
+        ];
 
         $this->writeToODSFile($dataRows, $fileName);
 
@@ -156,10 +147,10 @@ final class WriterWithStyleTest extends TestCase
     {
         $fileName = 'test_add_row_should_add_wrap_text_alignment.ods';
 
-        $style = (new Style())->setShouldWrapText();
-        $dataRows = $this->createStyledRowsFromValues([
-            ['ods--11', 'ods--12'],
-        ], $style);
+        $style = new Style(shouldWrapText: true);
+        $dataRows = [
+            Row::fromValuesWithStyles(['ods--11', 'ods--12'], [$style, $style]),
+        ];
 
         $this->writeToODSFile($dataRows, $fileName);
 
@@ -174,10 +165,10 @@ final class WriterWithStyleTest extends TestCase
     {
         $fileName = 'test_add_row_should_add_negated_wrap_text_alignment.ods';
 
-        $style = (new Style())->setShouldWrapText(false);
-        $dataRows = $this->createStyledRowsFromValues([
-            ['ods--11', 'ods--12'],
-        ], $style);
+        $style = new Style(shouldWrapText: false);
+        $dataRows = [
+            Row::fromValuesWithStyles(['ods--11', 'ods--12'], [$style, $style]),
+        ];
 
         $this->writeToODSFile($dataRows, $fileName);
 
@@ -191,9 +182,9 @@ final class WriterWithStyleTest extends TestCase
     public function testAddRowShouldApplyWrapTextIfCellContainsNewLine(): void
     {
         $fileName = 'test_add_row_should_apply_wrap_text_if_new_lines.ods';
-        $dataRows = $this->createStyledRowsFromValues([
-            ["ods--11\nods--11"],
-        ], $this->defaultStyle);
+        $dataRows = [
+            Row::fromValues(["ods--11\nods--11"]),
+        ];
 
         $this->writeToODSFile($dataRows, $fileName);
 
@@ -209,10 +200,10 @@ final class WriterWithStyleTest extends TestCase
         $fileName = 'test_add_row_should_apply_cell_alignment.xlsx';
 
         $dataRows = [];
-        $rightAlignedStyle = (new Style())->setCellAlignment(CellAlignment::RIGHT);
-        $dataRows[] = Row::fromValues(['ods--11'], $rightAlignedStyle);
-        $leftAlignedStyle = (new Style())->setCellAlignment(CellAlignment::LEFT);
-        $dataRows[] = Row::fromValues(['ods--12'], $leftAlignedStyle);
+        $rightAlignedStyle = new Style(cellAlignment: CellAlignment::RIGHT);
+        $dataRows[] = Row::fromValuesWithStyles(['ods--11'], [$rightAlignedStyle]);
+        $leftAlignedStyle = new Style(cellAlignment: CellAlignment::LEFT);
+        $dataRows[] = Row::fromValuesWithStyles(['ods--12'], [$leftAlignedStyle]);
 
         $this->writeToODSFile($dataRows, $fileName);
 
@@ -228,10 +219,10 @@ final class WriterWithStyleTest extends TestCase
         $fileName = 'test_add_row_should_apply_cell_alignment.xlsx';
 
         $dataRows = [];
-        $rightAlignedStyle = (new Style())->setCellVerticalAlignment(CellVerticalAlignment::BASELINE);
-        $dataRows[] = Row::fromValues(['ods--11'], $rightAlignedStyle);
-        $leftAlignedStyle = (new Style())->setCellVerticalAlignment(CellVerticalAlignment::CENTER);
-        $dataRows[] = Row::fromValues(['ods--12'], $leftAlignedStyle);
+        $rightAlignedStyle = new Style(cellVerticalAlignment: CellVerticalAlignment::BASELINE);
+        $dataRows[] = Row::fromValuesWithStyles(['ods--11'], [$rightAlignedStyle]);
+        $leftAlignedStyle = new Style(cellVerticalAlignment: CellVerticalAlignment::CENTER);
+        $dataRows[] = Row::fromValuesWithStyles(['ods--12'], [$leftAlignedStyle]);
 
         $this->writeToODSFile($dataRows, $fileName);
 
@@ -246,8 +237,8 @@ final class WriterWithStyleTest extends TestCase
     {
         $fileName = 'test_add_row_should_support_cell_styling.ods';
 
-        $boldStyle = (new Style())->setFontBold();
-        $underlineStyle = (new Style())->setFontUnderline();
+        $boldStyle = new Style(fontBold: true);
+        $underlineStyle = new Style(fontUnderline: true);
 
         $dataRow = new Row([
             Cell::fromValue('ods--11', $boldStyle),
@@ -269,10 +260,10 @@ final class WriterWithStyleTest extends TestCase
     {
         $fileName = 'test_default_background_style.ods';
 
-        $style = (new Style())->setBackgroundColor(Color::WHITE);
-        $dataRows = $this->createStyledRowsFromValues([
-            ['defaultBgColor'],
-        ], $style);
+        $style = new Style(backgroundColor: Color::WHITE);
+        $dataRows = [
+            Row::fromValuesWithStyles(['defaultBgColor'], [$style]),
+        ];
 
         $this->writeToODSFile($dataRows, $fileName);
 
@@ -287,29 +278,29 @@ final class WriterWithStyleTest extends TestCase
     {
         $fileName = 'test_borders.ods';
 
-        $borderBottomGreenThickSolid = new Border(new BorderPart(Border::BOTTOM, Color::GREEN, Border::WIDTH_THICK, Border::STYLE_SOLID));
-        $borderTopRedThinDashed = new Border(new BorderPart(Border::TOP, Color::RED, Border::WIDTH_THIN, Border::STYLE_DASHED));
-        $borderLeft = new Border(new BorderPart(Border::LEFT, Color::BLACK, Border::WIDTH_MEDIUM, Border::STYLE_NONE));
+        $borderBottomGreenThickSolid = new Border(new BorderPart(BorderName::BOTTOM, Color::GREEN, BorderWidth::THICK, BorderStyle::SOLID));
+        $borderTopRedThinDashed = new Border(new BorderPart(BorderName::TOP, Color::RED, BorderWidth::THIN, BorderStyle::DASHED));
+        $borderLeft = new Border(new BorderPart(BorderName::LEFT, Color::BLACK, BorderWidth::MEDIUM, BorderStyle::NONE));
 
         $styles = [
-            (new Style())->setBorder($borderBottomGreenThickSolid),
+            new Style(border: $borderBottomGreenThickSolid),
             new Style(),
-            (new Style())->setBorder($borderTopRedThinDashed),
-            (new Style())->setBorder($borderLeft),
+            new Style(border: $borderTopRedThinDashed),
+            new Style(border: $borderLeft),
         ];
 
         $dataRows = [
-            Row::fromValues(['row-with-border-bottom-green-thick-solid'], $styles[0]),
-            Row::fromValues(['row-without-border'], $styles[1]),
-            Row::fromValues(['row-with-border-top-red-thin-dashed'], $styles[2]),
-            Row::fromValues(['row-with-border-left'], $styles[3]),
+            Row::fromValuesWithStyles(['row-with-border-bottom-green-thick-solid'], [$styles[0]]),
+            Row::fromValuesWithStyles(['row-without-border'], [$styles[1]]),
+            Row::fromValuesWithStyles(['row-with-border-top-red-thin-dashed'], [$styles[2]]),
+            Row::fromValuesWithStyles(['row-with-border-left'], [$styles[3]]),
         ];
 
         $this->writeToODSFile($dataRows, $fileName);
 
         $styleElements = $this->getCellStyleElementsFromContentXmlFile($fileName);
 
-        self::assertCount(4, $styleElements);
+        self::assertCount(5, $styleElements);
 
         // Use reflection for protected members here
         $widthMap = BorderHelper::widthMap;
@@ -317,8 +308,8 @@ final class WriterWithStyleTest extends TestCase
 
         $expectedFirst = \sprintf(
             '%s %s #%s',
-            $widthMap[Border::WIDTH_THICK],
-            $styleMap[Border::STYLE_SOLID],
+            $widthMap[BorderWidth::THICK->name],
+            $styleMap[BorderStyle::SOLID->name],
             Color::GREEN
         );
 
@@ -332,12 +323,12 @@ final class WriterWithStyleTest extends TestCase
 
         $expectedThird = \sprintf(
             '%s %s #%s',
-            $widthMap[Border::WIDTH_THIN],
-            $styleMap[Border::STYLE_DASHED],
+            $widthMap[BorderWidth::THIN->name],
+            $styleMap[BorderStyle::DASHED->name],
             Color::RED
         );
 
-        $actualThird = $styleElements[2]
+        $actualThird = $styleElements[3]
             ->getElementsByTagName('table-cell-properties')
             ->item(0)
             ->getAttribute('fo:border-top')
@@ -350,12 +341,12 @@ final class WriterWithStyleTest extends TestCase
     {
         $fileName = 'test_set_default_row_style.ods';
 
-        $dataRows = $this->createRowsFromValues([
-            ['ods--11'],
-        ]);
+        $dataRows = [
+            Row::fromValues(['ods--11']),
+        ];
 
         $defaultFontSize = 50;
-        $defaultStyle = (new Style())->setFontSize($defaultFontSize);
+        $defaultStyle = new Style(fontSize: $defaultFontSize);
 
         $this->writeToODSFileWithDefaultStyle($dataRows, $fileName, $defaultStyle);
 
@@ -370,8 +361,7 @@ final class WriterWithStyleTest extends TestCase
     {
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
 
         $writer->openToFile($resourcePath);
@@ -388,9 +378,10 @@ final class WriterWithStyleTest extends TestCase
     {
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
-        $options->DEFAULT_ROW_STYLE = $defaultStyle;
+        $options = new Options(
+            FALLBACK_STYLE: $defaultStyle,
+            tempFolder: (new TestUsingResource())->getTempFolderPath(),
+        );
         $writer = new Writer($options);
 
         $writer->openToFile($resourcePath);

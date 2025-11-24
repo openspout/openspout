@@ -11,18 +11,18 @@ use OpenSpout\Common\Helper\Escaper;
  */
 final class SharedStringsManager
 {
-    public const SHARED_STRINGS_FILE_NAME = 'sharedStrings.xml';
+    public const string SHARED_STRINGS_FILE_NAME = 'sharedStrings.xml';
 
-    public const SHARED_STRINGS_XML_FILE_FIRST_PART_HEADER = <<<'EOD'
+    public const string SHARED_STRINGS_XML_FILE_FIRST_PART_HEADER = <<<'EOD'
         <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
         <sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
         EOD;
 
     /**
-     * This number must be really big so that the no generated file will have more strings than that.
+     * This number must be huge so that the no generated file will have more strings than that.
      * If the strings number goes above, characters will be overwritten in an unwanted way and will corrupt the file.
      */
-    public const DEFAULT_STRINGS_COUNT_PART = 'count="9999999999999" uniqueCount="9999999999999"';
+    public const string DEFAULT_STRINGS_COUNT_PART = 'count="9999999999999" uniqueCount="9999999999999"';
 
     /** @var resource Pointer to the sharedStrings.xml file */
     private $sharedStringsFilePointer;

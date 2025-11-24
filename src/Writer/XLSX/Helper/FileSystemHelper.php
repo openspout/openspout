@@ -23,22 +23,22 @@ use OpenSpout\Writer\XLSX\Properties;
  */
 final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 {
-    public const RELS_FOLDER_NAME = '_rels';
-    public const DRAWINGS_FOLDER_NAME = 'drawings';
-    public const DOC_PROPS_FOLDER_NAME = 'docProps';
-    public const XL_FOLDER_NAME = 'xl';
-    public const WORKSHEETS_FOLDER_NAME = 'worksheets';
+    public const string RELS_FOLDER_NAME = '_rels';
+    public const string DRAWINGS_FOLDER_NAME = 'drawings';
+    public const string DOC_PROPS_FOLDER_NAME = 'docProps';
+    public const string XL_FOLDER_NAME = 'xl';
+    public const string WORKSHEETS_FOLDER_NAME = 'worksheets';
 
-    public const RELS_FILE_NAME = '.rels';
-    public const APP_XML_FILE_NAME = 'app.xml';
-    public const CORE_XML_FILE_NAME = 'core.xml';
-    public const CUSTOM_XML_FILE_NAME = 'custom.xml';
-    public const CONTENT_TYPES_XML_FILE_NAME = '[Content_Types].xml';
-    public const WORKBOOK_XML_FILE_NAME = 'workbook.xml';
-    public const WORKBOOK_RELS_XML_FILE_NAME = 'workbook.xml.rels';
-    public const STYLES_XML_FILE_NAME = 'styles.xml';
+    public const string RELS_FILE_NAME = '.rels';
+    public const string APP_XML_FILE_NAME = 'app.xml';
+    public const string CORE_XML_FILE_NAME = 'core.xml';
+    public const string CUSTOM_XML_FILE_NAME = 'custom.xml';
+    public const string CONTENT_TYPES_XML_FILE_NAME = '[Content_Types].xml';
+    public const string WORKBOOK_XML_FILE_NAME = 'workbook.xml';
+    public const string WORKBOOK_RELS_XML_FILE_NAME = 'workbook.xml.rels';
+    public const string STYLES_XML_FILE_NAME = 'styles.xml';
 
-    private const SHEET_XML_FILE_HEADER = <<<'EOD'
+    private const string SHEET_XML_FILE_HEADER = <<<'EOD'
         <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
         <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
         EOD;
@@ -203,8 +203,8 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
             EOD;
 
-        if (null !== $options->getWorkbookProtection()) {
-            $workbookXmlFileContents .= $options->getWorkbookProtection()->getXml();
+        if (null !== $options->workbookProtection) {
+            $workbookXmlFileContents .= $options->workbookProtection->getXml();
         }
 
         $workbookXmlFileContents .= <<<'EOD'
@@ -329,7 +329,6 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     public function createContentFiles(Options $options, array $worksheets): self
     {
         $allMergeCells = $options->getMergeCells();
-        $pageSetup = $options->getPageSetup();
         foreach ($worksheets as $worksheet) {
             $contentXmlFilePath = $this->getXlWorksheetsFolder().\DIRECTORY_SEPARATOR.basename($worksheet->getFilePath());
             $worksheetFilePointer = fopen($contentXmlFilePath, 'w');
@@ -340,12 +339,12 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 
             // AutoFilter tags
             if (null !== $autofilter = $sheet->getAutoFilter()) {
-                if (isset($pageSetup) && $pageSetup->fitToPage) {
+                if ($options->pageSetup?->fitToPage) {
                     fwrite($worksheetFilePointer, '<sheetPr filterMode="false"><pageSetUpPr fitToPage="true"/></sheetPr>');
                 } else {
                     fwrite($worksheetFilePointer, '<sheetPr filterMode="false"><pageSetUpPr fitToPage="false"/></sheetPr>');
                 }
-            } elseif (isset($pageSetup) && $pageSetup->fitToPage) {
+            } elseif ($options->pageSetup?->fitToPage) {
                 fwrite($worksheetFilePointer, '<sheetPr><pageSetUpPr fitToPage="true"/></sheetPr>');
             }
             $sheetRange = \sprintf(
@@ -459,7 +458,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
      */
     private function getXMLFragmentForPageMargin($targetResource, Options $options): void
     {
-        $pageMargin = $options->getPageMargin();
+        $pageMargin = $options->pageMargin;
         if (null === $pageMargin) {
             return;
         }
@@ -472,7 +471,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
      */
     private function getXMLFragmentForHeaderFooter($targetResource, Options $options): void
     {
-        $headerFooter = $options->getHeaderFooter();
+        $headerFooter = $options->headerFooter;
         if (null === $headerFooter) {
             return;
         }
@@ -513,7 +512,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
      */
     private function getXMLFragmentForPageSetup($targetResource, Options $options): void
     {
-        $pageSetup = $options->getPageSetup();
+        $pageSetup = $options->pageSetup;
         if (null === $pageSetup) {
             return;
         }

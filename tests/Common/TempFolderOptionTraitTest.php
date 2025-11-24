@@ -12,22 +12,10 @@ use PHPUnit\Framework\TestCase;
  */
 final class TempFolderOptionTraitTest extends TestCase
 {
-    public function testTempFolderDefaultsToSysTmp(): void
-    {
-        $options = new class {
-            use TempFolderOptionTrait;
-        };
-
-        self::assertSame(sys_get_temp_dir(), $options->getTempFolder());
-    }
-
     public function testTempFolderMustBeWritable(): void
     {
-        $options = new class {
-            use TempFolderOptionTrait;
-        };
         $this->expectException(InvalidArgumentException::class);
 
-        $options->setTempFolder(uniqid(__DIR__));
+        (new TempFolderCheck())->assertTempFolder(uniqid(__DIR__));
     }
 }

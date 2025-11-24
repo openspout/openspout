@@ -11,7 +11,6 @@ use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\EncodingHelper;
 use OpenSpout\TestUsingResource;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
-use OpenSpout\Writer\RowCreationHelper;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -19,8 +18,6 @@ use PHPUnit\Framework\TestCase;
  */
 final class WriterTest extends TestCase
 {
-    use RowCreationHelper;
-
     public function testWriteShouldThrowExceptionIfCannotOpenFileForWriting(): void
     {
         $fileName = 'file_that_wont_be_written.csv';
@@ -64,9 +61,9 @@ final class WriterTest extends TestCase
 
     public function testWriteShouldAddUtf8Bom(): void
     {
-        $allRows = $this->createRowsFromValues([
-            ['csv--11', 'csv--12'],
-        ]);
+        $allRows = [
+            Row::fromValues(['csv--11', 'csv--12']),
+        ];
         $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_utf8_bom.csv');
 
         self::assertStringStartsWith(EncodingHelper::BOM_UTF8, $writtenContent, 'The CSV file should contain a UTF-8 BOM');
@@ -74,13 +71,14 @@ final class WriterTest extends TestCase
 
     public function testWriteShouldNotAddUtf8Bom(): void
     {
-        $allRows = $this->createRowsFromValues([
-            ['csv--11', 'csv--12'],
-        ]);
-        $options = new Options();
-        $options->FIELD_DELIMITER = ',';
-        $options->FIELD_ENCLOSURE = '"';
-        $options->SHOULD_ADD_BOM = false;
+        $allRows = [
+            Row::fromValues(['csv--11', 'csv--12']),
+        ];
+        $options = new Options(
+            FIELD_DELIMITER: ',',
+            FIELD_ENCLOSURE: '"',
+            SHOULD_ADD_BOM: false,
+        );
         $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_no_bom.csv', $options);
 
         self::assertStringNotContainsString(EncodingHelper::BOM_UTF8, $writtenContent, 'The CSV file should not contain a UTF-8 BOM');
@@ -88,9 +86,9 @@ final class WriterTest extends TestCase
 
     public function testWriteShouldSupportNullValues(): void
     {
-        $allRows = $this->createRowsFromValues([
-            ['csv--11', null, 'csv--13'],
-        ]);
+        $allRows = [
+            Row::fromValues(['csv--11', null, 'csv--13']),
+        ];
         $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_null_values.csv');
         $writtenContent = $this->trimWrittenContent($writtenContent);
 
@@ -99,9 +97,9 @@ final class WriterTest extends TestCase
 
     public function testWriteShouldSupportBooleanValues(): void
     {
-        $allRows = $this->createRowsFromValues([
-            [true, false],
-        ]);
+        $allRows = [
+            Row::fromValues([true, false]),
+        ];
         $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_boolean_values.csv');
         $writtenContent = $this->trimWrittenContent($writtenContent);
 
@@ -110,10 +108,9 @@ final class WriterTest extends TestCase
 
     public function testWriteShouldSupportDateTimeValues(): void
     {
-        $date = new DateTime('2023-11-20 10:43:25');
-        $allRows = $this->createRowsFromValues([
-            [$date],
-        ]);
+        $allRows = [
+            Row::fromValues([new DateTime('2023-11-20 10:43:25')]),
+        ];
         $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_datetime_values.csv');
         $writtenContent = $this->trimWrittenContent($writtenContent);
 
@@ -122,10 +119,9 @@ final class WriterTest extends TestCase
 
     public function testWriteShouldSupportDateTimeIntervalValues(): void
     {
-        $dateInterval = new DateInterval('P2Y3M10DT2H10M15S');
-        $allRows = $this->createRowsFromValues([
-            [$dateInterval],
-        ]);
+        $allRows = [
+            Row::fromValues([new DateInterval('P2Y3M10DT2H10M15S')]),
+        ];
         $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_dateinterval_values.csv');
         $writtenContent = $this->trimWrittenContent($writtenContent);
 
@@ -134,9 +130,9 @@ final class WriterTest extends TestCase
 
     public function testWriteShouldSupportFormulaLikeContent(): void
     {
-        $allRows = $this->createRowsFromValues([
-            ['=Testing='],
-        ]);
+        $allRows = [
+            Row::fromValues(['=Testing=']),
+        ];
         $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_null_values.csv');
         $writtenContent = $this->trimWrittenContent($writtenContent);
 
@@ -145,11 +141,11 @@ final class WriterTest extends TestCase
 
     public function testWriteShouldNotSkipEmptyRows(): void
     {
-        $allRows = $this->createRowsFromValues([
-            ['csv--11', 'csv--12'],
-            [],
-            ['csv--31', 'csv--32'],
-        ]);
+        $allRows = [
+            Row::fromValues(['csv--11', 'csv--12']),
+            Row::fromValues([]),
+            Row::fromValues(['csv--31', 'csv--32']),
+        ];
         $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_empty_rows.csv');
         $writtenContent = $this->trimWrittenContent($writtenContent);
 
@@ -158,12 +154,11 @@ final class WriterTest extends TestCase
 
     public function testWriteShouldSupportCustomFieldDelimiter(): void
     {
-        $allRows = $this->createRowsFromValues([
-            ['csv--11', 'csv--12', 'csv--13'],
-            ['csv--21', 'csv--22', 'csv--23'],
-        ]);
-        $options = new Options();
-        $options->FIELD_DELIMITER = '|';
+        $allRows = [
+            Row::fromValues(['csv--11', 'csv--12', 'csv--13']),
+            Row::fromValues(['csv--21', 'csv--22', 'csv--23']),
+        ];
+        $options = new Options(FIELD_DELIMITER: '|');
         $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_pipe_delimiters.csv', $options);
         $writtenContent = $this->trimWrittenContent($writtenContent);
 
@@ -172,12 +167,11 @@ final class WriterTest extends TestCase
 
     public function testFflush(): void
     {
-        $allRows = $this->createRowsFromValues([
-            ['csv--11', 'csv--12', 'csv--13'],
-            ['csv--21', 'csv--22', 'csv--23'],
-        ]);
-        $options = new Options();
-        $options->FLUSH_THRESHOLD = 1;
+        $allRows = [
+            Row::fromValues(['csv--11', 'csv--12', 'csv--13']),
+            Row::fromValues(['csv--21', 'csv--22', 'csv--23']),
+        ];
+        $options = new Options(FLUSH_THRESHOLD: 1);
         $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_fflush.csv', $options);
         $writtenContent = $this->trimWrittenContent($writtenContent);
 
@@ -186,12 +180,13 @@ final class WriterTest extends TestCase
 
     public function testWriteShouldSupportCustomFieldEnclosure(): void
     {
-        $allRows = $this->createRowsFromValues([
-            ['This is, a comma', 'csv--12', 'csv--13'],
-        ]);
-        $options = new Options();
-        $options->FIELD_DELIMITER = ',';
-        $options->FIELD_ENCLOSURE = '#';
+        $allRows = [
+            Row::fromValues(['This is, a comma', 'csv--12', 'csv--13']),
+        ];
+        $options = new Options(
+            FIELD_DELIMITER: ',',
+            FIELD_ENCLOSURE: '#',
+        );
         $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_pound_enclosures.csv', $options);
         $writtenContent = $this->trimWrittenContent($writtenContent);
 
@@ -200,23 +195,13 @@ final class WriterTest extends TestCase
 
     public function testWriteShouldSupportedEscapedCharacters(): void
     {
-        $allRows = $this->createRowsFromValues([
-            ['"csv--11"', 'csv--12\\', 'csv--13\\\\', 'csv--14\\\\\\'],
-        ]);
+        $allRows = [
+            Row::fromValues(['"csv--11"', 'csv--12\\', 'csv--13\\\\', 'csv--14\\\\\\']),
+        ];
         $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_escaped_characters.csv');
         $writtenContent = $this->trimWrittenContent($writtenContent);
 
         self::assertSame('"""csv--11""",csv--12\,csv--13\\\,csv--14\\\\\\', $writtenContent, 'The \'"\' and \'\\\' characters should be properly escaped');
-    }
-
-    public function testShouldSetOptionWithGetter(): void
-    {
-        $options = new Options();
-        $writer = new Writer($options);
-
-        $options->FLUSH_THRESHOLD = random_int(100, 199);
-
-        self::assertSame($options->FLUSH_THRESHOLD, $writer->getOptions()->FLUSH_THRESHOLD);
     }
 
     public function testWriteToCompressedStream(): void
@@ -225,12 +210,11 @@ final class WriterTest extends TestCase
         $pathName = (new TestUsingResource())->getGeneratedResourcePath($fileName);
         $resourcePath = 'compress.zlib://'.$pathName;
 
-        $writer = new Writer();
-        $writer->getOptions()->SHOULD_ADD_BOM = false;
+        $writer = new Writer(new Options(SHOULD_ADD_BOM: false));
         $writer->openToFile($resourcePath);
-        $writer->addRows($this->createRowsFromValues([
-            ['csv-1', 'csv-2', 'csv-3'],
-        ]));
+        $writer->addRows([
+            Row::fromValues(['csv-1', 'csv-2', 'csv-3']),
+        ]);
         $writer->close();
 
         $writtenContent = file_get_contents($pathName);
@@ -253,11 +237,11 @@ final class WriterTest extends TestCase
         self::assertSame(1, $writer->getWrittenRowCount());
         $writer->addRow(Row::fromValues(['csv-2', null]));
         self::assertSame(2, $writer->getWrittenRowCount());
-        $writer->addRows($this->createRowsFromValues([
-            ['csv--11', 'csv--12'],
-            [],
-            ['csv--31', 'csv--32'],
-        ]));
+        $writer->addRows([
+            Row::fromValues(['csv--11', 'csv--12']),
+            Row::fromValues([]),
+            Row::fromValues(['csv--31', 'csv--32']),
+        ]);
         self::assertSame(5, $writer->getWrittenRowCount());
         $writer->close();
         self::assertSame(5, $writer->getWrittenRowCount());

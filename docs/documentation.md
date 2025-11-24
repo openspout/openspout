@@ -8,10 +8,10 @@ It is possible to configure both the CSV reader and writer to adapt them to your
 use OpenSpout\Reader\CSV\Reader;
 use OpenSpout\Reader\CSV\Options;
 
-$options = new Options();
-$options->FIELD_DELIMITER = '|';
-$options->FIELD_ENCLOSURE = '@';
-$reader = new Reader($options);
+$reader = new Reader(new Options(
+    FIELD_DELIMITER: '|',
+    FIELD_ENCLOSURE: '@',
+));
 ```
 
 Additionally, if you need to read non UTF-8 files, you can specify the encoding of your file this way:
@@ -20,9 +20,9 @@ Additionally, if you need to read non UTF-8 files, you can specify the encoding 
 use OpenSpout\Reader\CSV\Reader;
 use OpenSpout\Reader\CSV\Options;
 
-$options = new Options();
-$options->ENCODING = 'UTF-16LE';
-$reader = new Reader($options);
+$reader = new Reader(new Options(
+    ENCODING: 'UTF-16LE',
+));
 ```
 
 By default, the writer generates CSV files encoded in UTF-8, with a BOM.
@@ -32,11 +32,10 @@ It is however possible to not include the BOM:
 use OpenSpout\Writer\CSV\Writer;
 use OpenSpout\Writer\CSV\Options;
 
-$options = new Options();
-$options->SHOULD_ADD_BOM = false;
-$writer = new Writer($options);
+$writer = new Writer(new Options(
+    SHOULD_ADD_BOM: false,
+));
 ```
-
 
 ## Configuration for XLSX and ODS
 
@@ -50,10 +49,9 @@ always be preferable.
 use OpenSpout\Writer\ODS\Writer;
 use OpenSpout\Writer\ODS\Options;
 
-$options = new Options();
-$options->SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY = true; // default value
-$options->SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY = false; // will stop writing new data when limit is reached
-$writer = new Writer($options);
+$writer = new Writer(new Options(
+    SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY: false, // default:true, with false will stop writing new data when limit is reached
+));
 ```
 
 ### Setting custom document creator (ODS writer)
@@ -79,24 +77,22 @@ use OpenSpout\Writer\XLSX\Options;
 use OpenSpout\Writer\XLSX\Properties;
 use OpenSpout\Writer\XLSX\Writer;
 
-$properties = new Properties(
-    title: 'Untitled Spreadsheet',
-    subject: null,
-    application: 'OpenSpout',
-    creator: 'OpenSpout',
-    lastModifiedBy: 'OpenSpout',
-    keywords: null,
-    description: null,
-    category: null,
-    language: null,
-    customProperties: [
-        'test' => 'Test'
-    ]
-);
-
-$options = new Options();
-$options->setProperties($properties);
-$writer = new Writer($options);
+$writer = new Writer(new Options(
+    properties: new Properties(
+        title: 'Untitled Spreadsheet',
+        subject: null,
+        application: 'OpenSpout',
+        creator: 'OpenSpout',
+        lastModifiedBy: 'OpenSpout',
+        keywords: null,
+        description: null,
+        category: null,
+        language: null,
+        customProperties: [
+            'test' => 'Test'
+        ]
+    ),
+));
 ```
 
 ### Sheet view (XLSX writer)
@@ -107,28 +103,28 @@ Sheet view settings must be configured before any rows are added to the sheet.
 use OpenSpout\Writer\XLSX\Entity\SheetView;
 use OpenSpout\Writer\XLSX\Writer;
 
-$sheetView = new SheetView();
-$sheetView->setFreezeRow(2); // First row will be fixed
-$sheetView->setFreezeColumn('D'); // Columns A to C will be fixed
-$sheetView->setZoomScale(150); // And other options
-$sheetView->setShowFormulas(true);
-$sheetView->setShowGridLines(false);
-$sheetView->setShowRowColHeaders(false);
-$sheetView->setShowZeros(false);
-$sheetView->setRightToLeft(true); // Change sheet direction
-$sheetView->setTabSelected(false);
-$sheetView->setShowOutlineSymbols(false);
-$sheetView->setDefaultGridColor(false);
-$sheetView->setView('normal');
-$sheetView->setTopLeftCell('A2');
-$sheetView->setColorId(1);
-$sheetView->setZoomScale(50);
-$sheetView->setZoomScaleNormal(70);
-$sheetView->setZoomScalePageLayoutView(80);
-$sheetView->setWorkbookViewId(90);
-$sheetView->setFreezeColumn('B');
-$sheetView->setFreezeRow(2);
-
+$sheetView = new SheetView(
+    freezeRow: 2, // First row will be fixed
+    freezeColumn: 'D', // Columns A to C will be fixed
+    zoomScale: 150,
+    showFormulas: true,
+    showGridLines: false,
+    showRowColHeaders: false,
+    showZeros: false,
+    rightToLeft: true,
+    tabSelected: false,
+    showOutlineSymbols: false,
+    defaultGridColor: false,
+    view: 'normal',
+    topLeftCell: 'A2',
+    colorId: 1,
+    zoomScale: 50,
+    zoomScaleNormal: 70,
+    zoomScalePageLayoutView: 80,
+    workbookViewId: 90,
+    freezeColumn: 'B',
+    freezeRow: 2,
+);
 $writer = new Writer();
 $writer->getCurrentSheet()->setSheetView($sheetView);
 ```
@@ -157,9 +153,9 @@ reader or writer:
 use OpenSpout\Writer\XLSX\Writer;
 use OpenSpout\Writer\XLSX\Options;
 
-$options = new Options();
-$options->setTempFolder($customTempFolderPath);
-$writer = new Writer($options);
+$writer = new Writer(new Options(
+    tempFolder: $customTempFolderPath,
+));
 ```
 
 ### Strings storage (XLSX writer)
@@ -177,10 +173,9 @@ nevertheless possible to use this mode.
 use OpenSpout\Writer\XLSX\Writer;
 use OpenSpout\Writer\XLSX\Options;
 
-$options = new Options();
-$options->SHOULD_USE_INLINE_STRINGS = true; // default (and recommended) value
-$options->SHOULD_USE_INLINE_STRINGS = false; // will use shared strings
-$writer = new Writer($options);
+$writer = new Writer(new Options(
+    SHOULD_USE_INLINE_STRINGS: false, // default:true, with false will use shared strings
+));
 ```
 
 > #### Note on Apple Numbers and iOS support
@@ -198,10 +193,9 @@ format of the date corresponds to what is specified in the spreadsheet.
 use OpenSpout\Reader\XLSX\Reader;
 use OpenSpout\Reader\XLSX\Options;
 
-$options = new Options();
-$options->SHOULD_FORMAT_DATES = false; // default value
-$options->SHOULD_FORMAT_DATES = true; // will return formatted dates
-$reader = new Reader($options);
+$reader = new Reader(new Options(
+    SHOULD_FORMAT_DATES: true, // default:true, with false will return formatted dates
+));
 ```
  
 ## Empty rows
@@ -213,9 +207,9 @@ This behavior can be changed so that OpenSpout returns all rows:
 use OpenSpout\Reader\CSV\Reader;
 use OpenSpout\Reader\CSV\Options;
 
-$options = new Options();
-$options->SHOULD_PRESERVE_EMPTY_ROWS = true;
-$reader = new Reader($options);
+$reader = new Reader(new Options(
+    SHOULD_PRESERVE_EMPTY_ROWS: true,
+));
 ```
  
 ## Column widths
@@ -298,18 +292,16 @@ use OpenSpout\Writer\XLSX\Options\PageOrientation;
 use OpenSpout\Writer\XLSX\Options\PageSetup;
 use OpenSpout\Writer\XLSX\Options\PaperSize;
 
-$options = new Options();
-$options->setPageSetup(new PageSetup(
-    PageOrientation::LANDSCAPE,
-    PaperSize::A4,
-    0, // ?int fitToHeight
-    1  // ?int fitToWidth
+$writer = new Writer(new Options(
+    pageSetup: new PageSetup(
+        PageOrientation::LANDSCAPE,
+        PaperSize::A4,
+        0, // ?int fitToHeight
+        1  // ?int fitToWidth
+    ),
+    // set margin in inches: top, right, bottom, left, header, footer
+    pageMargin: new PageMargin(0.75, 0.7, 0.75, 0.7, 0.3, 0.3),
 ));
-
-// set margin in inches: top, right, bottom, left, header, footer
-$options->setPageMargin(new PageMargin(0.75, 0.7, 0.75, 0.7, 0.3, 0.3));
-
-$writer = new Writer($options);
 ```
 
 ## HeaderFooter
@@ -319,23 +311,22 @@ use OpenSpout\Writer\XLSX\Writer;
 use OpenSpout\Writer\XLSX\Options;
 use OpenSpout\Writer\XLSX\Options\HeaderFooter;
 
-$options = new Options();
-$options->setHeaderFooter(new HeaderFooter(
-    'oddHeader',
-    'oddFooter',
-    'evenHeader',
-    'evenFooter',
-    true  // differentOddEven, default value is false
+$writer = new Writer(new Options(
+    headerFooter: new HeaderFooter(
+        'oddHeader',
+        'oddFooter',
+        'evenHeader',
+        'evenFooter',
+        true,  // differentOddEven, default value is false
+    ),
 ));
-
-$writer = new Writer($options);
 ```
 
 ## Styling
 
 ### Available styles
 
-OpenSpout supports styling at a row and cell level. It is possible to customize the fonts, backgrounds, alignment as
+OpenSpout supports styling at cell level. It is possible to customize the fonts, backgrounds, alignment as
 well as borders.
 
 For fonts and alignments, OpenSpout does not support all the possible formatting options yet. But you can find the most
@@ -343,146 +334,59 @@ important ones:
 
 | Category             | Property                | API
 |:---------------------|:------------------------|:--------------------------------------
-| Font                 | Bold                    | `Style::setFontBold()`
-|                      | Italic                  | `Style::setFontItalic()`
-|                      | Underline               | `Style::setFontUnderline()`
-|                      | Strikethrough           | `Style::setFontStrikethrough()`
-|                      | Font name               | `Style::setFontName('Arial')`
-|                      | Font size               | `Style::setFontSize(14)`
-|                      | Font color              | `Style::setFontColor(Color::BLUE)`
-|                      |                         | `Style::setFontColor(Color::rgb(0, 128, 255))`
-| Alignment            | Cell alignment          | `Style::setCellAlignment(CellAlignment::CENTER)`
-|                      | Cell vertical alignment | `Style::setCellVerticalAlignment(CellVerticalAlignment::CENTER)`
-|                      | Wrap text               | `Style::setShouldWrapText(true)`
-| Format _(XLSX only)_ | Number format           | `Style::setFormat('0.000')`
-|                      | Date format             | `Style::setFormat('m/d/yy h:mm')`
+| Font                 | Bold                    | `Style::withFontBold()`
+|                      | Italic                  | `Style::withFontItalic()`
+|                      | Underline               | `Style::withFontUnderline()`
+|                      | Strikethrough           | `Style::withFontStrikethrough()`
+|                      | Font name               | `Style::withFontName('Arial')`
+|                      | Font size               | `Style::withFontSize(14)`
+|                      | Font color              | `Style::withFontColor(Color::BLUE)`
+|                      |                         | `Style::withFontColor(Color::rgb(0, 128, 255))`
+| Alignment            | Cell alignment          | `Style::withCellAlignment(CellAlignment::CENTER)`
+|                      | Cell vertical alignment | `Style::withCellVerticalAlignment(CellVerticalAlignment::CENTER)`
+|                      | Wrap text               | `Style::withShouldWrapText(true)`
+| Format _(XLSX only)_ | Number format           | `Style::withFormat('0.000')`
+|                      | Date format             | `Style::withFormat('m/d/yy h:mm')`
 
-### Styling rows
-
-It is possible to apply some formatting options to a row. In this case, all cells of the row will have the same style:
-
-```php
-use OpenSpout\Common\Entity\Row;
-use OpenSpout\Common\Entity\Style\CellAlignment;
-use OpenSpout\Common\Entity\Style\Color;
-use OpenSpout\Writer\XLSX\Writer;
-
-$writer = new Writer();
-$writer->openToFile($filePath);
-
-// Create a style with the Style
-$style = new Style();
-$style->setFontBold();
-$style->setFontSize(15);
-$style->setFontColor(Color::BLUE);
-$style->setShouldWrapText();
-$style->setCellAlignment(CellAlignment::RIGHT);
-$style->setCellVerticalAlignment(CellVerticalAlignment::BOTTOM);
-$style->setBackgroundColor(Color::YELLOW);
-
-// Create a row with cells and apply the style to all cells
-$row = Row::fromValues(['Carl', 'is', 'great'], $style);
-
-// Add the row to the writer
-$writer->addRow($row);
-$writer->close();
-```
 
 Adding borders to a row requires a ```Border``` object.
 
 ```php
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Common\Entity\Style\Border;
+use OpenSpout\Common\Entity\Style\BorderName;
 use OpenSpout\Common\Entity\Style\BorderPart;
+use OpenSpout\Common\Entity\Style\BorderStyle;
+use OpenSpout\Common\Entity\Style\BorderWidth;
 use OpenSpout\Common\Entity\Style\Color;
 use OpenSpout\Writer\XLSX\Writer;
 
 $border = new Border(
-    new BorderPart(Border::BOTTOM, Color::GREEN, Border::WIDTH_THIN, Border::STYLE_DASHED)
+    new BorderPart(BorderName::BOTTOM, Color::GREEN, BorderWidth::THIN, BorderStyle::DASHED)
 );
 
-$style = new Style();
-$style->setBorder($border);
-
-$writer = new Writer();
-$writer->openToFile($filePath);
-
-$cells = Cell::fromValue('Border Bottom Green Thin Dashed');
-$row = new Row([$cells]);
-$row->setStyle($style);
-$writer->addRow($row);
-
-$writer->close();
+$style = new Style(
+    border: $border,
+);
 ```
 
-### Styling cells
+### Fallback style
 
-The same styling techniques as described in [Styling rows](#styling-rows) can be applied to individual cells of a row
-as well.
-
-Cell styles are inherited from the parent row and the default row style respectively.
-
-The styles applied to a specific cell will override any parent styles if present.
-
-Example:
-
-```php
-use OpenSpout\Common\Entity\Cell;
-use OpenSpout\Common\Entity\Row;
-use OpenSpout\Common\Entity\Style\Color;
-use OpenSpout\Common\Entity\Style\Style;
-use OpenSpout\Writer\XLSX\Writer;
-use OpenSpout\Writer\XLSX\Options;
-
-$defaultStyle = new Style();
-$defaultStyle->setFontSize(8);
-
-$options = new Options();
-$options->DEFAULT_ROW_STYLE = $defaultStyle;
-$writer = new Writer($options);
-$writer->openToFile($filePath);
-
-$zebraBlackStyle = new Style();
-$zebraBlackStyle->setBackgroundColor(Color::BLACK);
-$zebraBlackStyle->setFontColor(Color::WHITE);
-$zebraBlackStyle->setFontSize(10);
-
-$zebraWhiteStyle = new Style();
-$zebraWhiteStyle->setBackgroundColor(Color::WHITE);
-$zebraWhiteStyle->setFontColor(Color::BLACK);
-$zebraWhiteStyle->setFontItalic();
-
-$cells = [
-    Cell::fromValue('Ze', $zebraBlackStyle),
-    Cell::fromValue('bra', $zebraWhiteStyle)
-];
-
-$rowStyle = new Style();
-$rowStyle->setFontBold();
-
-$row = new Row($cells, $rowStyle);
-
-$writer->addRow($row);
-$writer->close();
-```
-
-### Default style
-
-OpenSpout will use a default style for all created rows. This style can be overridden this way:
+OpenSpout will use a fallback style for all created rows. This style can be overridden this way:
 
 ```php
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Writer\XLSX\Writer;
 use OpenSpout\Writer\XLSX\Options;
 
-$defaultStyle = new Style();
-$defaultStyle->setFontName('Arial');
-$defaultStyle->setFontSize(11);
+$fallbackStyle = new Style(
+    fontName: 'Arial',
+    fontSize: 11,
+);
 
-$options = new Options();
-$options->DEFAULT_ROW_STYLE = $defaultStyle;
-$writer = new Writer($options);
+$writer = new Writer(new Options(FALLBACK_STYLE: $fallbackStyle));
 $writer->openToFile($filePath);
 ```
 
@@ -499,21 +403,22 @@ use OpenSpout\Common\Entity\Comment\TextRun;
 $writer = new \OpenSpout\Writer\XLSX\Writer();
 $writer->openToFile('output.xlsx');
 
-$cell = Cell::fromValue('Test');
-$comment = new Comment();
-$comment->height = '200px';
-$comment->width = '400px';
+$comment = new Comment(
+    height: '200px',
+    width: '400px',
+    textRuns: [
+        new TextRun(
+            text: "WARNING\n\n",
+            bold: true,
+        ),
+        new TextRun(
+            text: 'There is something wrong with this cell',
+            italic: true,
+        ),
+    ],
+);
 
-$warningTextRun = new TextRun("WARNING\n\n");
-$warningTextRun->bold = true;
-
-$somethingWrongTextRun = new TextRun('There is something wrong with this cell');
-$somethingWrongTextRun->italic = true;
-
-$comment->addTextRun($warningTextRun);
-$comment->addTextRun($somethingWrongTextRun);
-
-$cell->comment = $comment;
+$cell = Cell::fromValue('Test', null, $comment);
 $row = new Row([$cell]);
 $writer->addRow($row);
 $writer->close();
@@ -652,10 +557,7 @@ $protection = new WorkbookProtection(
     lockWindows: true, // Prevents resizing or moving the Excel window
 );
 
-$options = new Options()
-$options->setWorkbookProtection($protection);
-
-$writer = new Writer($options);
+$writer = new Writer(new Options(workbookProtection: $protection));
 ```
 
 

@@ -10,7 +10,7 @@ use OpenSpout\Reader\Wrapper\XMLReader;
 /**
  * @internal
  */
-final class SettingsHelper
+final readonly class SettingsHelper
 {
     public const SETTINGS_XML_FILE_PATH = 'settings.xml';
 

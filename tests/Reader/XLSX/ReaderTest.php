@@ -35,12 +35,11 @@ final class ReaderTest extends TestCase
     #[DataProvider('provideReadShouldThrowExceptionCases')]
     public function testReadShouldThrowExceptionWithMergeCells(string $filePath): void
     {
-        $options = new Options();
-        $options->SHOULD_LOAD_MERGE_CELLS = true;
-
         $this->expectException(IOException::class);
 
-        $this->getAllRowsForFile($filePath, $options);
+        $this->getAllRowsForFile($filePath, [
+            'SHOULD_LOAD_MERGE_CELLS' => true,
+        ]);
     }
 
     public static function provideReadShouldThrowExceptionCases(): iterable
@@ -67,7 +66,7 @@ final class ReaderTest extends TestCase
     #[DataProvider('provideReadForAllWorksheetsCases')]
     public function testReadForAllWorksheetsWithFileBasedCachingStrategy(string $resourceName, int $expectedNumOfRows, int $expectedNumOfCellsPerRow): void
     {
-        $allRows = $this->getAllRowsForFile($resourceName, null, new CachingStrategyFactory(new MemoryLimit('1b')));
+        $allRows = $this->getAllRowsForFile($resourceName, [], new CachingStrategyFactory(new MemoryLimit('1b')));
 
         self::assertCount($expectedNumOfRows, $allRows, "There should be {$expectedNumOfRows} rows");
         foreach ($allRows as $row) {
@@ -251,9 +250,9 @@ final class ReaderTest extends TestCase
         // make sure dates are always created with the same timezone
         date_default_timezone_set('UTC');
 
-        $options = new Options();
-        $options->SHOULD_FORMAT_DATES = true;
-        $allRows = $this->getAllRowsForFile('sheet_with_same_numeric_value_durations_formatted_differently.xlsx', $options);
+        $allRows = $this->getAllRowsForFile('sheet_with_same_numeric_value_durations_formatted_differently.xlsx', [
+            'SHOULD_FORMAT_DATES' => true,
+        ]);
         self::assertEquals([
             '03',
             '03:07',
@@ -381,9 +380,9 @@ final class ReaderTest extends TestCase
 
     public function testReadShouldSupportFormatDatesAndTimesIfSpecified(): void
     {
-        $options = new Options();
-        $options->SHOULD_FORMAT_DATES = true;
-        $allRows = $this->getAllRowsForFile('sheet_with_dates_and_times.xlsx', $options);
+        $allRows = $this->getAllRowsForFile('sheet_with_dates_and_times.xlsx', [
+            'SHOULD_FORMAT_DATES' => true,
+        ]);
 
         $expectedRows = [
             ['1/13/2016', '01/13/2016', '13-Jan-16', 'Wednesday January 13, 16', 'Today is 1/13/2016'],
@@ -395,9 +394,9 @@ final class ReaderTest extends TestCase
 
     public function testReadShouldApplyCustomDateFormatNumberEvenIfApplyNumberFormatNotSpecified(): void
     {
-        $options = new Options();
-        $options->SHOULD_FORMAT_DATES = true;
-        $allRows = $this->getAllRowsForFile('sheet_with_custom_date_formats_and_no_apply_number_format.xlsx', $options);
+        $allRows = $this->getAllRowsForFile('sheet_with_custom_date_formats_and_no_apply_number_format.xlsx', [
+            'SHOULD_FORMAT_DATES' => true,
+        ]);
 
         $expectedRows = [
             // "General", "GENERAL", "MM/DD/YYYY", "MM/dd/YYYY", "H:MM:SS"
@@ -471,9 +470,10 @@ final class ReaderTest extends TestCase
 
     public function testReadShouldReturnEmptyLinesIfShouldPreserveEmptyRowsSet(): void
     {
-        $options = new Options();
-        $options->SHOULD_FORMAT_DATES = false;
-        $options->SHOULD_PRESERVE_EMPTY_ROWS = true;
+        $options = [
+            'SHOULD_FORMAT_DATES' => false,
+            'SHOULD_PRESERVE_EMPTY_ROWS' => true,
+        ];
         $allRows = $this->getAllRowsForFile('sheet_with_empty_rows_and_missing_row_index.xlsx', $options);
 
         self::assertCount(6, $allRows, 'There should be 6 rows');
@@ -578,8 +578,7 @@ final class ReaderTest extends TestCase
         $resourcePath = TestUsingResource::getResourcePath('sheet_with_formulas.xlsx');
 
         $allRows = [];
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $reader = new Reader($options);
         $reader->open($resourcePath);
         foreach ($reader->getSheetIterator() as $sheet) {
@@ -591,28 +590,28 @@ final class ReaderTest extends TestCase
 
         $expectedRows = [
             new Row([
-                new StringCell('val1', null),
-                new StringCell('val2', null),
-                new StringCell('total1', null),
-                new StringCell('total2', null),
-                new StringCell('DateFunction', null),
-                new StringCell('Average', null),
+                new StringCell('val1'),
+                new StringCell('val2'),
+                new StringCell('total1'),
+                new StringCell('total2'),
+                new StringCell('DateFunction'),
+                new StringCell('Average'),
             ]),
             new Row([
-                new NumericCell(10, null),
-                new NumericCell(20, null),
-                new FormulaCell('=A2+B2', null, '30'),
-                new FormulaCell('=SUM(A:A)', null, 21),
-                new FormulaCell('=DATE(2022, 5, 5)', null, new DateTimeImmutable('2022-05-05')),
-                new FormulaCell('=AVERAGE(1,2)', null, 1.5),
+                new NumericCell(10),
+                new NumericCell(20),
+                new FormulaCell('=A2+B2', '30'),
+                new FormulaCell('=SUM(A:A)', 21),
+                new FormulaCell('=DATE(2022, 5, 5)', new DateTimeImmutable('2022-05-05')),
+                new FormulaCell('=AVERAGE(1,2)', 1.5),
             ]),
             new Row([
-                new NumericCell(11, null),
-                new NumericCell(21, null),
-                new FormulaCell('=A3+B3', null, '32'),
-                new FormulaCell('=SUM(B:B)', null, '41'),
-                new EmptyCell(null, null),
-                new EmptyCell(null, null),
+                new NumericCell(11),
+                new NumericCell(21),
+                new FormulaCell('=A3+B3', '32'),
+                new FormulaCell('=SUM(B:B)', '41'),
+                new EmptyCell(null),
+                new EmptyCell(null),
             ]),
         ];
         self::assertEquals($expectedRows, $allRows);
@@ -623,8 +622,7 @@ final class ReaderTest extends TestCase
         $allRows = [];
         $resourcePath = TestUsingResource::getResourcePath('xlsx_without_styles_file.xlsx');
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $reader = new Reader($options);
         $reader->open($resourcePath);
 
@@ -648,8 +646,7 @@ final class ReaderTest extends TestCase
         $allRows = [];
         $resourcePath = TestUsingResource::getResourcePath('two_sheets_with_inline_strings.xlsx');
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $reader = new Reader($options);
         $reader->open($resourcePath);
 
@@ -789,9 +786,8 @@ final class ReaderTest extends TestCase
     public function testReadColumnWidths(): void
     {
         $resourcePath = TestUsingResource::getResourcePath('sheet_with_columnwidths.xlsx');
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
-        $reader = new Reader($options, null);
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
+        $reader = new Reader($options);
         $reader->open($resourcePath);
 
         foreach ($reader->getSheetIterator() as $sheetIndex => $sheet) {
@@ -826,15 +822,14 @@ final class ReaderTest extends TestCase
      */
     private function getAllRowsForFile(
         string $fileName,
-        ?Options $options = null,
+        array $options = [],
         ?CachingStrategyFactory $cachingStrategyFactory = null,
     ): array {
         $allRows = [];
         $resourcePath = TestUsingResource::getResourcePath($fileName);
 
-        $options ??= new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
-        $reader = new Reader($options, $cachingStrategyFactory);
+        $options['tempFolder'] = (new TestUsingResource())->getTempFolderPath();
+        $reader = new Reader(new Options(...$options), $cachingStrategyFactory);
         $reader->open($resourcePath);
 
         foreach ($reader->getSheetIterator() as $sheet) {

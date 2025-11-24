@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer\CSV;
 
-final class Options
+final readonly class Options
 {
-    public string $FIELD_DELIMITER = ',';
-    public string $FIELD_ENCLOSURE = '"';
-    public bool $SHOULD_ADD_BOM = true;
-
-    /** @var positive-int */
-    public int $FLUSH_THRESHOLD = 500;
+    /**
+     * @param non-empty-string $FIELD_DELIMITER
+     * @param non-empty-string $FIELD_ENCLOSURE
+     * @param positive-int     $FLUSH_THRESHOLD
+     */
+    public function __construct(
+        public string $FIELD_DELIMITER = ',',
+        public string $FIELD_ENCLOSURE = '"',
+        public bool $SHOULD_ADD_BOM = true,
+        public int $FLUSH_THRESHOLD = 500,
+    ) {}
 }

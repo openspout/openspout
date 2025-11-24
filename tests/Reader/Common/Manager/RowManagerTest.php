@@ -15,22 +15,19 @@ use PHPUnit\Framework\TestCase;
 final class RowManagerTest extends TestCase
 {
     /**
-     * @param null|Cell[] $rowCells
-     * @param Cell[]      $expectedFilledCells
+     * @param Cell[] $rowCells
+     * @param Cell[] $expectedFilledCells
      */
     #[DataProvider('provideFillMissingIndexesWithEmptyCellsCases')]
-    public function testFillMissingIndexesWithEmptyCells(?array $rowCells, array $expectedFilledCells): void
+    public function testFillMissingIndexesWithEmptyCells(array $rowCells, array $expectedFilledCells): void
     {
         $rowManager = new RowManager();
 
-        $rowToFill = new Row([], null);
-        foreach ($rowCells as $cellIndex => $cell) {
-            $rowToFill->setCellAtIndex($cell, $cellIndex);
-        }
+        $rowToFill = new Row($rowCells);
 
-        $rowManager->fillMissingIndexesWithEmptyCells($rowToFill);
+        $rowFilled = $rowManager->fillMissingIndexesWithEmptyCells($rowToFill);
 
-        self::assertEquals($expectedFilledCells, $rowToFill->getCells());
+        self::assertEquals($expectedFilledCells, $rowFilled->cells);
     }
 
     public static function provideFillMissingIndexesWithEmptyCellsCases(): iterable

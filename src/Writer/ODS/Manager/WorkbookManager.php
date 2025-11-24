@@ -6,7 +6,6 @@ namespace OpenSpout\Writer\ODS\Manager;
 
 use OpenSpout\Writer\Common\Entity\Workbook;
 use OpenSpout\Writer\Common\Manager\AbstractWorkbookManager;
-use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
 use OpenSpout\Writer\ODS\Helper\FileSystemHelper;
 use OpenSpout\Writer\ODS\Manager\Style\StyleManager;
 use OpenSpout\Writer\ODS\Options;
@@ -14,9 +13,10 @@ use OpenSpout\Writer\ODS\Options;
 /**
  * @internal
  *
+ * @property Options          $options
  * @property WorksheetManager $worksheetManager
- * @property FileSystemHelper $fileSystemHelper
  * @property StyleManager     $styleManager
+ * @property FileSystemHelper $fileSystemHelper
  */
 final class WorkbookManager extends AbstractWorkbookManager
 {
@@ -32,7 +32,6 @@ final class WorkbookManager extends AbstractWorkbookManager
         Options $options,
         WorksheetManager $worksheetManager,
         StyleManager $styleManager,
-        StyleMerger $styleMerger,
         FileSystemHelper $fileSystemHelper
     ) {
         parent::__construct(
@@ -40,7 +39,6 @@ final class WorkbookManager extends AbstractWorkbookManager
             $options,
             $worksheetManager,
             $styleManager,
-            $styleMerger,
             $fileSystemHelper
         );
     }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer\XLSX\Manager\Style;
 
-use OpenSpout\Common\Entity\Style\BorderPart;
+use OpenSpout\Common\Entity\Style\BorderName;
 use OpenSpout\Common\Entity\Style\Color;
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Common\Helper\Escaper\XLSX as XLSXEscaper;
@@ -16,10 +16,9 @@ use OpenSpout\Writer\XLSX\Helper\BorderHelper;
  *
  * @property StyleRegistry $styleRegistry
  */
-final class StyleManager extends CommonStyleManager
+final readonly class StyleManager extends CommonStyleManager
 {
-    /** @var XLSXEscaper Strings escaper */
-    private readonly XLSXEscaper $stringsEscaper;
+    private XLSXEscaper $stringsEscaper;
 
     public function __construct(StyleRegistry $styleRegistry, XLSXEscaper $stringsEscaper)
     {
@@ -31,7 +30,7 @@ final class StyleManager extends CommonStyleManager
      * For empty cells, we can specify a style or not. If no style are specified,
      * then the software default will be applied. But sometimes, it may be useful
      * to override this default style, for instance if the cell should have a
-     * background color different than the default one or some borders
+     * background color different from the default one or some borders
      * (fonts property don't really matter here).
      *
      * @return bool Whether the cell should define a custom style
@@ -93,10 +92,8 @@ final class StyleManager extends CommonStyleManager
                 continue;
             }
 
-            /** @var Style $style */
             $style = $this->styleRegistry->getStyleFromStyleId($styleId);
-            $format = $style->getFormat();
-            $tags[] = '<numFmt numFmtId="'.$numFmtId.'" formatCode="'.$this->stringsEscaper->escape($format).'"/>';
+            $tags[] = '<numFmt numFmtId="'.$numFmtId.'" formatCode="'.$this->stringsEscaper->escape($style->format).'"/>';
         }
         $content = '<numFmts count="'.\count($tags).'">';
         $content .= implode('', $tags);
@@ -114,24 +111,23 @@ final class StyleManager extends CommonStyleManager
 
         $content = '<fonts count="'.\count($registeredStyles).'">';
 
-        /** @var Style $style */
         foreach ($registeredStyles as $style) {
             $content .= '<font>';
 
-            $content .= '<sz val="'.$style->getFontSize().'"/>';
-            $content .= '<color rgb="'.Color::toARGB($style->getFontColor()).'"/>';
-            $content .= '<name val="'.$style->getFontName().'"/>';
+            $content .= '<sz val="'.$style->fontSize.'"/>';
+            $content .= '<color rgb="'.Color::toARGB($style->fontColor).'"/>';
+            $content .= '<name val="'.$style->fontName.'"/>';
 
-            if ($style->isFontBold()) {
+            if ($style->fontBold) {
                 $content .= '<b/>';
             }
-            if ($style->isFontItalic()) {
+            if ($style->fontItalic) {
                 $content .= '<i/>';
             }
-            if ($style->isFontUnderline()) {
+            if ($style->fontUnderline) {
                 $content .= '<u/>';
             }
-            if ($style->isFontStrikethrough()) {
+            if ($style->fontStrikethrough) {
                 $content .= '<strike/>';
             }
 
@@ -162,10 +158,9 @@ final class StyleManager extends CommonStyleManager
             /** @var Style $style */
             $style = $this->styleRegistry->getStyleFromStyleId($styleId);
 
-            $backgroundColor = $style->getBackgroundColor();
             $content .= \sprintf(
                 '<fill><patternFill patternType="solid"><fgColor rgb="%s"/></patternFill></fill>',
-                $backgroundColor
+                $style->backgroundColor
             );
         }
 
@@ -191,12 +186,12 @@ final class StyleManager extends CommonStyleManager
 
         foreach ($registeredBorders as $styleId) {
             $style = $this->styleRegistry->getStyleFromStyleId($styleId);
-            $border = $style->getBorder();
+            $border = $style->border;
             \assert(null !== $border);
             $content .= '<border>';
 
             // @see https://github.com/box/spout/issues/271
-            foreach (BorderPart::allowedNames as $partName) {
+            foreach (BorderName::cases() as $partName) {
                 $content .= BorderHelper::serializeBorderPart($border->getPart($partName));
             }
 
@@ -229,37 +224,42 @@ final class StyleManager extends CommonStyleManager
 
         $content = '<cellXfs count="'.\count($registeredStyles).'">';
 
-        foreach ($registeredStyles as $style) {
-            $styleId = $style->getId();
+        foreach ($registeredStyles as $styleId => $style) {
             $fillId = $this->getFillIdForStyleId($styleId);
             $borderId = $this->getBorderIdForStyleId($styleId);
             $numFmtId = $this->getFormatIdForStyleId($styleId);
 
             $content .= '<xf numFmtId="'.$numFmtId.'" fontId="'.$styleId.'" fillId="'.$fillId.'" borderId="'.$borderId.'" xfId="0"';
 
-            if ($style->shouldApplyFont()) {
+            if ($style->shouldApplyFont) {
                 $content .= ' applyFont="1"';
             }
 
-            $content .= \sprintf(' applyBorder="%d"', (bool) $style->getBorder());
+            $content .= \sprintf(' applyBorder="%d"', null !== $style->border);
 
-            if ($style->shouldApplyCellAlignment() || $style->shouldApplyCellVerticalAlignment() || $style->hasSetWrapText() || $style->shouldShrinkToFit() || $style->hasSetTextRotation()) {
+            if (
+                null !== $style->cellAlignment
+                || null !== $style->cellVerticalAlignment
+                || null !== $style->shouldWrapText
+                || null !== $style->shouldShrinkToFit
+                || 0 !== $style->textRotation
+            ) {
                 $content .= ' applyAlignment="1">';
                 $content .= '<alignment';
-                if ($style->shouldApplyCellAlignment()) {
-                    $content .= \sprintf(' horizontal="%s"', $style->getCellAlignment());
+                if (null !== $style->cellAlignment) {
+                    $content .= \sprintf(' horizontal="%s"', $style->cellAlignment->value);
                 }
-                if ($style->shouldApplyCellVerticalAlignment()) {
-                    $content .= \sprintf(' vertical="%s"', $style->getCellVerticalAlignment());
+                if (null !== $style->cellVerticalAlignment) {
+                    $content .= \sprintf(' vertical="%s"', $style->cellVerticalAlignment->value);
                 }
-                if ($style->hasSetWrapText()) {
-                    $content .= ' wrapText="'.($style->shouldWrapText() ? '1' : '0').'"';
+                if (null !== $style->shouldWrapText) {
+                    $content .= ' wrapText="'.($style->shouldWrapText ? '1' : '0').'"';
                 }
-                if ($style->shouldShrinkToFit()) {
+                if (true === $style->shouldShrinkToFit) {
                     $content .= ' shrinkToFit="true"';
                 }
-                if ($style->hasSetTextRotation()) {
-                    $content .= \sprintf(' textRotation="%s"', $style->textRotation());
+                if (0 !== $style->textRotation) {
+                    $content .= \sprintf(' textRotation="%s"', $style->textRotation);
                 }
 
                 $content .= '/>';
@@ -293,7 +293,7 @@ final class StyleManager extends CommonStyleManager
     private function getFillIdForStyleId(int $styleId): int
     {
         // For the default style (ID = 0), we don't want to override the fill.
-        // Otherwise all cells of the spreadsheet will have a background color.
+        // Otherwise, all cells of the spreadsheet will have a background color.
         $isDefaultStyle = (0 === $styleId);
 
         return $isDefaultStyle ? 0 : ($this->styleRegistry->getFillIdForStyleId($styleId) ?? 0);
@@ -306,7 +306,7 @@ final class StyleManager extends CommonStyleManager
     private function getBorderIdForStyleId(int $styleId): int
     {
         // For the default style (ID = 0), we don't want to override the border.
-        // Otherwise all cells of the spreadsheet will have a border.
+        // Otherwise, all cells of the spreadsheet will have a border.
         $isDefaultStyle = (0 === $styleId);
 
         return $isDefaultStyle ? 0 : ($this->styleRegistry->getBorderIdForStyleId($styleId) ?? 0);
@@ -319,7 +319,7 @@ final class StyleManager extends CommonStyleManager
     private function getFormatIdForStyleId(int $styleId): int
     {
         // For the default style (ID = 0), we don't want to override the format.
-        // Otherwise all cells of the spreadsheet will have a format.
+        // Otherwise, all cells of the spreadsheet will have a format.
         $isDefaultStyle = (0 === $styleId);
 
         return $isDefaultStyle ? 0 : ($this->styleRegistry->getFormatIdForStyleId($styleId) ?? 0);

@@ -19,7 +19,6 @@ use OpenSpout\Reader\Wrapper\XMLReader;
 use OpenSpout\TestUsingResource;
 use OpenSpout\Writer\AutoFilter;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
-use OpenSpout\Writer\RowCreationHelper;
 use OpenSpout\Writer\XLSX\Manager\WorkbookManager;
 use OpenSpout\Writer\XLSX\Options\HeaderFooter;
 use OpenSpout\Writer\XLSX\Options\PageMargin;
@@ -36,15 +35,12 @@ use ReflectionHelper;
  */
 final class WriterTest extends TestCase
 {
-    use RowCreationHelper;
-
     public function testAddRowShouldThrowExceptionIfCannotOpenAFileForWriting(): void
     {
         $fileName = 'file_that_wont_be_written.xlsx';
         $filePath = (new TestUsingResource())->getGeneratedUnwritableResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
 
         $this->expectException(IOException::class);
@@ -53,8 +49,7 @@ final class WriterTest extends TestCase
 
     public function testAddRowShouldThrowExceptionIfCallAddRowBeforeOpeningWriter(): void
     {
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $this->expectException(WriterNotOpenedException::class);
 
@@ -63,12 +58,11 @@ final class WriterTest extends TestCase
 
     public function testAddRowShouldThrowExceptionIfCalledBeforeOpeningWriter(): void
     {
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $this->expectException(WriterNotOpenedException::class);
 
-        $writer->addRows($this->createRowsFromValues([['xlsx--11', 'xlsx--12']]));
+        $writer->addRows([Row::fromValues(['xlsx--11', 'xlsx--12'])]);
     }
 
     public function testAddNewSheetAndMakeItCurrent(): void
@@ -76,8 +70,7 @@ final class WriterTest extends TestCase
         $fileName = 'test_add_new_sheet_and_make_it_current.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->addNewSheetAndMakeItCurrent();
@@ -93,8 +86,7 @@ final class WriterTest extends TestCase
         $fileName = 'test_set_current_sheet.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
 
@@ -114,8 +106,7 @@ final class WriterTest extends TestCase
         $fileName = 'test_double_close_calls.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->close(); // This call should not cause any error
 
@@ -130,8 +121,7 @@ final class WriterTest extends TestCase
         $fileName = 'test_default_properties.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->close();
@@ -162,21 +152,20 @@ final class WriterTest extends TestCase
         $fileName = 'test_set_properties.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $properties = new Properties(
-            'Title',
-            'Subject',
-            'Application',
-            'Creator',
-            'Last Modified By',
-            'key,words',
-            'Description',
-            'Category',
-            'English',
+        $options = new Options(
+            tempFolder: (new TestUsingResource())->getTempFolderPath(),
+            properties: new Properties(
+                'Title',
+                'Subject',
+                'Application',
+                'Creator',
+                'Last Modified By',
+                'key,words',
+                'Description',
+                'Category',
+                'English',
+            ),
         );
-
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
-        $options->setProperties($properties);
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->close();
@@ -202,15 +191,14 @@ final class WriterTest extends TestCase
         $fileName = 'test_set_custom_properties.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $properties = new Properties(
-            customProperties: [
-                'test' => 'Test',
-            ]
+        $options = new Options(
+            tempFolder: (new TestUsingResource())->getTempFolderPath(),
+            properties: new Properties(
+                customProperties: [
+                    'test' => 'Test',
+                ]
+            ),
         );
-
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
-        $options->setProperties($properties);
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->close();
@@ -232,15 +220,15 @@ final class WriterTest extends TestCase
     public function testAddRowShouldWriteGivenDataToSheetUsingInlineStrings(): void
     {
         $fileName = 'test_add_row_should_write_given_data_to_sheet_using_inline_strings.xlsx';
-        $dataRows = $this->createRowsFromValues([
-            ['xlsx--11', 'xlsx--12'],
-            ['xlsx--21', 'xlsx--22', 'xlsx--23'],
-        ]);
+        $dataRows = [
+            Row::fromValues(['xlsx--11', 'xlsx--12']),
+            Row::fromValues(['xlsx--21', 'xlsx--22', 'xlsx--23']),
+        ];
 
-        $this->writeToXLSXFile($dataRows, $fileName, $shouldUseInlineStrings = true);
+        $this->writeToXLSXFile($dataRows, $fileName, true);
 
         foreach ($dataRows as $dataRow) {
-            foreach ($dataRow->getCells() as $cell) {
+            foreach ($dataRow->cells as $cell) {
                 $this->assertInlineDataWasWrittenToSheet($fileName, 1, $cell->getValue());
             }
         }
@@ -249,17 +237,17 @@ final class WriterTest extends TestCase
     public function testAddRowShouldWriteGivenDataToTwoSheetsUsingInlineStrings(): void
     {
         $fileName = 'test_add_row_should_write_given_data_to_two_sheets_using_inline_strings.xlsx';
-        $dataRows = $this->createRowsFromValues([
-            ['xlsx--11', 'xlsx--12'],
-            ['xlsx--21', 'xlsx--22', 'xlsx--23'],
-        ]);
+        $dataRows = [
+            Row::fromValues(['xlsx--11', 'xlsx--12']),
+            Row::fromValues(['xlsx--21', 'xlsx--22', 'xlsx--23']),
+        ];
 
         $numSheets = 2;
-        $this->writeToMultipleSheetsInXLSXFile($dataRows, $numSheets, $fileName, $shouldUseInlineStrings = true);
+        $this->writeToMultipleSheetsInXLSXFile($dataRows, $numSheets, $fileName, true);
 
         for ($i = 1; $i <= $numSheets; ++$i) {
             foreach ($dataRows as $dataRow) {
-                foreach ($dataRow->getCells() as $cell) {
+                foreach ($dataRow->cells as $cell) {
                     $this->assertInlineDataWasWrittenToSheet($fileName, $numSheets, $cell->getValue());
                 }
             }
@@ -269,15 +257,15 @@ final class WriterTest extends TestCase
     public function testAddRowShouldWriteGivenDataToSheetUsingSharedStrings(): void
     {
         $fileName = 'test_add_row_should_write_given_data_to_sheet_using_shared_strings.xlsx';
-        $dataRows = $this->createRowsFromValues([
-            ['xlsx--11', 'xlsx--12'],
-            ['xlsx--21', 'xlsx--22', 'xlsx--23'],
-        ]);
+        $dataRows = [
+            Row::fromValues(['xlsx--11', 'xlsx--12']),
+            Row::fromValues(['xlsx--21', 'xlsx--22', 'xlsx--23']),
+        ];
 
-        $this->writeToXLSXFile($dataRows, $fileName, $shouldUseInlineStrings = false);
+        $this->writeToXLSXFile($dataRows, $fileName, false);
 
         foreach ($dataRows as $dataRow) {
-            foreach ($dataRow->getCells() as $cell) {
+            foreach ($dataRow->cells as $cell) {
                 $value = $cell->getValue();
                 self::assertIsScalar($value);
                 $this->assertSharedStringWasWritten($fileName, (string) $value);
@@ -288,17 +276,17 @@ final class WriterTest extends TestCase
     public function testAddRowShouldWriteGivenDataToTwoSheetsUsingSharedStrings(): void
     {
         $fileName = 'test_add_row_should_write_given_data_to_two_sheets_using_shared_strings.xlsx';
-        $dataRows = $this->createRowsFromValues([
-            ['xlsx--11', 'xlsx--12'],
-            ['xlsx--21', 'xlsx--22', 'xlsx--23'],
-        ]);
+        $dataRows = [
+            Row::fromValues(['xlsx--11', 'xlsx--12']),
+            Row::fromValues(['xlsx--21', 'xlsx--22', 'xlsx--23']),
+        ];
 
         $numSheets = 2;
-        $this->writeToMultipleSheetsInXLSXFile($dataRows, $numSheets, $fileName, $shouldUseInlineStrings = false);
+        $this->writeToMultipleSheetsInXLSXFile($dataRows, $numSheets, $fileName, false);
 
         for ($i = 1; $i <= $numSheets; ++$i) {
             foreach ($dataRows as $dataRow) {
-                foreach ($dataRow->getCells() as $cell) {
+                foreach ($dataRow->cells as $cell) {
                     $value = $cell->getValue();
                     self::assertIsScalar($value);
                     $this->assertSharedStringWasWritten($fileName, (string) $value);
@@ -307,32 +295,16 @@ final class WriterTest extends TestCase
         }
     }
 
-    public function testAddRowShouldSupportAssociativeArrays(): void
-    {
-        $fileName = 'test_add_row_should_support_associative_arrays.xlsx';
-        $dataRows = $this->createRowsFromValues([
-            ['foo' => 'xlsx--11', 'bar' => 'xlsx--12'],
-        ]);
-
-        $this->writeToXLSXFile($dataRows, $fileName);
-
-        foreach ($dataRows as $dataRow) {
-            foreach ($dataRow->getCells() as $cell) {
-                $this->assertInlineDataWasWrittenToSheet($fileName, 1, $cell->getValue());
-            }
-        }
-    }
-
     public function testAddRowShouldNotWriteEmptyRows(): void
     {
         $fileName = 'test_add_row_should_not_write_empty_rows.xlsx';
-        $dataRows = $this->createRowsFromValues([
-            [''],
-            ['xlsx--21', 'xlsx--22'],
-            ['key' => ''],
-            [''],
-            ['xlsx--51', 'xlsx--52'],
-        ]);
+        $dataRows = [
+            Row::fromValues(['']),
+            Row::fromValues(['xlsx--21', 'xlsx--22']),
+            Row::fromValues(['']),
+            Row::fromValues(['']),
+            Row::fromValues(['xlsx--51', 'xlsx--52']),
+        ];
 
         $this->writeToXLSXFile($dataRows, $fileName);
 
@@ -346,8 +318,8 @@ final class WriterTest extends TestCase
     public function testAddRowShouldSupportMultipleTypesOfData(): void
     {
         $fileName = 'test_add_row_should_support_multiple_types_of_data.xlsx';
-        $dataRows = $this->createRowsFromValues([
-            [
+        $dataRows = [
+            Row::fromValues([
                 'xlsx--11',
                 true,
                 '',
@@ -355,8 +327,8 @@ final class WriterTest extends TestCase
                 10.2,
                 null,
                 new DateTimeImmutable('2020-03-04 06:00:00', new DateTimeZone('UTC')),
-            ],
-        ]);
+            ]),
+        ];
 
         $this->writeToXLSXFile($dataRows, $fileName, false);
 
@@ -412,9 +384,9 @@ final class WriterTest extends TestCase
             self::assertSame(',', localeconv()['decimal_point']);
 
             $fileName = 'test_add_row_should_support_float_values_in_different_locale.xlsx';
-            $dataRows = $this->createRowsFromValues([
-                [$valueToWrite],
-            ]);
+            $dataRows = [
+                Row::fromValues([$valueToWrite]),
+            ];
 
             $this->writeToXLSXFile($dataRows, $fileName, $shouldUseInlineStrings = false);
 
@@ -429,24 +401,25 @@ final class WriterTest extends TestCase
     public function testAddRowShouldWriteGivenDataToTheCorrectSheet(): void
     {
         $fileName = 'test_add_row_should_write_given_data_to_the_correct_sheet.xlsx';
-        $dataRowsSheet1 = $this->createRowsFromValues([
-            ['xlsx--sheet1--11', 'xlsx--sheet1--12'],
-            ['xlsx--sheet1--21', 'xlsx--sheet1--22', 'xlsx--sheet1--23'],
-        ]);
-        $dataRowsSheet2 = $this->createRowsFromValues([
-            ['xlsx--sheet2--11', 'xlsx--sheet2--12'],
-            ['xlsx--sheet2--21', 'xlsx--sheet2--22', 'xlsx--sheet2--23'],
-        ]);
-        $dataRowsSheet1Again = $this->createRowsFromValues([
-            ['xlsx--sheet1--31', 'xlsx--sheet1--32'],
-            ['xlsx--sheet1--41', 'xlsx--sheet1--42', 'xlsx--sheet1--43'],
-        ]);
+        $dataRowsSheet1 = [
+            Row::fromValues(['xlsx--sheet1--11', 'xlsx--sheet1--12']),
+            Row::fromValues(['xlsx--sheet1--21', 'xlsx--sheet1--22', 'xlsx--sheet1--23']),
+        ];
+        $dataRowsSheet2 = [
+            Row::fromValues(['xlsx--sheet2--11', 'xlsx--sheet2--12']),
+            Row::fromValues(['xlsx--sheet2--21', 'xlsx--sheet2--22', 'xlsx--sheet2--23']),
+        ];
+        $dataRowsSheet1Again = [
+            Row::fromValues(['xlsx--sheet1--31', 'xlsx--sheet1--32']),
+            Row::fromValues(['xlsx--sheet1--41', 'xlsx--sheet1--42', 'xlsx--sheet1--43']),
+        ];
 
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
-        $options->SHOULD_USE_INLINE_STRINGS = true;
+        $options = new Options(
+            tempFolder: (new TestUsingResource())->getTempFolderPath(),
+            SHOULD_USE_INLINE_STRINGS: true,
+        );
         $writer = new Writer($options);
 
         $writer->openToFile($resourcePath);
@@ -464,17 +437,17 @@ final class WriterTest extends TestCase
         $writer->close();
 
         foreach ($dataRowsSheet1 as $dataRow) {
-            foreach ($dataRow->getCells() as $cell) {
+            foreach ($dataRow->cells as $cell) {
                 $this->assertInlineDataWasWrittenToSheet($fileName, 1, $cell->getValue(), 'Data should have been written in Sheet 1');
             }
         }
         foreach ($dataRowsSheet2 as $dataRow) {
-            foreach ($dataRow->getCells() as $cell) {
+            foreach ($dataRow->cells as $cell) {
                 $this->assertInlineDataWasWrittenToSheet($fileName, 2, $cell->getValue(), 'Data should have been written in Sheet 2');
             }
         }
         foreach ($dataRowsSheet1Again as $dataRow) {
-            foreach ($dataRow->getCells() as $cell) {
+            foreach ($dataRow->cells as $cell) {
                 $this->assertInlineDataWasWrittenToSheet($fileName, 1, $cell->getValue(), 'Data should have been written in Sheet 1');
             }
         }
@@ -483,11 +456,11 @@ final class WriterTest extends TestCase
     public function testAddRowShouldAutomaticallyCreateNewSheetsIfMaxRowsReachedAndOptionTurnedOn(): void
     {
         $fileName = 'test_add_row_should_automatically_create_new_sheets_if_max_rows_reached_and_option_turned_on.xlsx';
-        $dataRows = $this->createRowsFromValues([
-            ['xlsx--sheet1--11', 'xlsx--sheet1--12'],
-            ['xlsx--sheet1--21', 'xlsx--sheet1--22', 'xlsx--sheet1--23'],
-            ['xlsx--sheet2--11', 'xlsx--sheet2--12'], // this should be written in a new sheet
-        ]);
+        $dataRows = [
+            Row::fromValues(['xlsx--sheet1--11', 'xlsx--sheet1--12']),
+            Row::fromValues(['xlsx--sheet1--21', 'xlsx--sheet1--22', 'xlsx--sheet1--23']),
+            Row::fromValues(['xlsx--sheet2--11', 'xlsx--sheet2--12']), // this should be written in a new sheet
+        ];
 
         // set the maxRowsPerSheet limit to 2
         ReflectionHelper::setStaticValue(WorkbookManager::class, 'maxRowsPerWorksheet', 2);
@@ -504,11 +477,11 @@ final class WriterTest extends TestCase
     public function testAddRowShouldNotCreateNewSheetsIfMaxRowsReachedAndOptionTurnedOff(): void
     {
         $fileName = 'test_add_row_should_not_create_new_sheets_if_max_rows_reached_and_option_turned_off.xlsx';
-        $dataRows = $this->createRowsFromValues([
-            ['xlsx--sheet1--11', 'xlsx--sheet1--12'],
-            ['xlsx--sheet1--21', 'xlsx--sheet1--22', 'xlsx--sheet1--23'],
-            ['xlsx--sheet1--31', 'xlsx--sheet1--32'], // this should NOT be written in a new sheet
-        ]);
+        $dataRows = [
+            Row::fromValues(['xlsx--sheet1--11', 'xlsx--sheet1--12']),
+            Row::fromValues(['xlsx--sheet1--21', 'xlsx--sheet1--22', 'xlsx--sheet1--23']),
+            Row::fromValues(['xlsx--sheet1--31', 'xlsx--sheet1--32']), // this should NOT be written in a new sheet
+        ];
 
         // set the maxRowsPerSheet limit to 2
         ReflectionHelper::setStaticValue(WorkbookManager::class, 'maxRowsPerWorksheet', 2);
@@ -524,9 +497,9 @@ final class WriterTest extends TestCase
     public function testAddRowShouldEscapeHtmlSpecialCharacters(): void
     {
         $fileName = 'test_add_row_should_escape_html_special_characters.xlsx';
-        $dataRows = $this->createRowsFromValues([
-            ['I\'m in "great" mood', 'This <must> be escaped & tested'],
-        ]);
+        $dataRows = [
+            Row::fromValues(['I\'m in "great" mood', 'This <must> be escaped & tested']),
+        ];
 
         $this->writeToXLSXFile($dataRows, $fileName);
 
@@ -537,9 +510,9 @@ final class WriterTest extends TestCase
     public function testAddRowShouldEscapeControlCharacters(): void
     {
         $fileName = 'test_add_row_should_escape_control_characters.xlsx';
-        $dataRows = $this->createRowsFromValues([
-            ['control '.\chr(21).' character'],
-        ]);
+        $dataRows = [
+            Row::fromValues(['control '.\chr(21).' character']),
+        ];
 
         $this->writeToXLSXFile($dataRows, $fileName);
 
@@ -550,7 +523,7 @@ final class WriterTest extends TestCase
     {
         $fileName = 'test_add_row_should_apply_height.xlsx';
 
-        $this->writeToXLSXFile([Row::fromValues(['xlsx--11'])->setHeight(25)], $fileName);
+        $this->writeToXLSXFile([Row::fromValues(['xlsx--11'], 25)], $fileName);
 
         $xmlReader = $this->getXmlReaderForSheetFromXmlFile($fileName, '1');
 
@@ -566,8 +539,7 @@ final class WriterTest extends TestCase
         $fileName = 'test_add_row_should_support_column_widths.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $options->mergeCells(0, 1, 3, 1);
@@ -595,8 +567,7 @@ final class WriterTest extends TestCase
         $fileName = 'test_merge_cells_on_separate_sheets.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $options->mergeCells(0, 1, 3, 1, $writer->getCurrentSheet()->getIndex());
@@ -632,8 +603,7 @@ final class WriterTest extends TestCase
         $fileName = 'test_empty_sheet.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
 
@@ -656,7 +626,7 @@ final class WriterTest extends TestCase
 
         $fileName = 'test_mime_type.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
-        $dataRows = $this->createRowsFromValues([['foo']]);
+        $dataRows = [Row::fromValues(['foo'])];
 
         $this->writeToXLSXFile($dataRows, $fileName);
 
@@ -666,11 +636,11 @@ final class WriterTest extends TestCase
 
     public function testShouldSetOptionWithGetter(): void
     {
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(
+            DEFAULT_COLUMN_WIDTH: (float) random_int(100, 199),
+            tempFolder: (new TestUsingResource())->getTempFolderPath(),
+        );
         $writer = new Writer($options);
-
-        $options->DEFAULT_COLUMN_WIDTH = (float) random_int(100, 199);
 
         self::assertSame($options->DEFAULT_COLUMN_WIDTH, $writer->getOptions()->DEFAULT_COLUMN_WIDTH);
     }
@@ -680,8 +650,7 @@ final class WriterTest extends TestCase
         $fileName = 'sheet_indexes.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->getCurrentSheet()->setName(uniqid());
@@ -695,8 +664,7 @@ final class WriterTest extends TestCase
     {
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath('row_count.xlsx');
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         self::assertSame(0, $writer->getWrittenRowCount());
         $writer->openToFile($resourcePath);
@@ -710,11 +678,11 @@ final class WriterTest extends TestCase
         $writer->addRow(Row::fromValues(['csv-2', null]));
         self::assertSame(2, $writer->getWrittenRowCount());
         self::assertSame(2, $firstSheet->getWrittenRowCount());
-        $writer->addRows($this->createRowsFromValues([
-            ['csv--11', 'csv--12'],
-            [],
-            ['csv--31', 'csv--32'],
-        ]));
+        $writer->addRows([
+            Row::fromValues(['csv--11', 'csv--12']),
+            Row::fromValues([]),
+            Row::fromValues(['csv--31', 'csv--32']),
+        ]);
         self::assertSame(5, $writer->getWrittenRowCount());
 
         $secondSheet = $writer->addNewSheetAndMakeItCurrent();
@@ -735,8 +703,7 @@ final class WriterTest extends TestCase
         $fileName = 'test_close_should_add_dimension_tag.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->addRow(Row::fromValues(['csv-1', null]));
@@ -757,8 +724,7 @@ final class WriterTest extends TestCase
         $fileName = 'test_close_should_add_autofilter_tag.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $autoFilter = new AutoFilter(0, 1, 3, 3);
@@ -778,8 +744,7 @@ final class WriterTest extends TestCase
         $fileName = 'test_remove_autofilter_should_delete_all_autofilter_tag.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $autoFilter = new AutoFilter(0, 1, 3, 3);
@@ -805,8 +770,7 @@ final class WriterTest extends TestCase
         $fileName = 'test_add_autofilter_to_two_sheets_should-write-correct-data-to-workbook-file.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->getCurrentSheet()->setName('Sheet First');
@@ -847,31 +811,30 @@ final class WriterTest extends TestCase
     {
         $fileName = 'test_add_comment_should_be_written_to_two_files.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
 
-        $cell = Cell::fromValue('Test');
-        $comment = new Comment();
+        $textRun = new TextRun(
+            text: 'Great comment',
+            fontSize: 12,
+            fontColor: 'FF0000',
+            fontName: 'Arial',
+            bold: true,
+            italic: false,
+        );
 
-        $comment->height = '200px';
-        $comment->width = '400px';
-        $comment->marginTop = '1.5pt';
-        $comment->marginLeft = '59.25pt';
-        $comment->fillColor = '#F0F0F0';
-        $comment->visible = false;
+        $comment = new Comment(
+            height: '200px',
+            width: '400px',
+            marginLeft: '59.25pt',
+            marginTop: '1.5pt',
+            visible: false,
+            fillColor: '#F0F0F0',
+            textRuns: [$textRun],
+        );
 
-        $textRun = new TextRun('Great comment');
-        $textRun->bold = true;
-        $textRun->italic = false;
-        $textRun->fontSize = 12;
-        $textRun->fontName = 'Arial';
-        $textRun->fontColor = 'FF0000';
-
-        $comment->addTextRun($textRun);
-
-        $cell->comment = $comment;
+        $cell = Cell::fromValue('Test', null, $comment);
         $row = new Row([Cell::fromValue('something'), $cell, Cell::fromValue('else')]);
         $writer->addRow($row);
         $writer->close();
@@ -901,24 +864,22 @@ final class WriterTest extends TestCase
     {
         $fileName = 'test_add_comment_bold_not_italic.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
 
-        $cell = Cell::fromValue('Test');
-        $comment = new Comment();
+        $textRun = new TextRun(
+            text: 'Great comment',
+            fontSize: 12,
+            fontColor: 'FF0000',
+            fontName: 'Arial',
+            bold: true,
+            italic: false,
+        );
 
-        $textRun = new TextRun('Great comment');
-        $textRun->bold = true;
-        $textRun->italic = false;
-        $textRun->fontSize = 12;
-        $textRun->fontName = 'Arial';
-        $textRun->fontColor = 'FF0000';
+        $comment = new Comment(textRuns: [$textRun]);
 
-        $comment->addTextRun($textRun);
-
-        $cell->comment = $comment;
+        $cell = Cell::fromValue('Test', null, $comment);
         $row = new Row([Cell::fromValue('something'), $cell, Cell::fromValue('else')]);
         $writer->addRow($row);
         $writer->close();
@@ -937,24 +898,22 @@ final class WriterTest extends TestCase
     {
         $fileName = 'test_add_comment_italic_not_bold.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
 
-        $cell = Cell::fromValue('Test');
-        $comment = new Comment();
+        $textRun = new TextRun(
+            text: 'Great comment',
+            fontSize: 12,
+            fontColor: 'FF0000',
+            fontName: 'Arial',
+            bold: false,
+            italic: true,
+        );
 
-        $textRun = new TextRun('Great comment');
-        $textRun->bold = false;
-        $textRun->italic = true;
-        $textRun->fontSize = 12;
-        $textRun->fontName = 'Arial';
-        $textRun->fontColor = 'FF0000';
+        $comment = new Comment(textRuns: [$textRun]);
 
-        $comment->addTextRun($textRun);
-
-        $cell->comment = $comment;
+        $cell = Cell::fromValue('Test', null, $comment);
         $row = new Row([Cell::fromValue('something'), $cell, Cell::fromValue('else')]);
         $writer->addRow($row);
         $writer->close();
@@ -973,14 +932,14 @@ final class WriterTest extends TestCase
     {
         $fileName = 'test_page_setup.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
-
-        $options->setPageSetup(new PageSetup(
-            PageOrientation::LANDSCAPE,
-            PaperSize::A4,
-        ));
-        $options->setPageMargin(new PageMargin(1, 2, 3, 4, 5, 6));
+        $options = new Options(
+            tempFolder: (new TestUsingResource())->getTempFolderPath(),
+            pageMargin: new PageMargin(1, 2, 3, 4, 5, 6),
+            pageSetup: new PageSetup(
+                PageOrientation::LANDSCAPE,
+                PaperSize::A4,
+            ),
+        );
 
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
@@ -1002,15 +961,15 @@ final class WriterTest extends TestCase
     {
         $fileName = 'test_fit_to_page.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
-
-        $options->setPageSetup(new PageSetup(
-            PageOrientation::LANDSCAPE,
-            PaperSize::A4,
-            0,
-            1
-        ));
+        $options = new Options(
+            tempFolder: (new TestUsingResource())->getTempFolderPath(),
+            pageSetup: new PageSetup(
+                PageOrientation::LANDSCAPE,
+                PaperSize::A4,
+                0,
+                1
+            ),
+        );
 
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
@@ -1032,14 +991,14 @@ final class WriterTest extends TestCase
     {
         $fileName = 'test_fit_to_page.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
-
-        $options->setPageSetup(new PageSetup(
-            PageOrientation::LANDSCAPE,
-            PaperSize::A4,
-            1,
-        ));
+        $options = new Options(
+            tempFolder: (new TestUsingResource())->getTempFolderPath(),
+            pageSetup: new PageSetup(
+                PageOrientation::LANDSCAPE,
+                PaperSize::A4,
+                1,
+            ),
+        );
 
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
@@ -1061,8 +1020,7 @@ final class WriterTest extends TestCase
     {
         $fileName = 'test_auto_filter_should_write_correct_sheet_pr.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
 
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
@@ -1086,14 +1044,14 @@ final class WriterTest extends TestCase
     {
         $fileName = 'test_auto_filter_fit_to_page_should_write_correct_sheet_pr.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
-
-        $options->setPageSetup(new PageSetup(
-            PageOrientation::LANDSCAPE,
-            PaperSize::A4,
-            1,
-        ));
+        $options = new Options(
+            tempFolder: (new TestUsingResource())->getTempFolderPath(),
+            pageSetup: new PageSetup(
+                PageOrientation::LANDSCAPE,
+                PaperSize::A4,
+                1,
+            ),
+        );
 
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
@@ -1117,16 +1075,16 @@ final class WriterTest extends TestCase
     {
         $fileName = 'test_header_footer.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
-
-        $options->setHeaderFooter(new HeaderFooter(
-            'oddHeader',
-            'oddFooter',
-            'evenHeader',
-            'evenFooter',
-            true
-        ));
+        $options = new Options(
+            tempFolder: (new TestUsingResource())->getTempFolderPath(),
+            headerFooter: new HeaderFooter(
+                'oddHeader',
+                'oddFooter',
+                'evenHeader',
+                'evenFooter',
+                true
+            ),
+        );
 
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
@@ -1155,15 +1113,15 @@ final class WriterTest extends TestCase
     {
         $fileName = 'test_header_footer.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
-
-        $options->setHeaderFooter(new HeaderFooter(
-            'oddHeader',
-            'oddFooter',
-            'evenHeader',
-            'evenFooter',
-        ));
+        $options = new Options(
+            tempFolder: (new TestUsingResource())->getTempFolderPath(),
+            headerFooter: new HeaderFooter(
+                'oddHeader',
+                'oddFooter',
+                'evenHeader',
+                'evenFooter',
+            ),
+        );
 
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
@@ -1190,16 +1148,16 @@ final class WriterTest extends TestCase
     {
         $fileName = 'test_header_footer.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
-
-        $options->setHeaderFooter(new HeaderFooter(
-            'oddHeader',
-            'oddFooter',
-            'evenHeader',
-            null,
-            false
-        ));
+        $options = new Options(
+            tempFolder: (new TestUsingResource())->getTempFolderPath(),
+            headerFooter: new HeaderFooter(
+                'oddHeader',
+                'oddFooter',
+                'evenHeader',
+                null,
+                false
+            ),
+        );
 
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
@@ -1226,8 +1184,7 @@ final class WriterTest extends TestCase
     {
         $fileName = 'test_print_title_rows.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
 
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
@@ -1251,8 +1208,7 @@ final class WriterTest extends TestCase
     {
         $fileName = 'test_print_title_rows_not_overwrite_other_defined_name.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
 
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
@@ -1282,8 +1238,7 @@ final class WriterTest extends TestCase
     {
         $fileName = 'test_date_interval.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
 
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
@@ -1307,8 +1262,7 @@ final class WriterTest extends TestCase
     {
         $fileName = 'test_sheet_protection_setup.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
 
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
@@ -1353,8 +1307,7 @@ final class WriterTest extends TestCase
     {
         $fileName = 'test_sheet_protection_setup.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
 
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
@@ -1382,15 +1335,14 @@ final class WriterTest extends TestCase
         $fileName = 'test_set_workbook_protection.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
-        $options->setWorkbookProtection(
-            new WorkbookProtection(
+        $options = new Options(
+            tempFolder: (new TestUsingResource())->getTempFolderPath(),
+            workbookProtection: new WorkbookProtection(
                 password: 'password',
                 lockStructure: true,
-                lockRevisions: true,
                 lockWindows: true,
-            )
+                lockRevisions: true,
+            ),
         );
 
         $writer = new Writer($options);
@@ -1416,15 +1368,14 @@ final class WriterTest extends TestCase
     ): Writer {
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = ['tempFolder' => (new TestUsingResource())->getTempFolderPath()];
         if (null !== $shouldUseInlineStrings) {
-            $options->SHOULD_USE_INLINE_STRINGS = $shouldUseInlineStrings;
+            $options['SHOULD_USE_INLINE_STRINGS'] = $shouldUseInlineStrings;
         }
         if (null !== $shouldCreateSheetsAutomatically) {
-            $options->SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY = $shouldCreateSheetsAutomatically;
+            $options['SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY'] = $shouldCreateSheetsAutomatically;
         }
-        $writer = new Writer($options);
+        $writer = new Writer(new Options(...$options));
 
         $writer->openToFile($resourcePath);
         $writer->addRows($allRows);
@@ -1445,15 +1396,14 @@ final class WriterTest extends TestCase
     ): Writer {
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = ['tempFolder' => (new TestUsingResource())->getTempFolderPath()];
         if (null !== $shouldUseInlineStrings) {
-            $options->SHOULD_USE_INLINE_STRINGS = $shouldUseInlineStrings;
+            $options['SHOULD_USE_INLINE_STRINGS'] = $shouldUseInlineStrings;
         }
         if (null !== $shouldCreateSheetsAutomatically) {
-            $options->SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY = $shouldCreateSheetsAutomatically;
+            $options['SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY'] = $shouldCreateSheetsAutomatically;
         }
-        $writer = new Writer($options);
+        $writer = new Writer(new Options(...$options));
 
         $writer->openToFile($resourcePath);
         $writer->addRows($allRows);

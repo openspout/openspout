@@ -6,101 +6,47 @@ namespace OpenSpout\Common\Entity;
 
 use DateInterval;
 use DateTimeInterface;
+use InvalidArgumentException;
 use OpenSpout\Common\Entity\Style\Style;
 
-final class Row
+final readonly class Row
 {
     /**
-     * The cells in this row.
-     *
-     * @var Cell[]
+     * @param array<non-negative-int, Cell> $cells
      */
-    private array $cells = [];
-
-    /** The row style. */
-    private Style $style;
-
-    /** Row height. */
-    private float $height = 0;
-
-    /**
-     * Row constructor.
-     *
-     * @param Cell[] $cells
-     */
-    public function __construct(array $cells, ?Style $style = null)
-    {
-        $this
-            ->setCells($cells)
-            ->setStyle($style)
-        ;
-    }
-
-    /**
-     * @param list<null|bool|DateInterval|DateTimeInterface|float|int|string> $cellValues
-     */
-    public static function fromValues(array $cellValues = [], ?Style $rowStyle = null): self
-    {
-        $cells = array_map(static function (bool|DateInterval|DateTimeInterface|float|int|string|null $cellValue): Cell {
-            return Cell::fromValue($cellValue);
-        }, $cellValues);
-
-        return new self($cells, $rowStyle);
-    }
-
-    /**
-     * @param array<array-key, null|bool|DateInterval|DateTimeInterface|float|int|string> $cellValues
-     * @param array<array-key, Style>                                                     $columnStyles
-     */
-    public static function fromValuesWithStyles(array $cellValues = [], ?Style $rowStyle = null, array $columnStyles = []): self
-    {
-        $cells = array_map(static function (bool|DateInterval|DateTimeInterface|float|int|string|null $cellValue, int|string $key) use ($columnStyles): Cell {
-            return Cell::fromValue($cellValue, $columnStyles[$key] ?? null);
-        }, $cellValues, array_keys($cellValues));
-
-        return new self($cells, $rowStyle);
-    }
-
-    /**
-     * @return Cell[] $cells
-     */
-    public function getCells(): array
-    {
-        return $this->cells;
-    }
-
-    /**
-     * @param Cell[] $cells
-     */
-    public function setCells(array $cells): self
-    {
-        $this->cells = [];
-        foreach ($cells as $cell) {
-            $this->addCell($cell);
+    public function __construct(
+        public array $cells,
+        public float $height = 0,
+    ) {
+        foreach ($this->cells as $index => $cell) {
+            if (!\is_int($index) || 0 > $index) {
+                throw new InvalidArgumentException(\sprintf(
+                    'Cell indexes must be non-negative integers, %s',
+                    $index
+                ));
+            }
+            if (!$cell instanceof Cell) {
+                throw new InvalidArgumentException(\sprintf(
+                    'Cells must be instance of %s, %s provided at index %s',
+                    Cell::class,
+                    get_debug_type($cell),
+                    $index
+                ));
+            }
         }
-
-        return $this;
     }
 
-    public function setCellAtIndex(Cell $cell, int $cellIndex): self
+    /**
+     * @param array<non-negative-int, Cell> $cells
+     */
+    public function withCells(array $cells): self
     {
-        $this->cells[$cellIndex] = $cell;
-
-        return $this;
+        return new self($cells, $this->height);
     }
 
-    public function getCellAtIndex(int $cellIndex): ?Cell
-    {
-        return $this->cells[$cellIndex] ?? null;
-    }
-
-    public function addCell(Cell $cell): self
-    {
-        $this->cells[] = $cell;
-
-        return $this;
-    }
-
+    /**
+     * @return non-negative-int
+     */
     public function getNumCells(): int
     {
         // When using "setCellAtIndex", it's possible to
@@ -110,36 +56,6 @@ final class Row
         }
 
         return max(array_keys($this->cells)) + 1;
-    }
-
-    public function getStyle(): Style
-    {
-        return $this->style;
-    }
-
-    public function setStyle(?Style $style): self
-    {
-        $this->style = $style ?? new Style();
-
-        return $this;
-    }
-
-    /**
-     * Set row height.
-     */
-    public function setHeight(float $height): self
-    {
-        $this->height = $height;
-
-        return $this;
-    }
-
-    /**
-     * Returns row height.
-     */
-    public function getHeight(): float
-    {
-        return $this->height;
     }
 
     /**
@@ -152,10 +68,6 @@ final class Row
         }, $this->cells);
     }
 
-    /**
-     * Detect whether a row is considered empty.
-     * An empty row has all of its cells empty.
-     */
     public function isEmpty(): bool
     {
         foreach ($this->cells as $cell) {
@@ -165,5 +77,30 @@ final class Row
         }
 
         return true;
+    }
+
+    /**
+     * @param list<null|bool|DateInterval|DateTimeInterface|float|int|string> $cellValues
+     */
+    public static function fromValues(array $cellValues, float $height = 0): self
+    {
+        $cells = array_map(static function (bool|DateInterval|DateTimeInterface|float|int|string|null $cellValue): Cell {
+            return Cell::fromValue($cellValue);
+        }, $cellValues);
+
+        return new self($cells, $height);
+    }
+
+    /**
+     * @param array<non-negative-int, null|bool|DateInterval|DateTimeInterface|float|int|string> $cellValues
+     * @param array<non-negative-int, Style>                                                     $columnStyles
+     */
+    public static function fromValuesWithStyles(array $cellValues, array $columnStyles, float $height = 0): self
+    {
+        $cells = array_map(static function (bool|DateInterval|DateTimeInterface|float|int|string|null $cellValue, int|string $key) use ($columnStyles): Cell {
+            return Cell::fromValue($cellValue, $columnStyles[$key] ?? null);
+        }, $cellValues, array_keys($cellValues));
+
+        return new self($cells, $height);
     }
 }

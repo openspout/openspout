@@ -13,6 +13,12 @@ use PHPUnit\Framework\TestCase;
  */
 final class ColorTest extends TestCase
 {
+    /**
+     * @param int<0, 255>      $red
+     * @param int<0, 255>      $green
+     * @param int<0, 255>      $blue
+     * @param non-empty-string $expectedColor
+     */
     #[DataProvider('provideRGBCases')]
     public function testRGB(int $red, int $green, int $blue, string $expectedColor): void
     {

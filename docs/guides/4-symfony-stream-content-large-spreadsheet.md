@@ -36,7 +36,7 @@ class MyRegularController extends Controller
                 $content .= '<tr>';
                 $content .= implode(array_map(static function($cell) {
                     return '<td>' . $cell . '</td>';
-                }, $row->getCells()));
+                }, $row->cells));
                 $content .= '</tr>';
             }
             $content .= '</table><br>';
@@ -89,7 +89,7 @@ class MyStreamController extends Controller
                     echo '<tr>';
                     echo implode(array_map(static function($cell): string {
                         return '<td>' . $cell . '</td>';
-                    }, $row->getCells()));
+                    }, $row->cells));
                     echo '</tr>';
 
                     $i++;

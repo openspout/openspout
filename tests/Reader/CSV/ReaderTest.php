@@ -217,8 +217,7 @@ final class ReaderTest extends TestCase
         $allRows = [];
         $resourcePath = TestUsingResource::getResourcePath($fileName);
 
-        $options = new Options();
-        $options->ENCODING = $fileEncoding;
+        $options = new Options(ENCODING: $fileEncoding);
         $reader = $this->createCSVReader($options, new EncodingHelper($shouldUseIconv, !$shouldUseIconv));
         $reader->open($resourcePath);
 
@@ -400,21 +399,21 @@ final class ReaderTest extends TestCase
         $allRows = [];
         $resourcePath = TestUsingResource::getResourcePath($fileName);
 
-        $options = new Options();
+        $options = [];
         if (null !== $fieldDelimiter) {
-            $options->FIELD_DELIMITER = $fieldDelimiter;
+            $options['FIELD_DELIMITER'] = $fieldDelimiter;
         }
         if (null !== $fieldEnclosure) {
-            $options->FIELD_ENCLOSURE = $fieldEnclosure;
+            $options['FIELD_ENCLOSURE'] = $fieldEnclosure;
         }
         if (null !== $encoding) {
-            $options->ENCODING = $encoding;
+            $options['ENCODING'] = $encoding;
         }
         if (null !== $shouldPreserveEmptyRows) {
-            $options->SHOULD_PRESERVE_EMPTY_ROWS = $shouldPreserveEmptyRows;
+            $options['SHOULD_PRESERVE_EMPTY_ROWS'] = $shouldPreserveEmptyRows;
         }
 
-        $reader = $this->createCSVReader($options, null);
+        $reader = $this->createCSVReader(new Options(...$options), null);
         $reader->open($resourcePath);
 
         foreach ($reader->getSheetIterator() as $sheetIndex => $sheet) {

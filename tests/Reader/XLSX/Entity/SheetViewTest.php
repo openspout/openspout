@@ -15,23 +15,24 @@ final class SheetViewTest extends TestCase
 {
     public function testFreezeRowMustBePositiveInt(): void
     {
-        $sheetView = new SheetView();
-
         $this->expectException(InvalidArgumentException::class);
 
-        $sheetView->setFreezeRow(-1);
+        new SheetView(freezeRow: -1);
     }
 
     public function testFreezingFirstCellShouldntGeneratePaneTag(): void
     {
-        $sheetView = new SheetView();
-        $sheetView->setFreezeRow(3);
-        $sheetView->setFreezeColumn('B');
+        $sheetView = new SheetView(
+            freezeRow: 3,
+            freezeColumn: 'B',
+        );
 
         self::assertStringContainsString('<pane', $sheetView->getXml());
 
-        $sheetView->setFreezeRow(1);
-        $sheetView->setFreezeColumn('A');
+        $sheetView = new SheetView(
+            freezeRow: 1,
+            freezeColumn: 'A',
+        );
 
         self::assertStringNotContainsString('<pane', $sheetView->getXml());
     }

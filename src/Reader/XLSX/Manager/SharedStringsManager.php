@@ -21,25 +21,25 @@ final class SharedStringsManager
     /**
      * Definition of XML nodes names used to parse data.
      */
-    public const XML_NODE_SST = 'sst';
-    public const XML_NODE_SI = 'si';
-    public const XML_NODE_R = 'r';
-    public const XML_NODE_T = 't';
+    public const string XML_NODE_SST = 'sst';
+    public const string XML_NODE_SI = 'si';
+    public const string XML_NODE_R = 'r';
+    public const string XML_NODE_T = 't';
 
     /**
      * Definition of XML attributes used to parse data.
      */
-    public const XML_ATTRIBUTE_COUNT = 'count';
-    public const XML_ATTRIBUTE_UNIQUE_COUNT = 'uniqueCount';
-    public const XML_ATTRIBUTE_XML_SPACE = 'xml:space';
-    public const XML_ATTRIBUTE_VALUE_PRESERVE = 'preserve';
+    public const string XML_ATTRIBUTE_COUNT = 'count';
+    public const string XML_ATTRIBUTE_UNIQUE_COUNT = 'uniqueCount';
+    public const string XML_ATTRIBUTE_XML_SPACE = 'xml:space';
+    public const string XML_ATTRIBUTE_VALUE_PRESERVE = 'preserve';
 
     /** @var string Path of the XLSX file being read */
     private readonly string $filePath;
 
     private readonly Options $options;
 
-    /** @var WorkbookRelationshipsManager Helps retrieving workbook relationships */
+    /** @var WorkbookRelationshipsManager Helps to retrieve workbook relationships */
     private readonly WorkbookRelationshipsManager $workbookRelationshipsManager;
 
     /** @var CachingStrategyFactoryInterface Factory to create shared strings caching strategies */
@@ -70,13 +70,13 @@ final class SharedStringsManager
 
     /**
      * Builds an in-memory array containing all the shared strings of the sheet.
-     * All the strings are stored in a XML file, located at 'xl/sharedStrings.xml'.
+     * All the strings are stored in an XML file, located at 'xl/sharedStrings.xml'.
      * It is then accessed by the sheet data, via the string index in the built table.
      *
      * More documentation available here: http://msdn.microsoft.com/en-us/library/office/gg278314.aspx
      *
-     * The XML file can be really big with sheets containing a lot of data. That is why
-     * we need to use a XML reader that provides streaming like the XMLReader library.
+     * The XML file can be huge with sheets containing a lot of data. That is why
+     * we need to use an XML reader that provides streaming like the XMLReader library.
      *
      * @throws IOException If shared strings XML file can't be read
      */
@@ -173,7 +173,7 @@ final class SharedStringsManager
     private function getBestSharedStringsCachingStrategy(?int $sharedStringsUniqueCount): CachingStrategyInterface
     {
         return $this->cachingStrategyFactory
-            ->createBestCachingStrategy($sharedStringsUniqueCount, $this->options->getTempFolder())
+            ->createBestCachingStrategy($sharedStringsUniqueCount, $this->options->tempFolder)
         ;
     }
 

@@ -22,7 +22,7 @@ use OpenSpout\Writer\Common\Helper\CellHelper;
  */
 final class CommentsManager
 {
-    public const COMMENTS_XML_FILE_HEADER = <<<'EOD'
+    public const string COMMENTS_XML_FILE_HEADER = <<<'EOD'
         <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
         <comments xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
             <authors><author>Unknown</author></authors>
@@ -34,7 +34,7 @@ final class CommentsManager
         </comments>
         EOD;
 
-    public const DRAWINGS_VML_FILE_HEADER = <<<'EOD'
+    public const string DRAWINGS_VML_FILE_HEADER = <<<'EOD'
         <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
         <xml xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel">
           <o:shapelayout v:ext="edit">
@@ -46,7 +46,7 @@ final class CommentsManager
           </v:shapetype>
         EOD;
 
-    public const DRAWINGS_VML_FILE_FOOTER = <<<'EOD'
+    public const string DRAWINGS_VML_FILE_FOOTER = <<<'EOD'
         </xml>
         EOD;
 
@@ -118,7 +118,7 @@ final class CommentsManager
     public function addComments(Worksheet $worksheet, Row $row): void
     {
         $rowIndexZeroBased = 0 + $worksheet->getLastWrittenRowIndex();
-        foreach ($row->getCells() as $columnIndexZeroBased => $cell) {
+        foreach ($row->cells as $columnIndexZeroBased => $cell) {
             if (null === $cell->comment) {
                 continue;
             }
@@ -159,7 +159,7 @@ final class CommentsManager
         $columnLetters = CellHelper::getColumnLettersFromColumnIndex($columnIndexZeroBased);
 
         $commentxml = '<comment ref="'.$columnLetters.$rowIndexOneBased.'" authorId="0"><text>';
-        foreach ($comment->getTextRuns() as $line) {
+        foreach ($comment->textRuns as $line) {
             $commentxml .= '<r>';
             $commentxml .= '  <rPr>';
             if ($line->bold) {

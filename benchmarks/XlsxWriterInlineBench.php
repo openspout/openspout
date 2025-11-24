@@ -13,7 +13,7 @@ use PhpBench\Attributes as Bench;
 /**
  * @internal
  */
-final class XlsxWriterInlineBench
+final readonly class XlsxWriterInlineBench
 {
     use XlsxWriterTrait;
 
@@ -26,9 +26,10 @@ final class XlsxWriterInlineBench
         $fileName = 'xlsx_with_one_million_rows_and_inline_strings.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->SHOULD_USE_INLINE_STRINGS = true;
-        $options->SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY = true;
+        $options = new Options(
+            SHOULD_USE_INLINE_STRINGS: true,
+            SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY: true,
+        );
         $writer = new Writer($options);
 
         $writer->openToFile($resourcePath);

@@ -13,7 +13,7 @@ use PhpBench\Attributes as Bench;
 /**
  * @internal
  */
-final class OdsWriterBench
+final readonly class OdsWriterBench
 {
     #[Bench\OutputTimeUnit('seconds')]
     #[Bench\Assert('mode(variant.mem.peak) < 6291456')]
@@ -24,8 +24,7 @@ final class OdsWriterBench
         $fileName = 'ods_with_one_million_rows.ods';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY = true;
+        $options = new Options(SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY: true);
         $writer = new Writer($options);
 
         $writer->openToFile($resourcePath);

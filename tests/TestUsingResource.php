@@ -80,7 +80,7 @@ final readonly class TestUsingResource
     }
 
     /**
-     * @return string Path of the temp folder
+     * @return non-empty-string Path of the temp folder
      */
     public function getTempFolderPath(): string
     {

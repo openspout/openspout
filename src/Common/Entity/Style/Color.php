@@ -9,32 +9,32 @@ use OpenSpout\Common\Exception\InvalidColorException;
 /**
  * This class provides constants and functions to work with colors.
  */
-final class Color
+final readonly class Color
 {
     /**
      * Standard colors - based on Office Online.
      */
-    public const BLACK = '000000';
-    public const WHITE = 'FFFFFF';
-    public const RED = 'FF0000';
-    public const DARK_RED = 'C00000';
-    public const ORANGE = 'FFC000';
-    public const YELLOW = 'FFFF00';
-    public const LIGHT_GREEN = '92D040';
-    public const GREEN = '00B050';
-    public const LIGHT_BLUE = '00B0E0';
-    public const BLUE = '0070C0';
-    public const DARK_BLUE = '002060';
-    public const PURPLE = '7030A0';
+    public const string BLACK = '000000';
+    public const string WHITE = 'FFFFFF';
+    public const string RED = 'FF0000';
+    public const string DARK_RED = 'C00000';
+    public const string ORANGE = 'FFC000';
+    public const string YELLOW = 'FFFF00';
+    public const string LIGHT_GREEN = '92D040';
+    public const string GREEN = '00B050';
+    public const string LIGHT_BLUE = '00B0E0';
+    public const string BLUE = '0070C0';
+    public const string DARK_BLUE = '002060';
+    public const string PURPLE = '7030A0';
 
     /**
      * Returns an RGB color from R, G and B values.
      *
-     * @param int $red   Red component, 0 - 255
-     * @param int $green Green component, 0 - 255
-     * @param int $blue  Blue component, 0 - 255
+     * @param int<0, 255> $red   Red component, 0 - 255
+     * @param int<0, 255> $green Green component, 0 - 255
+     * @param int<0, 255> $blue  Blue component, 0 - 255
      *
-     * @return string RGB color
+     * @return non-empty-string RGB color
      */
     public static function rgb(int $red, int $green, int $blue): string
     {
@@ -53,9 +53,9 @@ final class Color
      * Returns the ARGB color of the given RGB color,
      * assuming that alpha value is always 1.
      *
-     * @param string $rgbColor RGB color like "FF08B2"
+     * @param non-empty-string $rgbColor RGB color like "FF08B2"
      *
-     * @return string ARGB color
+     * @return non-empty-string ARGB color
      */
     public static function toARGB(string $rgbColor): string
     {
@@ -77,9 +77,9 @@ final class Color
     /**
      * Converts the color component to its corresponding hexadecimal value.
      *
-     * @param int $colorComponent Color component, 0 - 255
+     * @param int<0, 255> $colorComponent Color component, 0 - 255
      *
-     * @return string Corresponding hexadecimal value, with a leading 0 if needed. E.g "0f", "2d"
+     * @return non-empty-string Corresponding hexadecimal value, with a leading 0 if needed. E.g "0f", "2d"
      */
     private static function convertColorComponentToHex(int $colorComponent): string
     {

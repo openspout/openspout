@@ -22,7 +22,6 @@ use OpenSpout\Writer\Common\Manager\SheetManager;
 use OpenSpout\Writer\Exception\SheetNotFoundException;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
 use OpenSpout\Writer\ODS\Manager\WorkbookManager;
-use OpenSpout\Writer\RowCreationHelper;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use ReflectionHelper;
@@ -32,12 +31,9 @@ use ReflectionHelper;
  */
 final class WriterTest extends TestCase
 {
-    use RowCreationHelper;
-
     public function testAddRowShouldThrowExceptionIfCannotOpenAFileForWriting(): void
     {
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $fileName = 'file_that_wont_be_written.ods';
         $filePath = (new TestUsingResource())->getGeneratedUnwritableResourcePath($fileName);
@@ -48,8 +44,7 @@ final class WriterTest extends TestCase
 
     public function testAddRowShouldThrowExceptionIfCallAddRowBeforeOpeningWriter(): void
     {
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $this->expectException(WriterNotOpenedException::class);
 
@@ -58,8 +53,7 @@ final class WriterTest extends TestCase
 
     public function testAddRowShouldThrowExceptionIfCalledBeforeOpeningWriter(): void
     {
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $this->expectException(WriterNotOpenedException::class);
 
@@ -71,8 +65,7 @@ final class WriterTest extends TestCase
         $fileName = 'test_add_new_sheet_and_make_it_current.ods';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->addNewSheetAndMakeItCurrent();
@@ -88,8 +81,7 @@ final class WriterTest extends TestCase
         $fileName = 'test_set_current_sheet.ods';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
 
@@ -119,8 +111,7 @@ final class WriterTest extends TestCase
         $fileName = 'test_set_creator.ods';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         if (\is_string($expected)) {
             $writer->setCreator($expected);
@@ -150,8 +141,7 @@ final class WriterTest extends TestCase
         $fileName = 'test_double_close_calls.ods';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->close(); // This call should not cause any error
 
@@ -164,15 +154,15 @@ final class WriterTest extends TestCase
     public function testAddRowShouldWriteGivenDataToSheet(): void
     {
         $fileName = 'test_add_row_should_write_given_data_to_sheet.ods';
-        $dataRows = $this->createRowsFromValues([
-            ['ods--11', 'ods--12'],
-            ['ods--21', 'ods--22', 'ods--23'],
-        ]);
+        $dataRows = [
+            Row::fromValues(['ods--11', 'ods--12']),
+            Row::fromValues(['ods--21', 'ods--22', 'ods--23']),
+        ];
 
         $this->writeToODSFile($dataRows, $fileName);
 
         foreach ($dataRows as $dataRow) {
-            foreach ($dataRow->getCells() as $cell) {
+            foreach ($dataRow->cells as $cell) {
                 $value = $cell->getValue();
                 self::assertIsScalar($value);
                 $this->assertValueWasWritten($fileName, (string) $value);
@@ -183,17 +173,17 @@ final class WriterTest extends TestCase
     public function testAddRowShouldWriteGivenDataToTwoSheets(): void
     {
         $fileName = 'test_add_row_should_write_given_data_to_two_sheets.ods';
-        $dataRows = $this->createRowsFromValues([
-            ['ods--11', 'ods--12'],
-            ['ods--21', 'ods--22', 'ods--23'],
-        ]);
+        $dataRows = [
+            Row::fromValues(['ods--11', 'ods--12']),
+            Row::fromValues(['ods--21', 'ods--22', 'ods--23']),
+        ];
 
         $numSheets = 2;
         $this->writeToMultipleSheetsInODSFile($dataRows, $numSheets, $fileName);
 
         for ($i = 1; $i <= $numSheets; ++$i) {
             foreach ($dataRows as $dataRow) {
-                foreach ($dataRow->getCells() as $cell) {
+                foreach ($dataRow->cells as $cell) {
                     $value = $cell->getValue();
                     self::assertIsScalar($value);
                     $this->assertValueWasWritten($fileName, (string) $value);
@@ -202,29 +192,11 @@ final class WriterTest extends TestCase
         }
     }
 
-    public function testAddRowShouldSupportAssociativeArrays(): void
-    {
-        $fileName = 'test_add_row_should_support_associative_arrays.ods';
-        $dataRows = $this->createRowsFromValues([
-            ['foo' => 'ods--11', 'bar' => 'ods--12'],
-        ]);
-
-        $this->writeToODSFile($dataRows, $fileName);
-
-        foreach ($dataRows as $dataRow) {
-            foreach ($dataRow->getCells() as $cell) {
-                $value = $cell->getValue();
-                self::assertIsScalar($value);
-                $this->assertValueWasWritten($fileName, (string) $value);
-            }
-        }
-    }
-
     public function testAddRowShouldSupportMultipleTypesOfData(): void
     {
         $fileName = 'test_add_row_should_support_multiple_types_of_data.ods';
-        $dataRows = $this->createRowsFromValues([
-            [
+        $dataRows = [
+            Row::fromValues([
                 'ods--11',
                 true,
                 '',
@@ -233,8 +205,8 @@ final class WriterTest extends TestCase
                 null,
                 new DateTimeImmutable('2020-03-04 05:06:07', new DateTimeZone('UTC')),
                 new DateInterval('P1DT23S'),
-            ],
-        ]);
+            ]),
+        ];
 
         $this->writeToODSFile($dataRows, $fileName);
 
@@ -277,9 +249,9 @@ final class WriterTest extends TestCase
             self::assertSame(',', localeconv()['decimal_point']);
 
             $fileName = 'test_add_row_should_support_float_values_in_different_locale.xlsx';
-            $dataRows = $this->createRowsFromValues([
-                [1234.5],
-            ]);
+            $dataRows = [
+                Row::fromValues([1234.5]),
+            ];
 
             $this->writeToODSFile($dataRows, $fileName);
 
@@ -291,14 +263,11 @@ final class WriterTest extends TestCase
         }
     }
 
-    /**
-     * @param mixed[] $dataRow
-     */
     #[DataProvider('provideAddRowShouldUseNumberColumnsRepeatedForRepeatedValuesCases')]
-    public function testAddRowShouldUseNumberColumnsRepeatedForRepeatedValues(array $dataRow, int $expectedNumTableCells, int $expectedNumColumnsRepeated): void
+    public function testAddRowShouldUseNumberColumnsRepeatedForRepeatedValues(Row $dataRow, int $expectedNumTableCells, int $expectedNumColumnsRepeated): void
     {
         $fileName = 'test_add_row_should_use_number_columns_repeated.ods';
-        $this->writeToODSFile($this->createRowsFromValues([$dataRow]), $fileName);
+        $this->writeToODSFile([$dataRow], $fileName);
 
         /** @var DOMElement $sheetXmlNode */
         $sheetXmlNode = $this->getSheetXmlNode($fileName, 1);
@@ -320,11 +289,11 @@ final class WriterTest extends TestCase
     public static function provideAddRowShouldUseNumberColumnsRepeatedForRepeatedValuesCases(): iterable
     {
         return [
-            [['ods--11', 'ods--11', 'ods--11'], 1, 3],
-            [['', ''], 1, 2],
-            [[true, true, true, true], 1, 4],
-            [[1.1, 1.1], 1, 2],
-            [['foo', 'bar'], 2, 0],
+            [Row::fromValues(['ods--11', 'ods--11', 'ods--11']), 1, 3],
+            [Row::fromValues(['', '']), 1, 2],
+            [Row::fromValues([true, true, true, true]), 1, 4],
+            [Row::fromValues([1.1, 1.1]), 1, 2],
+            [Row::fromValues(['foo', 'bar']), 2, 0],
         ];
     }
 
@@ -345,23 +314,22 @@ final class WriterTest extends TestCase
     public function testAddRowShouldWriteGivenDataToTheCorrectSheet(): void
     {
         $fileName = 'test_add_row_should_write_given_data_to_the_correct_sheet.ods';
-        $dataRowsSheet1 = $this->createRowsFromValues([
-            ['ods--sheet1--11', 'ods--sheet1--12'],
-            ['ods--sheet1--21', 'ods--sheet1--22', 'ods--sheet1--23'],
-        ]);
-        $dataRowsSheet2 = $this->createRowsFromValues([
-            ['ods--sheet2--11', 'ods--sheet2--12'],
-            ['ods--sheet2--21', 'ods--sheet2--22', 'ods--sheet2--23'],
-        ]);
-        $dataRowsSheet1Again = $this->createRowsFromValues([
-            ['ods--sheet1--31', 'ods--sheet1--32'],
-            ['ods--sheet1--41', 'ods--sheet1--42', 'ods--sheet1--43'],
-        ]);
+        $dataRowsSheet1 = [
+            Row::fromValues(['ods--sheet1--11', 'ods--sheet1--12']),
+            Row::fromValues(['ods--sheet1--21', 'ods--sheet1--22', 'ods--sheet1--23']),
+        ];
+        $dataRowsSheet2 = [
+            Row::fromValues(['ods--sheet2--11', 'ods--sheet2--12']),
+            Row::fromValues(['ods--sheet2--21', 'ods--sheet2--22', 'ods--sheet2--23']),
+        ];
+        $dataRowsSheet1Again = [
+            Row::fromValues(['ods--sheet1--31', 'ods--sheet1--32']),
+            Row::fromValues(['ods--sheet1--41', 'ods--sheet1--42', 'ods--sheet1--43']),
+        ];
 
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
 
@@ -378,17 +346,17 @@ final class WriterTest extends TestCase
         $writer->close();
 
         foreach ($dataRowsSheet1 as $dataRow) {
-            foreach ($dataRow->getCells() as $cell) {
+            foreach ($dataRow->cells as $cell) {
                 $this->assertValueWasWrittenToSheet($fileName, 1, $cell->getValue(), 'Data should have been written in Sheet 1');
             }
         }
         foreach ($dataRowsSheet2 as $dataRow) {
-            foreach ($dataRow->getCells() as $cell) {
+            foreach ($dataRow->cells as $cell) {
                 $this->assertValueWasWrittenToSheet($fileName, 2, $cell->getValue(), 'Data should have been written in Sheet 2');
             }
         }
         foreach ($dataRowsSheet1Again as $dataRow) {
-            foreach ($dataRow->getCells() as $cell) {
+            foreach ($dataRow->cells as $cell) {
                 $this->assertValueWasWrittenToSheet($fileName, 1, $cell->getValue(), 'Data should have been written in Sheet 1');
             }
         }
@@ -397,11 +365,11 @@ final class WriterTest extends TestCase
     public function testAddRowShouldAutomaticallyCreateNewSheetsIfMaxRowsReachedAndOptionTurnedOn(): void
     {
         $fileName = 'test_add_row_should_automatically_create_new_sheets_if_max_rows_reached_and_option_turned_on.ods';
-        $dataRows = $this->createRowsFromValues([
-            ['ods--sheet1--11', 'ods--sheet1--12'],
-            ['ods--sheet1--21', 'ods--sheet1--22', 'ods--sheet1--23'],
-            ['ods--sheet2--11', 'ods--sheet2--12'], // this should be written in a new sheet
-        ]);
+        $dataRows = [
+            Row::fromValues(['ods--sheet1--11', 'ods--sheet1--12']),
+            Row::fromValues(['ods--sheet1--21', 'ods--sheet1--22', 'ods--sheet1--23']),
+            Row::fromValues(['ods--sheet2--11', 'ods--sheet2--12']), // this should be written in a new sheet
+        ];
 
         // set the maxRowsPerSheet limit to 2
         ReflectionHelper::setStaticValue(WorkbookManager::class, 'maxRowsPerWorksheet', 2);
@@ -418,11 +386,11 @@ final class WriterTest extends TestCase
     public function testAddRowShouldNotCreateNewSheetsIfMaxRowsReachedAndOptionTurnedOff(): void
     {
         $fileName = 'test_add_row_should_not_create_new_sheets_if_max_rows_reached_and_option_turned_off.ods';
-        $dataRows = $this->createRowsFromValues([
-            ['ods--sheet1--11', 'ods--sheet1--12'],
-            ['ods--sheet1--21', 'ods--sheet1--22', 'ods--sheet1--23'],
-            ['ods--sheet1--31', 'ods--sheet1--32'], // this should NOT be written in a new sheet
-        ]);
+        $dataRows = [
+            Row::fromValues(['ods--sheet1--11', 'ods--sheet1--12']),
+            Row::fromValues(['ods--sheet1--21', 'ods--sheet1--22', 'ods--sheet1--23']),
+            Row::fromValues(['ods--sheet1--31', 'ods--sheet1--32']), // this should NOT be written in a new sheet
+        ];
 
         // set the maxRowsPerSheet limit to 2
         ReflectionHelper::setStaticValue(WorkbookManager::class, 'maxRowsPerWorksheet', 2);
@@ -438,9 +406,9 @@ final class WriterTest extends TestCase
     public function testAddRowShouldEscapeHtmlSpecialCharacters(): void
     {
         $fileName = 'test_add_row_should_escape_html_special_characters.ods';
-        $dataRows = $this->createRowsFromValues([
-            ['I\'m in "great" mood', 'This <must> be escaped & tested'],
-        ]);
+        $dataRows = [
+            Row::fromValues(['I\'m in "great" mood', 'This <must> be escaped & tested']),
+        ];
 
         $this->writeToODSFile($dataRows, $fileName);
 
@@ -451,9 +419,7 @@ final class WriterTest extends TestCase
     public function testAddRowShouldKeepNewLines(): void
     {
         $fileName = 'test_add_row_should_keep_new_lines.ods';
-        $dataRow = ["I have\na dream"];
-
-        $this->writeToODSFile($this->createRowsFromValues([$dataRow]), $fileName);
+        $this->writeToODSFile([Row::fromValues(["I have\na dream"])], $fileName);
 
         $this->assertValueWasWrittenToSheet($fileName, 1, 'I have');
         $this->assertValueWasWrittenToSheet($fileName, 1, 'a dream');
@@ -467,9 +433,7 @@ final class WriterTest extends TestCase
 
         $fileName = 'test_mime_type.ods';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
-        $dataRow = ['foo'];
-
-        $this->writeToODSFile($this->createRowsFromValues([$dataRow]), $fileName);
+        $this->writeToODSFile([Row::fromValues(['foo'])], $fileName);
 
         $finfo = new finfo(FILEINFO_MIME_TYPE);
         self::assertSame('application/vnd.oasis.opendocument.spreadsheet', $finfo->file($resourcePath));
@@ -477,11 +441,11 @@ final class WriterTest extends TestCase
 
     public function testShouldSetOptionWithGetter(): void
     {
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(
+            DEFAULT_COLUMN_WIDTH: (float) random_int(100, 199),
+            tempFolder: (new TestUsingResource())->getTempFolderPath(),
+        );
         $writer = new Writer($options);
-
-        $options->DEFAULT_COLUMN_WIDTH = (float) random_int(100, 199);
 
         self::assertSame($options->DEFAULT_COLUMN_WIDTH, $writer->getOptions()->DEFAULT_COLUMN_WIDTH);
     }
@@ -491,8 +455,7 @@ final class WriterTest extends TestCase
         $fileName = 'test_set_autofilter_should_write_correct_data.ods';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->getCurrentSheet()->setName('Sheet First');
@@ -520,16 +483,14 @@ final class WriterTest extends TestCase
         $fileName = 'test_remove_autofilter_should_delete_all_database_range_tag.ods';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $autoFilter = new AutoFilter(0, 1, 3, 3);
         $writer->getCurrentSheet()->setAutoFilter($autoFilter);
         $writer->close();
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $writer->getCurrentSheet()->setAutoFilter(null);
@@ -546,8 +507,7 @@ final class WriterTest extends TestCase
         $fileName = 'test_add_autofilter_to_two_sheets_should-write-correct-data.ods';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
         $autoFilter1 = new AutoFilter(0, 1, 3, 3);
@@ -586,12 +546,11 @@ final class WriterTest extends TestCase
     ): Writer {
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = ['tempFolder' => (new TestUsingResource())->getTempFolderPath()];
         if (null !== $shouldCreateSheetsAutomatically) {
-            $options->SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY = $shouldCreateSheetsAutomatically;
+            $options['SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY'] = $shouldCreateSheetsAutomatically;
         }
-        $writer = new Writer($options);
+        $writer = new Writer(new Options(...$options));
 
         $writer->openToFile($resourcePath);
         $writer->addRows($allRows);
@@ -611,8 +570,7 @@ final class WriterTest extends TestCase
     ): Writer {
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options();
-        $options->setTempFolder((new TestUsingResource())->getTempFolderPath());
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
         if (null !== $shouldCreateSheetsAutomatically) {
             $options->SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY = $shouldCreateSheetsAutomatically;
         }

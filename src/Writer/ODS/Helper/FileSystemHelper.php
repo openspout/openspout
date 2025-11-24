@@ -18,15 +18,15 @@ use OpenSpout\Writer\ODS\Manager\WorksheetManager;
  */
 final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 {
-    public const MIMETYPE = 'application/vnd.oasis.opendocument.spreadsheet';
+    public const string MIMETYPE = 'application/vnd.oasis.opendocument.spreadsheet';
 
-    public const META_INF_FOLDER_NAME = 'META-INF';
+    public const string META_INF_FOLDER_NAME = 'META-INF';
 
-    public const MANIFEST_XML_FILE_NAME = 'manifest.xml';
-    public const CONTENT_XML_FILE_NAME = 'content.xml';
-    public const META_XML_FILE_NAME = 'meta.xml';
-    public const MIMETYPE_FILE_NAME = 'mimetype';
-    public const STYLES_XML_FILE_NAME = 'styles.xml';
+    public const string MANIFEST_XML_FILE_NAME = 'manifest.xml';
+    public const string CONTENT_XML_FILE_NAME = 'content.xml';
+    public const string META_XML_FILE_NAME = 'meta.xml';
+    public const string MIMETYPE_FILE_NAME = 'mimetype';
+    public const string STYLES_XML_FILE_NAME = 'styles.xml';
 
     private string $baseFolderRealPath;
 

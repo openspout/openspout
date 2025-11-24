@@ -255,7 +255,7 @@ final class ReaderTest extends TestCase
             $duration = microtime(true) - $startTime;
             self::assertLessThan(10, $duration, 'Entities should not be expanded and therefore take more than 10 seconds to be parsed.');
 
-            self::assertLessThan($expectedMaxMemoryUsage, memory_get_peak_usage(true), 'Entities should not be expanded and therefore consume all the memory.');
+            self::assertLessThanOrEqual($expectedMaxMemoryUsage, memory_get_peak_usage(true), 'Entities should not be expanded and therefore consume all the memory.');
         }
     }
 
@@ -460,10 +460,10 @@ final class ReaderTest extends TestCase
         $allRows = [];
         $resourcePath = TestUsingResource::getResourcePath($fileName);
 
-        $options = new Options();
-        $options->SHOULD_FORMAT_DATES = $shouldFormatDates;
-        $options->SHOULD_PRESERVE_EMPTY_ROWS = $shouldPreserveEmptyRows;
-        $reader = new Reader($options);
+        $reader = new Reader(new Options(
+            SHOULD_FORMAT_DATES: $shouldFormatDates,
+            SHOULD_PRESERVE_EMPTY_ROWS: $shouldPreserveEmptyRows,
+        ));
         $reader->open($resourcePath);
 
         foreach ($reader->getSheetIterator() as $sheetIndex => $sheet) {

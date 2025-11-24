@@ -4,39 +4,40 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer\XLSX\Helper;
 
-use OpenSpout\Common\Entity\Style\Border;
 use OpenSpout\Common\Entity\Style\BorderPart;
+use OpenSpout\Common\Entity\Style\BorderStyle;
+use OpenSpout\Common\Entity\Style\BorderWidth;
 
 /**
  * @internal
  */
-final class BorderHelper
+final readonly class BorderHelper
 {
-    private const xlsxStyleMap = [
-        Border::STYLE_SOLID => [
-            Border::WIDTH_THIN => 'thin',
-            Border::WIDTH_MEDIUM => 'medium',
-            Border::WIDTH_THICK => 'thick',
+    private const array xlsxStyleMap = [
+        BorderStyle::SOLID->name => [
+            BorderWidth::THIN->name => 'thin',
+            BorderWidth::MEDIUM->name => 'medium',
+            BorderWidth::THICK->name => 'thick',
         ],
-        Border::STYLE_DOTTED => [
-            Border::WIDTH_THIN => 'dotted',
-            Border::WIDTH_MEDIUM => 'dotted',
-            Border::WIDTH_THICK => 'dotted',
+        BorderStyle::DOTTED->name => [
+            BorderWidth::THIN->name => 'dotted',
+            BorderWidth::MEDIUM->name => 'dotted',
+            BorderWidth::THICK->name => 'dotted',
         ],
-        Border::STYLE_DASHED => [
-            Border::WIDTH_THIN => 'dashed',
-            Border::WIDTH_MEDIUM => 'mediumDashed',
-            Border::WIDTH_THICK => 'mediumDashed',
+        BorderStyle::DASHED->name => [
+            BorderWidth::THIN->name => 'dashed',
+            BorderWidth::MEDIUM->name => 'mediumDashed',
+            BorderWidth::THICK->name => 'mediumDashed',
         ],
-        Border::STYLE_DOUBLE => [
-            Border::WIDTH_THIN => 'double',
-            Border::WIDTH_MEDIUM => 'double',
-            Border::WIDTH_THICK => 'double',
+        BorderStyle::DOUBLE->name => [
+            BorderWidth::THIN->name => 'double',
+            BorderWidth::MEDIUM->name => 'double',
+            BorderWidth::THICK->name => 'double',
         ],
-        Border::STYLE_NONE => [
-            Border::WIDTH_THIN => 'none',
-            Border::WIDTH_MEDIUM => 'none',
-            Border::WIDTH_THICK => 'none',
+        BorderStyle::NONE->name => [
+            BorderWidth::THIN->name => 'none',
+            BorderWidth::MEDIUM->name => 'none',
+            BorderWidth::THICK->name => 'none',
         ],
     ];
 
@@ -48,13 +49,13 @@ final class BorderHelper
 
         $borderStyle = self::getBorderStyle($borderPart);
 
-        $colorEl = \sprintf('<color rgb="%s"/>', $borderPart->getColor());
+        $colorEl = \sprintf('<color rgb="%s"/>', $borderPart->color);
         $partEl = \sprintf(
             '<%s style="%s">%s</%s>',
-            $borderPart->getName(),
+            $borderPart->name->value,
             $borderStyle,
             $colorEl,
-            $borderPart->getName()
+            $borderPart->name->value,
         );
 
         return $partEl.PHP_EOL;
@@ -65,6 +66,6 @@ final class BorderHelper
      */
     private static function getBorderStyle(BorderPart $borderPart): string
     {
-        return self::xlsxStyleMap[$borderPart->getStyle()][$borderPart->getWidth()];
+        return self::xlsxStyleMap[$borderPart->style->name][$borderPart->width->name];
     }
 }

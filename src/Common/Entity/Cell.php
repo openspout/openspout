@@ -16,50 +16,39 @@ use OpenSpout\Common\Entity\Cell\StringCell;
 use OpenSpout\Common\Entity\Comment\Comment;
 use OpenSpout\Common\Entity\Style\Style;
 
-abstract class Cell
+abstract readonly class Cell
 {
-    public ?Comment $comment = null;
-
-    private Style $style;
-
-    public function __construct(?Style $style)
-    {
-        $this->setStyle($style);
-    }
+    public function __construct(
+        public ?Style $style = null,
+        public ?Comment $comment = null,
+    ) {}
 
     abstract public function getValue(): bool|DateInterval|DateTimeInterface|float|int|string|null;
 
-    final public function setStyle(?Style $style): void
-    {
-        $this->style = $style ?? new Style();
-    }
-
-    final public function getStyle(): Style
-    {
-        return $this->style;
-    }
-
-    final public static function fromValue(bool|DateInterval|DateTimeInterface|float|int|string|null $value, ?Style $style = null): self
-    {
+    final public static function fromValue(
+        bool|DateInterval|DateTimeInterface|float|int|string|null $value,
+        ?Style $style = null,
+        ?Comment $comment = null,
+    ): self {
         if (\is_bool($value)) {
-            return new BooleanCell($value, $style);
+            return new BooleanCell($value, $style, $comment);
         }
         if (null === $value || '' === $value) {
-            return new EmptyCell($value, $style);
+            return new EmptyCell($value, $style, $comment);
         }
         if (\is_int($value) || \is_float($value)) {
-            return new NumericCell($value, $style);
+            return new NumericCell($value, $style, $comment);
         }
         if ($value instanceof DateTimeInterface) {
-            return new DateTimeCell($value, $style);
+            return new DateTimeCell($value, $style, $comment);
         }
         if ($value instanceof DateInterval) {
-            return new DateIntervalCell($value, $style);
+            return new DateIntervalCell($value, $style, $comment);
         }
         if (isset($value[0]) && '=' === $value[0]) {
-            return new FormulaCell($value, $style, null);
+            return new FormulaCell($value, null, $style, $comment);
         }
 
-        return new StringCell($value, $style);
+        return new StringCell($value, $style, $comment);
     }
 }

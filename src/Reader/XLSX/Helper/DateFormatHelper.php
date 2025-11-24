@@ -7,18 +7,18 @@ namespace OpenSpout\Reader\XLSX\Helper;
 /**
  * @internal
  */
-final class DateFormatHelper
+final readonly class DateFormatHelper
 {
-    public const KEY_GENERAL = 'general';
-    public const KEY_HOUR_12 = '12h';
-    public const KEY_HOUR_24 = '24h';
+    public const string KEY_GENERAL = 'general';
+    public const string KEY_HOUR_12 = '12h';
+    public const string KEY_HOUR_24 = '24h';
 
     /**
      * This map is used to replace Excel format characters by their PHP equivalent.
      * Keys should be ordered from longest to smallest.
      * Mapping between Excel format characters and PHP format characters.
      */
-    private const excelDateFormatToPHPDateFormatMapping = [
+    private const array excelDateFormatToPHPDateFormatMapping = [
         self::KEY_GENERAL => [
             // Time
             'am/pm' => 'A',  // Uppercase Ante meridiem and Post meridiem

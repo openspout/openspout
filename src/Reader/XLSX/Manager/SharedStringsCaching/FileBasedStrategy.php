@@ -19,7 +19,7 @@ final class FileBasedStrategy implements CachingStrategyInterface
     /**
      * Value to use to escape the line feed character ("\n").
      */
-    public const ESCAPED_LINE_FEED_CHARACTER = '_x000A_';
+    public const string ESCAPED_LINE_FEED_CHARACTER = '_x000A_';
 
     /** @var FileSystemHelper Helper to perform file system operations */
     private readonly FileSystemHelper $fileSystemHelper;
