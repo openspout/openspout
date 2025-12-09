@@ -42,4 +42,64 @@ final class BorderTest extends TestCase
             }
         }
     }
+
+    public function testBorderWithBorderPart(): void
+    {
+        $leftPart = BorderPart::create(BorderName::LEFT);
+        $rightPart = BorderPart::create(BorderName::RIGHT)->withColor(Color::RED);
+        $border = Border::create()->withBorderPart($leftPart);
+        $newBorder = $border->withBorderPart($rightPart);
+
+        self::assertCount(2, $newBorder->getParts());
+        self::assertSame(Color::RED, $newBorder->getPart(BorderName::RIGHT)?->color);
+        self::assertCount(1, $border->getParts());
+    }
+
+    public function testBorderWithBorderPartReplacement(): void
+    {
+        $leftPart1 = BorderPart::create(BorderName::LEFT);
+        $leftPart2 = BorderPart::create(BorderName::LEFT)->withColor(Color::BLUE);
+        $border = Border::create()->withBorderPart($leftPart1);
+        $newBorder = $border->withBorderPart($leftPart2);
+
+        self::assertCount(1, $newBorder->getParts());
+        self::assertSame(Color::BLUE, $newBorder->getPart(BorderName::LEFT)?->color);
+        self::assertSame(Color::BLACK, $border->getPart(BorderName::LEFT)?->color);
+    }
+
+    public function testBorderWithoutBorder(): void
+    {
+        $leftPart = BorderPart::create(BorderName::LEFT);
+        $rightPart = BorderPart::create(BorderName::RIGHT);
+        $border = Border::create()->withBorderParts($leftPart, $rightPart);
+        $newBorder = $border->withoutBorder(BorderName::LEFT);
+
+        self::assertCount(1, $newBorder->getParts());
+        self::assertNull($newBorder->getPart(BorderName::LEFT));
+        self::assertNotNull($newBorder->getPart(BorderName::RIGHT));
+        self::assertCount(2, $border->getParts());
+    }
+
+    public function testBorderWithBorderParts(): void
+    {
+        $leftPart = BorderPart::create(BorderName::LEFT);
+        $border = Border::create()->withBorderPart($leftPart);
+
+        $rightPart = BorderPart::create(BorderName::RIGHT)->withColor(Color::RED);
+        $topPart = BorderPart::create(BorderName::TOP)->withColor(Color::BLUE);
+        $newBorder = $border->withBorderParts($rightPart, $topPart);
+
+        self::assertCount(3, $newBorder->getParts());
+        self::assertNotNull($newBorder->getPart(BorderName::LEFT));
+        self::assertNotNull($newBorder->getPart(BorderName::RIGHT));
+        self::assertNotNull($newBorder->getPart(BorderName::TOP));
+        self::assertCount(1, $border->getParts());
+    }
+
+    public function testBorderCreate(): void
+    {
+        $border = Border::create();
+
+        self::assertCount(0, $border->getParts());
+    }
 }

@@ -30,4 +30,39 @@ final readonly class FormulaCell extends Cell
     {
         return $this->computedValue;
     }
+
+    public static function create(string $value): self
+    {
+        return new self($value);
+    }
+
+    public function withValue(string $value): self
+    {
+        return new self($value, $this->computedValue, $this->style, $this->comment);
+    }
+
+    public function withComputedValue(bool|DateInterval|DateTimeImmutable|float|int|string|null $computedValue): self
+    {
+        return new self($this->value, $computedValue, $this->style, $this->comment);
+    }
+
+    public function withStyle(Style $style): self
+    {
+        return new self($this->value, $this->computedValue, $style, $this->comment);
+    }
+
+    public function withoutStyle(): self
+    {
+        return new self($this->value, $this->computedValue, null, $this->comment);
+    }
+
+    public function withComment(Comment $comment): self
+    {
+        return new self($this->value, $this->computedValue, $this->style, $comment);
+    }
+
+    public function withoutComment(): self
+    {
+        return new self($this->value, $this->computedValue, $this->style, null);
+    }
 }

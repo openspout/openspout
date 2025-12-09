@@ -11,12 +11,14 @@ use OpenSpout\Common\Entity\Style\Style;
 
 final readonly class Row
 {
+    public const float DEFAULT_HEIGHT = 0;
+
     /**
      * @param array<non-negative-int, Cell> $cells
      */
     public function __construct(
         public array $cells,
-        public float $height = 0,
+        public float $height = self::DEFAULT_HEIGHT,
     ) {
         foreach ($this->cells as $index => $cell) {
             if (!\is_int($index) || 0 > $index) {
@@ -42,6 +44,11 @@ final readonly class Row
     public function withCells(array $cells): self
     {
         return new self($cells, $this->height);
+    }
+
+    public function withHeight(float $height): self
+    {
+        return new self($this->cells, $height);
     }
 
     /**
@@ -82,7 +89,7 @@ final readonly class Row
     /**
      * @param list<null|bool|DateInterval|DateTimeInterface|float|int|string> $cellValues
      */
-    public static function fromValues(array $cellValues, float $height = 0): self
+    public static function fromValues(array $cellValues, float $height = self::DEFAULT_HEIGHT): self
     {
         $cells = array_map(static function (bool|DateInterval|DateTimeInterface|float|int|string|null $cellValue): Cell {
             return Cell::fromValue($cellValue);
@@ -95,7 +102,7 @@ final readonly class Row
      * @param array<non-negative-int, null|bool|DateInterval|DateTimeInterface|float|int|string> $cellValues
      * @param array<non-negative-int, Style>                                                     $columnStyles
      */
-    public static function fromValuesWithStyles(array $cellValues, array $columnStyles, float $height = 0): self
+    public static function fromValuesWithStyles(array $cellValues, array $columnStyles, float $height = self::DEFAULT_HEIGHT): self
     {
         $cells = array_map(static function (bool|DateInterval|DateTimeInterface|float|int|string|null $cellValue, int|string $key) use ($columnStyles): Cell {
             return Cell::fromValue($cellValue, $columnStyles[$key] ?? null);
