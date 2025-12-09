@@ -20,11 +20,6 @@ final readonly class BorderPart
         public BorderStyle $style = self::DEFAULT_STYLE,
     ) {}
 
-    public static function create(BorderName $name): self
-    {
-        return new self($name);
-    }
-
     public function withName(BorderName $name): self
     {
         return new self($name, $this->color, $this->width, $this->style);

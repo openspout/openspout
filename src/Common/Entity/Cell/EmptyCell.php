@@ -26,11 +26,6 @@ final readonly class EmptyCell extends Cell
         return $this->value;
     }
 
-    public static function create(): self
-    {
-        return new self(null);
-    }
-
     public function withValue(?string $value): self
     {
         return new self($value, $this->style, $this->comment);

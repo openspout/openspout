@@ -22,11 +22,6 @@ final readonly class TextRun
         public bool $italic = false,
     ) {}
 
-    public static function create(string $text): self
-    {
-        return new self($text);
-    }
-
     public function withText(string $text): self
     {
         return new self($text, $this->fontSize, $this->fontColor, $this->fontName, $this->bold, $this->italic);

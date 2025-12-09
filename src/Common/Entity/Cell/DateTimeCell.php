@@ -27,11 +27,6 @@ final readonly class DateTimeCell extends Cell
         return $this->value;
     }
 
-    public static function create(DateTimeInterface $value): self
-    {
-        return new self($value);
-    }
-
     public function withValue(DateTimeInterface $value): self
     {
         return new self($value, $this->style, $this->comment);

@@ -31,11 +31,6 @@ final readonly class FormulaCell extends Cell
         return $this->computedValue;
     }
 
-    public static function create(string $value): self
-    {
-        return new self($value);
-    }
-
     public function withValue(string $value): self
     {
         return new self($value, $this->computedValue, $this->style, $this->comment);

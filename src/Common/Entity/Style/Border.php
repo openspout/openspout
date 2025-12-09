@@ -18,11 +18,6 @@ final readonly class Border
         $this->parts = $parts;
     }
 
-    public static function create(): self
-    {
-        return new self();
-    }
-
     public function getPart(BorderName $name): ?BorderPart
     {
         return $this->parts[$name->value] ?? null;

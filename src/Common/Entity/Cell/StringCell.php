@@ -37,11 +37,6 @@ final readonly class StringCell extends Cell
         return $this->value;
     }
 
-    public static function create(string $value): self
-    {
-        return new self($value);
-    }
-
     public function withValue(string $value): self
     {
         return new self($value, $this->style, $this->comment);

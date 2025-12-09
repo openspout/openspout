@@ -26,11 +26,6 @@ final readonly class BooleanCell extends Cell
         return $this->value;
     }
 
-    public static function create(bool $value): self
-    {
-        return new self($value);
-    }
-
     public function withValue(bool $value): self
     {
         return new self($value, $this->style, $this->comment);
