@@ -103,4 +103,16 @@ final readonly class Row
 
         return new self($cells, $height);
     }
+
+    /**
+     * @param array<non-negative-int, null|bool|DateInterval|DateTimeInterface|float|int|string> $cellValues
+     */
+    public static function fromValuesWithStyle(array $cellValues, Style $cellStyle, float $height = 0): self
+    {
+        $cells = array_map(static function (bool|DateInterval|DateTimeInterface|float|int|string|null $cellValue) use ($cellStyle): Cell {
+            return Cell::fromValue($cellValue, $cellStyle);
+        }, $cellValues);
+
+        return new self($cells, $height);
+    }
 }
