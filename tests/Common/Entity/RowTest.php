@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OpenSpout\Common\Entity;
 
+use OpenSpout\Common\Entity\Style\Style;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -62,5 +63,14 @@ final class RowTest extends TestCase
         self::assertSame(['X', 'Y'], $newRow->toArray());
         self::assertSame(['A', 'B'], $row->toArray());
         self::assertSame(10.0, $newRow->height);
+    }
+
+    public function testAcceptsAssociativeArrays(): void
+    {
+        $style = new Style();
+        $row = Row::fromValuesWithStyles(['a' => 1, 'b' => 2], ['b' => $style]);
+
+        self::assertNull($row->cells[0]->style);
+        self::assertSame($style, $row->cells[1]->style);
     }
 }
