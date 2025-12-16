@@ -342,7 +342,7 @@ final class CellValueFormatterTest extends TestCase
                 new WorkbookRelationshipsManager(uniqid()),
                 new CachingStrategyFactory(new MemoryLimit('1'))
             ),
-            $this->createMock(StyleManagerInterface::class),
+            self::createStub(StyleManagerInterface::class),
             false,
             false,
             new Escaper\XLSX()
