@@ -66,7 +66,7 @@ final readonly class Row
     }
 
     /**
-     * @return list<null|bool|DateInterval|DateTimeInterface|float|int|string> The row values, as array
+     * @return array<non-negative-int, null|bool|DateInterval|DateTimeInterface|float|int|string> The row values, as array
      */
     public function toArray(): array
     {
@@ -95,7 +95,7 @@ final readonly class Row
             return Cell::fromValue($cellValue);
         }, $cellValues);
 
-        return new self($cells, $height);
+        return new self(array_values($cells), $height);
     }
 
     /**
@@ -120,6 +120,6 @@ final readonly class Row
             return Cell::fromValue($cellValue, $cellStyle);
         }, $cellValues);
 
-        return new self($cells, $height);
+        return new self(array_values($cells), $height);
     }
 }

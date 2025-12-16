@@ -65,12 +65,20 @@ final class RowTest extends TestCase
         self::assertSame(10.0, $newRow->height);
     }
 
-    public function testAcceptsAssociativeArrays(): void
+    public function testAcceptsAssociativeArraysInNamedConstructors(): void
     {
+        $row = Row::fromValues(['foo', 'bar' => 'baz']);
+        self::assertIsList($row->cells);
+
         $style = new Style();
         $row = Row::fromValuesWithStyles(['a' => 1, 'b' => 2], ['b' => $style]);
 
+        self::assertIsList($row->cells);
         self::assertNull($row->cells[0]->style);
         self::assertSame($style, $row->cells[1]->style);
+
+        $row = Row::fromValuesWithStyle(['a' => 1, 'b' => 2], $style);
+
+        self::assertIsList($row->cells);
     }
 }
