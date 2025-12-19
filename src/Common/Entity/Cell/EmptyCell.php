@@ -31,7 +31,7 @@ final readonly class EmptyCell extends Cell
         return new self($value, $this->style, $this->comment);
     }
 
-    public function withStyle(Style $style): static
+    public function withStyle(Style $style): self
     {
         return new self($this->value, $style, $this->comment);
     }
