@@ -41,7 +41,7 @@
         "infection/infection": "^0.31.9",
         "phpbench/phpbench": "^1.4.3",
         "phpstan/phpstan": "^2.1.33",
-        "phpstan/phpstan-phpunit": "^2.0.10",
+        "phpstan/phpstan-phpunit": "^2.0.11",
         "phpstan/phpstan-strict-rules": "^2.0.7",
         "phpunit/phpunit": "^12.5.4"
     },

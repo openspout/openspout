@@ -27,6 +27,12 @@ abstract readonly class Cell
 
     abstract public function withStyle(Style $style): static;
 
+    abstract public function withoutStyle(): static;
+
+    abstract public function withComment(Comment $comment): static;
+
+    abstract public function withoutComment(): static;
+
     final public static function fromValue(
         bool|DateInterval|DateTimeInterface|float|int|string|null $value,
         ?Style $style = null,
