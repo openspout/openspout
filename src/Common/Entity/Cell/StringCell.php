@@ -42,7 +42,7 @@ final readonly class StringCell extends Cell
         return new self($value, $this->style, $this->comment);
     }
 
-    public function withStyle(Style $style): self
+    public function withStyle(Style $style): static
     {
         return new self($this->value, $style, $this->comment);
     }

@@ -41,7 +41,7 @@ final readonly class FormulaCell extends Cell
         return new self($this->value, $computedValue, $this->style, $this->comment);
     }
 
-    public function withStyle(Style $style): self
+    public function withStyle(Style $style): static
     {
         return new self($this->value, $this->computedValue, $style, $this->comment);
     }

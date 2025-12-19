@@ -25,6 +25,8 @@ abstract readonly class Cell
 
     abstract public function getValue(): bool|DateInterval|DateTimeInterface|float|int|string|null;
 
+    abstract public function withStyle(Style $style): static;
+
     final public static function fromValue(
         bool|DateInterval|DateTimeInterface|float|int|string|null $value,
         ?Style $style = null,
