@@ -31,22 +31,22 @@ final readonly class EmptyCell extends Cell
         return new self($value, $this->style, $this->comment);
     }
 
-    public function withStyle(Style $style): self
+    public function withStyle(Style $style): static
     {
         return new self($this->value, $style, $this->comment);
     }
 
-    public function withoutStyle(): self
+    public function withoutStyle(): static
     {
         return new self($this->value, null, $this->comment);
     }
 
-    public function withComment(Comment $comment): self
+    public function withComment(Comment $comment): static
     {
         return new self($this->value, $this->style, $comment);
     }
 
-    public function withoutComment(): self
+    public function withoutComment(): static
     {
         return new self($this->value, $this->style, null);
     }

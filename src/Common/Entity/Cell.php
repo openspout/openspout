@@ -25,13 +25,13 @@ abstract readonly class Cell
 
     abstract public function getValue(): bool|DateInterval|DateTimeInterface|float|int|string|null;
 
-    abstract public function withStyle(Style $style): self;
+    abstract public function withStyle(Style $style): static;
 
-    abstract public function withoutStyle(): self;
+    abstract public function withoutStyle(): static;
 
-    abstract public function withComment(Comment $comment): self;
+    abstract public function withComment(Comment $comment): static;
 
-    abstract public function withoutComment(): self;
+    abstract public function withoutComment(): static;
 
     final public static function fromValue(
         bool|DateInterval|DateTimeInterface|float|int|string|null $value,
