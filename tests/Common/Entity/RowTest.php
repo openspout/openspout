@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OpenSpout\Common\Entity;
 
+use OpenSpout\Common\Entity\Style\Style;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -41,5 +42,43 @@ final class RowTest extends TestCase
             [[Cell::fromValue(''), Cell::fromValue('')], true],
             [[Cell::fromValue(''), Cell::fromValue(''), Cell::fromValue('Okay')], false],
         ];
+    }
+
+    public function testRowWithHeight(): void
+    {
+        $row = new Row([Cell::fromValue('test')], 15.5);
+        $newRow = $row->withHeight(20.0);
+
+        self::assertSame(20.0, $newRow->height);
+        self::assertSame(15.5, $row->height);
+    }
+
+    public function testRowWithCells(): void
+    {
+        $cells1 = [Cell::fromValue('A'), Cell::fromValue('B')];
+        $cells2 = [Cell::fromValue('X'), Cell::fromValue('Y')];
+        $row = new Row($cells1, 10.0);
+        $newRow = $row->withCells($cells2);
+
+        self::assertSame(['X', 'Y'], $newRow->toArray());
+        self::assertSame(['A', 'B'], $row->toArray());
+        self::assertSame(10.0, $newRow->height);
+    }
+
+    public function testAcceptsAssociativeArraysInNamedConstructors(): void
+    {
+        $row = Row::fromValues(['foo', 'bar' => 'baz']);
+        self::assertIsList($row->cells);
+
+        $style = new Style();
+        $row = Row::fromValuesWithStyles(['a' => 1, 'b' => 2], ['b' => $style]);
+
+        self::assertIsList($row->cells);
+        self::assertNull($row->cells[0]->style);
+        self::assertSame($style, $row->cells[1]->style);
+
+        $row = Row::fromValuesWithStyle(['a' => 1, 'b' => 2], $style);
+
+        self::assertIsList($row->cells);
     }
 }

@@ -354,6 +354,24 @@ final class WriterWithStyleTest extends TestCase
         self::assertSame($defaultFontSize.'pt', $textPropertiesElement->getAttribute('fo:font-size'));
     }
 
+    public function testSetSingleStyleForTheRow(): void
+    {
+        $fileName = 'test_set_custom_style.ods';
+
+        $dataRows = [
+            Row::fromValues(['row1-c1', 'row1-c2', 'row1-c3']),
+            Row::fromValuesWithStyle(['row2-c1', 'row2-c2', 'row2-c3'], new Style(fontColor: Color::GREEN)),
+        ];
+
+        $this->writeToODSFile($dataRows, $fileName);
+
+        $styleElements = $this->getCellStyleElementsFromContentXmlFile($fileName);
+        self::assertCount(2, $styleElements, 'There should be 2 styles (default and custom)');
+
+        $customStyleElement = $styleElements[1];
+        $this->assertFirstChildHasAttributeEquals('#'.Color::GREEN, $customStyleElement, 'text-properties', 'fo:color');
+    }
+
     /**
      * @param Row[] $allRows
      */

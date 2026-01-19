@@ -25,12 +25,6 @@ parameters:
 			path: src/Common/Entity/Row.php
 
 		-
-			message: '#^Method OpenSpout\\Common\\Entity\\Row\:\:toArray\(\) should return list\<bool\|DateInterval\|DateTimeInterface\|float\|int\|string\|null\> but returns array\<int\<0, max\>, bool\|DateInterval\|DateTimeInterface\|float\|int\|string\|null\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Common/Entity/Row.php
-
-		-
 			message: '#^Result of \|\| is always false\.$#'
 			identifier: booleanOr.alwaysFalse
 			count: 1

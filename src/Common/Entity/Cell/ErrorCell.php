@@ -30,4 +30,29 @@ final readonly class ErrorCell extends Cell
     {
         return $this->value;
     }
+
+    public function withRawValue(string $value): self
+    {
+        return new self($value, $this->style, $this->comment);
+    }
+
+    public function withStyle(Style $style): static
+    {
+        return new self($this->value, $style, $this->comment);
+    }
+
+    public function withoutStyle(): static
+    {
+        return new self($this->value, null, $this->comment);
+    }
+
+    public function withComment(Comment $comment): static
+    {
+        return new self($this->value, $this->style, $comment);
+    }
+
+    public function withoutComment(): static
+    {
+        return new self($this->value, $this->style, null);
+    }
 }
