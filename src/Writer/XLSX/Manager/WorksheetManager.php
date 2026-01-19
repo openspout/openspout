@@ -161,7 +161,7 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
     private function getCellXMLFragmentForNonEmptyString(string $cellValue): string
     {
         if ($this->stringHelper->getStringLength($cellValue) > self::MAX_CHARACTERS_PER_CELL) {
-            throw new InvalidArgumentException('Trying to add a value that exceeds the maximum number of characters allowed in a cell (32,767)');
+            $cellValue = mb_substr($cellValue, 0, self::MAX_CHARACTERS_PER_CELL, 'UTF-8');
         }
 
         if ($this->options->SHOULD_USE_INLINE_STRINGS) {
