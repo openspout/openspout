@@ -40,7 +40,7 @@
         "friendsofphp/php-cs-fixer": "^3.92.5",
         "infection/infection": "^0.32.3",
         "phpbench/phpbench": "^1.4.3",
-        "phpstan/phpstan": "^2.1.33",
+        "phpstan/phpstan": "^2.1.35",
         "phpstan/phpstan-phpunit": "^2.0.11",
         "phpstan/phpstan-strict-rules": "^2.0.7",
         "phpunit/phpunit": "^12.5.6"
