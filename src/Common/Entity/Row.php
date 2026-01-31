@@ -7,6 +7,7 @@ namespace OpenSpout\Common\Entity;
 use DateInterval;
 use DateTimeInterface;
 use InvalidArgumentException;
+use OpenSpout\Common\Entity\Comment\TextRun;
 use OpenSpout\Common\Entity\Style\Style;
 
 final readonly class Row
@@ -66,11 +67,11 @@ final readonly class Row
     }
 
     /**
-     * @return array<non-negative-int, null|bool|DateInterval|DateTimeInterface|float|int|string> The row values, as array
+     * @return array<non-negative-int, null|bool|DateInterval|DateTimeInterface|float|int|string|TextRun[]> The row values, as array
      */
     public function toArray(): array
     {
-        return array_map(static function (Cell $cell): bool|DateInterval|DateTimeInterface|float|int|string|null {
+        return array_map(static function (Cell $cell): array|bool|DateInterval|DateTimeInterface|float|int|string|null {
             return $cell->getValue();
         }, $this->cells);
     }
@@ -87,11 +88,11 @@ final readonly class Row
     }
 
     /**
-     * @param array<array-key, null|bool|DateInterval|DateTimeInterface|float|int|string> $cellValues
+     * @param array<array-key, null|bool|DateInterval|DateTimeInterface|float|int|string|TextRun[]> $cellValues
      */
     public static function fromValues(array $cellValues, float $height = self::DEFAULT_HEIGHT): self
     {
-        $cells = array_map(static function (bool|DateInterval|DateTimeInterface|float|int|string|null $cellValue): Cell {
+        $cells = array_map(static function (array|bool|DateInterval|DateTimeInterface|float|int|string|null $cellValue): Cell {
             return Cell::fromValue($cellValue);
         }, $cellValues);
 
@@ -99,12 +100,12 @@ final readonly class Row
     }
 
     /**
-     * @param array<array-key, null|bool|DateInterval|DateTimeInterface|float|int|string> $cellValues
-     * @param array<array-key, Style>                                                     $columnStyles
+     * @param array<array-key, null|bool|DateInterval|DateTimeInterface|float|int|string|TextRun[]> $cellValues
+     * @param array<array-key, Style>                                                               $columnStyles
      */
     public static function fromValuesWithStyles(array $cellValues, array $columnStyles, float $height = self::DEFAULT_HEIGHT): self
     {
-        $cells = array_map(static function (bool|DateInterval|DateTimeInterface|float|int|string|null $cellValue, int|string $key) use ($columnStyles): Cell {
+        $cells = array_map(static function (array|bool|DateInterval|DateTimeInterface|float|int|string|null $cellValue, int|string $key) use ($columnStyles): Cell {
             return Cell::fromValue($cellValue, $columnStyles[$key] ?? null);
         }, $cellValues, array_keys($cellValues));
 
@@ -112,11 +113,11 @@ final readonly class Row
     }
 
     /**
-     * @param array<array-key, null|bool|DateInterval|DateTimeInterface|float|int|string> $cellValues
+     * @param array<array-key, null|bool|DateInterval|DateTimeInterface|float|int|string|TextRun[]> $cellValues
      */
     public static function fromValuesWithStyle(array $cellValues, Style $cellStyle, float $height = self::DEFAULT_HEIGHT): self
     {
-        $cells = array_map(static function (bool|DateInterval|DateTimeInterface|float|int|string|null $cellValue) use ($cellStyle): Cell {
+        $cells = array_map(static function (array|bool|DateInterval|DateTimeInterface|float|int|string|null $cellValue) use ($cellStyle): Cell {
             return Cell::fromValue($cellValue, $cellStyle);
         }, $cellValues);
 
