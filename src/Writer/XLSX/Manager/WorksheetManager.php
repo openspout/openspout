@@ -136,6 +136,9 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
         } elseif ($cell instanceof Cell\ErrorCell) {
             // only writes the error value if it's a string
             $cellXML .= ' t="e"><v>'.$this->stringsEscaper->escape($cell->getRawValue()).'</v></c>';
+        } elseif ($cell instanceof Cell\TextRunCell) {
+            $sharedStringId = $this->sharedStringsManager->writeTextRuns($cell->getValue());
+            $cellXML .= ' t="s"><v>'.$sharedStringId.'</v></c>';
         } elseif ($cell instanceof Cell\EmptyCell) {
             if ($this->styleManager->shouldApplyStyleOnEmptyCell($styleId)) {
                 $cellXML .= '/>';

@@ -14,6 +14,7 @@ use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Comment\Comment;
 use OpenSpout\Common\Entity\Comment\TextRun;
 use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Entity\Style\TextRunVerticalStyle;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Reader\Wrapper\XMLReader;
 use OpenSpout\TestUsingResource;
@@ -35,6 +36,46 @@ use ReflectionHelper;
  */
 final class WriterTest extends TestCase
 {
+    public function testWriteTextRunFormatting(): void
+    {
+        $fileName = 'test_text_run_formatting.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
+
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+
+        $row = new Row([
+            Cell::fromValue([
+                new TextRun('bold', bold: true),
+                new TextRun('superscript', verticalStyle: TextRunVerticalStyle::SUPERSCRIPT),
+                new TextRun('subscript', verticalStyle: TextRunVerticalStyle::SUBSCRIPT),
+                new TextRun('fontSize', fontSize: 12),
+                new TextRun('fontCalibri', fontName: 'Calibri'),
+                new TextRun('italic', italic: true),
+                new TextRun('fontColor', fontColor: '000001'),
+            ])
+        ]);
+
+        $writer->addRow($row);
+        $writer->close();
+
+        // Now test if the resources contain what we need
+        $pathToSheetFile = $resourcePath.'#xl/sharedStrings.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
+        self::assertNotFalse($xmlContents);
+        $xml = new DOMDocument();
+        self::assertTrue($xml->loadXML($xmlContents), 'sharedStrings is valid XML');
+
+        self::assertStringContainsString('<b/>', $xmlContents, 'Text run does not format bold');
+        self::assertStringContainsString('<i/>', $xmlContents, 'Text run does not format italic');
+        self::assertStringContainsString('<sz val="12"/>', $xmlContents, 'Text run does not format font size');
+        self::assertStringContainsString('<vertAlign val="superscript"/>', $xmlContents, 'Text run does not format superscript text');
+        self::assertStringContainsString('<vertAlign val="subscript"/>', $xmlContents, 'Text run does not format subscript text');
+        self::assertStringContainsString('<rFont val="Calibri"/>', $xmlContents, 'Text run does not format font');
+        self::assertStringContainsString('<color rgb="000001"/>', $xmlContents, 'Text run does not format font color');
+    }
+
     public function testAddRowShouldThrowExceptionIfCannotOpenAFileForWriting(): void
     {
         $fileName = 'file_that_wont_be_written.xlsx';
