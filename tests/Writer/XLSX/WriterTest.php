@@ -54,7 +54,7 @@ final class WriterTest extends TestCase
                 new TextRun('fontCalibri', fontName: 'Calibri'),
                 new TextRun('italic', italic: true),
                 new TextRun('fontColor', fontColor: '000001'),
-            ])
+            ]),
         ]);
 
         $writer->addRow($row);
