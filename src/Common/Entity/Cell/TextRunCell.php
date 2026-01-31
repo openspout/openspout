@@ -15,8 +15,6 @@ final readonly class TextRunCell extends Cell
     private array $textRuns;
 
     /**
-     * @param Style|null $style
-     * @param Comment|null $comment
      * @param TextRun[] $textRuns
      */
     public function __construct(
