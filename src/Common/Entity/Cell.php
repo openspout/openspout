@@ -40,9 +40,6 @@ abstract readonly class Cell
 
     /**
      * @param null|bool|DateInterval|DateTimeInterface|float|int|string|TextRun[] $value
-     * @param Style|null $style
-     * @param Comment|null $comment
-     * @return self
      */
     final public static function fromValue(
         array|bool|DateInterval|DateTimeInterface|float|int|string|null $value,
