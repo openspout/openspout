@@ -1,0 +1,18 @@
+name: 'Close stale issues'
+on:
+  schedule:
+    - cron: '0 3 * * 6'
+  workflow_dispatch:
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: "actions/stale@v10"
+        with:
+          days-before-pr-close: -1
+          exempt-issue-labels: "backlog"
+          stale-issue-label: "stale"
+          stale-issue-message: |-
+            This issue has gone two months without activity. In another two weeks, I will close it.
+
+            But! If you comment or otherwise update it, I will reset the clock, and if you label it `backlog`, I will leave it alone ... forever!
