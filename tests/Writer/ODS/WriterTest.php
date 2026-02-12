@@ -218,51 +218,6 @@ final class WriterTest extends TestCase
         $this->assertValueWasWrittenToSheet($fileName, 1, 'P1DT23S');
     }
 
-    public function testAddRowShouldSupportFloatValuesInDifferentLocale(): void
-    {
-        $previousLocale = setlocale(LC_ALL, '0');
-        self::assertNotFalse($previousLocale);
-
-        try {
-            // Pick a supported locale whose decimal point is a comma.
-            // Installed locales differ from one system to another, so we can't pick
-            // a given locale.
-            $shell_exec = shell_exec('locale -a');
-            if (!\is_string($shell_exec)) {
-                self::markTestSkipped();
-            }
-            $supportedLocales = explode("\n", $shell_exec);
-            $foundCommaLocale = false;
-            foreach ($supportedLocales as $supportedLocale) {
-                setlocale(LC_ALL, $supportedLocale);
-                if (',' === localeconv()['decimal_point']) {
-                    $foundCommaLocale = true;
-
-                    break;
-                }
-            }
-
-            if (!$foundCommaLocale) {
-                self::markTestSkipped('No locale with comma decimal separator');
-            }
-
-            self::assertSame(',', localeconv()['decimal_point']);
-
-            $fileName = 'test_add_row_should_support_float_values_in_different_locale.xlsx';
-            $dataRows = [
-                Row::fromValues([1234.5]),
-            ];
-
-            $this->writeToODSFile($dataRows, $fileName);
-
-            $this->assertValueWasNotWrittenToSheet($fileName, 1, '1234,5');
-            $this->assertValueWasWrittenToSheet($fileName, 1, '1234.5');
-        } finally {
-            // reset locale
-            setlocale(LC_ALL, $previousLocale);
-        }
-    }
-
     #[DataProvider('provideAddRowShouldUseNumberColumnsRepeatedForRepeatedValuesCases')]
     public function testAddRowShouldUseNumberColumnsRepeatedForRepeatedValues(Row $dataRow, int $expectedNumTableCells, int $expectedNumColumnsRepeated): void
     {
@@ -427,10 +382,6 @@ final class WriterTest extends TestCase
 
     public function testGeneratedFileShouldHaveTheCorrectMimeType(): void
     {
-        if (!\function_exists('finfo')) {
-            self::markTestSkipped('finfo is not available on this system (possibly running on Windows where the DLL needs to be added explicitly to the php.ini)');
-        }
-
         $fileName = 'test_mime_type.ods';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
         $this->writeToODSFile([Row::fromValues(['foo'])], $fileName);

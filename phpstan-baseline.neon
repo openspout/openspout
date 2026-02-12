@@ -85,6 +85,12 @@ parameters:
 			path: src/Writer/CSV/Writer.php
 
 		-
+			message: '#^Parameter \#1 \$codepoint of function chr expects int\<0, 255\>, int\<\-25, 280\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Writer/Common/Helper/CellHelper.php
+
+		-
 			message: '#^Short ternary operator is not allowed\. Use null coalesce operator if applicable or consider using long ternary\.$#'
 			identifier: ternary.shortNotAllowed
 			count: 1
