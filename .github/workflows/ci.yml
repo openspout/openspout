@@ -48,9 +48,6 @@ jobs:
         code-coverage:
           - "none"
         include:
-            - os: "windows-latest"
-              php-version: "8.4"
-              code-coverage: "none"
             - os: "ubuntu-latest"
               php-version: "8.4"
               code-coverage: "pcov"

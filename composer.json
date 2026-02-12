@@ -36,8 +36,8 @@
         "ext-zip": "*"
     },
     "require-dev": {
-        "ext-zlib": "*",
         "ext-fileinfo": "*",
+        "ext-zlib": "*",
         "friendsofphp/php-cs-fixer": "^3.94.0",
         "infection/infection": "^0.32.4",
         "phpbench/phpbench": "^1.4.3",
