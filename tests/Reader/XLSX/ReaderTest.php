@@ -405,7 +405,7 @@ final class ReaderTest extends TestCase
         self::assertSame($expectedRows, $allRows);
     }
 
-    public function testReadShouldKeepEmptyCellsAtTheEndIfDimensionsSpecified(): void
+    public function testReadShouldKeepEmptyCellsAtTheEndIfNoDimensionsButSpansSpecified(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_without_dimensions_but_spans_and_empty_cells.xlsx');
 
