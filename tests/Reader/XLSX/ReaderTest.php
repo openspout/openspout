@@ -437,17 +437,18 @@ final class ReaderTest extends TestCase
         self::assertSame($expectedRows, $allRows);
     }
 
-    public function testReadShouldKeepEmptyCellsAtTheEndIfNoDimensionsButSpansSpecified(): void
+    public function testReadShouldKeepEmptyCellsAtTheEndIfDimensionsSpecified(): void
     {
-        $allRows = $this->getAllRowsForFile('sheet_without_dimensions_and_empty_cells.xlsx');
+        $allRows = $this->getAllRowsForFile('sheet_with_dimensions_and_empty_cells.xlsx');
 
         self::assertCount(2, $allRows, 'There should be 2 rows');
-        self::assertCount(5, $allRows[0], 'There should be 5 cells in the first row');
-        self::assertCount(3, $allRows[1], 'There should be only 3 cells in the second row, because empty rows at the end should be skip');
+        foreach ($allRows as $row) {
+            self::assertCount(5, $row, 'There should be 5 cells for every row, because empty cells should be preserved');
+        }
 
         $expectedRows = [
             ['s1--A1', 's1--B1', 's1--C1', 's1--D1', 's1--E1'],
-            ['s1--A2', 's1--B2', 's1--C2'],
+            ['s1--A2', 's1--B2', 's1--C2', '', ''],
         ];
         self::assertSame($expectedRows, $allRows);
     }
