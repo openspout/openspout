@@ -193,6 +193,32 @@ final class WriterTest extends TestCase
         self::assertSame('#This is, a comma#,csv--12,csv--13', $writtenContent, 'The fields should be enclosed with #');
     }
 
+    public function testWriteShouldSupportCrlfEol(): void
+    {
+        $allRows = [
+            Row::fromValues(['csv--11', 'csv--12']),
+            Row::fromValues(['csv--21', 'csv--22']),
+        ];
+        $options = new Options(
+            EOL: "\r\n",
+            SHOULD_ADD_BOM: false,
+        );
+        $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_crlf.csv', $options);
+
+        self::assertSame("csv--11,csv--12\r\ncsv--21,csv--22\r\n", $writtenContent);
+    }
+
+    public function testWriteShouldDefaultToLfEol(): void
+    {
+        $allRows = [
+            Row::fromValues(['csv--11', 'csv--12']),
+        ];
+        $options = new Options(SHOULD_ADD_BOM: false);
+        $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_lf.csv', $options);
+
+        self::assertSame("csv--11,csv--12\n", $writtenContent);
+    }
+
     public function testWriteShouldSupportedEscapedCharacters(): void
     {
         $allRows = [

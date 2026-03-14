@@ -74,7 +74,8 @@ final class Writer extends AbstractWriter
             $cells,
             $this->options->FIELD_DELIMITER,
             $this->options->FIELD_ENCLOSURE,
-            ''
+            '',
+            $this->options->EOL,
         );
         if (false === $wasWriteSuccessful) {
             throw new IOException('Unable to write data'); // @codeCoverageIgnore

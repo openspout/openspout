@@ -178,7 +178,7 @@ final class RowIterator implements RowIteratorInterface
             self::MAX_READ_BYTES_PER_LINE,
             $this->options->FIELD_DELIMITER,
             $this->options->FIELD_ENCLOSURE,
-            ''
+            $this->options->FIELD_ESCAPE,
         );
         if (false === $encodedRowData) {
             return false;

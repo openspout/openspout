@@ -11,6 +11,7 @@ use OpenSpout\Reader\CSV\Options;
 $reader = new Reader(new Options(
     FIELD_DELIMITER: '|',
     FIELD_ENCLOSURE: '@',
+    FIELD_ESCAPE: '\\',
 ));
 ```
 
@@ -34,6 +35,18 @@ use OpenSpout\Writer\CSV\Options;
 
 $writer = new Writer(new Options(
     SHOULD_ADD_BOM: false,
+));
+```
+
+The writer also supports customizing the line ending (EOL).
+By default, the EOL is `"\n"` (LF). To produce [RFC 4180](https://www.rfc-editor.org/rfc/rfc4180) compliant CSV files, set the EOL to `"\r\n"` (CRLF):
+
+```php
+use OpenSpout\Writer\CSV\Writer;
+use OpenSpout\Writer\CSV\Options;
+
+$writer = new Writer(new Options(
+    EOL: "\r\n",
 ));
 ```
 

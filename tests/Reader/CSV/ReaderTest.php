@@ -179,6 +179,20 @@ final class ReaderTest extends TestCase
         self::assertSame([$expectedRow], $allRows);
     }
 
+    public function testReadShouldSupportCustomFieldEscape(): void
+    {
+        $allRows = $this->getAllRowsForFile(
+            'csv_with_backslash_escape.csv',
+            fieldEscape: '\\',
+        );
+
+        $expectedRows = [
+            ['csv--11', 'csv with \"quotes\"', 'csv--13'],
+            ['csv--21', 'csv--22', 'csv--23'],
+        ];
+        self::assertSame($expectedRows, $allRows);
+    }
+
     public function testReadShouldNotTruncateLineBreak(): void
     {
         $allRows = $this->getAllRowsForFile('csv_with_line_breaks.csv');
@@ -394,7 +408,8 @@ final class ReaderTest extends TestCase
         ?string $fieldDelimiter = null,
         ?string $fieldEnclosure = null,
         ?string $encoding = null,
-        ?bool $shouldPreserveEmptyRows = null
+        ?bool $shouldPreserveEmptyRows = null,
+        ?string $fieldEscape = null,
     ): array {
         $allRows = [];
         $resourcePath = TestUsingResource::getResourcePath($fileName);
@@ -405,6 +420,9 @@ final class ReaderTest extends TestCase
         }
         if (null !== $fieldEnclosure) {
             $options['FIELD_ENCLOSURE'] = $fieldEnclosure;
+        }
+        if (null !== $fieldEscape) {
+            $options['FIELD_ESCAPE'] = $fieldEscape;
         }
         if (null !== $encoding) {
             $options['ENCODING'] = $encoding;
