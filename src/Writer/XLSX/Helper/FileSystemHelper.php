@@ -17,6 +17,8 @@ use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
 use OpenSpout\Writer\XLSX\MergeCell;
 use OpenSpout\Writer\XLSX\Options;
 use OpenSpout\Writer\XLSX\Properties;
+use OpenSpout\Writer\XLSX\Validation\RuleSerializer\ValidationRuleSerializer;
+use OpenSpout\Writer\XLSX\Validation\ValidationRule;
 
 /**
  * @internal
@@ -329,6 +331,8 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     public function createContentFiles(Options $options, array $worksheets): self
     {
         $allMergeCells = $options->getMergeCells();
+        $allValidationRules = $options->getValidationRules();
+
         foreach ($worksheets as $worksheet) {
             $contentXmlFilePath = $this->getXlWorksheetsFolder().\DIRECTORY_SEPARATOR.basename($worksheet->getFilePath());
             $worksheetFilePointer = fopen($contentXmlFilePath, 'w');
@@ -400,6 +404,47 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
                 }
                 $mergeCellString .= '</mergeCells>';
                 fwrite($worksheetFilePointer, $mergeCellString);
+            }
+
+            // create nodes for data validations
+            $validationRules = array_filter(
+                $allValidationRules,
+                static fn (ValidationRule $v) => $v->sheetIndex === $worksheet->getExternalSheet()->getIndex(),
+            );
+            if ([] !== $validationRules) {
+                $validationString = '<dataValidations count="'.\count($validationRules).'">';
+                foreach ($validationRules as $validationRule) {
+                    $sqref = \sprintf(
+                        '%s%s:%s%s',
+                        CellHelper::getColumnLettersFromColumnIndex($validationRule->topLeftColumn),
+                        $validationRule->topLeftRow,
+                        CellHelper::getColumnLettersFromColumnIndex($validationRule->bottomRightColumn),
+                        $validationRule->bottomRightRow,
+                    );
+                    $validation_display = $validationRule->validation_display;
+                    $rule = $validationRule->rule;
+
+                    $serialized = ValidationRuleSerializer::serializeRule($rule);
+
+                    $validationString .= \sprintf(
+                        '<dataValidation type="%s"%s allowBlank="%d" showInputMessage="%d" showErrorMessage="%d" errorStyle="%s"%s%s%s%s sqref="%s"><formula1>%s</formula1>%s</dataValidation>',
+                        $serialized->type,
+                        null !== $serialized->operator ? ' operator="'.$serialized->operator.'"' : '',
+                        (int) $validation_display->allowBlank,
+                        (int) $validation_display->showInputMessage,
+                        (int) $validation_display->showErrorMessage,
+                        $validation_display->errorStyle->value,
+                        null !== $validation_display->promptTitle ? ' promptTitle="'.htmlspecialchars($validation_display->promptTitle, ENT_XML1).'"' : '',
+                        null !== $validation_display->prompt ? ' prompt="'.htmlspecialchars($validation_display->prompt, ENT_XML1).'"' : '',
+                        null !== $validation_display->errorTitle ? ' errorTitle="'.htmlspecialchars($validation_display->errorTitle, ENT_XML1).'"' : '',
+                        null !== $validation_display->error ? ' error="'.htmlspecialchars($validation_display->error, ENT_XML1).'"' : '',
+                        htmlspecialchars($sqref, ENT_XML1),
+                        $serialized->formula1,
+                        null !== $serialized->formula2 ? '<formula2>'.$serialized->formula2.'</formula2>' : '',
+                    );
+                }
+                $validationString .= '</dataValidations>';
+                fwrite($worksheetFilePointer, $validationString);
             }
 
             $this->getXMLFragmentForPageMargin($worksheetFilePointer, $options);

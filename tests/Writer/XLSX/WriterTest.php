@@ -28,6 +28,12 @@ use OpenSpout\Writer\XLSX\Options\PageSetup;
 use OpenSpout\Writer\XLSX\Options\PaperSize;
 use OpenSpout\Writer\XLSX\Options\SheetProtection;
 use OpenSpout\Writer\XLSX\Options\WorkbookProtection;
+use OpenSpout\Writer\XLSX\Validation\CellReference;
+use OpenSpout\Writer\XLSX\Validation\ErrorStyle;
+use OpenSpout\Writer\XLSX\Validation\Rules\ListValidationRule;
+use OpenSpout\Writer\XLSX\Validation\Rules\WholeNumberValidationRule;
+use OpenSpout\Writer\XLSX\Validation\ValidationDisplay;
+use OpenSpout\Writer\XLSX\Validation\ValidationOperator;
 use PHPUnit\Framework\TestCase;
 use ReflectionHelper;
 
@@ -1346,6 +1352,100 @@ final class WriterTest extends TestCase
 
         self::assertNotFalse($xmlContents);
         self::assertStringContainsString('<workbookProtection workbookPassword="83AF" lockStructure="true" lockWindows="true" lockRevisions="true"/>', $xmlContents);
+    }
+
+    public function testWriteValidationTagsToXml(): void
+    {
+        $fileName = 'test_add_data_validation.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $writer->addRow(Row::fromValues(['Name', 'Score']));
+
+        $sheetIndex = $writer->getCurrentSheet()->getIndex();
+        $options->mergeCells(0, 1, 0, 2, $sheetIndex);
+        $options->addValidation(
+            topLeftColumn: 1,
+            topLeftRow: 2,
+            bottomRightColumn: 1,
+            bottomRightRow: 100,
+            rule: new WholeNumberValidationRule(ValidationOperator::Between, 0, 100),
+            validation_display: new ValidationDisplay(
+                allowBlank: false,
+                errorStyle: ErrorStyle::Warning,
+                promptTitle: 'Enter a score',
+                errorTitle: 'Invalid value',
+            ),
+            sheetIndex: $sheetIndex,
+        );
+
+        $writer->close();
+
+        $xmlContents = file_get_contents('zip://'.$resourcePath.'#xl/worksheets/sheet1.xml');
+        self::assertNotFalse($xmlContents);
+
+        self::assertStringContainsString('type="whole"', $xmlContents);
+        self::assertStringContainsString('operator="between"', $xmlContents);
+        self::assertStringContainsString('sqref="B2:B100"', $xmlContents);
+        self::assertStringContainsString('<formula1>0</formula1>', $xmlContents);
+        self::assertStringContainsString('<formula2>100</formula2>', $xmlContents);
+
+        self::assertStringContainsString('allowBlank="0"', $xmlContents);
+        self::assertStringContainsString('errorStyle="warning"', $xmlContents);
+        self::assertStringContainsString('promptTitle="Enter a score"', $xmlContents);
+        self::assertStringContainsString('errorTitle="Invalid value"', $xmlContents);
+
+        self::assertGreaterThan(strpos($xmlContents, '<mergeCells'), strpos($xmlContents, '<dataValidations'));
+    }
+
+    public function testDataValidationsOnSeparateSheets(): void
+    {
+        $fileName = 'test_data_validations_on_separate_sheets.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $writer->addRow(Row::fromValues(['Name', 'Status']));
+
+        $sheet1Index = $writer->getCurrentSheet()->getIndex();
+        $options->addValidation(
+            topLeftColumn: 1,
+            topLeftRow: 2,
+            bottomRightColumn: 1,
+            bottomRightRow: 100,
+            rule: new ListValidationRule(new CellReference(0, 2, 0, 10)),
+            sheetIndex: $sheet1Index,
+        );
+
+        $writer->addNewSheetAndMakeItCurrent();
+        $writer->addRow(Row::fromValues(['Product', 'Category']));
+
+        $sheet2Index = $writer->getCurrentSheet()->getIndex();
+        $options->addValidation(
+            topLeftColumn: 1,
+            topLeftRow: 2,
+            bottomRightColumn: 1,
+            bottomRightRow: 100,
+            rule: new ListValidationRule(new CellReference(1, 2, 1, 10)),
+            sheetIndex: $sheet2Index,
+        );
+
+        $writer->close();
+
+        $sheet1XmlContents = file_get_contents('zip://'.$resourcePath.'#xl/worksheets/sheet1.xml');
+        self::assertNotFalse($sheet1XmlContents);
+        self::assertStringContainsString('<dataValidations', $sheet1XmlContents, 'Sheet 1 should have data validations');
+        self::assertStringContainsString('type="list"', $sheet1XmlContents, 'Sheet 1 should have a list validation');
+        self::assertStringContainsString('A2:A10', $sheet1XmlContents, 'Sheet 1 should reference column A');
+        self::assertStringNotContainsString('B2:B10"', $sheet1XmlContents, 'Sheet 1 should not reference sheet 2 range');
+
+        $sheet2XmlContents = file_get_contents('zip://'.$resourcePath.'#xl/worksheets/sheet2.xml');
+        self::assertNotFalse($sheet2XmlContents);
+        self::assertStringContainsString('<dataValidations', $sheet2XmlContents, 'Sheet 2 should have data validations');
+        self::assertStringContainsString('type="list"', $sheet2XmlContents, 'Sheet 2 should have a list validation');
+        self::assertStringContainsString('B2:B10', $sheet2XmlContents, 'Sheet 2 should reference column B');
+        self::assertStringNotContainsString('A2:A10"', $sheet2XmlContents, 'Sheet 2 should not reference sheet 1 range');
     }
 
     /**
