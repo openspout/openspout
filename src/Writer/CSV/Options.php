@@ -18,8 +18,8 @@ final readonly class Options
     public function __construct(
         public string $FIELD_DELIMITER = ',',
         public string $FIELD_ENCLOSURE = '"',
-        public string $EOL = "\n",
         public bool $SHOULD_ADD_BOM = true,
         public int $FLUSH_THRESHOLD = 500,
+        public string $EOL = "\n",
     ) {}
 }
