@@ -26,4 +26,12 @@ final readonly class TextLengthValidationRule extends AbstractOperatorValidation
     {
         return ValidationRuleType::TextLength;
     }
+
+    /**
+     * @param int $value
+     */
+    protected function serializeValue(mixed $value): string
+    {
+        return (string) $value;
+    }
 }

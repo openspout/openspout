@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace OpenSpout\Writer\XLSX\Validation\Rules;
 
 use DateTimeImmutable;
+use OpenSpout\Writer\XLSX\Helper\DateHelper;
 use OpenSpout\Writer\XLSX\Validation\AbstractOperatorValidationRule;
 use OpenSpout\Writer\XLSX\Validation\CellReference;
 use OpenSpout\Writer\XLSX\Validation\ValidationOperator;
@@ -26,5 +27,13 @@ final readonly class DateValidationRule extends AbstractOperatorValidationRule
     public function getValidationRuleType(): ValidationRuleType
     {
         return ValidationRuleType::Date;
+    }
+
+    /**
+     * @param DateTimeImmutable $value
+     */
+    protected function serializeValue(mixed $value): string
+    {
+        return (string) DateHelper::toExcel($value);
     }
 }

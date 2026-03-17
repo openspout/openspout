@@ -17,7 +17,6 @@ use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
 use OpenSpout\Writer\XLSX\MergeCell;
 use OpenSpout\Writer\XLSX\Options;
 use OpenSpout\Writer\XLSX\Properties;
-use OpenSpout\Writer\XLSX\Validation\RuleSerializer\ValidationRuleSerializer;
 use OpenSpout\Writer\XLSX\Validation\ValidationRule;
 
 /**
@@ -424,7 +423,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
                     $validation_display = $validationRule->validation_display;
                     $rule = $validationRule->rule;
 
-                    $serialized = ValidationRuleSerializer::serializeRule($rule);
+                    $serialized = $rule->serialize();
 
                     $validationString .= \sprintf(
                         '<dataValidation type="%s"%s allowBlank="%d" showInputMessage="%d" showErrorMessage="%d" errorStyle="%s"%s%s%s%s sqref="%s"><formula1>%s</formula1>%s</dataValidation>',

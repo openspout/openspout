@@ -7,6 +7,7 @@ namespace OpenSpout\Writer\XLSX\Validation\Rules;
 use InvalidArgumentException;
 use OpenSpout\Writer\XLSX\Validation\CellReference;
 use OpenSpout\Writer\XLSX\Validation\DataValidationRuleInterface;
+use OpenSpout\Writer\XLSX\Validation\SerializedValidationRule;
 use OpenSpout\Writer\XLSX\Validation\ValidationRuleType;
 
 final readonly class ListValidationRule implements DataValidationRuleInterface
@@ -37,5 +38,25 @@ final readonly class ListValidationRule implements DataValidationRuleInterface
     public function getValidationRuleType(): ValidationRuleType
     {
         return ValidationRuleType::List;
+    }
+
+    public function serialize(): SerializedValidationRule
+    {
+        if ($this->value instanceof CellReference) {
+            return new SerializedValidationRule(
+                type: $this->getValidationRuleType()->value,
+                operator: null,
+                formula1: $this->value->serialize(),
+            );
+        }
+
+        return new SerializedValidationRule(
+            type: $this->getValidationRuleType()->value,
+            operator: null,
+            formula1: '"'.implode(',', array_map(
+                static fn (string $o) => htmlspecialchars($o, ENT_XML1),
+                $this->value,
+            )).'"',
+        );
     }
 }

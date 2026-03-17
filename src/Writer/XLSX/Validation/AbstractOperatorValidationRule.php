@@ -18,9 +18,9 @@ abstract readonly class AbstractOperatorValidationRule implements DataValidation
      * @param null|CellReference|T $value2
      */
     public function __construct(
-        private ValidationOperator $operator,
-        private mixed $value1,
-        private mixed $value2
+        public ValidationOperator $operator,
+        public mixed $value1,
+        public mixed $value2
     ) {
         if (
             \in_array($operator, [ValidationOperator::Between, ValidationOperator::NotBetween], true)
@@ -32,24 +32,34 @@ abstract readonly class AbstractOperatorValidationRule implements DataValidation
         }
     }
 
-    public function getOperator(): ValidationOperator
+    public function serialize(): SerializedValidationRule
     {
-        return $this->operator;
+        return new SerializedValidationRule(
+            type: $this->getValidationRuleType()->value,
+            operator: $this->operator->value,
+            formula1: $this->transformValue($this->value1),
+            formula2: $this->transformValue($this->value2)
+        );
     }
 
     /**
-     * @return CellReference|T
+     * @param T $value
      */
-    public function getValue1(): mixed
-    {
-        return $this->value1;
-    }
+    abstract protected function serializeValue(mixed $value): string;
 
     /**
-     * @return null|CellReference|T
+     * @param null|CellReference|T $value
      */
-    public function getValue2(): mixed
+    private function transformValue(mixed $value): ?string
     {
-        return $this->value2;
+        if (null === $value) {
+            return null;
+        }
+
+        if ($value instanceof CellReference) {
+            return $value->serialize();
+        }
+
+        return $this->serializeValue($value);
     }
 }

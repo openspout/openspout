@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OpenSpout\Writer\XLSX\Validation\RuleSerializer;
+namespace OpenSpout\Writer\XLSX\Validation;
 
 final readonly class SerializedValidationRule
 {

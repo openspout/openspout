@@ -15,8 +15,7 @@ final readonly class TimeOfDay
         public int $hours,
         public int $minutes = 0,
         public int $seconds = 0,
-    ) {
-    }
+    ) {}
 
     public function toDayFraction(): float
     {

@@ -26,4 +26,12 @@ final readonly class DecimalValidationRule extends AbstractOperatorValidationRul
     {
         return ValidationRuleType::Decimal;
     }
+
+    /**
+     * @param float $value
+     */
+    protected function serializeValue(mixed $value): string
+    {
+        return (string) $value;
+    }
 }

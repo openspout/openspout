@@ -26,4 +26,12 @@ final readonly class WholeNumberValidationRule extends AbstractOperatorValidatio
     {
         return ValidationRuleType::Whole;
     }
+
+    /**
+     * @param int $value
+     */
+    protected function serializeValue(mixed $value): string
+    {
+        return (string) $value;
+    }
 }

@@ -26,4 +26,12 @@ final readonly class TimeValidationRule extends AbstractOperatorValidationRule
     {
         return ValidationRuleType::Time;
     }
+
+    /**
+     * @param TimeOfDay $value
+     */
+    protected function serializeValue(mixed $value): string
+    {
+        return (string) $value->toDayFraction();
+    }
 }
