@@ -20,9 +20,6 @@ final readonly class ListValidationRule implements DataValidationRuleInterface
         if ($this->value instanceof CellReference) {
             return;
         }
-        if ([] === $this->value) {
-            throw new InvalidArgumentException('ListValidationRule requires at least one option.');
-        }
         foreach ($this->value as $option) {
             if (!str_contains($option, ',')) {
                 continue;

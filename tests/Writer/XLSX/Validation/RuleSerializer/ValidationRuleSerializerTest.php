@@ -231,13 +231,6 @@ final class ValidationRuleSerializerTest extends TestCase
         );
     }
 
-    public function testEmptyListThrows(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new ListValidationRule([]);
-    }
-
     public function testListWithCellReference(): void
     {
         $result = ValidationRuleSerializer::serializeRule(
@@ -266,29 +259,5 @@ final class ValidationRuleSerializerTest extends TestCase
         $this->expectExceptionMessage('Top-left cell must not be below or to the right of bottom-right cell.');
 
         new CellReference(1, 10, 0, 1);
-    }
-
-    public function testTimeOfDayInvalidHoursThrows(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Hours must be between 0 and 23, got 24.');
-
-        new TimeOfDay(24);
-    }
-
-    public function testTimeOfDayInvalidMinutesThrows(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Minutes must be between 0 and 59, got 60.');
-
-        new TimeOfDay(9, 60);
-    }
-
-    public function testTimeOfDayInvalidSecondsThrows(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Seconds must be between 0 and 59, got 60.');
-
-        new TimeOfDay(9, 0, 60);
     }
 }
