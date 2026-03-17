@@ -16,9 +16,4 @@ final readonly class ValidationDisplay
         public ?string $errorTitle = null,
         public ?string $error = null,
     ) {}
-
-    public static function default(): self
-    {
-        return new self();
-    }
 }
