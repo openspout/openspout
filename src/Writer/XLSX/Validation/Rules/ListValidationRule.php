@@ -12,7 +12,7 @@ use OpenSpout\Writer\XLSX\Validation\ValidationRuleType;
 final readonly class ListValidationRule implements DataValidationRuleInterface
 {
     /**
-     * @param CellReference|list<string> $value
+     * @param CellReference|non-empty-list<non-empty-string> $value
      */
     public function __construct(
         public array|CellReference $value,

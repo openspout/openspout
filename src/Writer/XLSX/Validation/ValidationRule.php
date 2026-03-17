@@ -7,10 +7,10 @@ namespace OpenSpout\Writer\XLSX\Validation;
 final readonly class ValidationRule
 {
     /**
-     * @param 0|positive-int $sheetIndex
-     * @param 0|positive-int $topLeftColumn
+     * @param non-negative-int $sheetIndex
+     * @param non-negative-int $topLeftColumn
      * @param positive-int   $topLeftRow
-     * @param 0|positive-int $bottomRightColumn
+     * @param non-negative-int $bottomRightColumn
      * @param positive-int   $bottomRightRow
      */
     public function __construct(

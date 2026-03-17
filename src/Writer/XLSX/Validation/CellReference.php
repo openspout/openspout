@@ -9,10 +9,10 @@ use InvalidArgumentException;
 final readonly class CellReference
 {
     /**
-     * @param int<0, max> $topLeftColumn
-     * @param int<0, max> $topLeftRow
-     * @param int<0, max> $bottomRightColumn
-     * @param int<0, max> $bottomRightRow
+     * @param non-negative-int $topLeftColumn
+     * @param non-negative-int $topLeftRow
+     * @param non-negative-int $bottomRightColumn
+     * @param non-negative-int $bottomRightRow
      */
     public function __construct(
         public int $topLeftColumn,

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer\XLSX\Validation;
 
-final class ValidationDisplay
+final readonly class ValidationDisplay
 {
     public function __construct(
         public bool $allowBlank = true,
