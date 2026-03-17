@@ -9,9 +9,9 @@ final readonly class ValidationRule
     /**
      * @param non-negative-int $sheetIndex
      * @param non-negative-int $topLeftColumn
-     * @param positive-int   $topLeftRow
+     * @param positive-int     $topLeftRow
      * @param non-negative-int $bottomRightColumn
-     * @param positive-int   $bottomRightRow
+     * @param positive-int     $bottomRightRow
      */
     public function __construct(
         public int $sheetIndex,
