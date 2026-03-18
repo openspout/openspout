@@ -21,6 +21,7 @@ final readonly class Row
         public array $cells,
         public float $height = self::DEFAULT_HEIGHT,
     ) {
+        $lastIndex = -1;
         foreach ($this->cells as $index => $cell) {
             if (!\is_int($index) || 0 > $index) {
                 throw new InvalidArgumentException(\sprintf(
@@ -36,6 +37,15 @@ final readonly class Row
                     $index
                 ));
             }
+            if ($index <= $lastIndex) {
+                // see https://github.com/openspout/openspout/issues/362 for details
+                throw new InvalidArgumentException(\sprintf(
+                    'Cell indexes must be in ascending order, index %s is not greater than previous index %s. Run `\ksort()` on the cell array.',
+                    $index,
+                    $lastIndex
+                ));
+            }
+            $lastIndex = $index;
         }
     }
 

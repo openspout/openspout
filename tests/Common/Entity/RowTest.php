@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OpenSpout\Common\Entity;
 
+use InvalidArgumentException;
 use OpenSpout\Common\Entity\Style\Style;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -80,5 +81,11 @@ final class RowTest extends TestCase
         $row = Row::fromValuesWithStyle(['a' => 1, 'b' => 2], $style);
 
         self::assertIsList($row->cells);
+    }
+
+    public function testDoesNotAcceptUnsortedCellArraysInConstructor(): void
+    {
+        self::expectException(InvalidArgumentException::class);
+        new Row([1 => Cell::fromValue('foo'), 0 => Cell::fromValue('bar')]);
     }
 }
