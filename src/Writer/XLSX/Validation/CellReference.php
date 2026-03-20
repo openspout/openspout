@@ -19,7 +19,9 @@ final readonly class CellReference
         public int $fromColumnIndex,
         public int $fromRow,
         public int $toColumnIndex,
-        public int $toRow
+        public int $toRow,
+        public bool $absolute = true,
+        public ?string $sheetName = null,
     ) {
         if ($this->fromRow > $this->toRow || $this->fromColumnIndex > $this->toColumnIndex) {
             throw new InvalidArgumentException('Top-left cell must not be below or to the right of bottom-right cell.');
@@ -28,12 +30,26 @@ final readonly class CellReference
 
     public function serialize(): string
     {
-        return \sprintf(
-            '%s%s:%s%s',
+        $prefix = $this->absolute ? '$' : '';
+
+        $reference = \sprintf(
+            '%s%s%s:%s%s%s',
+            $prefix,
             CellHelper::getColumnLettersFromColumnIndex($this->fromColumnIndex),
-            $this->fromRow,
+            $prefix.$this->fromRow,
+            $prefix,
             CellHelper::getColumnLettersFromColumnIndex($this->toColumnIndex),
-            $this->toRow,
+            $prefix.$this->toRow,
         );
+
+        if (null !== $this->sheetName) {
+            $escapedSheet = str_contains($this->sheetName, ' ')
+                ? "'".$this->sheetName."'"
+                : $this->sheetName;
+
+            return $escapedSheet.'!'.$reference;
+        }
+
+        return $reference;
     }
 }
