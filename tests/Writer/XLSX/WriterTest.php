@@ -1437,15 +1437,15 @@ final class WriterTest extends TestCase
         self::assertNotFalse($sheet1XmlContents);
         self::assertStringContainsString('<dataValidations', $sheet1XmlContents, 'Sheet 1 should have data validations');
         self::assertStringContainsString('type="list"', $sheet1XmlContents, 'Sheet 1 should have a list validation');
-        self::assertStringContainsString('A2:A10', $sheet1XmlContents, 'Sheet 1 should reference column A');
-        self::assertStringNotContainsString('B2:B10"', $sheet1XmlContents, 'Sheet 1 should not reference sheet 2 range');
+        self::assertStringContainsString('$A$2:$A$10', $sheet1XmlContents, 'Sheet 1 should reference column A');
+        self::assertStringNotContainsString('$B$2:$B$10"', $sheet1XmlContents, 'Sheet 1 should not reference sheet 2 range');
 
         $sheet2XmlContents = file_get_contents('zip://'.$resourcePath.'#xl/worksheets/sheet2.xml');
         self::assertNotFalse($sheet2XmlContents);
         self::assertStringContainsString('<dataValidations', $sheet2XmlContents, 'Sheet 2 should have data validations');
         self::assertStringContainsString('type="list"', $sheet2XmlContents, 'Sheet 2 should have a list validation');
-        self::assertStringContainsString('B2:B10', $sheet2XmlContents, 'Sheet 2 should reference column B');
-        self::assertStringNotContainsString('A2:A10"', $sheet2XmlContents, 'Sheet 2 should not reference sheet 1 range');
+        self::assertStringContainsString('$B$2:$B$10', $sheet2XmlContents, 'Sheet 2 should reference column B');
+        self::assertStringNotContainsString('$A$2:$A$10"', $sheet2XmlContents, 'Sheet 2 should not reference sheet 1 range');
     }
 
     /**

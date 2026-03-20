@@ -25,8 +25,8 @@ final class DecimalValidationRuleTest extends TestCase
 
         self::assertSame('decimal', $serialized_validation_rule->type);
         self::assertSame('between', $serialized_validation_rule->operator);
-        self::assertSame('A1:A1', $serialized_validation_rule->formula1);
-        self::assertSame('A2:A2', $serialized_validation_rule->formula2);
+        self::assertSame('$A$1:$A$1', $serialized_validation_rule->formula1);
+        self::assertSame('$A$2:$A$2', $serialized_validation_rule->formula2);
     }
 
     public function testDecimalsAreConvertedToStrings(): void

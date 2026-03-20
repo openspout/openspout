@@ -38,6 +38,6 @@ final class DateValidationRuleTest extends TestCase
         $serialized_validation_rule = $rule->serialize();
 
         self::assertSame('date', $serialized_validation_rule->type);
-        self::assertSame('A1:A1', $serialized_validation_rule->formula1);
+        self::assertSame('$A$1:$A$1', $serialized_validation_rule->formula1);
     }
 }

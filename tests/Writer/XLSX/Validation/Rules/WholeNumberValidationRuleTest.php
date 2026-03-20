@@ -36,8 +36,8 @@ final class WholeNumberValidationRuleTest extends TestCase
         $serialized_validation_rule = $rule->serialize();
 
         self::assertSame('whole', $serialized_validation_rule->type);
-        self::assertSame('A1:A1', $serialized_validation_rule->formula1);
-        self::assertSame('B1:B1', $serialized_validation_rule->formula2);
+        self::assertSame('$A$1:$A$1', $serialized_validation_rule->formula1);
+        self::assertSame('$B$1:$B$1', $serialized_validation_rule->formula2);
     }
 
     public function testWholeNumberWithoutSecondValue(): void

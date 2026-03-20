@@ -45,7 +45,7 @@ final class ListValidationRuleTest extends TestCase
         $serialized_validation_rule = $rule->serialize();
 
         self::assertSame('list', $serialized_validation_rule->type);
-        self::assertSame('A1:A10', $serialized_validation_rule->formula1);
+        self::assertSame('$A$1:$A$10', $serialized_validation_rule->formula1);
     }
 
     public function testSerializeWithSingleCellReference(): void
@@ -54,6 +54,6 @@ final class ListValidationRuleTest extends TestCase
         $rule = new ListValidationRule($cellRef);
         $serialized_validation_rule = $rule->serialize();
 
-        self::assertSame('F5:F5', $serialized_validation_rule->formula1);
+        self::assertSame('$F$5:$F$5', $serialized_validation_rule->formula1);
     }
 }
