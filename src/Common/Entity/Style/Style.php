@@ -167,7 +167,18 @@ final readonly class Style
     {
         $values = get_object_vars($this);
         unset($values['shouldApplyFont']);
-        $values['border'] = $border;
+
+        if ($this->border !== null) {
+            $mergedParts = $this->border->getParts();
+
+            foreach ($border->getParts() as $part) {
+                $mergedParts[$part->name->value] = $part;
+            }
+
+            $values['border'] = new Border(...array_values($mergedParts));
+        } else {
+            $values['border'] = $border;
+        }
 
         return new self(...$values);
     }
