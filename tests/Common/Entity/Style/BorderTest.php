@@ -95,12 +95,14 @@ final class BorderTest extends TestCase
         self::assertNotNull($newBorder->getPart(BorderName::TOP));
         self::assertCount(1, $border->getParts());
     }
+
     public function testShouldAllowDefiningMultipleSpecificBorders(): void
     {
         $border = new Border(
             new BorderPart(BorderName::TOP, Color::BLACK, BorderWidth::THICK),
             new BorderPart(BorderName::BOTTOM, Color::RED, BorderWidth::THICK)
         );
+
         self::assertCount(2, $border->getParts(), 'Border should have exactly 2 parts');
         self::assertSame(Color::BLACK, $border->getPart(BorderName::TOP)?->color);
         self::assertSame(Color::RED, $border->getPart(BorderName::BOTTOM)?->color);

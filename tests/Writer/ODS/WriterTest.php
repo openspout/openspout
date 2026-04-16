@@ -521,11 +521,15 @@ final class WriterTest extends TestCase
     ): Writer {
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
 
-        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
+        $optionsArray = [
+            'tempFolder' => (new TestUsingResource())->getTempFolderPath(),
+        ];
+
         if (null !== $shouldCreateSheetsAutomatically) {
-            $options->SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY = $shouldCreateSheetsAutomatically;
+            $optionsArray['SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY'] = $shouldCreateSheetsAutomatically;
         }
-        $writer = new Writer($options);
+
+        $writer = new Writer(new Options(...$optionsArray));
 
         $writer->openToFile($resourcePath);
         $writer->addRows($allRows);

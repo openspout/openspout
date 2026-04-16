@@ -156,9 +156,3 @@ parameters:
 			count: 1
 			path: tests/Writer/ODS/Manager/Style/StyleRegistryTest.php
 
-		-
-			message: '#^Readonly property OpenSpout\\Writer\\Common\\AbstractOptions\:\:\$SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY is assigned outside of its declaring class\.$#'
-			identifier: property.readOnlyAssignOutOfClass
-			count: 1
-			path: tests/Writer/ODS/WriterTest.php
-
