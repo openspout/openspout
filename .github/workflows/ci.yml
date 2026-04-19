@@ -29,7 +29,7 @@ jobs:
           extensions: "${{ env.EXTENSIONS }}"
           ini-values: "${{ env.INI_VALUES }}"
           tools: composer-normalize, composer-require-checker, composer-unused
-      - uses: "ramsey/composer-install@v3"
+      - uses: "ramsey/composer-install@v4"
 
       - run: "composer validate --strict"
       - run: "composer-normalize --dry-run"
@@ -60,7 +60,7 @@ jobs:
           php-version: "${{ matrix.php-version }}"
           extensions: "${{ env.EXTENSIONS }}"
           ini-values: "${{ env.INI_VALUES }}"
-      - uses: "ramsey/composer-install@v3"
+      - uses: "ramsey/composer-install@v4"
 
       - name: "Run tests without CC"
         if: "${{matrix.code-coverage == 'none' }}"
@@ -108,7 +108,7 @@ jobs:
           php-version: "${{ matrix.php-version }}"
           extensions: "${{ env.EXTENSIONS }}"
           ini-values: "${{ env.INI_VALUES }}"
-      - uses: "ramsey/composer-install@v3"
+      - uses: "ramsey/composer-install@v4"
 
       - run: "vendor/bin/php-cs-fixer fix --verbose --dry-run --diff"
 
@@ -130,7 +130,7 @@ jobs:
           php-version: "${{ matrix.php-version }}"
           extensions: "${{ env.EXTENSIONS }}"
           ini-values: "${{ env.INI_VALUES }}"
-      - uses: "ramsey/composer-install@v3"
+      - uses: "ramsey/composer-install@v4"
 
       - run: "vendor/bin/phpstan analyse --no-progress --error-format=github"
 
@@ -159,7 +159,7 @@ jobs:
           php-version: "${{ matrix.php-version }}"
           extensions: "${{ env.EXTENSIONS }}"
           ini-values: "${{ env.INI_VALUES }}"
-      - uses: "ramsey/composer-install@v3"
+      - uses: "ramsey/composer-install@v4"
 
       - name: "Remove infection"
         run: "composer remove --no-progress --no-update --no-scripts --dev 'infection/infection'"
