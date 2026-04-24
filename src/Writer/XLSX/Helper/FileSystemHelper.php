@@ -896,17 +896,8 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 
             copy($cell->getValue(), $mediaTarget);
 
-            $widthEmu = $cell->width * 9525;
-            $heightEmu = $cell->height * 9525;
             $picId = $imageIndex + 1;
-
-            $drawingXml .= '<xdr:oneCellAnchor>'
-                .'<xdr:from>'
-                .'<xdr:col>'.$col.'</xdr:col><xdr:colOff>0</xdr:colOff>'
-                .'<xdr:row>'.$row.'</xdr:row><xdr:rowOff>0</xdr:rowOff>'
-                .'</xdr:from>'
-                .'<xdr:ext cx="'.$widthEmu.'" cy="'.$heightEmu.'"/>'
-                .'<xdr:pic>'
+            $pic = '<xdr:pic>'
                 .'<xdr:nvPicPr>'
                 .'<xdr:cNvPr id="'.$picId.'" name="Image'.$imageIndex.'"/>'
                 .'<xdr:cNvPicPr><a:picLocks noChangeAspect="1"/></xdr:cNvPicPr>'
@@ -916,12 +907,37 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
                 .'<a:stretch><a:fillRect/></a:stretch>'
                 .'</xdr:blipFill>'
                 .'<xdr:spPr>'
-                .'<a:xfrm><a:off x="0" y="0"/><a:ext cx="'.$widthEmu.'" cy="'.$heightEmu.'"/></a:xfrm>'
+                .'<a:xfrm><a:off x="0" y="0"/><a:ext cx="1" cy="1"/></a:xfrm>'
                 .'<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
                 .'</xdr:spPr>'
-                .'</xdr:pic>'
-                .'<xdr:clientData/>'
-                .'</xdr:oneCellAnchor>';
+                .'</xdr:pic>';
+
+            if ($cell->fitToCell) {
+                $drawingXml .= '<xdr:twoCellAnchor editAs="twoCell">'
+                    .'<xdr:from>'
+                    .'<xdr:col>'.$col.'</xdr:col><xdr:colOff>0</xdr:colOff>'
+                    .'<xdr:row>'.$row.'</xdr:row><xdr:rowOff>0</xdr:rowOff>'
+                    .'</xdr:from>'
+                    .'<xdr:to>'
+                    .'<xdr:col>'.($col + 1).'</xdr:col><xdr:colOff>0</xdr:colOff>'
+                    .'<xdr:row>'.($row + 1).'</xdr:row><xdr:rowOff>0</xdr:rowOff>'
+                    .'</xdr:to>'
+                    .$pic
+                    .'<xdr:clientData/>'
+                    .'</xdr:twoCellAnchor>';
+            } else {
+                $widthEmu = $cell->width * 9525;
+                $heightEmu = $cell->height * 9525;
+                $drawingXml .= '<xdr:oneCellAnchor>'
+                    .'<xdr:from>'
+                    .'<xdr:col>'.$col.'</xdr:col><xdr:colOff>0</xdr:colOff>'
+                    .'<xdr:row>'.$row.'</xdr:row><xdr:rowOff>0</xdr:rowOff>'
+                    .'</xdr:from>'
+                    .'<xdr:ext cx="'.$widthEmu.'" cy="'.$heightEmu.'"/>'
+                    .$pic
+                    .'<xdr:clientData/>'
+                    .'</xdr:oneCellAnchor>';
+            }
 
             $drawingRelsXml .= '<Relationship Id="rId'.$imageIndex.'"'
                 .' Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"'

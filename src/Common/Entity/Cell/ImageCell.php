@@ -20,6 +20,7 @@ final readonly class ImageCell extends Cell
         private string $path,
         ?Style $style = null,
         ?Comment $comment = null,
+        public bool $fitToCell = false,
     ) {
         if (!\extension_loaded('imagick') && !\extension_loaded('gd')) {
             throw new UnsupportedTypeException('Neither the imagick nor gd PHP extension is available.');
@@ -50,29 +51,32 @@ final readonly class ImageCell extends Cell
         };
     }
 
+    public function withFitToCell(bool $fitToCell): self
+    {
+        return new self($this->path, $this->style, $this->comment, $fitToCell);
+    }
+
     public function withStyle(Style $style): static
     {
-        return new self($this->path, $style, $this->comment);
+        return new self($this->path, $style, $this->comment, $this->fitToCell);
     }
 
     public function withoutStyle(): static
     {
-        return new self($this->path, null, $this->comment);
+        return new self($this->path, null, $this->comment, $this->fitToCell);
     }
 
     public function withComment(Comment $comment): static
     {
-        return new self($this->path, $this->style, $comment);
+        return new self($this->path, $this->style, $comment, $this->fitToCell);
     }
 
     public function withoutComment(): static
     {
-        return new self($this->path, $this->style, null);
+        return new self($this->path, $this->style, null, $this->fitToCell);
     }
 
-    /**
-     * @return array{int, int, string} [width, height, mimeType]
-     */
+    /** @return array{int, int, string} [width, height, mimeType] */
     private static function getImageInfo(string $path): array
     {
         if (\extension_loaded('imagick')) {
