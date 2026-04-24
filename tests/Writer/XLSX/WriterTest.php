@@ -1455,10 +1455,17 @@ final class WriterTest extends TestCase
         }
 
         $imagePath = sys_get_temp_dir().\DIRECTORY_SEPARATOR.'openspout_test_image.png';
-        $img = imagecreatetruecolor(10, 10);
-        \assert(false !== $img);
-        imagepng($img, $imagePath);
-        imagedestroy($img);
+        if (\extension_loaded('gd')) {
+            $img = imagecreatetruecolor(1, 1);
+            imagepng($img, $imagePath);
+            imagedestroy($img);
+        } else {
+            $img = new \Imagick();
+            $img->newImage(1, 1, 'white');
+            $img->setImageFormat('png');
+            $img->writeImage($imagePath);
+            $img->clear();
+        }
 
         $fileName = 'test_write_image_cell.xlsx';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
