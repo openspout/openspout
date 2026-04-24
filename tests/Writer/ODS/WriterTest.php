@@ -11,8 +11,10 @@ use DOMElement;
 use DOMNode;
 use finfo;
 use OpenSpout\Common\Entity\Cell;
+use OpenSpout\Common\Entity\Cell\ImageCell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Common\Exception\UnsupportedTypeException;
 use OpenSpout\Common\Helper\StringHelper;
 use OpenSpout\Reader\Wrapper\XMLReader;
 use OpenSpout\TestUsingResource;
@@ -591,6 +593,32 @@ final class WriterTest extends TestCase
         $xmlReader = $this->moveReaderToCorrectTableNode($fileName, $sheetIndex);
 
         return $xmlReader->readOuterXml();
+    }
+
+    public function testWriteImageCellShouldThrowException(): void
+    {
+        if (!\extension_loaded('gd') && !\extension_loaded('imagick')) {
+            self::markTestSkipped('Neither gd nor imagick extension is available.');
+        }
+
+        $imagePath = sys_get_temp_dir().\DIRECTORY_SEPARATOR.'openspout_test_image_ods.png';
+        $img = imagecreatetruecolor(1, 1);
+        \assert(false !== $img);
+        imagepng($img, $imagePath);
+        imagedestroy($img);
+
+        $fileName = 'test_image_cell_throws.ods';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+
+        $this->expectException(UnsupportedTypeException::class);
+        try {
+            $writer->addRow(new Row([new ImageCell($imagePath)]));
+        } finally {
+            unlink($imagePath);
+        }
     }
 
     private function moveReaderToCorrectTableNode(string $fileName, int $sheetIndex): XMLReader

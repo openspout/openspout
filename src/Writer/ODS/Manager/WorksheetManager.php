@@ -10,6 +10,7 @@ use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\InvalidArgumentException;
 use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Common\Exception\UnsupportedTypeException;
 use OpenSpout\Common\Helper\Escaper\ODS as ODSEscaper;
 use OpenSpout\Writer\Common\Entity\Worksheet;
 use OpenSpout\Writer\Common\Helper\CellHelper;
@@ -194,6 +195,8 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
             $data .= '</table:table-cell>';
         } elseif ($cell instanceof Cell\EmptyCell) {
             $data .= '/>';
+        } elseif ($cell instanceof Cell\ImageCell) {
+            throw new UnsupportedTypeException('ImageCell is not supported in ODS format.');
         }
 
         return $data;

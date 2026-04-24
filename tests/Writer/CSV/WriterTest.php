@@ -6,8 +6,10 @@ namespace OpenSpout\Writer\CSV;
 
 use DateInterval;
 use DateTime;
+use OpenSpout\Common\Entity\Cell\ImageCell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Common\Exception\UnsupportedTypeException;
 use OpenSpout\Common\Helper\EncodingHelper;
 use OpenSpout\TestUsingResource;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
@@ -271,6 +273,31 @@ final class WriterTest extends TestCase
         self::assertSame(5, $writer->getWrittenRowCount());
         $writer->close();
         self::assertSame(5, $writer->getWrittenRowCount());
+    }
+
+    public function testWriteImageCellShouldThrowException(): void
+    {
+        if (!\extension_loaded('gd') && !\extension_loaded('imagick')) {
+            self::markTestSkipped('Neither gd nor imagick extension is available.');
+        }
+
+        $imagePath = sys_get_temp_dir().\DIRECTORY_SEPARATOR.'openspout_test_image_csv.png';
+        $img = imagecreatetruecolor(1, 1);
+        \assert(false !== $img);
+        imagepng($img, $imagePath);
+        imagedestroy($img);
+
+        $fileName = 'test_image_cell_throws.csv';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $writer = new Writer();
+        $writer->openToFile($resourcePath);
+
+        $this->expectException(UnsupportedTypeException::class);
+        try {
+            $writer->addRow(new Row([new ImageCell($imagePath)]));
+        } finally {
+            unlink($imagePath);
+        }
     }
 
     /**

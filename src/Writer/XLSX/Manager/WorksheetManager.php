@@ -91,6 +91,9 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
         $rowXML = "<row r=\"{$rowIndexOneBased}\" spans=\"1:{$numCells}\" ".($rowHeight > 0 ? "ht=\"{$rowHeight}\" " : '')."customHeight=\"{$hasCustomHeight}\">";
 
         foreach ($row->cells as $columnIndexZeroBased => $cell) {
+            if ($cell instanceof Cell\ImageCell) {
+                $worksheet->addImage($rowIndexOneBased - 1, $columnIndexZeroBased, $cell);
+            }
             $styleId = 0;
             if (null !== $cell->style) {
                 $styleId = $this->styleManager->registerStyle($cell->style);
@@ -147,6 +150,9 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
                 // NOTE: not appending to $cellXML is the right behavior!!
                 $cellXML = '';
             }
+        } elseif ($cell instanceof Cell\ImageCell) {
+            // Image is embedded as a drawing; emit an empty cell placeholder
+            $cellXML = '';
         }
 
         return $cellXML;

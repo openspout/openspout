@@ -26,6 +26,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 {
     public const string RELS_FOLDER_NAME = '_rels';
     public const string DRAWINGS_FOLDER_NAME = 'drawings';
+    public const string MEDIA_FOLDER_NAME = 'media';
     public const string DOC_PROPS_FOLDER_NAME = 'docProps';
     public const string XL_FOLDER_NAME = 'xl';
     public const string WORKSHEETS_FOLDER_NAME = 'worksheets';
@@ -164,10 +165,20 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
                 <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml" PartName="/xl/workbook.xml"/>
             EOD;
 
+        $imageExtensions = [];
         /** @var Worksheet $worksheet */
         foreach ($worksheets as $worksheet) {
             $contentTypesXmlFileContents .= '<Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml" PartName="/xl/worksheets/sheet'.$worksheet->getId().'.xml"/>';
             $contentTypesXmlFileContents .= '<Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml" PartName="/xl/comments'.$worksheet->getId().'.xml" />';
+            if ([] !== $worksheet->getImages()) {
+                $contentTypesXmlFileContents .= '<Override ContentType="application/vnd.openxmlformats-officedocument.drawing+xml" PartName="/xl/drawings/drawing'.$worksheet->getId().'.xml"/>';
+                foreach ($worksheet->getImages() as $image) {
+                    $imageExtensions[$image['cell']->getExtension()] = $image['cell']->mimeType;
+                }
+            }
+        }
+        foreach ($imageExtensions as $ext => $mime) {
+            $contentTypesXmlFileContents .= '<Default ContentType="'.$mime.'" Extension="'.$ext.'"/>';
         }
 
         $contentTypesXmlFileContents .= <<<'EOD'
@@ -296,11 +307,15 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 
         foreach ($worksheets as $worksheet) {
             $worksheetId = $worksheet->getId();
+            $drawingRel = [] !== $worksheet->getImages()
+                ? '<Relationship Id="rIdDrawing1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" Target="../drawings/drawing'.$worksheetId.'.xml"/>'
+                : '';
             $worksheetRelsContent = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
               <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
                 <Relationship Id="rId_comments_vml1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing" Target="../drawings/vmlDrawing'.$worksheetId.'.vml"/>
-                <Relationship Id="rId_comments1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments" Target="../comments'.$worksheetId.'.xml"/>
-              </Relationships>';
+                <Relationship Id="rId_comments1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments" Target="../comments'.$worksheetId.'.xml"/>'
+                .$drawingRel
+                .'</Relationships>';
 
             $folder = $this->getXlWorksheetsFolder().\DIRECTORY_SEPARATOR.'_rels';
             $filename = 'sheet'.$worksheetId.'.xml.rels';
@@ -454,6 +469,11 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 
             // Add the legacy drawing for comments
             fwrite($worksheetFilePointer, '<legacyDrawing r:id="rId_comments_vml1"/>');
+
+            if ([] !== $worksheet->getImages()) {
+                fwrite($worksheetFilePointer, '<drawing r:id="rIdDrawing1"/>');
+                $this->createDrawingFiles($worksheet);
+            }
 
             fwrite($worksheetFilePointer, '</worksheet>');
             fclose($worksheetFilePointer);
@@ -838,6 +858,83 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
         $this->xlWorksheetsFolder = $this->createFolder($this->xlFolder, self::WORKSHEETS_FOLDER_NAME);
 
         return $this;
+    }
+
+    /**
+     * Creates the drawing XML, drawing rels, and media files for a worksheet that contains images.
+     */
+    private function createDrawingFiles(Worksheet $worksheet): void
+    {
+        $drawingsFolder = $this->xlFolder.\DIRECTORY_SEPARATOR.self::DRAWINGS_FOLDER_NAME;
+        $drawingsRelsFolder = $drawingsFolder.\DIRECTORY_SEPARATOR.self::RELS_FOLDER_NAME;
+        $mediaFolder = $this->xlFolder.\DIRECTORY_SEPARATOR.self::MEDIA_FOLDER_NAME;
+
+        if (!is_dir($drawingsRelsFolder)) {
+            $this->createFolder($drawingsFolder, self::RELS_FOLDER_NAME);
+        }
+        if (!is_dir($mediaFolder)) {
+            $this->createFolder($this->xlFolder, self::MEDIA_FOLDER_NAME);
+        }
+
+        $sheetId = $worksheet->getId();
+        $drawingXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+            .'<xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing"'
+            .' xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"'
+            .' xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">';
+
+        $drawingRelsXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+            .'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">';
+
+        $imageIndex = 1;
+        foreach ($worksheet->getImages() as $image) {
+            $cell = $image['cell'];
+            $row = $image['row'];
+            $col = $image['col'];
+            $ext = $cell->getExtension();
+            $mediaName = 'image'.$sheetId.'_'.$imageIndex.'.'.$ext;
+            $mediaTarget = $mediaFolder.\DIRECTORY_SEPARATOR.$mediaName;
+
+            copy($cell->getValue(), $mediaTarget);
+
+            $widthEmu = $cell->width * 9525;
+            $heightEmu = $cell->height * 9525;
+            $picId = $imageIndex + 1;
+
+            $drawingXml .= '<xdr:oneCellAnchor>'
+                .'<xdr:from>'
+                .'<xdr:col>'.$col.'</xdr:col><xdr:colOff>0</xdr:colOff>'
+                .'<xdr:row>'.$row.'</xdr:row><xdr:rowOff>0</xdr:rowOff>'
+                .'</xdr:from>'
+                .'<xdr:ext cx="'.$widthEmu.'" cy="'.$heightEmu.'"/>'
+                .'<xdr:pic>'
+                .'<xdr:nvPicPr>'
+                .'<xdr:cNvPr id="'.$picId.'" name="Image'.$imageIndex.'"/>'
+                .'<xdr:cNvPicPr><a:picLocks noChangeAspect="1"/></xdr:cNvPicPr>'
+                .'</xdr:nvPicPr>'
+                .'<xdr:blipFill>'
+                .'<a:blip r:embed="rId'.$imageIndex.'"/>'
+                .'<a:stretch><a:fillRect/></a:stretch>'
+                .'</xdr:blipFill>'
+                .'<xdr:spPr>'
+                .'<a:xfrm><a:off x="0" y="0"/><a:ext cx="'.$widthEmu.'" cy="'.$heightEmu.'"/></a:xfrm>'
+                .'<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
+                .'</xdr:spPr>'
+                .'</xdr:pic>'
+                .'<xdr:clientData/>'
+                .'</xdr:oneCellAnchor>';
+
+            $drawingRelsXml .= '<Relationship Id="rId'.$imageIndex.'"'
+                .' Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"'
+                .' Target="../media/'.$mediaName.'"/>';
+
+            ++$imageIndex;
+        }
+
+        $drawingXml .= '</xdr:wsDr>';
+        $drawingRelsXml .= '</Relationships>';
+
+        $this->createFileWithContents($drawingsFolder, 'drawing'.$sheetId.'.xml', $drawingXml);
+        $this->createFileWithContents($drawingsRelsFolder, 'drawing'.$sheetId.'.xml.rels', $drawingRelsXml);
     }
 
     /**

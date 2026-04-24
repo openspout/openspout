@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer\Common\Entity;
 
+use OpenSpout\Common\Entity\Cell\ImageCell;
+
 /**
  * Entity describing a Worksheet.
  */
@@ -23,6 +25,9 @@ final class Worksheet
 
     /** @var int Index of the last written row */
     private int $lastWrittenRowIndex = 0;
+
+    /** @var array<array{row: int, col: int, cell: ImageCell}> */
+    private array $images = [];
 
     /**
      * Worksheet constructor.
@@ -79,6 +84,17 @@ final class Worksheet
     public function setLastWrittenRowIndex(int $lastWrittenRowIndex): void
     {
         $this->lastWrittenRowIndex = $lastWrittenRowIndex;
+    }
+
+    public function addImage(int $row, int $col, ImageCell $cell): void
+    {
+        $this->images[] = ['row' => $row, 'col' => $col, 'cell' => $cell];
+    }
+
+    /** @return array<array{row: int, col: int, cell: ImageCell}> */
+    public function getImages(): array
+    {
+        return $this->images;
     }
 
     /**
