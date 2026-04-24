@@ -861,6 +861,30 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     }
 
     /**
+     * Builds the <xdr:pic> XML fragment for a single image.
+     * For twoCellAnchor the cx/cy in spPr are irrelevant (sizing comes from the cell grid),
+     * so they default to 0. For oneCellAnchor they should mirror the <xdr:ext> values so
+     * that applications relying on spPr (e.g. LibreOffice) render the image at the correct size.
+     */
+    private function buildPicXml(int $imageIndex, int $picId, int $widthEmu = 0, int $heightEmu = 0): string
+    {
+        return '<xdr:pic>'
+            .'<xdr:nvPicPr>'
+            .'<xdr:cNvPr id="'.$picId.'" name="Image'.$imageIndex.'"/>'
+            .'<xdr:cNvPicPr><a:picLocks noChangeAspect="1"/></xdr:cNvPicPr>'
+            .'</xdr:nvPicPr>'
+            .'<xdr:blipFill>'
+            .'<a:blip r:embed="rId'.$imageIndex.'"/>'
+            .'<a:stretch><a:fillRect/></a:stretch>'
+            .'</xdr:blipFill>'
+            .'<xdr:spPr>'
+            .'<a:xfrm><a:off x="0" y="0"/><a:ext cx="'.$widthEmu.'" cy="'.$heightEmu.'"/></a:xfrm>'
+            .'<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
+            .'</xdr:spPr>'
+            .'</xdr:pic>';
+    }
+
+    /**
      * Creates the drawing XML, drawing rels, and media files for a worksheet that contains images.
      *
      * @throws IOException
@@ -901,20 +925,6 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             }
 
             $picId = $imageIndex + 1;
-            $pic = '<xdr:pic>'
-                .'<xdr:nvPicPr>'
-                .'<xdr:cNvPr id="'.$picId.'" name="Image'.$imageIndex.'"/>'
-                .'<xdr:cNvPicPr><a:picLocks noChangeAspect="1"/></xdr:cNvPicPr>'
-                .'</xdr:nvPicPr>'
-                .'<xdr:blipFill>'
-                .'<a:blip r:embed="rId'.$imageIndex.'"/>'
-                .'<a:stretch><a:fillRect/></a:stretch>'
-                .'</xdr:blipFill>'
-                .'<xdr:spPr>'
-                .'<a:xfrm><a:off x="0" y="0"/><a:ext cx="1" cy="1"/></a:xfrm>'
-                .'<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
-                .'</xdr:spPr>'
-                .'</xdr:pic>';
 
             if ($cell->fitToCell) {
                 $drawingXml .= '<xdr:twoCellAnchor editAs="twoCell">'
@@ -926,7 +936,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
                     .'<xdr:col>'.($col + 1).'</xdr:col><xdr:colOff>0</xdr:colOff>'
                     .'<xdr:row>'.($row + 1).'</xdr:row><xdr:rowOff>0</xdr:rowOff>'
                     .'</xdr:to>'
-                    .$pic
+                    .$this->buildPicXml($imageIndex, $picId)
                     .'<xdr:clientData/>'
                     .'</xdr:twoCellAnchor>';
             } else {
@@ -938,7 +948,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
                     .'<xdr:row>'.$row.'</xdr:row><xdr:rowOff>0</xdr:rowOff>'
                     .'</xdr:from>'
                     .'<xdr:ext cx="'.$widthEmu.'" cy="'.$heightEmu.'"/>'
-                    .$pic
+                    .$this->buildPicXml($imageIndex, $picId, $widthEmu, $heightEmu)
                     .'<xdr:clientData/>'
                     .'</xdr:oneCellAnchor>';
             }
