@@ -51,11 +51,13 @@ final class HyperlinkTest extends TestCase
 
         // Check sheet1.xml
         $sheetXml = $zip->getFromName('xl/worksheets/sheet1.xml');
+        self::assertNotFalse($sheetXml);
         self::assertStringContainsString('<hyperlinks>', $sheetXml);
         self::assertStringContainsString('<hyperlink ref="'.$cellRef.'" r:id="rId_hyperlink1"/>', $sheetXml);
 
         // Check sheet1.xml.rels
         $relsXml = $zip->getFromName('xl/worksheets/_rels/sheet1.xml.rels');
+        self::assertNotFalse($relsXml);
         self::assertStringContainsString('Id="rId_hyperlink1"', $relsXml);
         self::assertStringContainsString('Target="'.$url.'"', $relsXml);
         self::assertStringContainsString('TargetMode="External"', $relsXml);
