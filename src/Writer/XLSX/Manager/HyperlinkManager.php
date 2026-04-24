@@ -14,9 +14,7 @@ use OpenSpout\Writer\Common\Helper\CellHelper;
  */
 final class HyperlinkManager
 {
-    /**
-     * @var array<int, array<string, string>> [sheetId => [cellRef => url]]
-     */
+    /** @var array<int, array<string, string>> [sheetId => [cellRef => url]] */
     private array $hyperlinks = [];
 
     /**
