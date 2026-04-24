@@ -11,6 +11,7 @@ use OpenSpout\Common\Entity\Cell\DateIntervalCell;
 use OpenSpout\Common\Entity\Cell\DateTimeCell;
 use OpenSpout\Common\Entity\Cell\EmptyCell;
 use OpenSpout\Common\Entity\Cell\FormulaCell;
+use OpenSpout\Common\Entity\Cell\ImageCell;
 use OpenSpout\Common\Entity\Cell\NumericCell;
 use OpenSpout\Common\Entity\Cell\StringCell;
 use OpenSpout\Common\Entity\Cell\TextRunCell;
@@ -69,5 +70,14 @@ abstract readonly class Cell
         }
 
         return new StringCell($value, $style, $comment);
+    }
+
+    final public static function fromFile(
+        string $path,
+        ?Style $style = null,
+        ?Comment $comment = null,
+        bool $fitToCell = false,
+    ): self {
+        return new ImageCell($path, $style, $comment, $fitToCell);
     }
 }
