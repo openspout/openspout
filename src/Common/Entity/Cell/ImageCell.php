@@ -8,6 +8,7 @@ use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Comment\Comment;
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Common\Exception\InvalidArgumentException;
+use OpenSpout\Common\Exception\UnsupportedImageTypeException;
 use OpenSpout\Common\Exception\UnsupportedTypeException;
 
 final readonly class ImageCell extends Cell
@@ -40,14 +41,18 @@ final readonly class ImageCell extends Cell
         return $this->path;
     }
 
+    /**
+     * @throws UnsupportedImageTypeException
+     */
     public function getExtension(): string
     {
         return match ($this->mimeType) {
             'image/jpeg' => 'jpeg',
+            'image/png' => 'png',
             'image/gif' => 'gif',
             'image/bmp' => 'bmp',
             'image/webp' => 'webp',
-            default => 'png',
+            default => throw new UnsupportedImageTypeException("Unsupported image MIME type: {$this->mimeType}"),
         };
     }
 
@@ -76,7 +81,10 @@ final readonly class ImageCell extends Cell
         return new self($this->path, $this->style, null, $this->fitToCell);
     }
 
-    /** @return array{int, int, string} [width, height, mimeType] */
+    /**
+     * @return array{int, int, string} [width, height, mimeType]
+     * @throws UnsupportedImageTypeException
+     */
     private static function getImageInfo(string $path): array
     {
         if (\extension_loaded('imagick')) {
@@ -87,10 +95,11 @@ final readonly class ImageCell extends Cell
             $imagick->clear();
             $mimeType = match ($format) {
                 'jpg', 'jpeg' => 'image/jpeg',
+                'png' => 'image/png',
                 'gif' => 'image/gif',
                 'bmp' => 'image/bmp',
                 'webp' => 'image/webp',
-                default => 'image/png',
+                default => throw new UnsupportedImageTypeException("Unsupported image format: $format")
             };
 
             return [$width, $height, $mimeType];
