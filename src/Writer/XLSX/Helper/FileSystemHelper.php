@@ -467,13 +467,13 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 
             $this->getXMLFragmentForHeaderFooter($worksheetFilePointer, $options);
 
-            // Add the legacy drawing for comments
-            fwrite($worksheetFilePointer, '<legacyDrawing r:id="rId_comments_vml1"/>');
-
             if ([] !== $worksheet->getImages()) {
                 fwrite($worksheetFilePointer, '<drawing r:id="rIdDrawing1"/>');
                 $this->createDrawingFiles($worksheet);
             }
+
+            // Add the legacy drawing for comments
+            fwrite($worksheetFilePointer, '<legacyDrawing r:id="rId_comments_vml1"/>');
 
             fwrite($worksheetFilePointer, '</worksheet>');
             fclose($worksheetFilePointer);
