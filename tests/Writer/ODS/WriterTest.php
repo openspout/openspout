@@ -602,26 +602,26 @@ final class WriterTest extends TestCase
         }
 
         $imagePath = sys_get_temp_dir().\DIRECTORY_SEPARATOR.'openspout_test_image_ods.png';
-        if (\extension_loaded('gd')) {
-            $img = imagecreatetruecolor(1, 1);
-            imagepng($img, $imagePath);
-            imagedestroy($img);
-        } else {
-            $img = new \Imagick();
-            $img->newImage(1, 1, 'white');
-            $img->setImageFormat('png');
-            $img->writeImage($imagePath);
-            $img->clear();
-        }
-
-        $fileName = 'test_image_cell_throws.ods';
-        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
-        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
-        $writer = new Writer($options);
-        $writer->openToFile($resourcePath);
-
-        $this->expectException(UnsupportedTypeException::class);
         try {
+            if (\extension_loaded('gd')) {
+                $img = imagecreatetruecolor(1, 1);
+                imagepng($img, $imagePath);
+                imagedestroy($img);
+            } else {
+                $img = new \Imagick();
+                $img->newImage(1, 1, 'white');
+                $img->setImageFormat('png');
+                $img->writeImage($imagePath);
+                $img->clear();
+            }
+
+            $fileName = 'test_image_cell_throws.ods';
+            $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+            $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
+            $writer = new Writer($options);
+            $writer->openToFile($resourcePath);
+
+            $this->expectException(UnsupportedTypeException::class);
             $writer->addRow(new Row([new ImageCell($imagePath)]));
         } finally {
             unlink($imagePath);

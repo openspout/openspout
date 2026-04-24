@@ -1455,51 +1455,54 @@ final class WriterTest extends TestCase
         }
 
         $imagePath = sys_get_temp_dir().\DIRECTORY_SEPARATOR.'openspout_test_image.png';
-        if (\extension_loaded('gd')) {
-            $img = imagecreatetruecolor(1, 1);
-            imagepng($img, $imagePath);
-            imagedestroy($img);
-        } else {
-            $img = new \Imagick();
-            $img->newImage(1, 1, 'white');
-            $img->setImageFormat('png');
-            $img->writeImage($imagePath);
-            $img->clear();
+
+        try {
+            if (\extension_loaded('gd')) {
+                $img = imagecreatetruecolor(1, 1);
+                imagepng($img, $imagePath);
+                imagedestroy($img);
+            } else {
+                $img = new \Imagick();
+                $img->newImage(1, 1, 'white');
+                $img->setImageFormat('png');
+                $img->writeImage($imagePath);
+                $img->clear();
+            }
+
+            $fileName     = 'test_write_image_cell.xlsx';
+            $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+            $options      = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
+            $writer       = new Writer($options);
+            $writer->openToFile($resourcePath);
+            $writer->addRow(new Row([new Cell\ImageCell($imagePath)]));
+            $writer->close();
+
+            $sheetXml = file_get_contents('zip://'.$resourcePath.'#xl/worksheets/sheet1.xml');
+            self::assertNotFalse($sheetXml);
+            self::assertStringContainsString('<drawing r:id="rIdDrawing1"', $sheetXml);
+
+            $drawingXml = file_get_contents('zip://'.$resourcePath.'#xl/drawings/drawing1.xml');
+            self::assertNotFalse($drawingXml, 'Drawing XML file should exist in the archive');
+            self::assertStringContainsString('<xdr:oneCellAnchor>', $drawingXml);
+            self::assertStringContainsString('r:embed="rId1"', $drawingXml);
+
+            $drawingRelsXml = file_get_contents('zip://'.$resourcePath.'#xl/drawings/_rels/drawing1.xml.rels');
+            self::assertNotFalse($drawingRelsXml, 'Drawing rels file should exist in the archive');
+            self::assertStringContainsString('relationships/image', $drawingRelsXml);
+            self::assertStringContainsString('image1_1.png', $drawingRelsXml);
+
+            $contentTypes = file_get_contents('zip://'.$resourcePath.'#[Content_Types].xml');
+            self::assertNotFalse($contentTypes);
+            self::assertStringContainsString('drawing+xml', $contentTypes);
+            self::assertStringContainsString('image/png', $contentTypes);
+
+            $sheetRels = file_get_contents('zip://'.$resourcePath.'#xl/worksheets/_rels/sheet1.xml.rels');
+            self::assertNotFalse($sheetRels);
+            self::assertStringContainsString('rIdDrawing1', $sheetRels);
+            self::assertStringContainsString('drawings/drawing1.xml', $sheetRels);
+        } finally {
+            unlink($imagePath);
         }
-
-        $fileName = 'test_write_image_cell.xlsx';
-        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
-        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
-        $writer = new Writer($options);
-        $writer->openToFile($resourcePath);
-        $writer->addRow(new Row([new Cell\ImageCell($imagePath)]));
-        $writer->close();
-
-        $sheetXml = file_get_contents('zip://'.$resourcePath.'#xl/worksheets/sheet1.xml');
-        self::assertNotFalse($sheetXml);
-        self::assertStringContainsString('<drawing r:id="rIdDrawing1"', $sheetXml);
-
-        $drawingXml = file_get_contents('zip://'.$resourcePath.'#xl/drawings/drawing1.xml');
-        self::assertNotFalse($drawingXml, 'Drawing XML file should exist in the archive');
-        self::assertStringContainsString('<xdr:oneCellAnchor>', $drawingXml);
-        self::assertStringContainsString('r:embed="rId1"', $drawingXml);
-
-        $drawingRelsXml = file_get_contents('zip://'.$resourcePath.'#xl/drawings/_rels/drawing1.xml.rels');
-        self::assertNotFalse($drawingRelsXml, 'Drawing rels file should exist in the archive');
-        self::assertStringContainsString('relationships/image', $drawingRelsXml);
-        self::assertStringContainsString('image1_1.png', $drawingRelsXml);
-
-        $contentTypes = file_get_contents('zip://'.$resourcePath.'#[Content_Types].xml');
-        self::assertNotFalse($contentTypes);
-        self::assertStringContainsString('drawing+xml', $contentTypes);
-        self::assertStringContainsString('image/png', $contentTypes);
-
-        $sheetRels = file_get_contents('zip://'.$resourcePath.'#xl/worksheets/_rels/sheet1.xml.rels');
-        self::assertNotFalse($sheetRels);
-        self::assertStringContainsString('rIdDrawing1', $sheetRels);
-        self::assertStringContainsString('drawings/drawing1.xml', $sheetRels);
-
-        unlink($imagePath);
     }
 
     /**
