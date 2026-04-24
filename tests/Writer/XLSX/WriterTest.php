@@ -1448,7 +1448,7 @@ final class WriterTest extends TestCase
         self::assertStringNotContainsString('$A$2:$A$10"', $sheet2XmlContents, 'Sheet 2 should not reference sheet 1 range');
     }
 
-    public function testWriteImageCellEmbeddsDrawingFiles(): void
+    public function testWriteImageCellEmbedsDrawingFiles(): void
     {
         if (!\extension_loaded('gd') && !\extension_loaded('imagick')) {
             self::markTestSkipped('Neither gd nor imagick extension is available.');
