@@ -45,6 +45,7 @@ abstract readonly class Cell
         array|bool|DateInterval|DateTimeInterface|float|int|string|null $value,
         ?Style $style = null,
         ?Comment $comment = null,
+        ?string $hyperlinkUrl = null,
     ): self {
         if (\is_array($value)) {
             return new TextRunCell($value, $style, $comment);
@@ -68,6 +69,6 @@ abstract readonly class Cell
             return new FormulaCell($value, null, $style, $comment);
         }
 
-        return new StringCell($value, $style, $comment);
+        return new StringCell($value, $style, $comment, $hyperlinkUrl);
     }
 }

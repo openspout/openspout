@@ -32,7 +32,8 @@ final class WorkbookManager extends AbstractWorkbookManager
         Options $options,
         WorksheetManager $worksheetManager,
         StyleManager $styleManager,
-        FileSystemHelper $fileSystemHelper
+        FileSystemHelper $fileSystemHelper,
+        private readonly HyperlinkManager $hyperlinkManager
     ) {
         parent::__construct(
             $workbook,
@@ -69,12 +70,12 @@ final class WorkbookManager extends AbstractWorkbookManager
         $worksheets = $this->getWorksheets();
 
         $this->fileSystemHelper
-            ->createContentFiles($this->options, $worksheets)
+            ->createContentFiles($this->options, $worksheets, $this->hyperlinkManager)
             ->deleteWorksheetTempFolder()
             ->createContentTypesFile($worksheets)
             ->createWorkbookFile($this->options, $worksheets)
             ->createWorkbookRelsFile($worksheets)
-            ->createWorksheetRelsFiles($worksheets)
+            ->createWorksheetRelsFiles($worksheets, $this->hyperlinkManager)
             ->createStylesFile($this->styleManager)
             ->zipRootFolderAndCopyToStream($finalFilePointer)
         ;
