@@ -862,6 +862,8 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 
     /**
      * Creates the drawing XML, drawing rels, and media files for a worksheet that contains images.
+     *
+     * @throws IOException
      */
     private function createDrawingFiles(Worksheet $worksheet): void
     {
@@ -894,7 +896,9 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             $mediaName = 'image'.$sheetId.'_'.$imageIndex.'.'.$ext;
             $mediaTarget = $mediaFolder.\DIRECTORY_SEPARATOR.$mediaName;
 
-            copy($cell->getValue(), $mediaTarget);
+            if (!copy($cell->getValue(), $mediaTarget)) {
+                throw new IOException('Unable to copy image from "'.$cell->getValue().'" to "'.$mediaTarget.'".');
+            }
 
             $picId = $imageIndex + 1;
             $pic = '<xdr:pic>'
