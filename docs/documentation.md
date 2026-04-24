@@ -458,7 +458,9 @@ A TextRun can be styled using the following methods:
 - `fontSize`: Size of the font in points
 
 ## Cell hyperlinks
-The XLSX writer has support for adding hyperlinks to cells. Hyperlinks can only be added to `StringCell` (or when using `Cell::fromValue` with a string value).
+
+The XLSX writer has support for adding hyperlinks to cells. Hyperlinks can be added to `StringCell` (or when using 
+`Cell::fromValue` with a string value).
 
 ```php
 use OpenSpout\Common\Entity\Cell;
@@ -478,7 +480,7 @@ $writer->addRow($row);
 $writer->close();
 ```
 
-You can also add or remove hyperlinks from an existing `StringCell` using the `withHyperlink` and `withoutHyperlink` methods:
+Add or remove hyperlinks from an existing `StringCell` using the `withHyperlink` and `withoutHyperlink` methods:
 
 ```php
 $cellWithHyperlink = $cell->withHyperlink('https://example.com');
