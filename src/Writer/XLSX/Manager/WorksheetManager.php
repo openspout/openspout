@@ -151,7 +151,7 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
                 $cellXML = '';
             }
         } elseif ($cell instanceof Cell\ImageCell) {
-            // Image is embedded as a drawing; emit an empty cell placeholder
+            // Image is embedded as a drawing; no <c> tag is written here.
             $cellXML = '';
         }
 
