@@ -166,6 +166,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             EOD;
 
         $imageExtensions = [];
+
         /** @var Worksheet $worksheet */
         foreach ($worksheets as $worksheet) {
             $contentTypesXmlFileContents .= '<Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml" PartName="/xl/worksheets/sheet'.$worksheet->getId().'.xml"/>';

@@ -10,6 +10,7 @@ use DateTimeZone;
 use DOMDocument;
 use DOMElement;
 use finfo;
+use Imagick;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Comment\Comment;
 use OpenSpout\Common\Entity\Comment\TextRun;
@@ -1462,17 +1463,17 @@ final class WriterTest extends TestCase
                 imagepng($img, $imagePath);
                 imagedestroy($img);
             } else {
-                $img = new \Imagick();
+                $img = new Imagick();
                 $img->newImage(1, 1, 'white');
                 $img->setImageFormat('png');
                 $img->writeImage($imagePath);
                 $img->clear();
             }
 
-            $fileName     = 'test_write_image_cell.xlsx';
+            $fileName = 'test_write_image_cell.xlsx';
             $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
-            $options      = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
-            $writer       = new Writer($options);
+            $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
+            $writer = new Writer($options);
             $writer->openToFile($resourcePath);
             $writer->addRow(new Row([new Cell\ImageCell($imagePath)]));
             $writer->close();

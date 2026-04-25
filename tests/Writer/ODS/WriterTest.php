@@ -10,6 +10,7 @@ use DateTimeZone;
 use DOMElement;
 use DOMNode;
 use finfo;
+use Imagick;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Cell\ImageCell;
 use OpenSpout\Common\Entity\Row;
@@ -489,6 +490,41 @@ final class WriterTest extends TestCase
         self::assertSame("'Sheet2'.A1:'Sheet2'.AA11", $targetRangeAddress);
     }
 
+    public function testWriteImageCellShouldThrowException(): void
+    {
+        if (!\extension_loaded('gd') && !\extension_loaded('imagick')) {
+            self::markTestSkipped('Neither gd nor imagick extension is available.');
+        }
+
+        $imagePath = sys_get_temp_dir().\DIRECTORY_SEPARATOR.'openspout_test_image_ods.png';
+
+        try {
+            if (\extension_loaded('gd')) {
+                $img = imagecreatetruecolor(1, 1);
+                imagepng($img, $imagePath);
+                imagedestroy($img);
+            } else {
+                // phpcs:ignore
+                $img = new Imagick();
+                $img->newImage(1, 1, 'white');
+                $img->setImageFormat('png');
+                $img->writeImage($imagePath);
+                $img->clear();
+            }
+
+            $fileName = 'test_image_cell_throws.ods';
+            $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+            $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
+            $writer = new Writer($options);
+            $writer->openToFile($resourcePath);
+
+            $this->expectException(UnsupportedTypeException::class);
+            $writer->addRow(new Row([new ImageCell($imagePath)]));
+        } finally {
+            unlink($imagePath);
+        }
+    }
+
     /**
      * @param Row[] $allRows
      */
@@ -593,39 +629,6 @@ final class WriterTest extends TestCase
         $xmlReader = $this->moveReaderToCorrectTableNode($fileName, $sheetIndex);
 
         return $xmlReader->readOuterXml();
-    }
-
-    public function testWriteImageCellShouldThrowException(): void
-    {
-        if (!\extension_loaded('gd') && !\extension_loaded('imagick')) {
-            self::markTestSkipped('Neither gd nor imagick extension is available.');
-        }
-
-        $imagePath = sys_get_temp_dir().\DIRECTORY_SEPARATOR.'openspout_test_image_ods.png';
-        try {
-            if (\extension_loaded('gd')) {
-                $img = imagecreatetruecolor(1, 1);
-                imagepng($img, $imagePath);
-                imagedestroy($img);
-            } else {
-                $img = new \Imagick();
-                $img->newImage(1, 1, 'white');
-                $img->setImageFormat('png');
-                $img->writeImage($imagePath);
-                $img->clear();
-            }
-
-            $fileName = 'test_image_cell_throws.ods';
-            $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
-            $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
-            $writer = new Writer($options);
-            $writer->openToFile($resourcePath);
-
-            $this->expectException(UnsupportedTypeException::class);
-            $writer->addRow(new Row([new ImageCell($imagePath)]));
-        } finally {
-            unlink($imagePath);
-        }
     }
 
     private function moveReaderToCorrectTableNode(string $fileName, int $sheetIndex): XMLReader

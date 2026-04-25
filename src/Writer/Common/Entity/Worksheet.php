@@ -91,7 +91,9 @@ final class Worksheet
         $this->images[] = ['row' => $row, 'col' => $col, 'cell' => $cell];
     }
 
-    /** @return array<array{row: int, col: int, cell: ImageCell}> */
+    /**
+     * @return array<array{row: int, col: int, cell: ImageCell}>
+     */
     public function getImages(): array
     {
         return $this->images;

@@ -6,6 +6,7 @@ namespace OpenSpout\Writer\CSV;
 
 use DateInterval;
 use DateTime;
+use Imagick;
 use OpenSpout\Common\Entity\Cell\ImageCell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\IOException;
@@ -282,13 +283,15 @@ final class WriterTest extends TestCase
         }
 
         $imagePath = sys_get_temp_dir().\DIRECTORY_SEPARATOR.'openspout_test_image_csv.png';
+
         try {
             if (\extension_loaded('gd')) {
                 $img = imagecreatetruecolor(1, 1);
                 imagepng($img, $imagePath);
                 imagedestroy($img);
             } else {
-                $img = new \Imagick();
+                // phpcs:ignore
+                $img = new Imagick();
                 $img->newImage(1, 1, 'white');
                 $img->setImageFormat('png');
                 $img->writeImage($imagePath);

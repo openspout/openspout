@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OpenSpout\Common\Entity\Cell;
 
+use Imagick;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Comment\Comment;
 use OpenSpout\Common\Entity\Style\Style;
@@ -83,12 +84,13 @@ final readonly class ImageCell extends Cell
 
     /**
      * @return array{int, int, string} [width, height, mimeType]
+     *
      * @throws UnsupportedImageTypeException
      */
     private static function getImageInfo(string $path): array
     {
         if (\extension_loaded('imagick')) {
-            $imagick = new \Imagick($path);
+            $imagick = new Imagick($path);
             $width = $imagick->getImageWidth();
             $height = $imagick->getImageHeight();
             $format = strtolower($imagick->getImageFormat());
@@ -99,7 +101,7 @@ final readonly class ImageCell extends Cell
                 'gif' => 'image/gif',
                 'bmp' => 'image/bmp',
                 'webp' => 'image/webp',
-                default => throw new UnsupportedImageTypeException("Unsupported image format: $format")
+                default => throw new UnsupportedImageTypeException("Unsupported image format: {$format}")
             };
 
             return [$width, $height, $mimeType];
