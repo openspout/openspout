@@ -457,6 +457,36 @@ A TextRun can be styled using the following methods:
 - `fontColor`: Color of the font, defaults to **000000** (note it is a 8 character
 - `fontSize`: Size of the font in points
 
+## Cell hyperlinks
+
+The XLSX writer has support for adding hyperlinks to cells. Hyperlinks can be added to `StringCell` (or when using 
+`Cell::fromValue` with a string value).
+
+```php
+use OpenSpout\Common\Entity\Cell;
+use OpenSpout\Common\Entity\Row;
+
+$writer = new \OpenSpout\Writer\XLSX\Writer();
+$writer->openToFile('output.xlsx');
+
+// Using Cell::fromValue
+$cell = Cell::fromValue('Click me', null, null, 'https://example.com');
+
+// Or using StringCell directly
+// $cell = new \OpenSpout\Common\Entity\Cell\StringCell('Click me', null, null, 'https://example.com');
+
+$row = new Row([$cell]);
+$writer->addRow($row);
+$writer->close();
+```
+
+Add or remove hyperlinks from an existing `StringCell` using the `withHyperlink` and `withoutHyperlink` methods:
+
+```php
+$cellWithHyperlink = $cell->withHyperlink('https://example.com');
+$cellWithoutHyperlink = $cellWithHyperlink->withoutHyperlink();
+```
+
 ## Playing with sheets
 
 When creating a XLSX or ODS file, it is possible to control which sheet the data will be written into. At any time, you

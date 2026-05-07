@@ -13,6 +13,7 @@ use OpenSpout\Writer\Common\Entity\Worksheet;
 use OpenSpout\Writer\Common\Helper\CellHelper;
 use OpenSpout\Writer\Common\Helper\FileSystemWithRootFolderHelperInterface;
 use OpenSpout\Writer\Common\Helper\ZipHelper;
+use OpenSpout\Writer\XLSX\Manager\HyperlinkManager;
 use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
 use OpenSpout\Writer\XLSX\MergeCell;
 use OpenSpout\Writer\XLSX\Options;
@@ -302,12 +303,25 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
      *
      * @param Worksheet[] $worksheets
      */
-    public function createWorksheetRelsFiles(array $worksheets): self
+    public function createWorksheetRelsFiles(array $worksheets, HyperlinkManager $hyperlinkManager): self
     {
         $this->createFolder($this->getXlWorksheetsFolder(), self::RELS_FOLDER_NAME);
 
         foreach ($worksheets as $worksheet) {
             $worksheetId = $worksheet->getId();
+            $worksheetRelsContent = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'.PHP_EOL;
+            $worksheetRelsContent .= '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'.PHP_EOL;
+            $worksheetRelsContent .= '  <Relationship Id="rId_comments_vml1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing" Target="../drawings/vmlDrawing'.$worksheetId.'.vml"/>'.PHP_EOL;
+            $worksheetRelsContent .= '  <Relationship Id="rId_comments1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments" Target="../comments'.$worksheetId.'.xml"/>'.PHP_EOL;
+
+            $hyperlinks = $hyperlinkManager->getHyperlinks($worksheet);
+            $hyperlinkId = 1;
+            foreach ($hyperlinks as $url) {
+                $worksheetRelsContent .= '  <Relationship Id="rId_hyperlink'.$hyperlinkId.'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="'.$this->escaper->escape($url).'" TargetMode="External"/>'.PHP_EOL;
+                ++$hyperlinkId;
+            }
+
+            $worksheetRelsContent .= '</Relationships>';
             $drawingRel = [] !== $worksheet->getImages()
                 ? '<Relationship Id="rIdDrawing1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" Target="../drawings/drawing'.$worksheetId.'.xml"/>'
                 : '';
@@ -343,7 +357,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
      *
      * @param Worksheet[] $worksheets
      */
-    public function createContentFiles(Options $options, array $worksheets): self
+    public function createContentFiles(Options $options, array $worksheets, HyperlinkManager $hyperlinkManager): self
     {
         $allMergeCells = $options->getMergeCells();
         $allValidationRules = $options->getValidationRules();
@@ -467,6 +481,17 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             $this->getXMLFragmentForPageSetup($worksheetFilePointer, $options);
 
             $this->getXMLFragmentForHeaderFooter($worksheetFilePointer, $options);
+
+            $hyperlinks = $hyperlinkManager->getHyperlinks($worksheet);
+            if ([] !== $hyperlinks) {
+                fwrite($worksheetFilePointer, '<hyperlinks>');
+                $hyperlinkId = 1;
+                foreach ($hyperlinks as $cellRef => $url) {
+                    fwrite($worksheetFilePointer, '<hyperlink ref="'.$cellRef.'" r:id="rId_hyperlink'.$hyperlinkId.'"/>');
+                    ++$hyperlinkId;
+                }
+                fwrite($worksheetFilePointer, '</hyperlinks>');
+            }
 
             if ([] !== $worksheet->getImages()) {
                 fwrite($worksheetFilePointer, '<drawing r:id="rIdDrawing1"/>');

@@ -36,6 +36,7 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
         private Options $options,
         private StyleManager $styleManager,
         private CommentsManager $commentsManager,
+        private HyperlinkManager $hyperlinkManager,
         private SharedStringsManager $sharedStringsManager,
         private XLSXEscaper $stringsEscaper,
         private StringHelper $stringHelper
@@ -60,6 +61,7 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
         if (!$row->isEmpty()) {
             $this->addNonEmptyRow($worksheet, $row);
             $this->commentsManager->addComments($worksheet, $row);
+            $this->hyperlinkManager->addHyperlinks($worksheet, $row);
         }
 
         $worksheet->setLastWrittenRowIndex($worksheet->getLastWrittenRowIndex() + 1);
