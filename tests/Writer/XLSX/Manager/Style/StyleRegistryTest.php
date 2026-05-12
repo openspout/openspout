@@ -87,4 +87,18 @@ final class StyleRegistryTest extends TestCase
         self::assertSame(164, $styleRegistry->getFormatIdForStyleId($styleIdUser), 'Second style with user format set should have index 164 (0 is for the default style)');
         self::assertSame(0, $styleRegistry->getFormatIdForStyleId($styleIdNo), 'Style with no format should have index 0');
     }
+
+    public function testDeduplicateEqualStyles(): void
+    {
+        $style_a = new Style(fontBold: true);
+        $styleRegistry = new StyleRegistry($style_a);
+
+        $style_b = new Style(fontBold: true);
+
+        $styleIdA = $styleRegistry->registerStyle($style_a);
+        $styleIdB = $styleRegistry->registerStyle($style_b);
+
+        self::assertCount(1, $styleRegistry->getRegisteredStyles(), 'There should only be 1 registered fill');
+        self::assertEquals($styleIdA, $styleIdB);
+    }
 }

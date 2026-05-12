@@ -300,7 +300,7 @@ final class WriterWithStyleTest extends TestCase
 
         $styleElements = $this->getCellStyleElementsFromContentXmlFile($fileName);
 
-        self::assertCount(5, $styleElements);
+        self::assertCount(4, $styleElements);
 
         // Use reflection for protected members here
         $widthMap = BorderHelper::widthMap;
@@ -328,7 +328,7 @@ final class WriterWithStyleTest extends TestCase
             Color::RED
         );
 
-        $actualThird = $styleElements[3]
+        $actualThird = $styleElements[2]
             ->getElementsByTagName('table-cell-properties')
             ->item(0)
             ->getAttribute('fo:border-top')

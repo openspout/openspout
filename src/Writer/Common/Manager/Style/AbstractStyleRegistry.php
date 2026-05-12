@@ -33,7 +33,7 @@ abstract class AbstractStyleRegistry
      */
     final public function registerStyle(Style $style): int
     {
-        $serializedStyle = spl_object_hash($style);
+        $serializedStyle = serialize($style);
         if (\array_key_exists($serializedStyle, $this->serializedStyleToStyleIdMappingTable)) {
             return $this->serializedStyleToStyleIdMappingTable[$serializedStyle];
         }
