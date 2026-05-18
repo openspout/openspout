@@ -321,16 +321,11 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
                 ++$hyperlinkId;
             }
 
+            if ([] !== $worksheet->getImages()) {
+                $worksheetRelsContent .= '  <Relationship Id="rIdDrawing1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" Target="../drawings/drawing'.$worksheetId.'.xml"/>'.PHP_EOL;
+            }
+
             $worksheetRelsContent .= '</Relationships>';
-            $drawingRel = [] !== $worksheet->getImages()
-                ? '<Relationship Id="rIdDrawing1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" Target="../drawings/drawing'.$worksheetId.'.xml"/>'
-                : '';
-            $worksheetRelsContent = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-              <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-                <Relationship Id="rId_comments_vml1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing" Target="../drawings/vmlDrawing'.$worksheetId.'.vml"/>
-                <Relationship Id="rId_comments1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments" Target="../comments'.$worksheetId.'.xml"/>'
-                .$drawingRel
-                .'</Relationships>';
 
             $folder = $this->getXlWorksheetsFolder().\DIRECTORY_SEPARATOR.'_rels';
             $filename = 'sheet'.$worksheetId.'.xml.rels';
