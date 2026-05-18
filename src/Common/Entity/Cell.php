@@ -75,10 +75,12 @@ abstract readonly class Cell
 
     final public static function fromImageFile(
         string $path,
+        int $width,
+        int $height,
         ?Style $style = null,
         ?Comment $comment = null,
         bool $fitToCell = false,
     ): self {
-        return new ImageCell($path, $style, $comment, $fitToCell);
+        return new ImageCell($path, $width, $height, $style, $comment, $fitToCell);
     }
 }

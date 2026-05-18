@@ -10,7 +10,6 @@ use DateTimeZone;
 use DOMDocument;
 use DOMElement;
 use finfo;
-use Imagick;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Comment\Comment;
 use OpenSpout\Common\Entity\Comment\TextRun;
@@ -1451,31 +1450,18 @@ final class WriterTest extends TestCase
 
     public function testWriteImageCellEmbedsDrawingFiles(): void
     {
-        if (!\extension_loaded('gd') && !\extension_loaded('imagick')) {
-            self::markTestSkipped('Neither gd nor imagick extension is available.');
-        }
-
+        // Minimal 1×1 image
         $imagePath = sys_get_temp_dir().\DIRECTORY_SEPARATOR.'openspout_test_image.png';
 
         try {
-            if (\extension_loaded('gd')) {
-                $img = imagecreatetruecolor(1, 1);
-                imagepng($img, $imagePath);
-                imagedestroy($img);
-            } else {
-                $img = new Imagick();
-                $img->newImage(1, 1, 'white');
-                $img->setImageFormat('png');
-                $img->writeImage($imagePath);
-                $img->clear();
-            }
+            file_put_contents($imagePath, base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwADhQGAWjR9awAAAABJRU5ErkJggg=='));
 
             $fileName = 'test_write_image_cell.xlsx';
             $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
             $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
             $writer = new Writer($options);
             $writer->openToFile($resourcePath);
-            $writer->addRow(new Row([new Cell\ImageCell($imagePath)]));
+            $writer->addRow(new Row([new Cell\ImageCell($imagePath, 1, 1)]));
             $writer->close();
 
             $sheetXml = file_get_contents('zip://'.$resourcePath.'#xl/worksheets/sheet1.xml');
