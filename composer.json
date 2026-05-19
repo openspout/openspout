@@ -39,9 +39,9 @@
         "ext-fileinfo": "*",
         "ext-zlib": "*",
         "friendsofphp/php-cs-fixer": "^3.95.2",
-        "infection/infection": "^0.33.0",
+        "infection/infection": "^0.33.1",
         "phpbench/phpbench": "^1.6.1",
-        "phpstan/phpstan": "^2.1.54",
+        "phpstan/phpstan": "^2.1.55",
         "phpstan/phpstan-phpunit": "^2.0.16",
         "phpstan/phpstan-strict-rules": "^2.0.11",
         "phpunit/phpunit": "^13.1.10"
