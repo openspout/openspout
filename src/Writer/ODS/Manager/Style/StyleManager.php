@@ -317,16 +317,12 @@ final readonly class StyleManager extends CommonStyleManager
      */
     private function getParagraphPropertiesSectionContent(Style $style): string
     {
-        if (
-            null === $style->cellAlignment
-            && null === $style->cellVerticalAlignment
-        ) {
+        if (null === $style->cellAlignment) {
             return '';
         }
 
         return '<style:paragraph-properties '
             .$this->getCellAlignmentSectionContent($style)
-            .$this->getCellVerticalAlignmentSectionContent($style)
             .'/>';
     }
 
@@ -355,7 +351,7 @@ final readonly class StyleManager extends CommonStyleManager
         }
 
         return \sprintf(
-            ' fo:vertical-align="%s" ',
+            ' style:vertical-align="%s" ',
             $this->transformCellVerticalAlignment($style->cellVerticalAlignment)
         );
     }
@@ -403,6 +399,8 @@ final readonly class StyleManager extends CommonStyleManager
         if (null !== ($bgColor = $style->backgroundColor)) {
             $content .= $this->getBackgroundColorXMLContent($bgColor);
         }
+
+        $content .= $this->getCellVerticalAlignmentSectionContent($style);
 
         $content .= '/>';
 
