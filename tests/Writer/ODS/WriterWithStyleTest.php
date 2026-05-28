@@ -230,7 +230,7 @@ final class WriterWithStyleTest extends TestCase
         self::assertCount(3, $styleElements, 'There should be 3 styles (1 default and 2 custom)');
 
         $customStyleElement = $styleElements[1];
-        $this->assertFirstChildHasAttributeEquals('baseline', $customStyleElement, 'paragraph-properties', 'fo:vertical-align');
+        $this->assertFirstChildHasAttributeEquals('baseline', $customStyleElement, 'table-cell-properties', 'style:vertical-align');
     }
 
     public function testAddRowShouldSupportCellStyling(): void
