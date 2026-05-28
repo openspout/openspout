@@ -105,7 +105,7 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
             $cell = $cells[$currentCellIndex];
             $nextCell = $cells[$nextCellIndex] ?? null;
 
-            if (null === $nextCell || $cell->getValue() !== $nextCell->getValue()) {
+            if (null === $nextCell || $cell->getValue() !== $nextCell->getValue() || $cell->style !== $nextCell->style) {
                 $styleId = 0;
                 if (null !== $cell->style) {
                     $styleId = $this->styleManager->registerStyle($cell->style);
