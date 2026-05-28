@@ -372,6 +372,38 @@ final class WriterWithStyleTest extends TestCase
         $this->assertFirstChildHasAttributeEquals('#'.Color::GREEN, $customStyleElement, 'text-properties', 'fo:color');
     }
 
+    public function testCellsWithSameValueButDifferentStylesShouldNotBeMerged(): void
+    {
+        $fileName = 'test_add_row_should_apply_cell_alignment.xlsx';
+
+        $greenColorStyle = new Style(fontColor: Color::GREEN);
+        $blueColorStyle = new Style(fontColor: Color::BLUE);
+
+        $rows = [];
+        $rows[] = Row::fromValuesWithStyles(
+            ['ods--same', 'ods--same'],
+            [$greenColorStyle, $blueColorStyle],
+        );
+
+        $this->writeToODSFile($rows, $fileName);
+
+        $cellElements = $this->getCellElementsFromContentXmlFile($fileName);
+        self::assertCount(
+            2,
+            $cellElements,
+            'Cells with different styles should not be merged using number-columns-repeated'
+        );
+
+        self::assertNotEquals(
+            $cellElements[0]->getAttribute('table:style-name'),
+            $cellElements[1]->getAttribute('table:style-name'),
+        );
+
+        self::assertFalse(
+            $cellElements[0]->hasAttribute('table:number-columns-repeated')
+        );
+    }
+
     /**
      * @param Row[] $allRows
      */
