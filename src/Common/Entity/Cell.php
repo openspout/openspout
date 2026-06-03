@@ -73,7 +73,7 @@ abstract readonly class Cell
         return new StringCell($value, $style, $comment, $hyperlinkUrl);
     }
 
-    final public static function fromImageFile(
+    final public static function fromImagePath(
         string $path,
         int $width,
         int $height,

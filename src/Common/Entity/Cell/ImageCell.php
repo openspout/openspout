@@ -26,7 +26,7 @@ final readonly class ImageCell extends Cell
             throw new InvalidArgumentException("Image file not found: {$path}");
         }
 
-        $ext = strtolower(pathinfo($path, \PATHINFO_EXTENSION));
+        $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
         $this->mimeType = match ($ext) {
             'jpg', 'jpeg' => 'image/jpeg',
             'png' => 'image/png',

@@ -279,7 +279,7 @@ final class WriterTest extends TestCase
     {
         // Minimal 1×1 image
         $imagePath = sys_get_temp_dir().\DIRECTORY_SEPARATOR.'openspout_test_image_csv.png';
-        file_put_contents($imagePath, base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwADhQGAWjR9awAAAABJRU5ErkJggg=='));
+        file_put_contents($imagePath, base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwADhQGAWjR9awAAAABJRU5ErkJggg==', true));
 
         try {
             $fileName = 'test_image_cell_throws.csv';
