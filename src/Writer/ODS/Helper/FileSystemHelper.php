@@ -27,6 +27,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     public const string META_XML_FILE_NAME = 'meta.xml';
     public const string MIMETYPE_FILE_NAME = 'mimetype';
     public const string STYLES_XML_FILE_NAME = 'styles.xml';
+    public const string SETTINGS_XML_FILE_NAME = 'settings.xml';
 
     private string $baseFolderRealPath;
 
@@ -213,6 +214,49 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     }
 
     /**
+     * Creates the "settings.xml" file under the root folder.
+     *
+     * @param Worksheet[] $worksheets
+     *
+     * @throws IOException
+     */
+    public function createSettingsFile(array $worksheets): self
+    {
+        $settingsXmlFileContents = <<<'EOD'
+            <?xml version="1.0" encoding="UTF-8"?>
+            <office:document-settings xmlns:config="urn:oasis:names:tc:opendocument:xmlns:config:1.0"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                xmlns:ooo="http://openoffice.org/2004/office"
+                xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" office:version="1.3">
+                <office:settings>
+                    <config:config-item-set config:name="ooo:view-settings">
+                        <config:config-item-map-indexed config:name="Views">
+                            <config:config-item-map-entry>
+                                <config:config-item config:name="ViewId" config:type="string">view1</config:config-item>
+                                <config:config-item-map-named config:name="Tables">
+            EOD;
+
+        foreach ($worksheets as $worksheet) {
+            if (null !== ($viewSettings = $worksheet->getExternalSheet()->getSheetView())) {
+                $settingsXmlFileContents .= $viewSettings->getXml();
+            }
+        }
+
+        $settingsXmlFileContents .= <<<'EOD'
+                                </config:config-item-map-named>
+                            </config:config-item-map-entry>
+                        </config:config-item-map-indexed>
+                    </config:config-item-set>
+                </office:settings>
+            </office:document-settings>
+            EOD;
+
+        $this->createFileWithContents($this->rootFolder, self::SETTINGS_XML_FILE_NAME, $settingsXmlFileContents);
+
+        return $this;
+    }
+
+    /**
      * Creates the folder that will be used as root.
      *
      * @throws IOException If unable to create the folder
@@ -252,6 +296,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
                 <manifest:file-entry manifest:full-path="styles.xml" manifest:media-type="text/xml"/>
                 <manifest:file-entry manifest:full-path="content.xml" manifest:media-type="text/xml"/>
                 <manifest:file-entry manifest:full-path="meta.xml" manifest:media-type="text/xml"/>
+                <manifest:file-entry manifest:full-path="settings.xml" manifest:media-type="text/xml"/>
             </manifest:manifest>
             EOD;
 

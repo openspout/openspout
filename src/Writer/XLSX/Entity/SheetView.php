@@ -6,8 +6,9 @@ namespace OpenSpout\Writer\XLSX\Entity;
 
 use OpenSpout\Common\Exception\InvalidArgumentException;
 use OpenSpout\Reader\XLSX\Helper\CellHelper;
+use OpenSpout\Writer\Common\Entity\SheetViewInterface;
 
-final readonly class SheetView
+final readonly class SheetView implements SheetViewInterface
 {
     /**
      * @param non-empty-string $view
