@@ -73,4 +73,9 @@ abstract readonly class AbstractOptions
     {
         return $this->COLUMN_WIDTHS->get();
     }
+
+    final public function resolveIntervals(): void
+    {
+        $this->COLUMN_WIDTHS->resolveIntervals();
+    }
 }

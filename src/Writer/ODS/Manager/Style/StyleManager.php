@@ -10,7 +10,6 @@ use OpenSpout\Common\Entity\Style\CellAlignment;
 use OpenSpout\Common\Entity\Style\CellVerticalAlignment;
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Writer\Common\AbstractOptions;
-use OpenSpout\Writer\Common\ColumnWidth;
 use OpenSpout\Writer\Common\Entity\Worksheet;
 use OpenSpout\Writer\Common\Manager\Style\AbstractStyleManager as CommonStyleManager;
 use OpenSpout\Writer\ODS\Helper\BorderHelper;
@@ -105,11 +104,7 @@ final readonly class StyleManager extends CommonStyleManager
                 EOD;
         }
 
-        // Sort column widths since ODS cares about order
-        $columnWidths = $this->options->getColumnWidths();
-        usort($columnWidths, static function (ColumnWidth $a, ColumnWidth $b): int {
-            return $a->start <=> $b->start;
-        });
+        $this->options->resolveIntervals();
         $content .= $this->getTableColumnStylesXMLContent();
 
         $content .= '</office:automatic-styles>';
@@ -137,21 +132,26 @@ final readonly class StyleManager extends CommonStyleManager
 
     public function getStyledTableColumnXMLContent(int $maxNumColumns): string
     {
-        if ([] === $this->options->getColumnWidths()) {
+        if ([] === ($columnWidths = $this->options->getColumnWidths())) {
             return '';
         }
 
         $content = '';
-        foreach ($this->options->getColumnWidths() as $styleIndex => $columnWidth) {
+        $currentCol = 1;
+        foreach ($columnWidths as $styleIndex => $columnWidth) {
+            if ($currentCol < $columnWidth->start) {
+                $content .= '<table:table-column table:default-cell-style-name="ce1" table:style-name="default-column-style" table:number-columns-repeated="'.($columnWidth->start - $currentCol).'"/>';
+            }
             $numCols = $columnWidth->end - $columnWidth->start + 1;
             $content .= <<<EOD
                 <table:table-column table:default-cell-style-name='Default' table:style-name="co{$styleIndex}" table:number-columns-repeated="{$numCols}"/>
                 EOD;
+            $currentCol = $columnWidth->end + 1;
         }
-        \assert(isset($columnWidth));
-        // Note: This assumes the column widths are contiguous and default width is
-        // only applied to columns after the last custom column with a custom width
-        $content .= '<table:table-column table:default-cell-style-name="ce1" table:style-name="default-column-style" table:number-columns-repeated="'.($maxNumColumns - $columnWidth->end).'"/>';
+
+        if ($currentCol <= $maxNumColumns) {
+            $content .= '<table:table-column table:default-cell-style-name="ce1" table:style-name="default-column-style" table:number-columns-repeated="'.($maxNumColumns - $currentCol + 1).'"/>';
+        }
 
         return $content;
     }
@@ -317,16 +317,12 @@ final readonly class StyleManager extends CommonStyleManager
      */
     private function getParagraphPropertiesSectionContent(Style $style): string
     {
-        if (
-            null === $style->cellAlignment
-            && null === $style->cellVerticalAlignment
-        ) {
+        if (null === $style->cellAlignment) {
             return '';
         }
 
         return '<style:paragraph-properties '
             .$this->getCellAlignmentSectionContent($style)
-            .$this->getCellVerticalAlignmentSectionContent($style)
             .'/>';
     }
 
@@ -355,7 +351,7 @@ final readonly class StyleManager extends CommonStyleManager
         }
 
         return \sprintf(
-            ' fo:vertical-align="%s" ',
+            ' style:vertical-align="%s" ',
             $this->transformCellVerticalAlignment($style->cellVerticalAlignment)
         );
     }
@@ -403,6 +399,8 @@ final readonly class StyleManager extends CommonStyleManager
         if (null !== ($bgColor = $style->backgroundColor)) {
             $content .= $this->getBackgroundColorXMLContent($bgColor);
         }
+
+        $content .= $this->getCellVerticalAlignmentSectionContent($style);
 
         $content .= '/>';
 
