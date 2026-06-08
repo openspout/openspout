@@ -27,7 +27,10 @@ class ViewSettingsTest extends TestCase
         $writer->openToFile($resourcePath);
         $writer->addRow(Row::fromValues(['ods--sheet1--11', 'ods--sheet1--12']));
         $sheet = $writer->getCurrentSheet();
-        $sheet->setSheetView(new ViewSettings($sheet->getName()));
+
+        /** @var non-empty-string $sheetName */
+        $sheetName = $sheet->getName();
+        $sheet->setSheetView(new ViewSettings($sheetName));
         $writer->close();
 
         $this->assertConfigItem($fileName, 'VerticalSplitPosition', '0', 'Default VerticalSplitPosition should be 0');
@@ -45,7 +48,10 @@ class ViewSettingsTest extends TestCase
         $writer->openToFile($resourcePath);
         $writer->addRow(Row::fromValues(['ods--sheet1--11', 'ods--sheet1--12']));
         $sheet = $writer->getCurrentSheet();
-        $sheet->setSheetView(new ViewSettings($sheet->getName(), 1, 2, false));
+
+        /** @var non-empty-string $sheetName */
+        $sheetName = $sheet->getName();
+        $sheet->setSheetView(new ViewSettings($sheetName, 1, 2, false));
         $writer->close();
 
         $this->assertConfigItem($fileName, 'VerticalSplitPosition', '1', 'VerticalSplitPosition should be persisted from ViewSettings');

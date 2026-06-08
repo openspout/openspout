@@ -4,36 +4,21 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer\ODS\Entity;
 
-use OpenSpout\Common\Exception\InvalidArgumentException;
 use OpenSpout\Writer\Common\Entity\SheetViewInterface;
 
-class ViewSettings implements SheetViewInterface
+final readonly class ViewSettings implements SheetViewInterface
 {
-    /** @var non-negative-int */
-    public int $freezeRow;
-
-    /** @var non-negative-int */
-    public int $freezeColumn;
-
     /**
-     * @throws InvalidArgumentException
+     * @param non-empty-string $sheetName
+     * @param non-negative-int $freezeRow
+     * @param non-negative-int $freezeColumn
      */
     public function __construct(
-        private readonly string $sheetName,
-        int $freezeRow = 0,
-        int $freezeColumn = 0,
+        private string $sheetName,
+        public int $freezeRow = 0,
+        public int $freezeColumn = 0,
         public bool $showGrid = true,
-    ) {
-        if ($freezeRow < 0) {
-            throw new InvalidArgumentException('Freeze row must be a non-negative integer');
-        }
-        $this->freezeRow = $freezeRow;
-
-        if ($freezeColumn < 0) {
-            throw new InvalidArgumentException('Freeze column must be a non-negative integer');
-        }
-        $this->freezeColumn = $freezeColumn;
-    }
+    ) {}
 
     public function getXml(): string
     {

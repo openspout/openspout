@@ -12,7 +12,7 @@ interface SheetViewInterface
      * The file format layer is responsible for persisting this value into
      * the target document structure.
      *
-     * @return string Format-specific representation of sheet view settings
+     * @return non-empty-string Format-specific representation of sheet view settings
      */
     public function getXml(): string;
 }
