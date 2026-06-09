@@ -26,7 +26,7 @@ final class Worksheet
     /** @var int Index of the last written row */
     private int $lastWrittenRowIndex = 0;
 
-    /** @var array<array{row: int, col: int, cell: ImageCell}> */
+    /** @var list<array{row: int, col: int, cell: ImageCell}> */
     private array $images = [];
 
     /**
@@ -92,7 +92,7 @@ final class Worksheet
     }
 
     /**
-     * @return array<array{row: int, col: int, cell: ImageCell}>
+     * @return list<array{row: int, col: int, cell: ImageCell}>
      */
     public function getImages(): array
     {

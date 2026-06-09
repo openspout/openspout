@@ -142,6 +142,26 @@ $writer = new Writer();
 $writer->getCurrentSheet()->setSheetView($sheetView);
 ```
 
+### Sheet view (ODS writer)
+
+Since ODS view settings are associated with sheet names, the sheet name is required in `ViewSettings`.
+
+```php
+use OpenSpout\Writer\ODS\Entity\ViewSettings;
+use OpenSpout\Writer\ODS\Writer;
+
+$writer = new Writer();
+$sheet = $writer->getCurrentSheet();
+
+$viewSettings = new ViewSettings(
+    $sheet->getName(),
+    freezeRow: 1,
+    freezeColumn: 1,
+    showGrid: false
+);
+$sheet->setSheetView($viewSettings);
+```
+
 ### AutoFilter (XLSX Writer)
 
 AutoFilter can be configured using the `AutoFilter` class:
