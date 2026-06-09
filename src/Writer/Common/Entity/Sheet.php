@@ -9,7 +9,6 @@ use OpenSpout\Writer\Common\ColumnWidth;
 use OpenSpout\Writer\Common\ColumnWidthContainer;
 use OpenSpout\Writer\Common\Manager\SheetManager;
 use OpenSpout\Writer\Exception\InvalidSheetNameException;
-use OpenSpout\Writer\XLSX\Entity\SheetView;
 use OpenSpout\Writer\XLSX\Options\SheetProtection;
 
 /**
@@ -34,7 +33,7 @@ final class Sheet
     /** @var SheetManager Sheet manager */
     private readonly SheetManager $sheetManager;
 
-    private ?SheetView $sheetView = null;
+    private ?SheetViewInterface $sheetView = null;
 
     /** @var 0|positive-int */
     private int $writtenRowCount = 0;
@@ -131,14 +130,14 @@ final class Sheet
     /**
      * @return $this
      */
-    public function setSheetView(SheetView $sheetView): self
+    public function setSheetView(SheetViewInterface $sheetView): self
     {
         $this->sheetView = $sheetView;
 
         return $this;
     }
 
-    public function getSheetView(): ?SheetView
+    public function getSheetView(): ?SheetViewInterface
     {
         return $this->sheetView;
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer\ODS\Manager;
 
+use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Writer\Common\Entity\Workbook;
 use OpenSpout\Writer\Common\Manager\AbstractWorkbookManager;
 use OpenSpout\Writer\ODS\Helper\FileSystemHelper;
@@ -55,6 +56,8 @@ final class WorkbookManager extends AbstractWorkbookManager
      * Writes all the necessary files to disk and zip them together to create the final file.
      *
      * @param resource $finalFilePointer Pointer to the spreadsheet that will be created
+     *
+     * @throws IOException
      */
     protected function writeAllFilesToDiskAndZipThem($finalFilePointer): void
     {
@@ -65,6 +68,7 @@ final class WorkbookManager extends AbstractWorkbookManager
             ->createContentFile($this->worksheetManager, $this->styleManager, $worksheets)
             ->deleteWorksheetTempFolder()
             ->createStylesFile($this->styleManager, $numWorksheets)
+            ->createSettingsFile($worksheets)
             ->zipRootFolderAndCopyToStream($finalFilePointer)
         ;
     }
