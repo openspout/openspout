@@ -72,15 +72,4 @@ abstract readonly class Cell
 
         return new StringCell($value, $style, $comment, $hyperlinkUrl);
     }
-
-    final public static function fromImagePath(
-        string $path,
-        int $width,
-        int $height,
-        ?Style $style = null,
-        ?Comment $comment = null,
-        bool $fitToCell = false,
-    ): self {
-        return new ImageCell($path, $width, $height, $style, $comment, $fitToCell);
-    }
 }
