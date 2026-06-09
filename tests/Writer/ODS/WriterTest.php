@@ -20,6 +20,7 @@ use OpenSpout\Reader\Wrapper\XMLReader;
 use OpenSpout\TestUsingResource;
 use OpenSpout\Writer\AutoFilter;
 use OpenSpout\Writer\Common\Entity\Sheet;
+use OpenSpout\Writer\Common\Helper\ImageHelperTrait;
 use OpenSpout\Writer\Common\Manager\SheetManager;
 use OpenSpout\Writer\Exception\SheetNotFoundException;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
@@ -33,6 +34,8 @@ use ReflectionHelper;
  */
 final class WriterTest extends TestCase
 {
+    use ImageHelperTrait;
+
     public function testAddRowShouldThrowExceptionIfCannotOpenAFileForWriting(): void
     {
         $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
@@ -491,22 +494,14 @@ final class WriterTest extends TestCase
 
     public function testWriteImageCellShouldThrowException(): void
     {
-        // Minimal 1×1 image
-        $imagePath = sys_get_temp_dir().\DIRECTORY_SEPARATOR.'openspout_test_image_ods.png';
-        file_put_contents($imagePath, base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwADhQGAWjR9awAAAABJRU5ErkJggg==', true));
+        $fileName = 'test_image_cell_throws.ods';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
 
-        try {
-            $fileName = 'test_image_cell_throws.ods';
-            $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
-            $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
-            $writer = new Writer($options);
-            $writer->openToFile($resourcePath);
-
-            $this->expectException(UnsupportedTypeException::class);
-            $writer->addRow(new Row([new ImageCell($imagePath, 1, 1)]));
-        } finally {
-            unlink($imagePath);
-        }
+        $this->expectException(UnsupportedTypeException::class);
+        $writer->addRow(new Row([new ImageCell($this->testImagePath, 1, 1)]));
     }
 
     /**
