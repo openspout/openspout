@@ -188,8 +188,12 @@ final class SharedStringsManager
         $sharedStringValue = '';
 
         // NOTE: expand() will automatically decode all XML entities of the child nodes
-        $siNode = $xmlReader->expand();
-        \assert($siNode instanceof DOMElement);
+        $siNode = @$xmlReader->expand();
+        if (!$siNode instanceof DOMElement) {
+            $this->cachingStrategy->addStringForIndex($sharedStringValue, $sharedStringIndex);
+
+            return;
+        }
         $textNodes = $siNode->getElementsByTagName(self::XML_NODE_T);
 
         foreach ($textNodes as $textNode) {

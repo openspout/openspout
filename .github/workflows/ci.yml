@@ -21,7 +21,7 @@ jobs:
           - "8.4"
 
     steps:
-      - uses: "actions/checkout@v6"
+      - uses: "actions/checkout@v7"
       - uses: "shivammathur/setup-php@v2"
         with:
           coverage: "none"
@@ -53,7 +53,7 @@ jobs:
               code-coverage: "pcov"
 
     steps:
-      - uses: "actions/checkout@v6"
+      - uses: "actions/checkout@v7"
       - uses: "shivammathur/setup-php@v2"
         with:
           coverage: "${{ matrix.code-coverage }}"
@@ -101,7 +101,7 @@ jobs:
           - "8.4"
 
     steps:
-      - uses: "actions/checkout@v6"
+      - uses: "actions/checkout@v7"
       - uses: "shivammathur/setup-php@v2"
         with:
           coverage: "none"
@@ -123,7 +123,7 @@ jobs:
           - "8.4"
 
     steps:
-      - uses: "actions/checkout@v6"
+      - uses: "actions/checkout@v7"
       - uses: "shivammathur/setup-php@v2"
         with:
           coverage: "none"
@@ -152,7 +152,7 @@ jobs:
           - "XlsxWriterSharedBench"
 
     steps:
-      - uses: "actions/checkout@v6"
+      - uses: "actions/checkout@v7"
       - uses: "shivammathur/setup-php@v2"
         with:
           coverage: "none"
