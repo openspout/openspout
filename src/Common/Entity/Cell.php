@@ -11,7 +11,6 @@ use OpenSpout\Common\Entity\Cell\DateIntervalCell;
 use OpenSpout\Common\Entity\Cell\DateTimeCell;
 use OpenSpout\Common\Entity\Cell\EmptyCell;
 use OpenSpout\Common\Entity\Cell\FormulaCell;
-use OpenSpout\Common\Entity\Cell\ImageCell;
 use OpenSpout\Common\Entity\Cell\NumericCell;
 use OpenSpout\Common\Entity\Cell\StringCell;
 use OpenSpout\Common\Entity\Cell\TextRunCell;
