@@ -38,13 +38,13 @@
     "require-dev": {
         "ext-fileinfo": "*",
         "ext-zlib": "*",
-        "friendsofphp/php-cs-fixer": "^3.95.8",
-        "infection/infection": "^0.33.3",
+        "friendsofphp/php-cs-fixer": "^3.95.13",
+        "infection/infection": "^0.34",
         "phpbench/phpbench": "^1.7.0",
-        "phpstan/phpstan": "^2.2.2",
-        "phpstan/phpstan-phpunit": "^2.0.16",
+        "phpstan/phpstan": "^2.2.5",
+        "phpstan/phpstan-phpunit": "^2.0.18",
         "phpstan/phpstan-strict-rules": "^2.0.11",
-        "phpunit/phpunit": "^13.2.1"
+        "phpunit/phpunit": "^13.2.4"
     },
     "suggest": {
         "ext-iconv": "To handle non UTF-8 CSV files (if \"php-mbstring\" is not already installed or is too limited)",
