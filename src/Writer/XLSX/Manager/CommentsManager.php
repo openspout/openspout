@@ -108,12 +108,16 @@ final class CommentsManager
         $commentFp = $this->commentsFilePointers[$sheetId];
         $drawingFp = $this->drawingFilePointers[$sheetId];
 
-        fwrite($commentFp, self::COMMENTS_XML_FILE_FOOTER);
-        fwrite($drawingFp, self::DRAWINGS_VML_FILE_FOOTER);
+        if (is_resource($commentFp)) {
+            fwrite($commentFp, self::COMMENTS_XML_FILE_FOOTER);
+            fclose($commentFp);
+        }
 
-        fclose($commentFp);
-        fclose($drawingFp);
-    }
+        if (is_resource($drawingFp)) {
+            fwrite($drawingFp, self::DRAWINGS_VML_FILE_FOOTER);
+            fclose($drawingFp);
+        }
+    }    
 
     public function addComments(Worksheet $worksheet, Row $row): void
     {
