@@ -124,6 +124,28 @@ final class SheetTest extends TestCase
         self::assertStringContainsString('table:number-columns-repeated="2"', $xmlContents, 'No expected column width definition found in sheet');
     }
 
+    public function testWritesHiddenAndCollapsedColumnsAsCollapsedVisibility(): void
+    {
+        $fileName = 'test_column_hidden_collapsed.ods';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $writer->addRow(Row::fromValues(['ods--11', 'ods--12', 'ods--13']));
+        $sheet = $writer->getCurrentSheet();
+        $sheet->setColumnHidden(true, 1);
+        $sheet->setColumnCollapsed(true, 3);
+        $writer->close();
+
+        $pathToWorkbookFile = $resourcePath.'#content.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString('table:visibility="collapse"', $xmlContents, 'Hidden/collapsed columns should be written with collapse visibility');
+        self::assertStringContainsString('<table:table-column table:default-cell-style-name="ce1" table:style-name="default-column-style" table:visibility="collapse" table:number-columns-repeated="1"/>', $xmlContents, 'No expected collapsed column definition found in sheet');
+    }
+
     /**
      * @param array<array-key, array{start: positive-int, end: positive-int, width: float}> $rules
      * @param array<array-key, array{repeated: string, style: string, width?: string}>      $expected

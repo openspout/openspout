@@ -10,6 +10,8 @@ use OpenSpout\Common\Entity\Style\CellAlignment;
 use OpenSpout\Common\Entity\Style\CellVerticalAlignment;
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Writer\Common\AbstractOptions;
+use OpenSpout\Writer\Common\ColumnAttributesResolver;
+use OpenSpout\Writer\Common\Entity\Sheet;
 use OpenSpout\Writer\Common\Entity\Worksheet;
 use OpenSpout\Writer\Common\Manager\Style\AbstractStyleManager as CommonStyleManager;
 use OpenSpout\Writer\ODS\Helper\BorderHelper;
@@ -130,9 +132,12 @@ final readonly class StyleManager extends CommonStyleManager
         return $content;
     }
 
-    public function getStyledTableColumnXMLContent(int $maxNumColumns): string
+    public function getStyledTableColumnXMLContent(int $maxNumColumns, Sheet $sheet): string
     {
-        if ([] === ($columnWidths = $this->options->getColumnWidths())) {
+        $columnWidths = $this->options->getColumnWidths();
+        $collapsedColumns = self::buildCollapsedColumnMap($sheet);
+
+        if ([] === $columnWidths && [] === $collapsedColumns) {
             return '';
         }
 
@@ -140,20 +145,67 @@ final readonly class StyleManager extends CommonStyleManager
         $currentCol = 1;
         foreach ($columnWidths as $styleIndex => $columnWidth) {
             if ($currentCol < $columnWidth->start) {
-                $content .= '<table:table-column table:default-cell-style-name="ce1" table:style-name="default-column-style" table:number-columns-repeated="'.($columnWidth->start - $currentCol).'"/>';
+                $content .= self::renderTableColumns('"ce1"', 'default-column-style', $currentCol, $columnWidth->start - $currentCol, $collapsedColumns);
             }
             $numCols = $columnWidth->end - $columnWidth->start + 1;
-            $content .= <<<EOD
-                <table:table-column table:default-cell-style-name='Default' table:style-name="co{$styleIndex}" table:number-columns-repeated="{$numCols}"/>
-                EOD;
+            $content .= self::renderTableColumns("'Default'", 'co'.$styleIndex, $columnWidth->start, $numCols, $collapsedColumns);
             $currentCol = $columnWidth->end + 1;
         }
 
         if ($currentCol <= $maxNumColumns) {
-            $content .= '<table:table-column table:default-cell-style-name="ce1" table:style-name="default-column-style" table:number-columns-repeated="'.($maxNumColumns - $currentCol + 1).'"/>';
+            $content .= self::renderTableColumns('"ce1"', 'default-column-style', $currentCol, $maxNumColumns - $currentCol + 1, $collapsedColumns);
         }
 
         return $content;
+    }
+
+    /**
+     * Splits a run of columns sharing a style into "<table:table-column>" elements,
+     * adding table:visibility="collapse" to the sub-runs that are hidden or collapsed.
+     *
+     * @param string                    $defaultCellStyle Quoted table:default-cell-style-name value (e.g. "'Default'")
+     * @param positive-int              $startCol
+     * @param array<positive-int, true> $collapsedColumns
+     */
+    private static function renderTableColumns(string $defaultCellStyle, string $styleName, int $startCol, int $count, array $collapsedColumns): string
+    {
+        $content = '';
+        $endCol = $startCol + $count - 1;
+        $runStart = $startCol;
+        for ($column = $startCol; $column <= $endCol; ++$column) {
+            $runEnds = $column === $endCol
+                || isset($collapsedColumns[$column]) !== isset($collapsedColumns[$column + 1]);
+            if (!$runEnds) {
+                continue;
+            }
+            $repeated = $column - $runStart + 1;
+            $visibility = isset($collapsedColumns[$runStart]) ? ' table:visibility="collapse"' : '';
+            $content .= '<table:table-column table:default-cell-style-name='.$defaultCellStyle.' table:style-name="'.$styleName.'"'.$visibility.' table:number-columns-repeated="'.$repeated.'"/>';
+            $runStart = $column + 1;
+        }
+
+        return $content;
+    }
+
+    /**
+     * Builds the set of columns that must be visually collapsed in ODS
+     * (hidden and collapsed both map to table:visibility="collapse").
+     *
+     * @return array<positive-int, true>
+     */
+    private static function buildCollapsedColumnMap(Sheet $sheet): array
+    {
+        $collapsedColumns = [];
+        foreach ((new ColumnAttributesResolver())->resolve($sheet) as $resolvedColumn) {
+            if (true !== $resolvedColumn->hidden && true !== $resolvedColumn->collapsed) {
+                continue;
+            }
+            for ($column = $resolvedColumn->start; $column <= $resolvedColumn->end; ++$column) {
+                $collapsedColumns[$column] = true;
+            }
+        }
+
+        return $collapsedColumns;
     }
 
     /**

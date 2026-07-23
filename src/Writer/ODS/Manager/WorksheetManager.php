@@ -54,7 +54,7 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
         $tableStyleName = 'ta'.($externalSheet->getIndex() + 1);
 
         $tableElement = '<table:table table:style-name="'.$tableStyleName.'" table:name="'.$escapedSheetName.'">';
-        $tableElement .= $this->styleManager->getStyledTableColumnXMLContent($worksheet->getMaxNumColumns());
+        $tableElement .= $this->styleManager->getStyledTableColumnXMLContent($worksheet->getMaxNumColumns(), $externalSheet);
 
         return $tableElement;
     }

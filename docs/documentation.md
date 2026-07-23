@@ -296,6 +296,49 @@ foreach ($reader->getSheetIterator() as $sheet) {
 }
 ```
 
+## Hidden, collapsed and outline-level columns
+
+Columns can be hidden, marked as collapsed, or assigned an outline (grouping)
+level. These attributes are set at the **sheet** level and work for both the XLSX
+and ODS writers. Column indexes are 1-based, and each setter accepts either a list
+of columns or a range.
+
+```php
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
+
+$writer = new Writer();
+$writer->openToFile('/tmp/file.xlsx');
+$writer->addRow(Row::fromValues(['foo', 'bar', 'baz', 'qux']));
+
+$sheet = $writer->getCurrentSheet();
+
+// Hide a single column, several columns, or a range at once
+$sheet->setColumnHidden(true, 1);
+$sheet->setColumnHiddenForRange(true, 2, 3);
+
+// Mark columns as collapsed
+$sheet->setColumnCollapsed(true, 4);
+
+// Assign an outline (grouping) level (0-7)
+$sheet->setColumnOutlineLevel(1, 5);
+$sheet->setColumnOutlineLevelForRange(1, 6, 7);
+
+$writer->close();
+```
+
+Widths, hidden, collapsed and outline-level attributes are combined into minimal
+`<col>` ranges for XLSX. For ODS, hidden and collapsed columns are written with
+`table:visibility="collapse"`; note that ODS **outline-level grouping is not yet
+supported** and is ignored for ODS output.
+
+The declared values can also be read back from the sheet before closing:
+
+```php
+$sheet->getColumnHiddens();       // list of OpenSpout\Writer\Common\ColumnHidden
+$sheet->getColumnCollapseds();    // list of OpenSpout\Writer\Common\ColumnCollapsed
+$sheet->getColumnOutlineLevels(); // list of OpenSpout\Writer\Common\ColumnOutlineLevel
+```
 
 ## Cell merging
 

@@ -354,6 +354,53 @@ final class SheetTest extends TestCase
         self::assertStringContainsString('<col min="1" max="3" width="100" customWidth="true"', $xmlContents, 'No expected column width definition found in sheet');
     }
 
+    public function testWritesHiddenCollapsedAndOutlineLevelColumnsToSheet(): void
+    {
+        $fileName = 'test_column_hidden_collapsed_outline.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $writer->addRow(Row::fromValues(['a', 'b', 'c', 'd', 'e', 'f']));
+        $sheet = $writer->getCurrentSheet();
+        $sheet->setColumnHidden(true, 1);
+        $sheet->setColumnCollapsed(true, 2);
+        $sheet->setColumnOutlineLevel(2, 3);
+        $sheet->setColumnWidth(42.0, 5, 6);
+        $sheet->setColumnHidden(true, 5, 6);
+        $writer->close();
+
+        $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString('<col min="1" max="1" hidden="true"/>', $xmlContents, 'No hidden column definition found in sheet');
+        self::assertStringContainsString('<col min="2" max="2" collapsed="true"/>', $xmlContents, 'No collapsed column definition found in sheet');
+        self::assertStringContainsString('<col min="3" max="3" outlineLevel="2"/>', $xmlContents, 'No outline-level column definition found in sheet');
+        self::assertStringContainsString('<col min="5" max="6" width="42" customWidth="true" hidden="true"/>', $xmlContents, 'Width and hidden attributes should be combined into a single coalesced column');
+    }
+
+    public function testCoalescesAdjacentHiddenColumnsIntoASingleRange(): void
+    {
+        $fileName = 'test_column_hidden_coalesced.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $writer->addRow(Row::fromValues(['a', 'b', 'c']));
+        $sheet = $writer->getCurrentSheet();
+        $sheet->setColumnHidden(true, 1, 2, 3);
+        $writer->close();
+
+        $pathToWorkbookFile = $resourcePath.'#xl/worksheets/sheet1.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString('<col min="1" max="3" hidden="true"/>', $xmlContents, 'Adjacent hidden columns should coalesce into a single range');
+    }
+
     public function testCanWriteAFormula(): void
     {
         $fileName = 'test_formula.xlsx';

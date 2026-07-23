@@ -9,6 +9,7 @@ use OpenSpout\Common\Entity\Cell\ImageCell;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\Escaper\XLSX;
 use OpenSpout\Common\Helper\FileSystemHelper as CommonFileSystemHelper;
+use OpenSpout\Writer\Common\ColumnAttributesResolver;
 use OpenSpout\Writer\Common\Entity\Sheet;
 use OpenSpout\Writer\Common\Entity\Worksheet;
 use OpenSpout\Writer\Common\Helper\CellHelper;
@@ -632,6 +633,14 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
      */
     private function getXMLFragmentForColumnWidths(Options $options, Sheet $sheet): string
     {
+        $hasVisibilityAttributes = [] !== $sheet->getColumnHiddens()
+            || [] !== $sheet->getColumnCollapseds()
+            || [] !== $sheet->getColumnOutlineLevels();
+
+        if ($hasVisibilityAttributes) {
+            return $this->getXMLFragmentForResolvedColumns($sheet);
+        }
+
         if ([] !== $sheet->getColumnWidths()) {
             $widths = $sheet->getColumnWidths();
         } elseif ([] !== $options->getColumnWidths()) {
@@ -644,6 +653,39 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 
         foreach ($widths as $columnWidth) {
             $xml .= '<col min="'.$columnWidth->start.'" max="'.$columnWidth->end.'" width="'.$columnWidth->width.'" customWidth="true"/>';
+        }
+        $xml .= '</cols>';
+
+        return $xml;
+    }
+
+    /**
+     * Construct column xml combining width, hidden, collapsed and outline-level
+     * attributes into coalesced "<col>" ranges.
+     */
+    private function getXMLFragmentForResolvedColumns(Sheet $sheet): string
+    {
+        $resolvedColumns = (new ColumnAttributesResolver())->resolve($sheet);
+        if ([] === $resolvedColumns) {
+            return '';
+        }
+
+        $xml = '<cols>';
+        foreach ($resolvedColumns as $column) {
+            $xml .= '<col min="'.$column->start.'" max="'.$column->end.'"';
+            if (null !== $column->width) {
+                $xml .= ' width="'.$column->width.'" customWidth="true"';
+            }
+            if (true === $column->hidden) {
+                $xml .= ' hidden="true"';
+            }
+            if (true === $column->collapsed) {
+                $xml .= ' collapsed="true"';
+            }
+            if (null !== $column->outlineLevel && $column->outlineLevel > 0) {
+                $xml .= ' outlineLevel="'.$column->outlineLevel.'"';
+            }
+            $xml .= '/>';
         }
         $xml .= '</cols>';
 
