@@ -15,7 +15,7 @@ final class Worksheet
     private readonly string $filePath;
 
     /** @var null|resource Pointer to the sheet data file (e.g. xl/worksheets/sheet1.xml) */
-    private $filePointer;
+    private $filePointer = null;
 
     /** @var Sheet The "external" sheet */
     private readonly Sheet $externalSheet;
@@ -44,17 +44,16 @@ final class Worksheet
     }
 
     /**
-     * @return resource
+     * @return null|resource
      */
     public function getFilePointer()
     {
-        \assert(null !== $this->filePointer);
 
         return $this->filePointer;
     }
 
     /**
-     * @param resource $filePointer
+     * @param null|resource $filePointer
      */
     public function setFilePointer($filePointer): void
     {

@@ -136,7 +136,28 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
      */
     public function close(Worksheet $worksheet): void
     {
+        $fp = $worksheet->getFilePointer();
+        if (null !== $fp) {
+            fclose($fp);
+            $worksheet->setFilePointer(null);
+        }
+    }
+
+    public function closeSheet(Worksheet $worksheet): void
+    {
         fclose($worksheet->getFilePointer());
+        $worksheet->setFilePointer(null);
+    }
+
+    public function resumeSheet(Worksheet $worksheet): void
+    {
+        if (null !== $worksheet->getFilePointer()) {
+            return;
+        }
+
+        $sheetFilePointer = fopen($worksheet->getFilePath(), 'a');
+        \assert(false !== $sheetFilePointer);
+        $worksheet->setFilePointer($sheetFilePointer);
     }
 
     /**

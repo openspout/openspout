@@ -105,6 +105,10 @@ final class CommentsManager
     {
         $sheetId = $sheet->getId();
 
+        if (!isset($this->commentsFilePointers[$sheetId])) {
+            return;
+        }
+
         $commentFp = $this->commentsFilePointers[$sheetId];
         $drawingFp = $this->drawingFilePointers[$sheetId];
 
@@ -113,6 +117,38 @@ final class CommentsManager
 
         fclose($commentFp);
         fclose($drawingFp);
+
+        unset($this->commentsFilePointers[$sheetId], $this->drawingFilePointers[$sheetId]);
+    }
+
+    /**
+     * Close the two comment-files for the given worksheet without writing footers.
+     * Used when switching away from a sheet to free file handles.
+     */
+    public function closeTempCommentFiles(Worksheet $sheet): void
+    {
+        $sheetId = $sheet->getId();
+
+        if (!isset($this->commentsFilePointers[$sheetId])) {
+            return;
+        }
+
+        fclose($this->commentsFilePointers[$sheetId]);
+        fclose($this->drawingFilePointers[$sheetId]);
+
+        unset($this->commentsFilePointers[$sheetId], $this->drawingFilePointers[$sheetId]);
+    }
+
+    /**
+     * Reopen the two comment-files for the given worksheet in append mode.
+     * Used when switching back to a previously closed sheet.
+     */
+    public function reopenTempCommentFiles(Worksheet $sheet): void
+    {
+        $sheetId = $sheet->getId();
+
+        $this->commentsFilePointers[$sheetId] = fopen($this->getCommentsFilePath($sheet), 'a');
+        $this->drawingFilePointers[$sheetId] = fopen($this->getDrawingFilePath($sheet), 'a');
     }
 
     public function addComments(Worksheet $worksheet, Row $row): void

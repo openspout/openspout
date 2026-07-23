@@ -95,7 +95,7 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
     {
         $worksheet = $this->getWorksheetFromExternalSheet($sheet);
         if (null !== $worksheet) {
-            $this->currentWorksheet = $worksheet;
+            $this->setCurrentWorksheet($worksheet);
         } else {
             throw new SheetNotFoundException('The given sheet does not exist in the workbook.');
         }
@@ -208,6 +208,10 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
 
     private function setCurrentWorksheet(Worksheet $worksheet): void
     {
+        if (isset($this->currentWorksheet) && $this->currentWorksheet !== $worksheet) {
+            $this->worksheetManager->closeSheet($this->currentWorksheet);
+        }
+        $this->worksheetManager->resumeSheet($worksheet);
         $this->currentWorksheet = $worksheet;
     }
 
