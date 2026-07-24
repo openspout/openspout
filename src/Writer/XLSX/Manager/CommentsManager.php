@@ -147,8 +147,13 @@ final class CommentsManager
     {
         $sheetId = $sheet->getId();
 
-        $this->commentsFilePointers[$sheetId] = fopen($this->getCommentsFilePath($sheet), 'a');
-        $this->drawingFilePointers[$sheetId] = fopen($this->getDrawingFilePath($sheet), 'a');
+        $commentFp = fopen($this->getCommentsFilePath($sheet), 'a');
+        \assert(false !== $commentFp);
+        $drawingFp = fopen($this->getDrawingFilePath($sheet), 'a');
+        \assert(false !== $drawingFp);
+
+        $this->commentsFilePointers[$sheetId] = $commentFp;
+        $this->drawingFilePointers[$sheetId] = $drawingFp;
     }
 
     public function addComments(Worksheet $worksheet, Row $row): void

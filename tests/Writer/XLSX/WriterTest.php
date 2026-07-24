@@ -1538,7 +1538,7 @@ final class WriterTest extends TestCase
         $writer = new Writer($options);
         $writer->openToFile($resourcePath);
 
-        $countFds = function (): int {
+        $countFds = static function (): int {
             $fds = scandir('/proc/self/fd');
             \assert(false !== $fds);
 
