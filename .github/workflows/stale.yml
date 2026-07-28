@@ -7,7 +7,7 @@ jobs:
   stale:
     runs-on: ubuntu-latest
     steps:
-      - uses: "actions/stale@v10"
+      - uses: "actions/stale@v11"
         with:
           days-before-pr-close: -1
           exempt-issue-labels: "backlog"
