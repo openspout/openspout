@@ -6,7 +6,9 @@ namespace OpenSpout\Reader\XLSX;
 
 use DateInterval;
 use DateTimeImmutable;
+use OpenSpout\Common\Entity\Cell\DateTimeCell;
 use OpenSpout\Common\Entity\Cell\EmptyCell;
+use OpenSpout\Common\Entity\Cell\ErrorCell;
 use OpenSpout\Common\Entity\Cell\FormulaCell;
 use OpenSpout\Common\Entity\Cell\NumericCell;
 use OpenSpout\Common\Entity\Cell\StringCell;
@@ -357,6 +359,45 @@ final class ReaderTest extends TestCase
             ],
         ];
         self::assertEquals($expectedRows, $allRows);
+    }
+
+    public function testReadShouldReturnErrorCellsForOutOfRangeNumericTimestamps(): void
+    {
+        // make sure dates are always created with the same timezone
+        date_default_timezone_set('UTC');
+
+        $resourcePath = TestUsingResource::getResourcePath('sheet_with_out_of_range_numeric_value_dates.xlsx');
+
+        $reader = new Reader();
+        $reader->open($resourcePath);
+
+        $cells = [];
+
+        foreach ($reader->getSheetIterator() as $sheet) {
+            foreach ($sheet->getRowIterator() as $row) {
+                $cells = $row->cells;
+            }
+        }
+
+        $reader->close();
+
+        // out-of-range timestamps must not abort the whole read: they are returned as error cells
+        self::assertCount(3, $cells);
+
+        self::assertInstanceOf(ErrorCell::class, $cells[0]);
+        self::assertNull($cells[0]->getValue());
+        self::assertSame('2958466', $cells[0]->getRawValue());
+
+        self::assertInstanceOf(ErrorCell::class, $cells[1]);
+        self::assertNull($cells[1]->getValue());
+        self::assertSame('-693594', $cells[1]->getRawValue());
+
+        // the valid date of the same row is still read
+        self::assertInstanceOf(DateTimeCell::class, $cells[2]);
+        self::assertEquals(
+            DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2015-09-01 00:00:00'),
+            $cells[2]->getValue()
+        );
     }
 
     public function testReadShouldSupportDifferentTimesAsNumericTimestamp(): void

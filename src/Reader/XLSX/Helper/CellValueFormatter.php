@@ -10,7 +10,6 @@ use DOMElement;
 use Exception;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Helper\Escaper\XLSX;
-use OpenSpout\Reader\Exception\InvalidValueException;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsManager;
 use OpenSpout\Reader\XLSX\Manager\StyleManagerInterface;
 
@@ -188,7 +187,7 @@ final readonly class CellValueFormatter
      *
      * @param int $cellStyleId 0 being the default style
      */
-    private function formatNumericCellValue(float|int|string $nodeValue, int $cellStyleId): DateInterval|DateTimeImmutable|float|int|string
+    private function formatNumericCellValue(float|int|string $nodeValue, int $cellStyleId): Cell\ErrorCell|DateInterval|DateTimeImmutable|float|int|string
     {
         // Numeric values can represent numbers as well as timestamps.
         // We need to look at the style of the cell to determine whether it is one or the other.
@@ -231,14 +230,12 @@ final readonly class CellValueFormatter
      *
      * @param int $cellStyleId 0 being the default style
      *
-     * @throws InvalidValueException If the value is not a valid timestamp
-     *
      * @see ECMA-376 Part 1 - §18.17.4
      */
-    private function formatExcelTimestampValue(float $nodeValue, int $cellStyleId): DateTimeImmutable|string
+    private function formatExcelTimestampValue(float $nodeValue, int $cellStyleId): Cell\ErrorCell|DateTimeImmutable|string
     {
         if (!$this->isValidTimestampValue($nodeValue)) {
-            throw new InvalidValueException((string) $nodeValue);
+            return new Cell\ErrorCell((string) $nodeValue);
         }
 
         return $this->formatExcelTimestampValueAsDateTimeValue($nodeValue, $cellStyleId);

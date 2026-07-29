@@ -8,9 +8,9 @@ use DateTimeInterface;
 use DOMElement;
 use DOMNodeList;
 use OpenSpout\Common\Entity\Cell\DateTimeCell;
+use OpenSpout\Common\Entity\Cell\ErrorCell;
 use OpenSpout\Common\Entity\Cell\FormulaCell;
 use OpenSpout\Common\Helper\Escaper;
-use OpenSpout\Reader\Exception\InvalidValueException;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\MemoryLimit;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsManager;
@@ -88,17 +88,16 @@ final class CellValueFormatterTest extends TestCase
             new Escaper\XLSX()
         );
 
-        try {
-            $result = $formatter->extractAndFormatNodeValue($nodeMock);
+        $result = $formatter->extractAndFormatNodeValue($nodeMock);
 
-            if (null === $expectedDateAsString) {
-                self::fail('An exception should have been thrown');
-            } else {
-                self::assertInstanceOf(DateTimeCell::class, $result);
-                self::assertSame($expectedDateAsString, $result->getValue()->format('Y-m-d H:i:s'));
-            }
-        } catch (InvalidValueException) {
-            // do nothing
+        if (null === $expectedDateAsString) {
+            // out-of-range timestamps are not valid dates: they are returned as error cells
+            self::assertInstanceOf(ErrorCell::class, $result);
+            self::assertNull($result->getValue());
+            self::assertSame((string) (float) $nodeValue, $result->getRawValue());
+        } else {
+            self::assertInstanceOf(DateTimeCell::class, $result);
+            self::assertSame($expectedDateAsString, $result->getValue()->format('Y-m-d H:i:s'));
         }
     }
 
@@ -256,6 +255,13 @@ final class CellValueFormatterTest extends TestCase
                 'computedValue' => 'non-valid-date',
                 'expectedComputedValue' => null,
                 'cellType' => CellValueFormatter::CELL_TYPE_DATE,
+            ],
+            [
+                'nodeValue' => 'TODAY()',
+                'shouldFormatAsDate' => true,
+                'computedValue' => 2958465.9999885, // out of the range supported by SpreadsheetML
+                'expectedComputedValue' => null,
+                'cellType' => CellValueFormatter::CELL_TYPE_NUMERIC,
             ],
         ];
     }
