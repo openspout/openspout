@@ -226,11 +226,11 @@ final class RowIterator implements RowIteratorInterface
 
         // process cell N only after having read cell N+1 (see below why)
         if ($this->hasAlreadyReadOneCellInCurrentRow) {
+            $cells = $this->currentlyProcessedRow->cells;
             for ($i = 0; $i < $this->numColumnsRepeated; ++$i) {
-                $cells = $this->currentlyProcessedRow->cells;
                 $cells[] = $this->lastProcessedCell;
-                $this->currentlyProcessedRow = $this->currentlyProcessedRow->withCells($cells);
             }
+            $this->currentlyProcessedRow = $this->currentlyProcessedRow->withCells($cells);
         }
 
         $this->hasAlreadyReadOneCellInCurrentRow = true;
@@ -264,11 +264,11 @@ final class RowIterator implements RowIteratorInterface
         // In Excel, the number of supported columns is 16384, but we don't want to return rows with
         // always 16384 cells.
         if (($numCellsInCurrentlyProcessedRow + $actualNumColumnsRepeated) !== self::MAX_COLUMNS_EXCEL) {
+            $cells = $this->currentlyProcessedRow->cells;
             for ($i = 0; $i < $actualNumColumnsRepeated; ++$i) {
-                $cells = $this->currentlyProcessedRow->cells;
                 $cells[] = $this->lastProcessedCell;
-                $this->currentlyProcessedRow = $this->currentlyProcessedRow->withCells($cells);
             }
+            $this->currentlyProcessedRow = $this->currentlyProcessedRow->withCells($cells);
         }
 
         // If we are processing row N and the row is repeated M times,
