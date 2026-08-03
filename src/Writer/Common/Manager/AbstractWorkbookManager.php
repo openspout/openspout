@@ -209,7 +209,7 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
     private function setCurrentWorksheet(Worksheet $worksheet): void
     {
         if (isset($this->currentWorksheet) && $this->currentWorksheet !== $worksheet) {
-            $this->worksheetManager->closeSheet($this->currentWorksheet);
+            $this->worksheetManager->suspendSheet($this->currentWorksheet);
         }
         $this->worksheetManager->resumeSheet($worksheet);
         $this->currentWorksheet = $worksheet;

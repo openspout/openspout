@@ -77,7 +77,7 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
         }
     }
 
-    public function closeSheet(Worksheet $worksheet): void
+    public function suspendSheet(Worksheet $worksheet): void
     {
         $this->commentsManager->closeTempCommentFiles($worksheet);
         fclose($worksheet->getFilePointer());
