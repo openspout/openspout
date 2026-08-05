@@ -1690,4 +1690,60 @@ final class WriterTest extends TestCase
 
         return $xmlReader;
     }
+
+    /**
+     * Regression: multi-sheet XLSX must not produce truncated XML in comments or vmlDrawing files.
+     *
+     * @see https://github.com/openspout/openspout/issues/401
+     */
+    public function testMultiSheetXmlFilesAreWellFormed(): void
+    {
+        $fileName = 'test_multisheet_xml_wellformed.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+
+        // 3 sheets, only last one active at close — forces suspend on sheets 1 & 2
+        $writer->getCurrentSheet()->setName('First');
+        $writer->addRow(Row::fromValues(['hello']));
+
+        $writer->addNewSheetAndMakeItCurrent()->setName('Second');
+        $writer->addRow(Row::fromValues(['world']));
+
+        $writer->addNewSheetAndMakeItCurrent()->setName('Third');
+        $writer->addRow(Row::fromValues(['foo']));
+
+        $writer->close();
+
+        $zip = new ZipArchive();
+        $openResult = $zip->open($resourcePath);
+        self::assertTrue($openResult);
+
+        libxml_use_internal_errors(true);
+        $malformed = [];
+
+        for ($i = 0; $i < $zip->numFiles; ++$i) {
+            $name = $zip->getNameIndex($i);
+            if (!\is_string($name) || !str_ends_with($name, '.xml') && !str_ends_with($name, '.vml')) {
+                continue;
+            }
+
+            $content = $zip->getFromName($name);
+            self::assertNotFalse($content);
+
+            if (false === simplexml_load_string($content)) {
+                $malformed[] = $name;
+            }
+        }
+
+        $zip->close();
+        libxml_use_internal_errors(false);
+
+        self::assertEmpty(
+            $malformed,
+            'Expected all XML/VML parts well-formed, malformed: '.implode(', ', $malformed)
+        );
+    }
 }
