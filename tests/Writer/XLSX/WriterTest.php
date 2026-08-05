@@ -1582,116 +1582,6 @@ final class WriterTest extends TestCase
     }
 
     /**
-     * @param Row[] $allRows
-     */
-    private function writeToXLSXFile(
-        array $allRows,
-        string $fileName,
-        ?bool $shouldUseInlineStrings = null,
-        ?bool $shouldCreateSheetsAutomatically = null
-    ): Writer {
-        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
-
-        $options = ['tempFolder' => (new TestUsingResource())->getTempFolderPath()];
-        if (null !== $shouldUseInlineStrings) {
-            $options['SHOULD_USE_INLINE_STRINGS'] = $shouldUseInlineStrings;
-        }
-        if (null !== $shouldCreateSheetsAutomatically) {
-            $options['SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY'] = $shouldCreateSheetsAutomatically;
-        }
-        $writer = new Writer(new Options(...$options));
-
-        $writer->openToFile($resourcePath);
-        $writer->addRows($allRows);
-        $writer->close();
-
-        return $writer;
-    }
-
-    /**
-     * @param Row[] $allRows
-     */
-    private function writeToMultipleSheetsInXLSXFile(
-        array $allRows,
-        int $numSheets,
-        string $fileName,
-        ?bool $shouldUseInlineStrings = null,
-        ?bool $shouldCreateSheetsAutomatically = null
-    ): Writer {
-        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
-
-        $options = ['tempFolder' => (new TestUsingResource())->getTempFolderPath()];
-        if (null !== $shouldUseInlineStrings) {
-            $options['SHOULD_USE_INLINE_STRINGS'] = $shouldUseInlineStrings;
-        }
-        if (null !== $shouldCreateSheetsAutomatically) {
-            $options['SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY'] = $shouldCreateSheetsAutomatically;
-        }
-        $writer = new Writer(new Options(...$options));
-
-        $writer->openToFile($resourcePath);
-        $writer->addRows($allRows);
-
-        for ($i = 1; $i < $numSheets; ++$i) {
-            $writer->addNewSheetAndMakeItCurrent();
-            $writer->addRows($allRows);
-        }
-
-        $writer->close();
-
-        return $writer;
-    }
-
-    /**
-     * @param mixed $inlineData
-     */
-    private function assertInlineDataWasWrittenToSheet(string $fileName, int $sheetIndex, $inlineData, string $message = ''): void
-    {
-        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
-        $pathToSheetFile = $resourcePath.'#xl/worksheets/sheet'.$sheetIndex.'.xml';
-        $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
-
-        self::assertNotFalse($xmlContents);
-        self::assertStringContainsString((string) $inlineData, $xmlContents, $message);
-    }
-
-    /**
-     * @param mixed $inlineData
-     */
-    private function assertInlineDataWasNotWrittenToSheet(string $fileName, int $sheetIndex, $inlineData, string $message = ''): void
-    {
-        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
-        $pathToSheetFile = $resourcePath.'#xl/worksheets/sheet'.$sheetIndex.'.xml';
-        $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
-
-        self::assertNotFalse($xmlContents);
-        self::assertStringNotContainsString((string) $inlineData, $xmlContents, $message);
-    }
-
-    private function assertSharedStringWasWritten(string $fileName, string $sharedString, string $message = ''): void
-    {
-        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
-        $pathToSharedStringsFile = $resourcePath.'#xl/sharedStrings.xml';
-        $xmlContents = file_get_contents('zip://'.$pathToSharedStringsFile);
-
-        self::assertNotFalse($xmlContents);
-        self::assertStringContainsString($sharedString, $xmlContents, $message);
-    }
-
-    /**
-     * @param string $sheetIndex - 1 based
-     */
-    private function getXmlReaderForSheetFromXmlFile(string $fileName, string $sheetIndex): XMLReader
-    {
-        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
-
-        $xmlReader = new XMLReader();
-        $xmlReader->openFileInZip($resourcePath, 'xl/worksheets/sheet'.$sheetIndex.'.xml');
-
-        return $xmlReader;
-    }
-
-    /**
      * Regression: multi-sheet XLSX must not produce truncated XML in comments or vmlDrawing files.
      *
      * @see https://github.com/openspout/openspout/issues/401
@@ -1811,5 +1701,115 @@ final class WriterTest extends TestCase
             $malformed,
             'Expected all XML/VML parts well-formed after switching sheets back and forth, malformed: '.implode(', ', $malformed)
         );
+    }
+
+    /**
+     * @param Row[] $allRows
+     */
+    private function writeToXLSXFile(
+        array $allRows,
+        string $fileName,
+        ?bool $shouldUseInlineStrings = null,
+        ?bool $shouldCreateSheetsAutomatically = null
+    ): Writer {
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $options = ['tempFolder' => (new TestUsingResource())->getTempFolderPath()];
+        if (null !== $shouldUseInlineStrings) {
+            $options['SHOULD_USE_INLINE_STRINGS'] = $shouldUseInlineStrings;
+        }
+        if (null !== $shouldCreateSheetsAutomatically) {
+            $options['SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY'] = $shouldCreateSheetsAutomatically;
+        }
+        $writer = new Writer(new Options(...$options));
+
+        $writer->openToFile($resourcePath);
+        $writer->addRows($allRows);
+        $writer->close();
+
+        return $writer;
+    }
+
+    /**
+     * @param Row[] $allRows
+     */
+    private function writeToMultipleSheetsInXLSXFile(
+        array $allRows,
+        int $numSheets,
+        string $fileName,
+        ?bool $shouldUseInlineStrings = null,
+        ?bool $shouldCreateSheetsAutomatically = null
+    ): Writer {
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $options = ['tempFolder' => (new TestUsingResource())->getTempFolderPath()];
+        if (null !== $shouldUseInlineStrings) {
+            $options['SHOULD_USE_INLINE_STRINGS'] = $shouldUseInlineStrings;
+        }
+        if (null !== $shouldCreateSheetsAutomatically) {
+            $options['SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY'] = $shouldCreateSheetsAutomatically;
+        }
+        $writer = new Writer(new Options(...$options));
+
+        $writer->openToFile($resourcePath);
+        $writer->addRows($allRows);
+
+        for ($i = 1; $i < $numSheets; ++$i) {
+            $writer->addNewSheetAndMakeItCurrent();
+            $writer->addRows($allRows);
+        }
+
+        $writer->close();
+
+        return $writer;
+    }
+
+    /**
+     * @param mixed $inlineData
+     */
+    private function assertInlineDataWasWrittenToSheet(string $fileName, int $sheetIndex, $inlineData, string $message = ''): void
+    {
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $pathToSheetFile = $resourcePath.'#xl/worksheets/sheet'.$sheetIndex.'.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString((string) $inlineData, $xmlContents, $message);
+    }
+
+    /**
+     * @param mixed $inlineData
+     */
+    private function assertInlineDataWasNotWrittenToSheet(string $fileName, int $sheetIndex, $inlineData, string $message = ''): void
+    {
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $pathToSheetFile = $resourcePath.'#xl/worksheets/sheet'.$sheetIndex.'.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringNotContainsString((string) $inlineData, $xmlContents, $message);
+    }
+
+    private function assertSharedStringWasWritten(string $fileName, string $sharedString, string $message = ''): void
+    {
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $pathToSharedStringsFile = $resourcePath.'#xl/sharedStrings.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToSharedStringsFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString($sharedString, $xmlContents, $message);
+    }
+
+    /**
+     * @param string $sheetIndex - 1 based
+     */
+    private function getXmlReaderForSheetFromXmlFile(string $fileName, string $sheetIndex): XMLReader
+    {
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $xmlReader = new XMLReader();
+        $xmlReader->openFileInZip($resourcePath, 'xl/worksheets/sheet'.$sheetIndex.'.xml');
+
+        return $xmlReader;
     }
 }
