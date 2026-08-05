@@ -1746,4 +1746,70 @@ final class WriterTest extends TestCase
             'Expected all XML/VML parts well-formed, malformed: '.implode(', ', $malformed)
         );
     }
+
+    /**
+     * Regression: switching between sheets back and forth must keep all XML parts well-formed.
+     *
+     * @see https://github.com/openspout/openspout/issues/401
+     */
+    public function testSwitchBetweenSheetsKeepsXmlWellFormed(): void
+    {
+        $fileName = 'test_switch_sheets_xml_wellformed.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+
+        $sheet1 = $writer->getCurrentSheet();
+        $sheet1->setName('First');
+        $writer->addRow(Row::fromValues(['sheet1-a']));
+
+        $writer->addNewSheetAndMakeItCurrent()->setName('Second');
+        $writer->addRow(Row::fromValues(['sheet2-a']));
+
+        // switch back to sheet 1, resume then suspend again
+        $writer->setCurrentSheet($sheet1);
+        $writer->addRow(Row::fromValues(['sheet1-b']));
+
+        // switch to sheet 2, resume then suspend again
+        $sheet2 = $writer->getSheets()[1];
+        $writer->setCurrentSheet($sheet2);
+        $writer->addRow(Row::fromValues(['sheet2-b']));
+
+        $writer->close();
+
+        // sheet2 was current at close -> sheet1 suspended, sheet2 normal
+        // sheet1 was suspended twice (once at first switch, once again at second switch)
+        // sheet2 was suspended once (when switching back to sheet1)
+
+        $zip = new ZipArchive();
+        $openResult = $zip->open($resourcePath);
+        self::assertTrue($openResult);
+
+        libxml_use_internal_errors(true);
+        $malformed = [];
+
+        for ($i = 0; $i < $zip->numFiles; ++$i) {
+            $name = $zip->getNameIndex($i);
+            if (!\is_string($name) || !str_ends_with($name, '.xml') && !str_ends_with($name, '.vml')) {
+                continue;
+            }
+
+            $content = $zip->getFromName($name);
+            self::assertNotFalse($content);
+
+            if (false === simplexml_load_string($content)) {
+                $malformed[] = $name;
+            }
+        }
+
+        $zip->close();
+        libxml_use_internal_errors(false);
+
+        self::assertEmpty(
+            $malformed,
+            'Expected all XML/VML parts well-formed after switching sheets back and forth, malformed: '.implode(', ', $malformed)
+        );
+    }
 }
