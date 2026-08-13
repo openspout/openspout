@@ -142,7 +142,8 @@ final readonly class CellValueFormatter
      */
     private function formatBooleanCellValue(DOMElement $node): bool
     {
-        return (bool) $node->getAttribute(self::XML_ATTRIBUTE_BOOLEAN_VALUE);
+        // the attribute holds an xsd:boolean, so it can be "true", "false", "1" or "0"
+        return filter_var($node->getAttribute(self::XML_ATTRIBUTE_BOOLEAN_VALUE), FILTER_VALIDATE_BOOLEAN);
     }
 
     /**

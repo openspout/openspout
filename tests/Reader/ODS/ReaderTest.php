@@ -142,6 +142,13 @@ final class ReaderTest extends TestCase
         self::assertEquals($expectedRows, $allRows);
     }
 
+    public function testReadShouldSupportBooleansStoredAsTrueAndFalse(): void
+    {
+        $allRows = $this->getAllRowsForFile('sheet_with_boolean_true_false.ods');
+
+        self::assertSame([[true, false]], $allRows);
+    }
+
     public function testReadShouldSupportFormatDatesAndTimesIfSpecified(): void
     {
         $shouldFormatDates = true;
