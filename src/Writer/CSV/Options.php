@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer\CSV;
 
-final readonly class Options
+use OpenSpout\Writer\OptionsInterface;
+
+final readonly class Options implements OptionsInterface
 {
     /**
      * Note: There is no FIELD_ESCAPE option for the writer because PHP's fputcsv()

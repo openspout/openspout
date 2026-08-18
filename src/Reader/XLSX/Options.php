@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace OpenSpout\Reader\XLSX;
 
 use OpenSpout\Common\TempFolderCheck;
+use OpenSpout\Reader\OptionsInterface;
 
-final readonly class Options
+final readonly class Options implements OptionsInterface
 {
     /** @var non-empty-string */
     public string $tempFolder;

@@ -6,8 +6,9 @@ namespace OpenSpout\Writer\Common;
 
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Common\TempFolderCheck;
+use OpenSpout\Writer\OptionsInterface;
 
-abstract readonly class AbstractOptions
+abstract readonly class AbstractOptions implements OptionsInterface
 {
     /** @var non-empty-string */
     public string $tempFolder;
