@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace OpenSpout\Reader\ODS;
 
-use OpenSpout\Reader\OptionsInterface;
-
-final readonly class Options implements OptionsInterface
+final readonly class Options
 {
     public function __construct(
         public bool $SHOULD_FORMAT_DATES = false,
