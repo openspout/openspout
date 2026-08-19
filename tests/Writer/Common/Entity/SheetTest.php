@@ -113,6 +113,18 @@ final class SheetTest extends TestCase
         self::assertSame([4, 4, true], [$hiddens[1]->start, $hiddens[1]->end, $hiddens[1]->hidden]);
     }
 
+    public function testSetColumnHiddenForRangeAppendsEntry(): void
+    {
+        $sheet = $this->createSheet(0, 'workbookId1');
+        $sheet->setColumnHiddenForRange(true, 2, 5);
+
+        $hiddens = $sheet->getColumnHiddens();
+        self::assertCount(1, $hiddens);
+        self::assertSame(2, $hiddens[0]->start);
+        self::assertSame(5, $hiddens[0]->end);
+        self::assertTrue($hiddens[0]->hidden);
+    }
+
     public function testSetColumnCollapsedForRangeAppendsEntry(): void
     {
         $sheet = $this->createSheet(0, 'workbookId1');
@@ -134,6 +146,18 @@ final class SheetTest extends TestCase
         self::assertCount(1, $levels);
         self::assertSame(1, $levels[0]->start);
         self::assertSame(1, $levels[0]->end);
+        self::assertSame(3, $levels[0]->level);
+    }
+
+    public function testSetColumnOutlineLevelForRangeAppendsEntry(): void
+    {
+        $sheet = $this->createSheet(0, 'workbookId1');
+        $sheet->setColumnOutlineLevelForRange(3, 2, 5);
+
+        $levels = $sheet->getColumnOutlineLevels();
+        self::assertCount(1, $levels);
+        self::assertSame(2, $levels[0]->start);
+        self::assertSame(5, $levels[0]->end);
         self::assertSame(3, $levels[0]->level);
     }
 
