@@ -225,14 +225,26 @@ final readonly class SheetView implements SheetViewInterface
         }
 
         $columnIndex = CellHelper::getColumnIndexFromCellIndex($this->freezeColumn.'1');
+        // A freeze row of 0 or 1 means no rows are frozen, so the visible cell must be in row 1.
+        $freezeRow = max(1, $this->freezeRow);
 
-        return '<pane'.$this->generateAttributes([
-            'xSplit' => $columnIndex,
-            'ySplit' => $this->freezeRow - 1,
-            'topLeftCell' => $this->freezeColumn.$this->freezeRow,
-            'activePane' => 'bottomRight',
-            'state' => 'frozen',
-        ]).'/>';
+        $attributes = [];
+        if ($columnIndex > 0) {
+            $attributes['xSplit'] = $columnIndex;
+        }
+        if ($freezeRow > 1) {
+            $attributes['ySplit'] = $freezeRow - 1;
+        }
+
+        $attributes['topLeftCell'] = $this->freezeColumn.$freezeRow;
+        $attributes['activePane'] = match (true) {
+            $columnIndex > 0 && $freezeRow > 1 => 'bottomRight',
+            $columnIndex > 0 => 'topRight',
+            default => 'bottomLeft',
+        };
+        $attributes['state'] = 'frozen';
+
+        return '<pane'.$this->generateAttributes($attributes).'/>';
     }
 
     /**
