@@ -27,8 +27,9 @@ final class SheetViewTest extends TestCase
             freezeColumn: 'B',
         );
 
-        self::assertStringContainsString('<pane', $sheetView->getXml());
-        self::assertStringContainsString('activePane="bottomRight"', $sheetView->getXml());
+        $xml = $sheetView->getXml();
+        self::assertStringContainsString('<pane', $xml);
+        self::assertStringContainsString('activePane="bottomRight"', $xml);
 
         $sheetView = new SheetView(
             freezeRow: 1,
@@ -45,6 +46,7 @@ final class SheetViewTest extends TestCase
         $xml = $sheetView->getXml();
 
         self::assertStringContainsString('<pane', $xml);
+        self::assertStringContainsString('xSplit="1"', $xml);
         self::assertStringNotContainsString('ySplit', $xml);
         self::assertStringContainsString('topLeftCell="B1"', $xml);
         self::assertStringContainsString('activePane="topRight"', $xml);
