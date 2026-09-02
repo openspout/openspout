@@ -35,9 +35,9 @@ $existingFilePath = '/path/to/my-music.ods';
 $newFilePath = '/path/to/my-new-music.ods';
 
 // we need a reader to read the existing file...
-$readerOptions = new Options();
-$readerOptions->SHOULD_FORMAT_DATES = true; // this is to be able to copy dates
-$reader = new Reader($readerOptions);
+// (SHOULD_FORMAT_DATES is needed to be able to copy dates)
+$reader = new Reader(new Options(SHOULD_FORMAT_DATES: true));
+$reader->open($existingFilePath);
 
 // ... and a writer to create the new file
 $writer = new Writer();
@@ -51,12 +51,18 @@ foreach ($reader->getSheetIterator() as $sheetIndex => $sheet) {
     }
 
     foreach ($sheet->getRowIterator() as $rowIndex => $row) {
-        $songTitle = $row->getCellAtIndex(0);
-        $artist = $row->getCellAtIndex(1);
+        // Each row exposes its cells as an array indexed from 0 (column index),
+        // where each value is a `Cell` object whose value can be read via `getValue()`
+        $songTitle = $row->cells[0]->getValue();
+        $artist = $row->cells[1]->getValue();
 
         // Change the album name for "Yellow Submarine"
         if ($songTitle === 'Yellow Submarine') {
-            $row->setCellAtIndex(Cell::fromValue('The White Album'), 2);
+            // Rows are immutable, so build a modified copy of the cells
+            // and hand it back through `withCells()`
+            $cells = $row->cells;
+            $cells[2] = Cell::fromValue('The White Album');
+            $row = $row->withCells($cells);
         }
 
         // skip Bob Marley's songs

@@ -18,9 +18,8 @@ $existingFilePath = 'path/to/orders.xlsx';
 $newFilePath = 'path/to/new-orders.xlsx';
 
 // we need a reader to read the existing file...
-$readerOptions = new Options();
-$readerOptions->SHOULD_FORMAT_DATES = true; // this is to be able to copy dates
-$reader = new Reader($readerOptions);
+// (SHOULD_FORMAT_DATES is needed to be able to copy dates)
+$reader = new Reader(new Options(SHOULD_FORMAT_DATES: true));
 $reader->open($existingFilePath);
 
 // ... and a writer to create the new file
