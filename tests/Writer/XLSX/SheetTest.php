@@ -44,6 +44,25 @@ final class SheetTest extends TestCase
         $this->assertSheetNameEquals($customSheetName, $fileName, "The sheet name should have been changed to '{$customSheetName}'");
     }
 
+    public function testSheetNameWithApostropheIsWrittenUnaltered(): void
+    {
+        $fileName = 'test_set_name_with_apostrophe.xlsx';
+        $sheetName = "asdf'ass";
+
+        $this->writeDataToSheetWithCustomName($fileName, $sheetName);
+
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $pathToWorkbookFile = $resourcePath.'#xl/workbook.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToWorkbookFile);
+
+        self::assertNotFalse($xmlContents);
+
+        self::assertStringContainsString("<sheet name=\"{$sheetName}\"", $xmlContents, 'A sheet name containing an apostrophe should be written unaltered');
+        self::assertStringNotContainsString('&#039;', $xmlContents, 'The apostrophe in a sheet name should not be entity-encoded');
+        self::assertStringNotContainsString('&apos;', $xmlContents, 'The apostrophe in a sheet name should not use the &apos; form');
+        self::assertStringNotContainsString('&amp;#039;', $xmlContents, 'The apostrophe in a sheet name should not be double-escaped');
+    }
+
     public function testSetSheetNameShouldThrowWhenNameIsAlreadyUsed(): void
     {
         $this->expectException(InvalidSheetNameException::class);

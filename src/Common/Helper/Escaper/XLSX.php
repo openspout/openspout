@@ -101,9 +101,15 @@ final readonly class XLSX implements EscaperInterface
     {
         $escapedString = $this->escapeControlCharacters($string);
 
-        // @NOTE: Using ENT_QUOTES as XML entities ('<', '>', '&') as well as
-        //        single/double quotes (for XML attributes) need to be encoded.
-        return htmlspecialchars($escapedString, ENT_QUOTES, 'UTF-8');
+        // @NOTE: Using ENT_COMPAT to encode '<', '>', '&' as well as double
+        //        quotes (needed because this writer emits XML attribute values
+        //        that are double-quoted). An apostrophe does not need escaping
+        //        inside a double-quoted attribute (or in text content), and
+        //        Microsoft Excel writes it literally in sheet names while it
+        //        must repair files where the apostrophe is entity-encoded
+        //        as `&#039;` (see OpenSpout issue #299). Other writers that emit
+        //        single-quoted attribute values would need to escape it.
+        return htmlspecialchars($escapedString, ENT_COMPAT, 'UTF-8');
     }
 
     /**
