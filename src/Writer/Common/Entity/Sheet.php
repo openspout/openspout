@@ -107,6 +107,8 @@ final class Sheet
      *  - it should not be blank
      *  - it should not exceed 31 characters
      *  - it should not contain these characters: \ / ? * : [ or ]
+     *  - it should not start or end with a single quote (apostrophe)
+     *  - it should not be named "History" (reserved by Excel)
      *  - it should be unique.
      *
      * @param string $name Name of the sheet

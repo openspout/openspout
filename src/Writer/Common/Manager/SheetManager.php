@@ -66,6 +66,10 @@ final class SheetManager
             if ($this->doesStartOrEndWithSingleQuote($name)) {
                 $failedRequirements[] = 'It should not start or end with a single quote';
             }
+
+            if ($this->isReservedSheetName($name)) {
+                $failedRequirements[] = 'It should not be a reserved name ("History")';
+            }
         }
 
         if (0 !== \count($failedRequirements)) {
@@ -112,6 +116,17 @@ final class SheetManager
         $endsWithSingleQuote = ($this->stringHelper->getCharLastOccurrencePosition('\'', $name) === ($this->stringHelper->getStringLength($name) - 1));
 
         return $startsWithSingleQuote || $endsWithSingleQuote;
+    }
+
+    /**
+     * Returns whether the given name is one of the names that are reserved
+     * by Excel and therefore cannot be used for a worksheet.
+     *
+     * @return bool TRUE if the name is reserved, FALSE otherwise
+     */
+    private function isReservedSheetName(string $name): bool
+    {
+        return 0 === strcasecmp($name, 'History');
     }
 
     /**

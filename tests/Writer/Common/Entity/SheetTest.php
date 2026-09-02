@@ -62,6 +62,9 @@ final class SheetTest extends TestCase
             ['Illegal ]'],
             ['\'Illegal start'],
             ['Illegal end\''],
+            ['History'],
+            ['HISTORY'],
+            ['history'],
         ];
     }
 
