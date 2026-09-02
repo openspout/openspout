@@ -62,6 +62,8 @@ foreach ($reader->getSheetIterator() as $sheetIndex => $sheet) {
             // and hand it back through `withCells()`
             $cells = $row->cells;
             $cells[2] = Cell::fromValue('The White Album');
+            // keep the cell indexes in ascending order, as required by the Row constructor
+            ksort($cells);
             $row = $row->withCells($cells);
         }
 
