@@ -11,7 +11,7 @@ use OpenSpout\Common\Entity\Style\Style;
  */
 abstract class AbstractStyleRegistry
 {
-    /** @var array<string, non-negative-int> [SERIALIZED_STYLE] => [STYLE_ID] mapping table, keeping track of the registered styles */
+    /** @var array<int, non-negative-int> [SERIALIZED_STYLE] => [STYLE_ID] mapping table, keeping track of the registered styles */
     private array $serializedStyleToStyleIdMappingTable = [];
 
     /** @var array<int, Style> [STYLE_ID] => [STYLE] mapping table, keeping track of the registered styles */
@@ -33,7 +33,7 @@ abstract class AbstractStyleRegistry
      */
     final public function registerStyle(Style $style): int
     {
-        $serializedStyle = spl_object_hash($style);
+        $serializedStyle = spl_object_id($style);
         if (\array_key_exists($serializedStyle, $this->serializedStyleToStyleIdMappingTable)) {
             return $this->serializedStyleToStyleIdMappingTable[$serializedStyle];
         }
