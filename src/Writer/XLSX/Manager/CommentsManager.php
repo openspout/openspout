@@ -114,11 +114,17 @@ final class CommentsManager
         $commentFp = $this->commentsFilePointers[$sheetId];
         $drawingFp = $this->drawingFilePointers[$sheetId];
 
-        fwrite($commentFp, self::COMMENTS_XML_FILE_FOOTER);
-        fwrite($drawingFp, self::DRAWINGS_VML_FILE_FOOTER);
+        // guards against TypeError during PHP shutdown: the runtime may free
+        // file handles before destructors run, leaving these pointers invalid
+        if (\is_resource($commentFp)) {
+            fwrite($commentFp, self::COMMENTS_XML_FILE_FOOTER);
+            fclose($commentFp);
+        }
 
-        fclose($commentFp);
-        fclose($drawingFp);
+        if (\is_resource($drawingFp)) {
+            fwrite($drawingFp, self::DRAWINGS_VML_FILE_FOOTER);
+            fclose($drawingFp);
+        }
 
         unset($this->commentsFilePointers[$sheetId], $this->drawingFilePointers[$sheetId]);
     }
