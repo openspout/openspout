@@ -1,4 +1,4 @@
-FROM php:8.4.19-cli
+FROM php:8.6.0RC2-cli
 
 # git needed for Infection
 RUN apt-get update \
