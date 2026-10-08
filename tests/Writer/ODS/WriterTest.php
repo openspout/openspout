@@ -13,6 +13,7 @@ use finfo;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Cell\ImageCell;
 use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Exception\InvalidArgumentException;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Exception\UnsupportedTypeException;
 use OpenSpout\Common\Helper\StringHelper;
@@ -28,6 +29,7 @@ use OpenSpout\Writer\ODS\Manager\WorkbookManager;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use ReflectionHelper;
+use ZipArchive;
 
 /**
  * @internal
@@ -502,6 +504,84 @@ final class WriterTest extends TestCase
 
         $this->expectException(UnsupportedTypeException::class);
         $writer->addRow(new Row([new ImageCell($this->testImagePath, 1, 1)]));
+    }
+
+    public function testCompressionLevelAcceptsZeroToNine(): void
+    {
+        self::assertNull((new Options())->compressionLevel);
+        self::assertSame(0, (new Options(compressionLevel: 0))->compressionLevel);
+        self::assertSame(9, (new Options(compressionLevel: 9))->compressionLevel);
+    }
+
+    public function testCompressionLevelMustBeBetweenZeroAndNine(): void
+    {
+        foreach ([-1, 10] as $compressionLevel) {
+            try {
+                new Options(compressionLevel: $compressionLevel);
+                self::fail(\sprintf('Compression level %d should have been rejected', $compressionLevel));
+            } catch (InvalidArgumentException $exception) {
+                self::assertSame(\sprintf('Compression level must be between 0 and 9, %d given', $compressionLevel), $exception->getMessage());
+            }
+        }
+    }
+
+    public function testCompressionLevelIsAppliedToTheContent(): void
+    {
+        $dataRows = [];
+        for ($i = 0; $i < 2000; ++$i) {
+            $dataRows[] = Row::fromValues(['row '.$i, 'some repeated text', $i * 7, 'more repeated text '.($i % 13)]);
+        }
+
+        $sizes = [];
+        foreach ([1, 9] as $compressionLevel) {
+            $fileName = \sprintf('test_compression_level_%d.ods', $compressionLevel);
+            $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+            $writer = new Writer(new Options(
+                tempFolder: (new TestUsingResource())->getTempFolderPath(),
+                compressionLevel: $compressionLevel,
+            ));
+            $writer->openToFile($resourcePath);
+            $writer->addRows($dataRows);
+            $writer->close();
+
+            $zip = new ZipArchive();
+            $zip->open($resourcePath);
+            $stat = $zip->statName('content.xml');
+            $zip->close();
+
+            self::assertIsArray($stat);
+            self::assertSame(ZipArchive::CM_DEFLATE, $stat['comp_method']);
+            $sizes[$compressionLevel] = $stat['comp_size'];
+        }
+
+        self::assertGreaterThan($sizes[9], $sizes[1], 'Level 1 should compress the content less tightly than level 9');
+    }
+
+    public function testMimeTypeStaysUncompressedWithACompressionLevel(): void
+    {
+        $fileName = 'test_compression_level_mime_type.ods';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $writer = new Writer(new Options(
+            tempFolder: (new TestUsingResource())->getTempFolderPath(),
+            compressionLevel: 1,
+        ));
+        $writer->openToFile($resourcePath);
+        $writer->addRow(Row::fromValues(['foo']));
+        $writer->close();
+
+        $zip = new ZipArchive();
+        $zip->open($resourcePath);
+        $stat = $zip->statIndex(0);
+        $zip->close();
+
+        self::assertIsArray($stat);
+        self::assertSame('mimetype', $stat['name']);
+        self::assertSame(ZipArchive::CM_STORE, $stat['comp_method']);
+
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        self::assertSame('application/vnd.oasis.opendocument.spreadsheet', $finfo->file($resourcePath));
     }
 
     /**

@@ -40,7 +40,7 @@ final class Writer extends AbstractWriterMultiSheets
     {
         $workbook = new Workbook();
 
-        $fileSystemHelper = new FileSystemHelper($this->options->tempFolder, new ZipHelper(), $this->creator);
+        $fileSystemHelper = new FileSystemHelper($this->options->tempFolder, new ZipHelper($this->options->compressionLevel), $this->creator);
         $fileSystemHelper->createBaseFilesAndFolders();
 
         $styleManager = new StyleManager(new StyleRegistry($this->options->FALLBACK_STYLE), $this->options);
