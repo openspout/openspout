@@ -216,6 +216,21 @@ $writer = new Writer(new Options(
 > Apple's products (Numbers and the iOS previewer) don't support inline strings and display empty cells instead.
 > Therefore, if these platforms need to be supported, make sure to use shared strings!
 
+### Compression level (XLSX writer)
+
+An XLSX file is a zip archive. By default OpenSpout compresses its parts with libzip's default deflate level, which
+produces the smallest files but is the slowest to write. For large spreadsheets, a lower level can make writing
+noticeably faster in exchange for a slightly larger file:
+
+```php
+use OpenSpout\Writer\XLSX\Writer;
+use OpenSpout\Writer\XLSX\Options;
+
+$writer = new Writer(new Options(
+    compressionLevel: 6, // 0 (no compression) to 9 (smallest file); default: null, libzip's default
+));
+```
+
 ### Date/Time formatting
 
 When reading a spreadsheet containing dates or times, OpenSpout returns the values by default as `DateTime` objects.

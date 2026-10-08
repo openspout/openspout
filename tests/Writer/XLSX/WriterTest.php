@@ -15,6 +15,7 @@ use OpenSpout\Common\Entity\Comment\Comment;
 use OpenSpout\Common\Entity\Comment\TextRun;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\TextRunVerticalStyle;
+use OpenSpout\Common\Exception\InvalidArgumentException;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Reader\Wrapper\XMLReader;
 use OpenSpout\TestUsingResource;
@@ -672,6 +673,51 @@ final class WriterTest extends TestCase
         $writer = new Writer($options);
 
         self::assertSame($options->DEFAULT_COLUMN_WIDTH, $writer->getOptions()->DEFAULT_COLUMN_WIDTH);
+    }
+
+    public function testCompressionLevelMustBeBetweenZeroAndNine(): void
+    {
+        foreach ([-1, 10] as $compressionLevel) {
+            try {
+                new Options(compressionLevel: $compressionLevel);
+                self::fail(\sprintf('Compression level %d should have been rejected', $compressionLevel));
+            } catch (InvalidArgumentException $exception) {
+                self::assertSame(\sprintf('Compression level must be between 0 and 9, %d given', $compressionLevel), $exception->getMessage());
+            }
+        }
+    }
+
+    public function testCompressionLevelIsAppliedToTheWorksheets(): void
+    {
+        $dataRows = [];
+        for ($i = 0; $i < 2000; ++$i) {
+            $dataRows[] = Row::fromValues(['row '.$i, 'some repeated text', $i * 7, 'more repeated text '.($i % 13)]);
+        }
+
+        $sizes = [];
+        foreach ([1, 9] as $compressionLevel) {
+            $fileName = \sprintf('test_compression_level_%d.xlsx', $compressionLevel);
+            $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+            $writer = new Writer(new Options(
+                tempFolder: (new TestUsingResource())->getTempFolderPath(),
+                compressionLevel: $compressionLevel,
+            ));
+            $writer->openToFile($resourcePath);
+            $writer->addRows($dataRows);
+            $writer->close();
+
+            $zip = new ZipArchive();
+            $zip->open($resourcePath);
+            $stat = $zip->statName('xl/worksheets/sheet1.xml');
+            $zip->close();
+
+            self::assertIsArray($stat);
+            self::assertSame(ZipArchive::CM_DEFLATE, $stat['comp_method']);
+            $sizes[$compressionLevel] = $stat['comp_size'];
+        }
+
+        self::assertGreaterThan($sizes[9], $sizes[1], 'Level 1 should compress the sheet less tightly than level 9');
     }
 
     public function testSheetFilenameAreStoredWithIndex(): void
