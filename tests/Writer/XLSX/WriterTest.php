@@ -675,6 +675,13 @@ final class WriterTest extends TestCase
         self::assertSame($options->DEFAULT_COLUMN_WIDTH, $writer->getOptions()->DEFAULT_COLUMN_WIDTH);
     }
 
+    public function testCompressionLevelAcceptsZeroToNine(): void
+    {
+        self::assertNull((new Options())->compressionLevel);
+        self::assertSame(0, (new Options(compressionLevel: 0))->compressionLevel);
+        self::assertSame(9, (new Options(compressionLevel: 9))->compressionLevel);
+    }
+
     public function testCompressionLevelMustBeBetweenZeroAndNine(): void
     {
         foreach ([-1, 10] as $compressionLevel) {
