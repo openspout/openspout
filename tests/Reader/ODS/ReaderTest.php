@@ -273,7 +273,7 @@ final class ReaderTest extends TestCase
         $fileName = 'attack_quadratic_blowup.ods';
         $allRows = $this->getAllRowsForFile($fileName);
 
-        self::assertSame('', $allRows[0][0], 'Entities should not have been expanded');
+        self::assertSame('', $allRows[0][0] ?? '', 'Entities should not have been expanded');
 
         $duration = microtime(true) - $startTime;
         self::assertLessThan(10, $duration, 'Entities should not be expanded and therefore take more than 10 seconds to be parsed.');

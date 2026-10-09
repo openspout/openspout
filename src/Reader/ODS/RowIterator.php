@@ -216,8 +216,12 @@ final class RowIterator implements RowIteratorInterface
         $currentNumColumnsRepeated = $this->getNumColumnsRepeatedForCurrentNode($xmlReader);
 
         // NOTE: expand() will automatically decode all XML entities of the child nodes
-        /** @var DOMElement $node */
-        $node = $xmlReader->expand();
+        $node = @$xmlReader->expand();
+        if (!$node instanceof DOMElement) {
+            $this->lastProcessedCell = null;
+
+            return XMLProcessor::PROCESSING_CONTINUE;
+        }
         $currentCell = $this->getCell($node);
 
         // process cell N only after having read cell N+1 (see below why)
