@@ -55,7 +55,13 @@ final class Row
     public static function fromValuesWithStyles(array $cellValues = [], ?Style $rowStyle = null, array $columnStyles = []): self
     {
         $cells = array_map(static function (bool|DateInterval|DateTimeInterface|float|int|string|null $cellValue, int|string $key) use ($columnStyles): Cell {
-            return Cell::fromValue($cellValue, $columnStyles[$key] ?? null);
+            $cell = Cell::fromValue($cellValue);
+
+            if (isset($columnStyles[$key])) {
+                $cell->setStyle($columnStyles[$key]);
+            }
+
+            return $cell;
         }, $cellValues, array_keys($cellValues));
 
         return new self($cells, $rowStyle);
