@@ -256,21 +256,20 @@ final class WriterWithStyleTest extends TestCase
         $this->assertFirstChildHasAttributeEquals('0', $xfElement, 'alignment', 'wrapText');
     }
 
-    public function testAddRowShouldApplyWrapTextIfCellContainsNewLine(): void
+    public function testAddRowShouldNotGenerateStyleForNewlineCell(): void
     {
-        $fileName = 'test_add_row_should_apply_wrap_text_if_new_lines.xlsx';
+        $fileName = 'test_add_row_should_not_generate_style_for_newline_cells.xlsx';
 
         $dataRows = [
             Row::fromValues(["xlsx--11\nxlsx--11"]),
+            Row::fromValues(["xlsx--12\nxlsx--12"]),
             Row::fromValues(['xlsx--21']),
         ];
 
         $this->writeToXLSXFile($dataRows, $fileName);
 
         $cellXfsDomElement = $this->getXmlSectionFromStylesXmlFile($fileName, 'cellXfs');
-        $xfElement = $cellXfsDomElement->getElementsByTagName('xf')->item(1);
-        self::assertSame('1', $xfElement?->getAttribute('applyAlignment'));
-        $this->assertFirstChildHasAttributeEquals('1', $xfElement, 'alignment', 'wrapText');
+        self::assertSame('1', $cellXfsDomElement->getAttribute('count'), 'No style should be generated for newline cells');
     }
 
     public function testAddRowShouldApplyCellAlignment(): void
@@ -493,6 +492,26 @@ final class WriterWithStyleTest extends TestCase
         $fileName = 'test_set_default_row_style.xlsx';
         $dataRows = [
             Row::fromValues(['xlsx--11']),
+        ];
+
+        $defaultFontSize = 50;
+        $defaultStyle = new Style(fontSize: $defaultFontSize);
+
+        $this->writeToXLSXFileWithDefaultStyle($dataRows, $fileName, $defaultStyle);
+
+        $fontsDomElement = $this->getXmlSectionFromStylesXmlFile($fileName, 'fonts');
+        $fontElements = $fontsDomElement->getElementsByTagName('font');
+        self::assertSame(1, $fontElements->length, 'There should only be the default font.');
+
+        $defaultFontElement = $fontElements->item(0);
+        $this->assertFirstChildHasAttributeEquals((string) $defaultFontSize, $defaultFontElement, 'sz', 'val');
+    }
+
+    public function testSetDefaultRowStyleShouldApplyToNewlineCell(): void
+    {
+        $fileName = 'test_set_default_row_style_for_newline_cell.xlsx';
+        $dataRows = [
+            Row::fromValues(["xlsx--11\nxlsx--11"]),
         ];
 
         $defaultFontSize = 50;
