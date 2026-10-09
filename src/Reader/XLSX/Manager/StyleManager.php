@@ -30,7 +30,6 @@ class StyleManager implements StyleManagerInterface
     final public const DEFAULT_STYLE_ID = 0;
 
     final public const NUMBER_FORMAT_GENERAL = 'General';
-    final public const NUMBER_FORMAT_SCIENTIFIC = '0.00E+00';
 
     /**
      * Mapping between built-in numFmtId and the associated format - for dates only.
@@ -305,11 +304,6 @@ class StyleManager implements StyleManagerInterface
      */
     private function isFormatCodeMatchingDateFormatPattern(string $formatCode): bool
     {
-        // Scientific notation format containts "E", and will therefore be incorrectly considered as a date
-        if (self::NUMBER_FORMAT_SCIENTIFIC === $formatCode) {
-            return false;
-        }
-
         // Remove extra formatting (what's between [ ], the brackets should not be preceded by a "\")
         $pattern = '((?<!\\\)\[.+?(?<!\\\)\])';
         $formatCode = preg_replace($pattern, '', $formatCode);
@@ -317,6 +311,13 @@ class StyleManager implements StyleManagerInterface
 
         // Remove strings in double quotes, as they won't be interpreted as date format characters
         $formatCode = preg_replace('/"[^"]+"/', '', $formatCode);
+        \assert(null !== $formatCode);
+
+        // Scientific notation formats (e.g. "0.00E+00" or "0,00E+00") use an exponent code:
+        // "E" or "e", optionally followed by "+" or "-" and digit placeholders ("0", "#" or "?").
+        // Remove it, as it must not be mistaken for the "e" date format character (era year).
+        // @see ECMA-376 Part 1 §18.8.30 - "Currency, percentages, and scientific notation"
+        $formatCode = preg_replace('/(?<!\\\)[eE][+-]?[0#?]+/', '', $formatCode);
         \assert(null !== $formatCode);
 
         // custom date formats contain specific characters to represent the date:
