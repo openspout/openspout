@@ -74,26 +74,27 @@ final class CellTest extends TestCase
         self::assertSame('#DIV/0', $cell->getRawValue());
     }
 
-    public function testApplyExtraStylesIfNeededShouldApplyWrapTextIfCellContainsNewLine(): void
+    public function testNewlineCellShouldNotGetImplicitWrapTextStyle(): void
     {
         $cell = Cell::fromValue("multi\nlines");
 
-        self::assertTrue($cell->style->shouldWrapText);
+        self::assertNull($cell->style);
     }
 
-    public function testApplyExtraStylesIfNeededShouldReturnNullIfWrapTextNotNeeded(): void
+    public function testSingleLineCellShouldNotGetImplicitWrapTextStyle(): void
     {
         $cell = Cell::fromValue('oneline');
 
-        self::assertNull($cell->style?->shouldWrapText);
+        self::assertNull($cell->style);
     }
 
-    public function testApplyExtraStylesIfNeededShouldReturnNullIfWrapTextAlreadyApplied(): void
+    public function testExplicitWrapTextStyleShouldBeKept(): void
     {
         $style = new Style(shouldWrapText: true);
 
         $cell = Cell::fromValue("multi\nlines", $style);
 
+        self::assertSame($style, $cell->style);
         self::assertTrue($cell->style->shouldWrapText);
     }
 
