@@ -1383,7 +1383,35 @@ final class WriterTest extends TestCase
         $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
 
         self::assertNotFalse($xmlContents);
-        self::assertStringContainsString('<workbookProtection workbookPassword="83AF" lockStructure="true" lockWindows="true" lockRevisions="true"/>', $xmlContents);
+        self::assertStringContainsString('<workbookProtection workbookPassword="83AF" lockStructure="true" lockWindows="true" lockRevision="true"/>', $xmlContents);
+    }
+
+    public function testWorkbookProtectionUsesSchemaAttributeName(): void
+    {
+        $fileName = 'test_set_workbook_protection_schema.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $options = new Options(
+            tempFolder: (new TestUsingResource())->getTempFolderPath(),
+            workbookProtection: new WorkbookProtection(
+                password: 'password',
+                lockStructure: true,
+                lockWindows: true,
+                lockRevisions: true,
+            ),
+        );
+
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $writer->close();
+
+        // ISO/IEC 29500-1 §18.2.29 (CT_WorkbookProtection): attributes are
+        // workbookPassword, lockStructure, lockWindows and lockRevision (singular).
+        $pathToSheetFile = $resourcePath.'#xl/workbook.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString('<workbookProtection workbookPassword="83AF" lockStructure="true" lockWindows="true" lockRevision="true"/>', $xmlContents);
     }
 
     public function testWriteValidationTagsToXml(): void
