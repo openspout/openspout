@@ -268,6 +268,53 @@ final class WriterTest extends TestCase
         self::assertStringContainsString('<Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/custom-properties" Target="docProps/custom.xml"/>', $relsXmlContents);
     }
 
+    public function testSetPropertiesEscapesXmlSpecialCharacters(): void
+    {
+        $fileName = 'test_set_properties_escapes_xml_special_characters.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $options = new Options(
+            tempFolder: (new TestUsingResource())->getTempFolderPath(),
+            properties: new Properties(
+                'Title & <1>',
+                'Subject & <2>',
+                'Application & <3>',
+                'Creator & <4>',
+                'Last Modified By & <5>',
+                'Keywords & <6>',
+                'Description & <7>',
+                'Category & <8>',
+                'Language & <9>',
+                ['Name "&" <10>' => 'Value & <11>'],
+            ),
+        );
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $writer->close();
+
+        $appXmlContents = file_get_contents('zip://'.$resourcePath.'#docProps/app.xml');
+        self::assertNotFalse($appXmlContents);
+        self::assertNotFalse(simplexml_load_string($appXmlContents));
+        self::assertStringContainsString('<Application>Application &amp; &lt;3&gt;</Application>', $appXmlContents);
+
+        $coreXmlContents = file_get_contents('zip://'.$resourcePath.'#docProps/core.xml');
+        self::assertNotFalse($coreXmlContents);
+        self::assertNotFalse(simplexml_load_string($coreXmlContents));
+        self::assertStringContainsString('<dc:title>Title &amp; &lt;1&gt;</dc:title>', $coreXmlContents);
+        self::assertStringContainsString('<dc:subject>Subject &amp; &lt;2&gt;</dc:subject>', $coreXmlContents);
+        self::assertStringContainsString('<dc:creator>Creator &amp; &lt;4&gt;</dc:creator>', $coreXmlContents);
+        self::assertStringContainsString('<cp:lastModifiedBy>Last Modified By &amp; &lt;5&gt;</cp:lastModifiedBy>', $coreXmlContents);
+        self::assertStringContainsString('<cp:keywords>Keywords &amp; &lt;6&gt;</cp:keywords>', $coreXmlContents);
+        self::assertStringContainsString('<dc:description>Description &amp; &lt;7&gt;</dc:description>', $coreXmlContents);
+        self::assertStringContainsString('<cp:category>Category &amp; &lt;8&gt;</cp:category>', $coreXmlContents);
+        self::assertStringContainsString('<dc:language>Language &amp; &lt;9&gt;</dc:language>', $coreXmlContents);
+
+        $customXmlContents = file_get_contents('zip://'.$resourcePath.'#docProps/custom.xml');
+        self::assertNotFalse($customXmlContents);
+        self::assertNotFalse(simplexml_load_string($customXmlContents));
+        self::assertStringContainsString('name="Name &quot;&amp;&quot; &lt;10&gt;"><vt:lpwstr>Value &amp; &lt;11&gt;</vt:lpwstr>', $customXmlContents);
+    }
+
     public function testAddRowShouldWriteGivenDataToSheetUsingInlineStrings(): void
     {
         $fileName = 'test_add_row_should_write_given_data_to_sheet_using_inline_strings.xlsx';

@@ -40,11 +40,12 @@ final class Writer extends AbstractWriterMultiSheets
     {
         $workbook = new Workbook();
 
-        $fileSystemHelper = new FileSystemHelper($this->options->tempFolder, new ZipHelper(), $this->creator);
+        $escaper = new ODS();
+        $fileSystemHelper = new FileSystemHelper($this->options->tempFolder, new ZipHelper(), $this->creator, $escaper);
         $fileSystemHelper->createBaseFilesAndFolders();
 
         $styleManager = new StyleManager(new StyleRegistry($this->options->FALLBACK_STYLE), $this->options);
-        $worksheetManager = new WorksheetManager($styleManager, new ODS());
+        $worksheetManager = new WorksheetManager($styleManager, $escaper);
 
         return new WorkbookManager(
             $workbook,

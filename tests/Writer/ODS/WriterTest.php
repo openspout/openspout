@@ -138,6 +138,7 @@ final class WriterTest extends TestCase
         return [
             ['Test creator', 'Test creator'],
             [null, 'OpenSpout'],
+            ['Creator & <1>', 'Creator &amp; &lt;1&gt;'],
         ];
     }
 
