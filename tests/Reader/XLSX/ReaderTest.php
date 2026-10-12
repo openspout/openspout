@@ -361,6 +361,51 @@ final class ReaderTest extends TestCase
         self::assertEquals($expectedRows, $allRows);
     }
 
+    public function testReadScientificNotationFormatsAsNumericValues(): void
+    {
+        $resourcePath = TestUsingResource::getResourcePath('sheet_with_scientific_notation_number_formats.xlsx');
+
+        $reader = new Reader();
+        $reader->open($resourcePath);
+
+        $cells = [];
+
+        foreach ($reader->getSheetIterator() as $sheet) {
+            foreach ($sheet->getRowIterator() as $row) {
+                $cells = $row->cells;
+            }
+        }
+
+        $reader->close();
+
+        self::assertCount(6, $cells);
+
+        // scientific notation formats must not be treated as date formats, whatever
+        // the exponent code variant (dot/comma decimal separator, positive/negative
+        // exponent, grouping separators, lowercase e)
+        self::assertInstanceOf(NumericCell::class, $cells[0]);
+        self::assertSame(44227, $cells[0]->getValue());
+
+        self::assertInstanceOf(NumericCell::class, $cells[1]);
+        self::assertSame(44227, $cells[1]->getValue());
+
+        self::assertInstanceOf(NumericCell::class, $cells[2]);
+        self::assertSame(44227, $cells[2]->getValue());
+
+        self::assertInstanceOf(NumericCell::class, $cells[3]);
+        self::assertSame(44227, $cells[3]->getValue());
+
+        // a genuinely date-formatted cell with an out-of-range value is still an error cell
+        self::assertInstanceOf(ErrorCell::class, $cells[4]);
+        self::assertNull($cells[4]->getValue());
+        self::assertSame('4720000000000', $cells[4]->getRawValue());
+
+        // the Japanese era year format is still detected as a date ("e" is a date
+        // format code per ECMA-376 Part 1 §18.8.30, "International Considerations")
+        self::assertInstanceOf(DateTimeCell::class, $cells[5]);
+        self::assertSame('2021-01-31', $cells[5]->getValue()->format('Y-m-d'));
+    }
+
     public function testReadShouldReturnErrorCellsForOutOfRangeNumericTimestamps(): void
     {
         // make sure dates are always created with the same timezone
