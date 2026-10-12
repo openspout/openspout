@@ -26,7 +26,7 @@ final readonly class WorkbookProtection
             'workbookPassword' => null !== $this->password ? PasswordHashHelper::make($this->password) : '',
             'lockStructure' => $this->lockStructure,
             'lockWindows' => $this->lockWindows,
-            'lockRevisions' => $this->lockRevisions,
+            'lockRevision' => $this->lockRevisions,
         ]);
     }
 
