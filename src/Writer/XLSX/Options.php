@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace OpenSpout\Writer\XLSX;
 
 use OpenSpout\Common\Entity\Style\Style;
+use OpenSpout\Common\Exception\InvalidArgumentException;
 use OpenSpout\Writer\Common\AbstractOptions;
 use OpenSpout\Writer\XLSX\Options\HeaderFooter;
 use OpenSpout\Writer\XLSX\Options\PageMargin;
@@ -23,6 +24,9 @@ final readonly class Options extends AbstractOptions
     private MergeCellContainer $MERGE_CELLS;
     private ValidationContainer $VALIDATION_CELLS;
 
+    /**
+     * @param null|int $compressionLevel Level 0-9, or null for default
+     */
     public function __construct(
         Style $FALLBACK_STYLE = new Style(
             fontSize: self::DEFAULT_FONT_SIZE,
@@ -38,7 +42,12 @@ final readonly class Options extends AbstractOptions
         public ?HeaderFooter $headerFooter = null,
         public ?WorkbookProtection $workbookProtection = null,
         public Properties $properties = new Properties(),
+        public ?int $compressionLevel = null,
     ) {
+        if (null !== $compressionLevel && ($compressionLevel < 0 || $compressionLevel > 9)) {
+            throw new InvalidArgumentException(\sprintf('Compression level must be between 0 and 9, %d given', $compressionLevel));
+        }
+
         parent::__construct(
             $FALLBACK_STYLE,
             $SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY,

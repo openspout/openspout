@@ -23,6 +23,13 @@ final readonly class ZipHelper
     public const string EXISTING_FILES_OVERWRITE = 'overwrite';
 
     /**
+     * @param null|int $compressionLevel Deflate level (0-9) for compressed files; null keeps libzip's default
+     */
+    public function __construct(
+        private ?int $compressionLevel = null,
+    ) {}
+
+    /**
      * Returns a new ZipArchive instance pointing at the given path.
      *
      * @param string $tmpFolderPath Path of the temp folder where the zip file will be created
@@ -115,6 +122,10 @@ final readonly class ZipHelper
 
             if ($itemInfo->isFile() && !$this->shouldSkipFile($zip, $itemLocalPath, $existingFileMode)) {
                 $zip->addFile($itemRealPath, $itemLocalPath);
+
+                if (null !== $this->compressionLevel) {
+                    $zip->setCompressionName($itemLocalPath, ZipArchive::CM_DEFLATE, $this->compressionLevel);
+                }
             }
         }
     }
@@ -154,7 +165,11 @@ final readonly class ZipHelper
             $normalizedFullFilePath = $this->getNormalizedRealPath($rootFolderPath.'/'.$normalizedLocalFilePath);
             $zip->addFile($normalizedFullFilePath, $normalizedLocalFilePath);
 
-            $zip->setCompressionName($normalizedLocalFilePath, $compressionMethod);
+            if (ZipArchive::CM_DEFAULT === $compressionMethod && null !== $this->compressionLevel) {
+                $zip->setCompressionName($normalizedLocalFilePath, ZipArchive::CM_DEFLATE, $this->compressionLevel);
+            } else {
+                $zip->setCompressionName($normalizedLocalFilePath, $compressionMethod);
+            }
         }
     }
 
