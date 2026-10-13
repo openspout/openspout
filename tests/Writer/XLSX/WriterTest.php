@@ -571,6 +571,18 @@ final class WriterTest extends TestCase
         $this->assertInlineDataWasWrittenToSheet($fileName, 1, 'control _x0015_ character');
     }
 
+    public function testAddRowShouldEscapeXmlNonCharacters(): void
+    {
+        $fileName = 'test_add_row_should_escape_xml_non_characters.xlsx';
+        $dataRows = [
+            Row::fromValues(["non \u{FFFE} character"]),
+        ];
+
+        $this->writeToXLSXFile($dataRows, $fileName);
+
+        $this->assertInlineDataWasWrittenToSheet($fileName, 1, 'non _xFFFE_ character');
+    }
+
     public function testAddRowShouldApplyHeight(): void
     {
         $fileName = 'test_add_row_should_apply_height.xlsx';
