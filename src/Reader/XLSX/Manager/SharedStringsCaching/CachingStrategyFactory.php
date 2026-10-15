@@ -69,7 +69,7 @@ final readonly class CachingStrategyFactory implements CachingStrategyFactoryInt
     public function createBestCachingStrategy(?int $sharedStringsUniqueCount, string $tempFolder): CachingStrategyInterface
     {
         if ($this->isInMemoryStrategyUsageSafe($sharedStringsUniqueCount)) {
-            return new InMemoryStrategy($sharedStringsUniqueCount);
+            return new InMemoryStrategy();
         }
 
         return new FileBasedStrategy($tempFolder, self::MAX_NUM_STRINGS_PER_TEMP_FILE);
