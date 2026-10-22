@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace OpenSpout\Reader\XLSX\Manager\SharedStringsCaching;
 
 use OpenSpout\Reader\Exception\SharedStringNotFoundException;
-use RuntimeException;
-use SplFixedArray;
 
 /**
  * This class implements the in-memory caching strategy for shared strings.
@@ -16,19 +14,11 @@ use SplFixedArray;
  */
 final class InMemoryStrategy implements CachingStrategyInterface
 {
-    /** @var SplFixedArray<string> Array used to cache the shared strings */
-    private SplFixedArray $inMemoryCache;
+    /** @var array<int, string> Array used to cache the shared strings */
+    private array $inMemoryCache = [];
 
     /** @var bool Whether the cache has been closed */
     private bool $isCacheClosed = false;
-
-    /**
-     * @param int $sharedStringsUniqueCount Number of unique shared strings
-     */
-    public function __construct(int $sharedStringsUniqueCount)
-    {
-        $this->inMemoryCache = new SplFixedArray($sharedStringsUniqueCount);
-    }
 
     /**
      * Adds the given string to the cache.
@@ -39,7 +29,7 @@ final class InMemoryStrategy implements CachingStrategyInterface
     public function addStringForIndex(string $sharedString, int $sharedStringIndex): void
     {
         if (!$this->isCacheClosed) {
-            $this->inMemoryCache->offsetSet($sharedStringIndex, $sharedString);
+            $this->inMemoryCache[$sharedStringIndex] = $sharedString;
         }
     }
 
@@ -63,11 +53,8 @@ final class InMemoryStrategy implements CachingStrategyInterface
      */
     public function getStringAtIndex(int $sharedStringIndex): string
     {
-        try {
-            return $this->inMemoryCache->offsetGet($sharedStringIndex) ?? '';
-        } catch (RuntimeException) {
-            throw new SharedStringNotFoundException("Shared string not found for index: {$sharedStringIndex}");
-        }
+        return $this->inMemoryCache[$sharedStringIndex]
+            ?? throw new SharedStringNotFoundException("Shared string not found for index: {$sharedStringIndex}");
     }
 
     /**
@@ -75,7 +62,7 @@ final class InMemoryStrategy implements CachingStrategyInterface
      */
     public function clearCache(): void
     {
-        $this->inMemoryCache = new SplFixedArray(0);
+        $this->inMemoryCache = [];
         $this->isCacheClosed = false;
     }
 }
