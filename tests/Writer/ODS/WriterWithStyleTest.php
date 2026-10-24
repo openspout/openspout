@@ -179,9 +179,9 @@ final class WriterWithStyleTest extends TestCase
         $this->assertFirstChildHasAttributeEquals('no-wrap', $customStyleElement, 'table-cell-properties', 'fo:wrap-option');
     }
 
-    public function testAddRowShouldApplyWrapTextIfCellContainsNewLine(): void
+    public function testAddRowShouldNotGenerateStyleForNewlineCell(): void
     {
-        $fileName = 'test_add_row_should_apply_wrap_text_if_new_lines.ods';
+        $fileName = 'test_add_row_should_not_generate_style_for_newline_cells.ods';
         $dataRows = [
             Row::fromValues(["ods--11\nods--11"]),
         ];
@@ -189,10 +189,7 @@ final class WriterWithStyleTest extends TestCase
         $this->writeToODSFile($dataRows, $fileName);
 
         $styleElements = $this->getCellStyleElementsFromContentXmlFile($fileName);
-        self::assertCount(2, $styleElements, 'There should be 2 styles (default and custom)');
-
-        $customStyleElement = $styleElements[1];
-        $this->assertFirstChildHasAttributeEquals('wrap', $customStyleElement, 'table-cell-properties', 'fo:wrap-option');
+        self::assertCount(1, $styleElements, 'No style should be generated for newline cells');
     }
 
     public function testAddRowShouldApplyCellAlignment(): void
