@@ -6,6 +6,7 @@ namespace OpenSpout\Writer\XLSX\Helper;
 
 use DateTimeImmutable;
 use OpenSpout\Common\Entity\Cell\ImageCell;
+use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\Escaper\XLSX;
 use OpenSpout\Common\Helper\FileSystemHelper as CommonFileSystemHelper;
@@ -389,7 +390,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             if (null !== ($sheetView = $sheet->getSheetView())) {
                 fwrite($worksheetFilePointer, '<sheetViews>'.$sheetView->getXml().'</sheetViews>');
             }
-            fwrite($worksheetFilePointer, $this->getXMLFragmentForDefaultCellSizing($options));
+            fwrite($worksheetFilePointer, $this->getXMLFragmentForSheetFormatProperties($options, $worksheet));
             fwrite($worksheetFilePointer, $this->getXMLFragmentForColumnWidths($options, $sheet));
             fwrite($worksheetFilePointer, '<sheetData>');
 
@@ -693,19 +694,21 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     }
 
     /**
-     * Constructs default row height and width xml to inject into worksheet xml file.
+     * Constructs default row height and width, as well as rows outline level, xml to inject into worksheet xml file.
      */
-    private function getXMLFragmentForDefaultCellSizing(Options $options): string
+    private function getXMLFragmentForSheetFormatProperties(Options $options, Worksheet $worksheet): string
     {
         $rowHeightXml = null === $options->DEFAULT_ROW_HEIGHT ? '' : " defaultRowHeight=\"{$options->DEFAULT_ROW_HEIGHT}\"";
         $colWidthXml = null === $options->DEFAULT_COLUMN_WIDTH ? '' : " defaultColWidth=\"{$options->DEFAULT_COLUMN_WIDTH}\"";
-        if ('' === $colWidthXml && '' === $rowHeightXml) {
+        $maxRowOutlineLevel = $worksheet->getMaxRowOutlineLevel();
+        $rowOutlineLevelXml = Row::DEFAULT_OUTLINE_LEVEL === $maxRowOutlineLevel ? '' : " outlineLevelRow=\"{$maxRowOutlineLevel}\"";
+        if ('' === $colWidthXml && '' === $rowHeightXml && '' === $rowOutlineLevelXml) {
             return '';
         }
         // Ensure that the required defaultRowHeight is set
         $rowHeightXml = '' === $rowHeightXml ? ' defaultRowHeight="0"' : $rowHeightXml;
 
-        return "<sheetFormatPr{$colWidthXml}{$rowHeightXml}/>";
+        return "<sheetFormatPr{$colWidthXml}{$rowHeightXml}{$rowOutlineLevelXml}/>";
     }
 
     /**

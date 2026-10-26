@@ -66,6 +66,94 @@ final class RowTest extends TestCase
         self::assertSame(10.0, $newRow->height);
     }
 
+    public function testRowWithOutlineLevel(): void
+    {
+        $row = new Row([Cell::fromValue('test')], 15.5, 1);
+        $newRow = $row->withOutlineLevel(2);
+
+        self::assertSame(2, $newRow->outlineLevel);
+        self::assertSame(1, $row->outlineLevel);
+        self::assertSame(15.5, $newRow->height);
+    }
+
+    public function testRowWithHiddenAndCollapsed(): void
+    {
+        $row = new Row([Cell::fromValue('test')]);
+        $newRow = $row->withHidden(true)->withCollapsed(true);
+
+        self::assertTrue($newRow->hidden);
+        self::assertTrue($newRow->collapsed);
+        self::assertFalse($row->hidden);
+        self::assertFalse($row->collapsed);
+    }
+
+    public function testWithersPreserveOtherAttributes(): void
+    {
+        $cells = [Cell::fromValue('test')];
+        $row = new Row($cells, 15.5, 3, hidden: true);
+
+        $otherCells = [Cell::fromValue('other')];
+        self::assertEquals(new Row($otherCells, 15.5, 3, hidden: true), $row->withCells($otherCells));
+        self::assertEquals(new Row($cells, 20.0, 3, hidden: true), $row->withHeight(20.0));
+        self::assertEquals(new Row($cells, 15.5, 1, hidden: true), $row->withOutlineLevel(1));
+        self::assertEquals(new Row($cells, 15.5, 3), $row->withHidden(false));
+        self::assertEquals(new Row($cells, 15.5, 3, hidden: true, collapsed: true), $row->withCollapsed(true));
+    }
+
+    public function testNamedConstructorsAcceptRowAttributes(): void
+    {
+        $style = new Style();
+
+        self::assertEquals(new Row([Cell::fromValue('a')]), Row::fromValues(['a']));
+        self::assertEquals(new Row([Cell::fromValue('a', $style)]), Row::fromValuesWithStyles(['a'], [$style]));
+        self::assertEquals(new Row([Cell::fromValue('a', $style)]), Row::fromValuesWithStyle(['a'], $style));
+        self::assertEquals(
+            new Row([Cell::fromValue('a')], 15.5, 1, hidden: true, collapsed: true),
+            Row::fromValues(['a'], 15.5, 1, hidden: true, collapsed: true)
+        );
+        self::assertEquals(
+            new Row([Cell::fromValue('a', $style)], 15.5, 2, hidden: true),
+            Row::fromValuesWithStyles(['a'], [$style], 15.5, 2, hidden: true)
+        );
+        self::assertEquals(
+            new Row([Cell::fromValue('a', $style)], 15.5, 3, collapsed: true),
+            Row::fromValuesWithStyle(['a'], $style, 15.5, 3, collapsed: true)
+        );
+    }
+
+    /**
+     * @param int<0, 7> $outlineLevel
+     */
+    #[DataProvider('provideAcceptsOutlineLevelWithinRangeCases')]
+    public function testAcceptsOutlineLevelWithinRange(int $outlineLevel): void
+    {
+        self::assertSame($outlineLevel, (new Row([], outlineLevel: $outlineLevel))->outlineLevel);
+    }
+
+    public static function provideAcceptsOutlineLevelWithinRangeCases(): iterable
+    {
+        return [
+            [0],
+            [Row::MAX_OUTLINE_LEVEL],
+        ];
+    }
+
+    #[DataProvider('provideDoesNotAcceptOutOfRangeOutlineLevelCases')]
+    public function testDoesNotAcceptOutOfRangeOutlineLevel(int $outlineLevel): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new Row([], outlineLevel: $outlineLevel);
+    }
+
+    public static function provideDoesNotAcceptOutOfRangeOutlineLevelCases(): iterable
+    {
+        return [
+            [-1],
+            [Row::MAX_OUTLINE_LEVEL + 1],
+        ];
+    }
+
     public function testAcceptsAssociativeArraysInNamedConstructors(): void
     {
         $row = Row::fromValues(['foo', 'bar' => 'baz']);

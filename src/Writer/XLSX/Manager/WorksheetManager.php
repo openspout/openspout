@@ -59,9 +59,14 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
     public function addRow(Worksheet $worksheet, Row $row): void
     {
         if (!$row->isEmpty()) {
-            $this->addNonEmptyRow($worksheet, $row);
+            $this->writeRow($worksheet, $row);
             $this->commentsManager->addComments($worksheet, $row);
             $this->hyperlinkManager->addHyperlinks($worksheet, $row);
+        } elseif ($row->hidden || $row->collapsed || Row::DEFAULT_OUTLINE_LEVEL !== $row->outlineLevel) {
+            // Empty rows are not written at all, which is fine unless they carry attributes:
+            // a missing row is neither hidden nor collapsed, and has no outline level either
+            // (which would split the group it belongs to).
+            $this->writeRow($worksheet, $row);
         }
 
         $worksheet->setLastWrittenRowIndex($worksheet->getLastWrittenRowIndex() + 1);
@@ -97,7 +102,7 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
     }
 
     /**
-     * Adds non-empty row to the worksheet.
+     * Writes the row, along with its cells, to the worksheet.
      *
      * @param Worksheet $worksheet The worksheet to add the row to
      * @param Row       $row       The row to be written
@@ -105,7 +110,7 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
      * @throws InvalidArgumentException If a cell value's type is not supported
      * @throws IOException              If the data cannot be written
      */
-    private function addNonEmptyRow(Worksheet $worksheet, Row $row): void
+    private function writeRow(Worksheet $worksheet, Row $row): void
     {
         $sheetFilePointer = $worksheet->getFilePointer();
         $rowIndexOneBased = $worksheet->getLastWrittenRowIndex() + 1;
@@ -120,9 +125,21 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
         // The DEFAULT_ROW_HEIGHT option only affects the sheet's <sheetFormatPr
         // defaultRowHeight>; it must not mark individual rows as custom-height.
         // See https://github.com/openspout/openspout/issues/367
-        $rowXML = "<row r=\"{$rowIndexOneBased}\" spans=\"1:{$numCells}\"";
+        $rowXML = "<row r=\"{$rowIndexOneBased}\"";
+        if ($numCells > 0) {
+            $rowXML .= " spans=\"1:{$numCells}\"";
+        }
         if ($rowHeight > 0) {
             $rowXML .= " ht=\"{$rowHeight}\" customHeight=\"1\"";
+        }
+        if ($row->hidden) {
+            $rowXML .= ' hidden="1"';
+        }
+        if (Row::DEFAULT_OUTLINE_LEVEL !== $row->outlineLevel) {
+            $rowXML .= " outlineLevel=\"{$row->outlineLevel}\"";
+        }
+        if ($row->collapsed) {
+            $rowXML .= ' collapsed="1"';
         }
         $rowXML .= '>';
 

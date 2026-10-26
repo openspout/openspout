@@ -262,6 +262,9 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
         $currentMaxNumColumns = $worksheet->getMaxNumColumns();
         $cellsCount = $row->getNumCells();
         $worksheet->setMaxNumColumns(max($currentMaxNumColumns, $cellsCount));
+
+        // update max row outline level for the worksheet
+        $worksheet->setMaxRowOutlineLevel(max($worksheet->getMaxRowOutlineLevel(), $row->outlineLevel));
     }
 
     /**
