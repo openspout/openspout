@@ -13,6 +13,18 @@ parameters:
 			path: src/Common/Entity/Row.php
 
 		-
+			message: '#^Comparison operation "\<" between 7 and int\<0, 7\> is always false\.$#'
+			identifier: smaller.alwaysFalse
+			count: 1
+			path: src/Common/Entity/Row.php
+
+		-
+			message: '#^Comparison operation "\>" between 0 and int\<0, 7\> is always false\.$#'
+			identifier: greater.alwaysFalse
+			count: 1
+			path: src/Common/Entity/Row.php
+
+		-
 			message: '#^Comparison operation "\>" between 0 and int\<0, max\> is always false\.$#'
 			identifier: greater.alwaysFalse
 			count: 1
@@ -27,7 +39,7 @@ parameters:
 		-
 			message: '#^Result of \|\| is always false\.$#'
 			identifier: booleanOr.alwaysFalse
-			count: 1
+			count: 2
 			path: src/Common/Entity/Row.php
 
 		-
@@ -95,6 +107,12 @@ parameters:
 			identifier: smaller.alwaysFalse
 			count: 1
 			path: src/Writer/XLSX/Entity/SheetView.php
+
+		-
+			message: '#^Parameter \$outlineLevel of class OpenSpout\\Common\\Entity\\Row constructor expects int\<0, 7\>, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Common/Entity/RowTest.php
 
 		-
 			message: '#^Parameter \#1 \$red of static method OpenSpout\\Common\\Entity\\Style\\Color\:\:rgb\(\) expects int\<0, 255\>, int given\.$#'

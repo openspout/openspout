@@ -340,6 +340,42 @@ $sheet->getColumnCollapseds();    // list of OpenSpout\Writer\Common\ColumnColla
 $sheet->getColumnOutlineLevels(); // list of OpenSpout\Writer\Common\ColumnOutlineLevel
 ```
 
+## Hidden, collapsed and outline-level rows
+
+Rows can be hidden, marked as collapsed, or assigned an outline (grouping) level,
+from 0 (not grouped) to 7. Unlike columns, rows are written as soon as they are
+added, so these attributes are set on the **row** itself:
+
+```php
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
+
+$writer = new Writer();
+$writer->openToFile('/tmp/file.xlsx');
+
+$writer->addRow(Row::fromValues(['Item A1', 30], outlineLevel: 1));
+$writer->addRow(Row::fromValues(['Item A2', 30])->withOutlineLevel(1));
+$writer->addRow(Row::fromValues(['Total A', 60]));
+
+// A group collapsed when the file is opened: its rows are hidden, and the
+// summary row (right below the group) is marked as collapsed
+$writer->addRow(Row::fromValues(['Item B1', 20], outlineLevel: 1, hidden: true));
+$writer->addRow(Row::fromValues(['Item B2', 20], outlineLevel: 1, hidden: true));
+$writer->addRow(Row::fromValues(['Total B', 40], collapsed: true));
+
+// A row can also be hidden on its own
+$writer->addRow(Row::fromValues(['Internal note'])->withHidden(true));
+
+$writer->close();
+```
+
+Empty rows are normally not written to XLSX files, but those having any of these
+attributes are, so that they are not lost (and do not split the group they belong to).
+
+For ODS, hidden rows are written with `table:visibility="collapse"`. Note that ODS
+**outline-level grouping is not yet supported**: outline levels are ignored for ODS
+output, and so is the collapsed flag, as it only describes the state of a group.
+
 ## Cell merging
 
 Cell can be merged with the XLSX writers:

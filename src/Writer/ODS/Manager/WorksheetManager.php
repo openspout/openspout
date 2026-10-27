@@ -97,7 +97,9 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
     {
         $cells = $row->cells;
 
-        $data = '<table:table-row table:style-name="ro1">';
+        // ODS has no equivalent for a collapsed row on its own: collapsing is a state of the
+        // row groups, which are not written (yet), so only hidden rows are taken into account.
+        $data = '<table:table-row table:style-name="ro1"'.($row->hidden ? ' table:visibility="collapse"' : '').'>';
 
         $currentCellIndex = 0;
         $nextCellIndex = 1;

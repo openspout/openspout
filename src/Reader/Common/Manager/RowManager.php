@@ -43,6 +43,6 @@ final readonly class RowManager
             ksort($rowCells);
         }
 
-        return new Row($rowCells, $row->height);
+        return $row->withCells($rowCells);
     }
 }

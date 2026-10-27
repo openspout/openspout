@@ -386,6 +386,29 @@ final class WriterTest extends TestCase
         $this->assertValueWasWrittenToSheet($fileName, 1, 'a dream');
     }
 
+    public function testAddRowShouldCollapseVisibilityOfHiddenRowsOnly(): void
+    {
+        $fileName = 'test_add_row_should_collapse_visibility_of_hidden_rows_only.ods';
+        $this->writeToODSFile([
+            Row::fromValues(['ods--11']),
+            Row::fromValues(['ods--21'], hidden: true),
+            Row::fromValues(['ods--31'], collapsed: true),
+        ], $fileName);
+
+        $visibilities = [];
+        foreach ($this->getSheetXmlNode($fileName, 1)->childNodes as $node) {
+            if ($node instanceof DOMElement && 'table:table-row' === $node->nodeName) {
+                $visibilities[$node->textContent] = $node->getAttribute('table:visibility');
+            }
+        }
+
+        self::assertSame(
+            ['ods--11' => '', 'ods--21' => 'collapse', 'ods--31' => ''],
+            $visibilities,
+            'Only hidden rows must be collapsed: a collapsed row stays visible, it only marks its group as collapsed.'
+        );
+    }
+
     public function testGeneratedFileShouldHaveTheCorrectMimeType(): void
     {
         $fileName = 'test_mime_type.ods';

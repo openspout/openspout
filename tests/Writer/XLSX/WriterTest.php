@@ -626,6 +626,67 @@ final class WriterTest extends TestCase
         self::assertSame('1', $fixedRow->getAttribute('customHeight'), 'Explicitly sized row must be flagged as custom height.');
     }
 
+    public function testAddRowShouldApplyOutlineLevel(): void
+    {
+        $fileName = 'test_add_row_should_apply_outline_level.xlsx';
+
+        $this->writeToXLSXFile([
+            Row::fromValues(['xlsx--11']),
+            Row::fromValues(['xlsx--21'], outlineLevel: 1),
+            Row::fromValues(['xlsx--31'], outlineLevel: 2),
+        ], $fileName);
+
+        $xmlReader = $this->getXmlReaderForSheetFromXmlFile($fileName, '1');
+
+        $xmlReader->readUntilNodeFound('row');
+        $notOutlinedRow = $xmlReader->expand();
+        self::assertInstanceOf(DOMElement::class, $notOutlinedRow);
+        self::assertFalse($notOutlinedRow->hasAttribute('outlineLevel'), 'Row with default outline level must not declare it.');
+
+        $xmlReader->next('row');
+        $firstLevelRow = $xmlReader->expand();
+        self::assertInstanceOf(DOMElement::class, $firstLevelRow);
+        self::assertSame('1', $firstLevelRow->getAttribute('outlineLevel'), 'Row outline level does not equal given value.');
+
+        $xmlReader->next('row');
+        $secondLevelRow = $xmlReader->expand();
+        self::assertInstanceOf(DOMElement::class, $secondLevelRow);
+        self::assertSame('2', $secondLevelRow->getAttribute('outlineLevel'), 'Row outline level does not equal given value.');
+    }
+
+    public function testAddRowShouldApplyHiddenAndCollapsed(): void
+    {
+        $fileName = 'test_add_row_should_apply_hidden_and_collapsed.xlsx';
+
+        $this->writeToXLSXFile([
+            Row::fromValues(['xlsx--11']),
+            Row::fromValues(['xlsx--21'], outlineLevel: 1, hidden: true),
+            Row::fromValues(['xlsx--31'], collapsed: true),
+        ], $fileName);
+
+        $this->assertInlineDataWasWrittenToSheet($fileName, 1, '<row r="1" spans="1:1">', 'Row must be neither hidden nor collapsed by default.');
+        $this->assertInlineDataWasWrittenToSheet($fileName, 1, '<row r="2" spans="1:1" hidden="1" outlineLevel="1">', 'Hidden row not found in sheet.');
+        $this->assertInlineDataWasWrittenToSheet($fileName, 1, '<row r="3" spans="1:1" collapsed="1">', 'Collapsed row not found in sheet.');
+    }
+
+    public function testAddRowShouldWriteEmptyRowWithAttributes(): void
+    {
+        $fileName = 'test_add_row_should_write_empty_row_with_attributes.xlsx';
+
+        $this->writeToXLSXFile([
+            Row::fromValues(['xlsx--11'], outlineLevel: 1),
+            new Row([], outlineLevel: 1),
+            new Row([], hidden: true),
+            new Row([], collapsed: true),
+            new Row([]),
+        ], $fileName);
+
+        $this->assertInlineDataWasWrittenToSheet($fileName, 1, '<row r="2" outlineLevel="1"></row>', 'Empty outlined row must be written so that it does not split its group.');
+        $this->assertInlineDataWasWrittenToSheet($fileName, 1, '<row r="3" hidden="1"></row>', 'Empty hidden row must be written so that it stays hidden.');
+        $this->assertInlineDataWasWrittenToSheet($fileName, 1, '<row r="4" collapsed="1"></row>', 'Empty collapsed row must be written so that its group stays collapsed.');
+        $this->assertInlineDataWasNotWrittenToSheet($fileName, 1, '<row r="5"', 'Empty row without attributes must not be written.');
+    }
+
     public function testCloseShouldAddMergeCellTags(): void
     {
         $fileName = 'test_add_row_should_support_column_widths.xlsx';
