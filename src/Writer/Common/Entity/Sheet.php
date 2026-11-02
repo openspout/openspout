@@ -59,6 +59,12 @@ final class Sheet
 
     private ?SheetProtection $sheetProtection = null;
 
+    /** @var null|bool Whether summary rows are below their outline group (null to keep the default) */
+    private ?bool $summaryRowsBelowDetail = null;
+
+    /** @var null|bool Whether summary columns are right of their outline group (null to keep the default) */
+    private ?bool $summaryColumnsRightOfDetail = null;
+
     /**
      * @param 0|positive-int $sheetIndex           Index of the sheet, based on order in the workbook (zero-based)
      * @param string         $associatedWorkbookId ID of the sheet's associated workbook
@@ -332,6 +338,44 @@ final class Sheet
     public function getSheetProtection(): ?SheetProtection
     {
         return $this->sheetProtection;
+    }
+
+    /**
+     * Sets whether the summary row of an outline group is below or above its rows.
+     * Note that Excel shows the expand/collapse button next to the summary row,
+     * which is below the group by default.
+     *
+     * @return $this
+     */
+    public function setSummaryRowsBelowDetail(bool $summaryRowsBelowDetail): self
+    {
+        $this->summaryRowsBelowDetail = $summaryRowsBelowDetail;
+
+        return $this;
+    }
+
+    public function getSummaryRowsBelowDetail(): ?bool
+    {
+        return $this->summaryRowsBelowDetail;
+    }
+
+    /**
+     * Sets whether the summary column of an outline group is right or left of its columns.
+     * Note that Excel shows the expand/collapse button next to the summary column,
+     * which is right of the group by default.
+     *
+     * @return $this
+     */
+    public function setSummaryColumnsRightOfDetail(bool $summaryColumnsRightOfDetail): self
+    {
+        $this->summaryColumnsRightOfDetail = $summaryColumnsRightOfDetail;
+
+        return $this;
+    }
+
+    public function getSummaryColumnsRightOfDetail(): ?bool
+    {
+        return $this->summaryColumnsRightOfDetail;
     }
 
     /**
