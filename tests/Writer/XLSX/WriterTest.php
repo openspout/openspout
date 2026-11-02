@@ -19,6 +19,7 @@ use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Reader\Wrapper\XMLReader;
 use OpenSpout\TestUsingResource;
 use OpenSpout\Writer\AutoFilter;
+use OpenSpout\Writer\Common\Entity\Sheet;
 use OpenSpout\Writer\Common\Helper\ImageHelperTrait;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
 use OpenSpout\Writer\XLSX\Manager\WorkbookManager;
@@ -1220,6 +1221,48 @@ final class WriterTest extends TestCase
         self::assertStringContainsString('<sheetPr filterMode="false"><pageSetUpPr fitToPage="true"/></sheetPr>', $xmlContents);
     }
 
+    public function testSheetPrShouldNotHaveOutlinePrByDefault(): void
+    {
+        $xmlContents = $this->writeSheetAndReadXml('test_sheet_pr_without_outline_pr.xlsx', static function (Sheet $sheet): void {});
+
+        self::assertStringNotContainsString('<sheetPr', $xmlContents);
+        self::assertStringNotContainsString('outlinePr', $xmlContents);
+    }
+
+    public function testSummaryRowsAboveDetailShouldWriteOutlinePr(): void
+    {
+        $xmlContents = $this->writeSheetAndReadXml('test_summary_rows_above_detail.xlsx', static function (Sheet $sheet): void {
+            $sheet->setSummaryRowsBelowDetail(false);
+        });
+
+        self::assertStringContainsString('<sheetPr><outlinePr summaryBelow="0"/></sheetPr>', $xmlContents);
+    }
+
+    public function testSummaryColumnsLeftOfDetailShouldWriteOutlinePr(): void
+    {
+        $xmlContents = $this->writeSheetAndReadXml('test_summary_columns_left_of_detail.xlsx', static function (Sheet $sheet): void {
+            $sheet->setSummaryRowsBelowDetail(true);
+            $sheet->setSummaryColumnsRightOfDetail(false);
+        });
+
+        self::assertStringContainsString('<sheetPr><outlinePr summaryBelow="1" summaryRight="0"/></sheetPr>', $xmlContents);
+    }
+
+    public function testOutlinePrShouldPrecedePageSetUpPrInSheetPr(): void
+    {
+        $options = new Options(
+            tempFolder: (new TestUsingResource())->getTempFolderPath(),
+            pageSetup: new PageSetup(PageOrientation::LANDSCAPE, PaperSize::A4, 1),
+        );
+
+        $xmlContents = $this->writeSheetAndReadXml('test_outline_pr_before_page_set_up_pr.xlsx', static function (Sheet $sheet): void {
+            $sheet->setAutoFilter(new AutoFilter(0, 1, 3, 3));
+            $sheet->setSummaryRowsBelowDetail(false);
+        }, $options);
+
+        self::assertStringContainsString('<sheetPr filterMode="false"><outlinePr summaryBelow="0"/><pageSetUpPr fitToPage="true"/></sheetPr>', $xmlContents);
+    }
+
     public function testAddHeaderFooterDifferentOddEven(): void
     {
         $fileName = 'test_header_footer.xlsx';
@@ -1974,6 +2017,25 @@ final class WriterTest extends TestCase
 
         self::assertNotFalse($xmlContents);
         self::assertStringContainsString($sharedString, $xmlContents, $message);
+    }
+
+    /**
+     * @param callable(Sheet): void $configureSheet
+     */
+    private function writeSheetAndReadXml(string $fileName, callable $configureSheet, ?Options $options = null): string
+    {
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $writer = new Writer($options ?? new Options(tempFolder: (new TestUsingResource())->getTempFolderPath()));
+        $writer->openToFile($resourcePath);
+        $configureSheet($writer->getCurrentSheet());
+        $writer->addRow(new Row([Cell::fromValue('something'), Cell::fromValue('else')]));
+        $writer->close();
+
+        $xmlContents = file_get_contents('zip://'.$resourcePath.'#xl/worksheets/sheet1.xml');
+        self::assertNotFalse($xmlContents);
+
+        return $xmlContents;
     }
 
     /**
