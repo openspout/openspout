@@ -69,6 +69,20 @@ final class SharedStringsManagerTest extends TestCase
         self::assertInstanceOf(InMemoryStrategy::class, $usedCachingStrategy);
     }
 
+    public function testGetStringAtIndexShouldThrowExceptionForMissingIndexBelowTheOverstatedUniqueCount(): void
+    {
+        $sharedStringsManager = $this->createSharedStringsManager('one_sheet_with_shared_strings_overstated_unique_count.xlsx');
+        $sharedStringsManager->extractSharedStrings();
+
+        $usedCachingStrategy = ReflectionHelper::getValueOnObject($sharedStringsManager, 'cachingStrategy');
+        self::assertInstanceOf(InMemoryStrategy::class, $usedCachingStrategy);
+
+        self::assertSame('s1--E5', $sharedStringsManager->getStringAtIndex(24));
+
+        $this->expectException(SharedStringNotFoundException::class);
+        $sharedStringsManager->getStringAtIndex(27);
+    }
+
     public function testGetStringAtIndexShouldWorkWithMultilineStrings(): void
     {
         $sharedStringsManager = $this->createSharedStringsManager('one_sheet_with_shared_multiline_strings.xlsx');
