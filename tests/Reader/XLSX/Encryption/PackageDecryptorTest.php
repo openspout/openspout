@@ -328,6 +328,10 @@ final class PackageDecryptorTest extends TestCase
 
         yield 'standard: invalid verifier hash size' => [[substr_replace($encryptionInfo, pack('V', 32), $verifierOffset + 36, 4), $encryptedPackage], $malformed];
 
+        yield 'standard: size that cannot be represented' => [[$encryptionInfo, "\0\0\0\0\0\0\0\x80".substr($encryptedPackage, 8)], 'The encrypted package has an invalid size.'];
+
+        yield 'standard: biggest size' => [[$encryptionInfo, str_repeat("\xFF", 8).substr($encryptedPackage, 8)], 'The encrypted package has an invalid size.'];
+
         yield 'standard: no size' => [[$encryptionInfo, substr($encryptedPackage, 0, 7)], $truncated];
 
         yield 'standard: truncated package' => [[$encryptionInfo, substr($encryptedPackage, 0, -1)], $truncated];

@@ -7,6 +7,7 @@ namespace OpenSpout\Reader\XLSX\Encryption;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Reader\Exception\InvalidPasswordException;
 use OpenSpout\Reader\Exception\PasswordRequiredException;
+use OpenSpout\Reader\Exception\ReaderException;
 use OpenSpout\Reader\XLSX\Reader;
 use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -127,6 +128,49 @@ final class FileDecryptorTest extends TestCase
             self::fail('The file should not have been decrypted');
         } catch (InvalidPasswordException) {
             self::assertSame([], glob($this->folder.\DIRECTORY_SEPARATOR.'*'), 'Nothing should be created');
+        }
+    }
+
+    public function testDecryptShouldNotTouchExistingFileWhenItFails(): void
+    {
+        $package = (string) file_get_contents(TestUsingResource::getResourcePath('one_sheet_with_shared_strings.xlsx'));
+        [$encryptionInfo, $encryptedPackage] = TestEncryptor::agile($package, 'secret');
+        $container = static fn (string $encryptedPackage): string => (new CompoundFileBuilder())
+            ->addEntry('EncryptionInfo', $encryptionInfo)
+            ->addEntry('EncryptedPackage', $encryptedPackage)
+            ->build()
+        ;
+        $decryptedFilePath = $this->folder.\DIRECTORY_SEPARATOR.'decrypted.xlsx';
+        file_put_contents($decryptedFilePath, 'previous content');
+
+        $failures = [
+            'wrong password' => [$this->write($container($encryptedPackage)), 'Secret'],
+            'altered package' => [$this->write($container(substr_replace($encryptedPackage, 'X', -1, 1))), 'secret'],
+        ];
+        foreach ($failures as $name => [$filePath, $password]) {
+            try {
+                (new FileDecryptor())->decrypt($filePath, $password, $decryptedFilePath);
+                self::fail("The file should not have been decrypted: {$name}");
+            } catch (ReaderException) {
+                self::assertSame('previous content', file_get_contents($decryptedFilePath), $name);
+                self::assertSame([$decryptedFilePath], glob($this->folder.\DIRECTORY_SEPARATOR.'*'), $name);
+            }
+        }
+    }
+
+    public function testDecryptShouldFailWhenDecryptedFileCannotBeCreated(): void
+    {
+        $encryptedFilePath = $this->encrypt(TestUsingResource::getResourcePath('one_sheet_with_shared_strings.xlsx'), 'agile', 'secret');
+        // A folder cannot be replaced by a file
+        $decryptedFilePath = $this->folder.\DIRECTORY_SEPARATOR.'folder';
+        mkdir($decryptedFilePath);
+
+        try {
+            (new FileDecryptor())->decrypt($encryptedFilePath, 'secret', $decryptedFilePath);
+            self::fail('The file should not have been decrypted');
+        } catch (IOException $exception) {
+            self::assertSame("Could not create {$decryptedFilePath}.", $exception->getMessage());
+            self::assertSame([$decryptedFilePath], glob($this->folder.\DIRECTORY_SEPARATOR.'*'), 'Nothing should be left behind');
         }
     }
 

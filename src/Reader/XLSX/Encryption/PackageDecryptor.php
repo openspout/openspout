@@ -120,10 +120,15 @@ final readonly class PackageDecryptor
             throw new EncryptedFileCorruptedException('The encrypted package is truncated.');
         }
 
+        // The size is an unsigned integer: the biggest ones cannot be represented, nor be the size of an actual file
+        $remainingSize = Binary::uint64($header, 0);
+        if ($remainingSize < 0) {
+            throw new EncryptedFileCorruptedException('The encrypted package has an invalid size.');
+        }
+
         $decryptedFile = fopen($decryptedFilePath, 'w');
         \assert(false !== $decryptedFile);
 
-        $remainingSize = Binary::uint64($header, 0);
         for ($segment = 0; $remainingSize > 0; ++$segment) {
             $size = min(self::SEGMENT_SIZE, $remainingSize);
             $paddedSize = self::BLOCK_SIZE * intdiv($size + self::BLOCK_SIZE - 1, self::BLOCK_SIZE);

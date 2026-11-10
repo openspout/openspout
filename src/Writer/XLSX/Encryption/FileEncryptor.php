@@ -7,6 +7,7 @@ namespace OpenSpout\Writer\XLSX\Encryption;
 use OpenSpout\Common\Exception\InvalidArgumentException;
 use OpenSpout\Common\Exception\IOException;
 use SensitiveParameter;
+use Throwable;
 
 /**
  * Protects an existing file with a password: the result is the original file, encrypted the same way Excel does it.
@@ -49,14 +50,18 @@ final readonly class FileEncryptor
 
         try {
             (new PackageEncryptor())->encrypt($filePath, $password, $stream);
-        } catch (IOException $exception) {
+        } catch (Throwable $throwable) {
             fclose($stream);
             unlink($temporaryFilePath);
 
-            throw $exception;
+            throw $throwable;
         }
 
         fclose($stream);
-        rename($temporaryFilePath, $encryptedFilePath);
+        if (!@rename($temporaryFilePath, $encryptedFilePath)) {
+            unlink($temporaryFilePath);
+
+            throw new IOException("Could not create {$encryptedFilePath}.");
+        }
     }
 }

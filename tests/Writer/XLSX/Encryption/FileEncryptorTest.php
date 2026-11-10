@@ -150,6 +150,21 @@ final class FileEncryptorTest extends TestCase
         }
     }
 
+    public function testEncryptShouldFailWhenEncryptedFileCannotBeCreated(): void
+    {
+        // A folder cannot be replaced by a file
+        $encryptedFilePath = $this->folder.\DIRECTORY_SEPARATOR.'folder';
+        mkdir($encryptedFilePath);
+
+        try {
+            (new FileEncryptor())->encrypt(TestUsingResource::getResourcePath(self::RESOURCE), 'secret', $encryptedFilePath);
+            self::fail('The file should not have been encrypted');
+        } catch (IOException $exception) {
+            self::assertSame("Could not create {$encryptedFilePath}.", $exception->getMessage());
+            self::assertSame([$encryptedFilePath], glob($this->folder.\DIRECTORY_SEPARATOR.'*'), 'Nothing should be left behind');
+        }
+    }
+
     public function testEncryptShouldRejectMissingFile(): void
     {
         $this->expectException(IOException::class);

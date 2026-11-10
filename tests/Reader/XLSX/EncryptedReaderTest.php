@@ -126,6 +126,41 @@ final class EncryptedReaderTest extends TestCase
         self::assertSame(0, $zip->numFiles);
     }
 
+    public function testCloseShouldNotFailWhenDecryptedFileIsAlreadyDeleted(): void
+    {
+        $reader = new Reader(new Options(tempFolder: $this->tempFolder, password: 'password'));
+        $reader->open(TestUsingResource::getResourcePath('encrypted_standard_libreoffice.xlsx'));
+        $decryptedFiles = $this->decryptedFiles();
+        self::assertCount(1, $decryptedFiles);
+        unlink($decryptedFiles[0]);
+
+        $reader->close();
+        unset($reader);
+
+        self::assertSame([], $this->decryptedFiles());
+    }
+
+    public function testDecryptedFileShouldBeDeletedLaterWhenItCannotBeDeletedOnClose(): void
+    {
+        // Permissions cannot be changed on Windows, where this test gets skipped
+        (new TestUsingResource())->getGeneratedUnwritableResourcePath('unused');
+        $reader = new Reader(new Options(tempFolder: $this->tempFolder, password: 'password'));
+        $reader->open(TestUsingResource::getResourcePath('encrypted_standard_libreoffice.xlsx'));
+
+        // Files cannot be deleted from a folder that is read-only
+        chmod($this->tempFolder, 0o500);
+
+        try {
+            @$reader->close();
+            self::assertCount(1, $this->decryptedFiles());
+        } finally {
+            chmod($this->tempFolder, 0o700);
+        }
+
+        unset($reader);
+        self::assertSame([], $this->decryptedFiles());
+    }
+
     public function testDecryptedFileShouldBeDeletedWhenReaderIsNotClosed(): void
     {
         $reader = new Reader(new Options(tempFolder: $this->tempFolder, password: 'password'));

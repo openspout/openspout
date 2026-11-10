@@ -66,7 +66,11 @@ final readonly class FileDecryptor
             throw new IOException("{$filePath} is not a password-protected file.");
         }
 
-        rename($temporaryFilePath, $decryptedFilePath);
+        if (!@rename($temporaryFilePath, $decryptedFilePath)) {
+            unlink($temporaryFilePath);
+
+            throw new IOException("Could not create {$decryptedFilePath}.");
+        }
     }
 
     private function assertReadable(string $filePath): void

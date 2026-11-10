@@ -159,8 +159,8 @@ final class Reader extends AbstractReader
 
     private function deleteDecryptedFile(): void
     {
-        if (null !== $this->decryptedFilePath) {
-            unlink($this->decryptedFilePath);
+        // The path is kept when the file could not be deleted, so that it gets tried again later
+        if (null !== $this->decryptedFilePath && (!file_exists($this->decryptedFilePath) || unlink($this->decryptedFilePath))) {
             $this->decryptedFilePath = null;
         }
     }
