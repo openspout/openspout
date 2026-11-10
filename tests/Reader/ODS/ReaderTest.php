@@ -278,9 +278,14 @@ final class ReaderTest extends TestCase
         $startTime = microtime(true);
 
         $fileName = 'attack_quadratic_blowup.ods';
-        $allRows = $this->getAllRowsForFile($fileName);
 
-        self::assertSame('', $allRows[0][0] ?? '', 'Entities should not have been expanded');
+        try {
+            $allRows = $this->getAllRowsForFile($fileName);
+            self::assertSame('', $allRows[0][0] ?? '', 'Entities should not have been expanded');
+        } catch (IOException $ioException) {
+            // libxml2 >= 2.15 rejects the file outright, which is also a valid protection
+            self::assertStringContainsString('amplification', $ioException->getMessage());
+        }
 
         $duration = microtime(true) - $startTime;
         self::assertLessThan(10, $duration, 'Entities should not be expanded and therefore take more than 10 seconds to be parsed.');
