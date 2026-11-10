@@ -8,6 +8,9 @@ use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\Escaper\XLSX;
 use OpenSpout\Reader\AbstractReader;
 use OpenSpout\Reader\Exception\NoSheetsFoundException;
+use OpenSpout\Reader\Exception\ReaderException;
+use OpenSpout\Reader\XLSX\Encryption\CompoundFile;
+use OpenSpout\Reader\XLSX\Encryption\PackageDecryptor;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactory;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\CachingStrategyFactoryInterface;
 use OpenSpout\Reader\XLSX\Manager\SharedStringsCaching\MemoryLimit;
@@ -32,6 +35,9 @@ final class Reader extends AbstractReader
     private readonly Options $options;
     private readonly CachingStrategyFactoryInterface $cachingStrategyFactory;
 
+    /** @var null|string Path of the decrypted copy of the file being read, when it is password-protected */
+    private ?string $decryptedFilePath = null;
+
     public function __construct(
         ?Options $options = null,
         ?CachingStrategyFactoryInterface $cachingStrategyFactory = null
@@ -43,6 +49,12 @@ final class Reader extends AbstractReader
             $cachingStrategyFactory = new CachingStrategyFactory(new MemoryLimit($memoryLimit));
         }
         $this->cachingStrategyFactory = $cachingStrategyFactory;
+    }
+
+    public function __destruct()
+    {
+        // A password-protected file must not stay decrypted on disk, even if the reader is never closed
+        $this->deleteDecryptedFile();
     }
 
     public function getSheetIterator(): SheetIterator
@@ -69,12 +81,43 @@ final class Reader extends AbstractReader
      *
      * @throws IOException            If the file at the given path or its content cannot be read
      * @throws NoSheetsFoundException If there are no sheets in the file
+     * @throws ReaderException        If the file is password-protected and cannot be decrypted
      */
     protected function openReader(string $filePath): void
     {
+        if (CompoundFile::isCompoundFile($filePath)) {
+            // Password-protected files are not ZIP files, but containers of an encrypted ZIP file
+            $this->decryptedFilePath = (new PackageDecryptor())->decrypt($filePath, $this->options->password, $this->options->tempFolder);
+        }
+
+        try {
+            $this->openZip($filePath, $this->decryptedFilePath ?? $filePath);
+        } catch (IOException|ReaderException $exception) {
+            $this->deleteDecryptedFile();
+
+            throw $exception;
+        }
+    }
+
+    /**
+     * Closes the reader. To be used after reading the file.
+     */
+    protected function closeReader(): void
+    {
+        $this->zip->close();
+        $this->sharedStringsManager->cleanup();
+        $this->deleteDecryptedFile();
+    }
+
+    /**
+     * @param string $filePath    Path of the file given by the user
+     * @param string $zipFilePath Path of the ZIP file to read, which differs from $filePath for password-protected files
+     */
+    private function openZip(string $filePath, string $zipFilePath): void
+    {
         $this->zip = new ZipArchive();
 
-        $openResult = $this->zip->open($filePath);
+        $openResult = $this->zip->open($zipFilePath);
 
         if (true !== $openResult) {
             $errorMessage = match ($openResult) {
@@ -93,9 +136,9 @@ final class Reader extends AbstractReader
         }
 
         $this->sharedStringsManager = new SharedStringsManager(
-            $filePath,
+            $zipFilePath,
             $this->options,
-            new WorkbookRelationshipsManager($filePath),
+            new WorkbookRelationshipsManager($zipFilePath),
             $this->cachingStrategyFactory
         );
 
@@ -106,7 +149,7 @@ final class Reader extends AbstractReader
 
         $this->sheetIterator = new SheetIterator(
             new SheetManager(
-                $filePath,
+                $zipFilePath,
                 $this->options,
                 $this->sharedStringsManager,
                 new XLSX()
@@ -114,12 +157,11 @@ final class Reader extends AbstractReader
         );
     }
 
-    /**
-     * Closes the reader. To be used after reading the file.
-     */
-    protected function closeReader(): void
+    private function deleteDecryptedFile(): void
     {
-        $this->zip->close();
-        $this->sharedStringsManager->cleanup();
+        if (null !== $this->decryptedFilePath) {
+            unlink($this->decryptedFilePath);
+            $this->decryptedFilePath = null;
+        }
     }
 }
