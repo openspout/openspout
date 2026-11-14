@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace OpenSpout\Writer\XLSX\Helper;
 
 use DateTimeImmutable;
-use OpenSpout\Common\Entity\Cell\ImageCell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\Escaper\XLSX;
@@ -159,7 +158,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
      *
      * @param Worksheet[] $worksheets
      */
-    public function createContentTypesFile(array $worksheets): self
+    public function createContentTypesFile(array $worksheets, ImageManager $imageManager): self
     {
         $contentTypesXmlFileContents = <<<'EOD'
             <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -170,20 +169,15 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
                 <Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml" PartName="/xl/workbook.xml"/>
             EOD;
 
-        $imageExtensions = [];
-
         /** @var Worksheet $worksheet */
         foreach ($worksheets as $worksheet) {
             $contentTypesXmlFileContents .= '<Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml" PartName="/xl/worksheets/sheet'.$worksheet->getId().'.xml"/>';
             $contentTypesXmlFileContents .= '<Override ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml" PartName="/xl/comments'.$worksheet->getId().'.xml" />';
-            if ([] !== $worksheet->getImages()) {
+            if ($imageManager->hasImages($worksheet)) {
                 $contentTypesXmlFileContents .= '<Override ContentType="application/vnd.openxmlformats-officedocument.drawing+xml" PartName="/xl/drawings/drawing'.$worksheet->getId().'.xml"/>';
-                foreach ($worksheet->getImages() as $image) {
-                    $imageExtensions[$image['cell']->getExtension()] = $image['cell']->mimeType;
-                }
             }
         }
-        foreach ($imageExtensions as $ext => $mime) {
+        foreach ($imageManager->getMimeTypes() as $ext => $mime) {
             $contentTypesXmlFileContents .= '<Default ContentType="'.$mime.'" Extension="'.$ext.'"/>';
         }
 
@@ -307,7 +301,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
      *
      * @param Worksheet[] $worksheets
      */
-    public function createWorksheetRelsFiles(array $worksheets, HyperlinkManager $hyperlinkManager): self
+    public function createWorksheetRelsFiles(array $worksheets, HyperlinkManager $hyperlinkManager, ImageManager $imageManager): self
     {
         $this->createFolder($this->getXlWorksheetsFolder(), self::RELS_FOLDER_NAME);
 
@@ -318,7 +312,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             $worksheetRelsContent .= '  <Relationship Id="rId_comments_vml1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing" Target="../drawings/vmlDrawing'.$worksheetId.'.vml"/>'.PHP_EOL;
             $worksheetRelsContent .= '  <Relationship Id="rId_comments1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments" Target="../comments'.$worksheetId.'.xml"/>'.PHP_EOL;
 
-            if ([] !== $worksheet->getImages()) {
+            if ($imageManager->hasImages($worksheet)) {
                 $worksheetRelsContent .= '  <Relationship Id="rIdDrawing1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" Target="../drawings/drawing'.$worksheetId.'.xml"/>'.PHP_EOL;
             }
 
@@ -487,7 +481,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
                 fwrite($worksheetFilePointer, '</hyperlinks>');
             }
 
-            if ([] !== $worksheet->getImages()) {
+            if ($imageManager->hasImages($worksheet)) {
                 fwrite($worksheetFilePointer, '<drawing r:id="rIdDrawing1"/>');
                 $this->createDrawingFiles($worksheet, $imageManager);
             }
@@ -929,30 +923,6 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     }
 
     /**
-     * Builds the <xdr:pic> XML fragment for a single image.
-     * For twoCellAnchor the cx/cy in spPr are irrelevant (sizing comes from the cell grid),
-     * so they default to 0. For oneCellAnchor they should mirror the <xdr:ext> values so
-     * that applications relying on spPr (e.g. LibreOffice) render the image at the correct size.
-     */
-    private function buildPicXml(int $imageIndex, int $picId, int $widthEmu = 0, int $heightEmu = 0): string
-    {
-        return '<xdr:pic>'
-            .'<xdr:nvPicPr>'
-            .'<xdr:cNvPr id="'.$picId.'" name="Image'.$imageIndex.'"/>'
-            .'<xdr:cNvPicPr><a:picLocks noChangeAspect="1"/></xdr:cNvPicPr>'
-            .'</xdr:nvPicPr>'
-            .'<xdr:blipFill>'
-            .'<a:blip r:embed="rId'.$imageIndex.'"/>'
-            .'<a:stretch><a:fillRect/></a:stretch>'
-            .'</xdr:blipFill>'
-            .'<xdr:spPr>'
-            .'<a:xfrm><a:off x="0" y="0"/><a:ext cx="'.$widthEmu.'" cy="'.$heightEmu.'"/></a:xfrm>'
-            .'<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
-            .'</xdr:spPr>'
-            .'</xdr:pic>';
-    }
-
-    /**
      * Creates the drawing XML, drawing rels, and media files for a worksheet that contains images.
      *
      * @throws IOException
@@ -972,28 +942,15 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 
         $sheetId = $worksheet->getId();
 
-        // Build a map of path → local rel ID (deduplicated within this drawing).
-        // Multiple cells in the same sheet that reference the same file share one
-        // relationship entry, pointing to a single media file in the archive.
-        /** @var array<string, array{relId: int, cell: ImageCell}> $pathToLocalRel */
-        $pathToLocalRel = [];
-        $localRelIdCounter = 1;
-        foreach ($worksheet->getImages() as $image) {
-            $path = $image['cell']->getValue();
-            if (!isset($pathToLocalRel[$path])) {
-                $pathToLocalRel[$path] = ['relId' => $localRelIdCounter++, 'cell' => $image['cell']];
-            }
-        }
-
         // Copy each unique image into the media folder (only if not already copied
         // by a previous worksheet) and build the drawing rels XML.
         $drawingRelsXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
             .'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">';
 
-        foreach ($pathToLocalRel as $path => ['relId' => $localRelId, 'cell' => $cell]) {
+        foreach ($imageManager->getImages($worksheet) as $path => ['relId' => $localRelId, 'extension' => $extension]) {
             $isNew = !$imageManager->has($path);
             $globalId = $imageManager->register($path);
-            $mediaName = 'image'.$globalId.'.'.$cell->getExtension();
+            $mediaName = 'image'.$globalId.'.'.$extension;
 
             if ($isNew) {
                 $mediaTarget = $mediaFolder.\DIRECTORY_SEPARATOR.$mediaName;
@@ -1009,53 +966,18 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 
         $drawingRelsXml .= '</Relationships>';
 
-        // Build the drawing XML — one anchor per cell, referencing the local rel ID.
         $drawingXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
             .'<xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing"'
             .' xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"'
             .' xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">';
 
-        $picCounter = 1;
-        foreach ($worksheet->getImages() as $image) {
-            $cell = $image['cell'];
-            $row = $image['row'];
-            $col = $image['col'];
-            $localRelId = $pathToLocalRel[$cell->getValue()]['relId'];
-            $picId = $picCounter + 1;
+        $drawingFilePath = $this->createFileWithContents($drawingsFolder, 'drawing'.$sheetId.'.xml', $drawingXml);
+        $drawingFilePointer = fopen($drawingFilePath, 'a');
+        \assert(false !== $drawingFilePointer);
+        $this->copyFileContentsToTarget($imageManager->getAnchorsFilePath($worksheet), $drawingFilePointer);
+        fwrite($drawingFilePointer, '</xdr:wsDr>');
+        fclose($drawingFilePointer);
 
-            if ($cell->fitToCell) {
-                $drawingXml .= '<xdr:twoCellAnchor editAs="twoCell">'
-                    .'<xdr:from>'
-                    .'<xdr:col>'.$col.'</xdr:col><xdr:colOff>0</xdr:colOff>'
-                    .'<xdr:row>'.$row.'</xdr:row><xdr:rowOff>0</xdr:rowOff>'
-                    .'</xdr:from>'
-                    .'<xdr:to>'
-                    .'<xdr:col>'.($col + 1).'</xdr:col><xdr:colOff>0</xdr:colOff>'
-                    .'<xdr:row>'.($row + 1).'</xdr:row><xdr:rowOff>0</xdr:rowOff>'
-                    .'</xdr:to>'
-                    .$this->buildPicXml($localRelId, $picId)
-                    .'<xdr:clientData/>'
-                    .'</xdr:twoCellAnchor>';
-            } else {
-                $widthEmu = $cell->width * 9525;
-                $heightEmu = $cell->height * 9525;
-                $drawingXml .= '<xdr:oneCellAnchor>'
-                    .'<xdr:from>'
-                    .'<xdr:col>'.$col.'</xdr:col><xdr:colOff>0</xdr:colOff>'
-                    .'<xdr:row>'.$row.'</xdr:row><xdr:rowOff>0</xdr:rowOff>'
-                    .'</xdr:from>'
-                    .'<xdr:ext cx="'.$widthEmu.'" cy="'.$heightEmu.'"/>'
-                    .$this->buildPicXml($localRelId, $picId, $widthEmu, $heightEmu)
-                    .'<xdr:clientData/>'
-                    .'</xdr:oneCellAnchor>';
-            }
-
-            ++$picCounter;
-        }
-
-        $drawingXml .= '</xdr:wsDr>';
-
-        $this->createFileWithContents($drawingsFolder, 'drawing'.$sheetId.'.xml', $drawingXml);
         $this->createFileWithContents($drawingsRelsFolder, 'drawing'.$sheetId.'.xml.rels', $drawingRelsXml);
     }
 

@@ -1702,6 +1702,87 @@ final class WriterTest extends TestCase
         self::assertSame(1, $mediaCount, 'The same image should be stored only once in the archive');
     }
 
+    public function testImageCellsAreKeptPerSheetWhenSwitchingSheets(): void
+    {
+        $fileName = 'test_image_cells_switching_sheets.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+
+        $firstSheet = $writer->getCurrentSheet();
+        $writer->addRow(new Row([new Cell\ImageCell($this->testImagePath, 1, 1)]));
+
+        $writer->addNewSheetAndMakeItCurrent();
+        $writer->addRow(Row::fromValues(['no images on this sheet']));
+
+        $writer->addNewSheetAndMakeItCurrent();
+        $writer->addRow(new Row([new Cell\ImageCell($this->testImagePath, 1, 1)]));
+
+        $writer->setCurrentSheet($firstSheet);
+        $writer->addRow(new Row([new Cell\ImageCell($this->testImagePath, 1, 1)]));
+
+        $writer->close();
+
+        $zip = new ZipArchive();
+        self::assertTrue($zip->open($resourcePath));
+
+        $firstDrawing = simplexml_load_string((string) $zip->getFromName('xl/drawings/drawing1.xml'));
+        self::assertNotFalse($firstDrawing);
+        $anchors = $firstDrawing->children('xdr', true)->oneCellAnchor;
+        self::assertCount(2, $anchors);
+        self::assertSame('0', (string) $anchors[0]->from->row);
+        self::assertSame('1', (string) $anchors[1]->from->row);
+
+        $thirdDrawing = simplexml_load_string((string) $zip->getFromName('xl/drawings/drawing3.xml'));
+        self::assertNotFalse($thirdDrawing);
+        self::assertCount(1, $thirdDrawing->children('xdr', true)->oneCellAnchor);
+
+        self::assertFalse($zip->getFromName('xl/drawings/drawing2.xml'));
+        self::assertStringNotContainsString('<drawing ', (string) $zip->getFromName('xl/worksheets/sheet2.xml'));
+        self::assertStringNotContainsString('drawing2.xml', (string) $zip->getFromName('[Content_Types].xml'));
+
+        for ($i = 0; $i < $zip->numFiles; ++$i) {
+            self::assertStringNotContainsString('-drawing', (string) $zip->getNameIndex($i));
+        }
+
+        $zip->close();
+    }
+
+    public function testImageFilesAreClosedWhenSwitchingSheetsAndOnClose(): void
+    {
+        if (!is_dir('/proc/self/fd')) {
+            self::markTestSkipped('This test requires Linux with /proc/self/fd');
+        }
+
+        $countFds = static function (): int {
+            $fds = scandir('/proc/self/fd');
+            \assert(false !== $fds);
+
+            return \count($fds);
+        };
+
+        $fdsBeforeOpen = $countFds();
+
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath('test_image_file_handles.xlsx');
+        $writer = new Writer(new Options(tempFolder: (new TestUsingResource())->getTempFolderPath()));
+        $writer->openToFile($resourcePath);
+        $writer->addRow(new Row([new Cell\ImageCell($this->testImagePath, 1, 1)]));
+
+        $fdsWithOneSheet = $countFds();
+
+        for ($i = 0; $i < 5; ++$i) {
+            $writer->addNewSheetAndMakeItCurrent();
+            $writer->addRow(new Row([new Cell\ImageCell($this->testImagePath, 1, 1)]));
+        }
+
+        self::assertSame($fdsWithOneSheet, $countFds());
+
+        $writer->close();
+
+        self::assertSame($fdsBeforeOpen, $countFds());
+    }
+
     public function testAddNewSheetAndMakeItCurrentLeaksFileHandles(): void
     {
         if (!is_dir('/proc/self/fd')) {

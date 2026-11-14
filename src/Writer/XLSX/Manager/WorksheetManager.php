@@ -37,6 +37,7 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
         private StyleManager $styleManager,
         private CommentsManager $commentsManager,
         private HyperlinkManager $hyperlinkManager,
+        private ImageManager $imageManager,
         private SharedStringsManager $sharedStringsManager,
         private XLSXEscaper $stringsEscaper,
         private StringHelper $stringHelper
@@ -76,6 +77,7 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
     {
         $this->commentsManager->closeWorksheetCommentFiles($worksheet);
         $this->hyperlinkManager->closeFiles($worksheet);
+        $this->imageManager->closeFile($worksheet);
         $fp = $worksheet->getFilePointer();
         if (null !== $fp) {
             fclose($fp);
@@ -87,6 +89,7 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
     {
         $this->commentsManager->closeTempCommentFiles($worksheet);
         $this->hyperlinkManager->closeFiles($worksheet);
+        $this->imageManager->closeFile($worksheet);
         fclose($worksheet->getFilePointer());
         $worksheet->setFilePointer(null);
     }
@@ -147,7 +150,7 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
 
         foreach ($row->cells as $columnIndexZeroBased => $cell) {
             if ($cell instanceof Cell\ImageCell) {
-                $worksheet->addImage($rowIndexOneBased - 1, $columnIndexZeroBased, $cell);
+                $this->imageManager->addImage($worksheet, $rowIndexOneBased - 1, $columnIndexZeroBased, $cell);
             }
             $styleId = $this->styleManager->registerCellStyle($cell);
             $rowXML .= $this->getCellXML($rowIndexOneBased, $columnIndexZeroBased, $cell, $styleId);
