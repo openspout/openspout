@@ -75,6 +75,7 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
     public function close(Worksheet $worksheet): void
     {
         $this->commentsManager->closeWorksheetCommentFiles($worksheet);
+        $this->hyperlinkManager->closeFiles($worksheet);
         $fp = $worksheet->getFilePointer();
         if (null !== $fp) {
             fclose($fp);
@@ -85,6 +86,7 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
     public function suspendSheet(Worksheet $worksheet): void
     {
         $this->commentsManager->closeTempCommentFiles($worksheet);
+        $this->hyperlinkManager->closeFiles($worksheet);
         fclose($worksheet->getFilePointer());
         $worksheet->setFilePointer(null);
     }
