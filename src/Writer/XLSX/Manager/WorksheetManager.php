@@ -149,10 +149,7 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
             if ($cell instanceof Cell\ImageCell) {
                 $worksheet->addImage($rowIndexOneBased - 1, $columnIndexZeroBased, $cell);
             }
-            $styleId = 0;
-            if (null !== $cell->style) {
-                $styleId = $this->styleManager->registerStyle($cell->style);
-            }
+            $styleId = $this->styleManager->registerCellStyle($cell);
             $rowXML .= $this->getCellXML($rowIndexOneBased, $columnIndexZeroBased, $cell, $styleId);
         }
 
