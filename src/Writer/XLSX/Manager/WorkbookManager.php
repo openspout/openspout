@@ -78,7 +78,7 @@ final class WorkbookManager extends AbstractWorkbookManager
             ->createWorkbookRelsFile($worksheets)
             ->createWorksheetRelsFiles($worksheets, $this->hyperlinkManager)
             ->createStylesFile($this->styleManager)
-            ->zipRootFolderAndCopyToStream($finalFilePointer)
+            ->zipRootFolderAndCopyToStream($finalFilePointer, $this->options->password)
         ;
     }
 }

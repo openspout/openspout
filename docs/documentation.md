@@ -230,6 +230,91 @@ $reader = new Reader(new Options(
     SHOULD_FORMAT_DATES: true, // default:true, with false will return formatted dates
 ));
 ```
+
+### Password-protected files (XLSX)
+
+XLSX files that require a password to be opened can be both read and written, by giving the password in the options.
+The `openssl` PHP extension is required.
+
+```php
+use OpenSpout\Reader\XLSX\Reader;
+use OpenSpout\Reader\XLSX\Options;
+
+$reader = new Reader(new Options(
+    password: 'the password',
+));
+$reader->open('/path/to/protected.xlsx');
+```
+
+```php
+use OpenSpout\Writer\XLSX\Writer;
+use OpenSpout\Writer\XLSX\Options;
+
+$writer = new Writer(new Options(
+    password: 'the password',
+));
+$writer->openToFile('/path/to/protected.xlsx'); // or openToBrowser()
+```
+
+The reader supports both encryption schemes defined for XLSX files: the "Agile" encryption, written by Excel 2010 and
+later, and the "Standard" encryption, written by Excel 2007 and LibreOffice. The writer encrypts the whole content of
+the file with the "Agile" encryption (AES-256), and the files it creates are compatible with both Excel (2010 and later)
+and LibreOffice.
+
+> This is not the same as the workbook and sheet [protections](#protection), which only prevent users from changing a
+> spreadsheet that anyone can open and read.
+
+When a file cannot be decrypted, `open()` throws an `IOException` whose previous exception tells why:
+
+```php
+use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Reader\Exception\InvalidPasswordException;
+use OpenSpout\Reader\Exception\PasswordRequiredException;
+
+try {
+    $reader->open('/path/to/protected.xlsx');
+} catch (IOException $exception) {
+    if ($exception->getPrevious() instanceof PasswordRequiredException) {
+        // the file is protected, and no password was given
+    } elseif ($exception->getPrevious() instanceof InvalidPasswordException) {
+        // the given password is not the right one
+    }
+}
+```
+
+The other possible reasons are `UnsupportedEncryptionException` (e.g. files protected with a certificate) and
+`EncryptedFileCorruptedException`.
+
+> The content of a protected file is stored unencrypted in the [temporary folder](#using-a-custom-temporary-folder)
+> (`tempFolder` option) while it is read or written, and is deleted when the reader or writer is closed: make sure to
+> always call `close()`, and to use a temporary folder with appropriate permissions.
+
+#### Adding or removing the password of an existing file
+
+A password can be removed from a file by reading it with the password and writing its rows to a new file, but the
+`FileDecryptor` and `FileEncryptor` helpers are a better fit, as they only wrap/unwrap the original file directly, 
+without parsing it which is faster and byte-accurate.
+
+To know whether a file is password-protected, and to remove its password:
+
+```php
+use OpenSpout\Reader\XLSX\Encryption\FileDecryptor;
+
+$decryptor = new FileDecryptor();
+if ($decryptor->isPasswordProtected('/path/to/file.xlsx')) {
+    $decryptor->decrypt('/path/to/file.xlsx', 'the password', '/path/to/decrypted.xlsx');
+}
+```
+
+To protect an existing XLSX file with a password:
+
+```php
+use OpenSpout\Writer\XLSX\Encryption\FileEncryptor;
+
+(new FileEncryptor())->encrypt('/path/to/file.xlsx', 'the password', '/path/to/protected.xlsx');
+```
+
+When writing, passwords are limited to 255 characters, and protected files to 2 GiB.
  
 ## Empty rows
 

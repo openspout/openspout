@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace OpenSpout\Writer\XLSX;
 
 use OpenSpout\Common\Entity\Style\Style;
+use OpenSpout\Common\Exception\InvalidArgumentException;
 use OpenSpout\Writer\Common\AbstractOptions;
+use OpenSpout\Writer\XLSX\Encryption\PackageEncryptor;
 use OpenSpout\Writer\XLSX\Options\HeaderFooter;
 use OpenSpout\Writer\XLSX\Options\PageMargin;
 use OpenSpout\Writer\XLSX\Options\PageSetup;
@@ -14,6 +16,7 @@ use OpenSpout\Writer\XLSX\Validation\DataValidationRuleInterface;
 use OpenSpout\Writer\XLSX\Validation\ValidationContainer;
 use OpenSpout\Writer\XLSX\Validation\ValidationDisplay;
 use OpenSpout\Writer\XLSX\Validation\ValidationRule;
+use SensitiveParameter;
 
 final readonly class Options extends AbstractOptions
 {
@@ -23,6 +26,9 @@ final readonly class Options extends AbstractOptions
     private MergeCellContainer $MERGE_CELLS;
     private ValidationContainer $VALIDATION_CELLS;
 
+    /**
+     * @param null|string $password UTF-8 encoded password, of 255 characters at most, that will be required to open the file: its content gets encrypted
+     */
     public function __construct(
         Style $FALLBACK_STYLE = new Style(
             fontSize: self::DEFAULT_FONT_SIZE,
@@ -38,7 +44,13 @@ final readonly class Options extends AbstractOptions
         public ?HeaderFooter $headerFooter = null,
         public ?WorkbookProtection $workbookProtection = null,
         public Properties $properties = new Properties(),
+        #[SensitiveParameter]
+        public ?string $password = null,
     ) {
+        if (null !== $password && 1 !== preg_match(PackageEncryptor::PASSWORD_PATTERN, $password)) {
+            throw new InvalidArgumentException('The password must be a UTF-8 string of 1 to 255 characters.');
+        }
+
         parent::__construct(
             $FALLBACK_STYLE,
             $SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY,

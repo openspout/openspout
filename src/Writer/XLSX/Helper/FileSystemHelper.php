@@ -16,6 +16,7 @@ use OpenSpout\Writer\Common\Entity\Worksheet;
 use OpenSpout\Writer\Common\Helper\CellHelper;
 use OpenSpout\Writer\Common\Helper\FileSystemWithRootFolderHelperInterface;
 use OpenSpout\Writer\Common\Helper\ZipHelper;
+use OpenSpout\Writer\XLSX\Encryption\PackageEncryptor;
 use OpenSpout\Writer\XLSX\Manager\HyperlinkManager;
 use OpenSpout\Writer\XLSX\Manager\ImageManager;
 use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
@@ -23,6 +24,7 @@ use OpenSpout\Writer\XLSX\MergeCell;
 use OpenSpout\Writer\XLSX\Options;
 use OpenSpout\Writer\XLSX\Properties;
 use OpenSpout\Writer\XLSX\Validation\ValidationRule;
+use SensitiveParameter;
 
 /**
  * @internal
@@ -520,9 +522,10 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     /**
      * Zips the root folder and streams the contents of the zip into the given stream.
      *
-     * @param resource $streamPointer Pointer to the stream to copy the zip
+     * @param resource    $streamPointer Pointer to the stream to copy the zip
+     * @param null|string $password      Password that will be required to open the file, if any
      */
-    public function zipRootFolderAndCopyToStream($streamPointer): void
+    public function zipRootFolderAndCopyToStream($streamPointer, #[SensitiveParameter] ?string $password = null): void
     {
         $zip = $this->zipHelper->createZip($this->rootFolder);
 
@@ -536,7 +539,13 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
         $this->zipHelper->addFileToArchive($zip, $this->rootFolder, self::XL_FOLDER_NAME.\DIRECTORY_SEPARATOR.self::STYLES_XML_FILE_NAME);
 
         $this->zipHelper->addFolderToArchive($zip, $this->rootFolder, ZipHelper::EXISTING_FILES_SKIP);
-        $this->zipHelper->closeArchiveAndCopyToStream($zip, $streamPointer);
+        if (null === $password) {
+            $this->zipHelper->closeArchiveAndCopyToStream($zip, $streamPointer);
+        } else {
+            // Password-protected files are not ZIP files, but containers of an encrypted ZIP file
+            $zip->close();
+            (new PackageEncryptor())->encrypt($zipFilePath, $password, $streamPointer);
+        }
 
         // once the zip is copied, remove it
         $this->deleteFile($zipFilePath);

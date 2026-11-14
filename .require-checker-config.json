@@ -13,8 +13,11 @@
     "SPL",
     "standard",
 
+    "hash",
     "iconv",
-    "mbstring"
+    "mbstring",
+    "openssl",
+    "random"
   ],
   "scan-files" : []
 }
