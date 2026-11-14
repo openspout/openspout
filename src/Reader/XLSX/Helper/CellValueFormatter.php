@@ -93,11 +93,21 @@ final readonly class CellValueFormatter
         if ('' === $cellType) {
             $cellType = self::CELL_TYPE_NUMERIC;
         }
-        $vNodeValue = $this->getVNodeValue($node);
+        $vNode = $node->getElementsByTagName(self::XML_NODE_VALUE)->item(0);
+        // for cell types having a "v" tag containing the value.
+        // if not, the value is an empty string.
+        $vNodeValue = (string) $vNode?->nodeValue;
 
         $fNodeValue = $node->getElementsByTagName(self::XML_NODE_FORMULA)->item(0)?->nodeValue;
         if (null !== $fNodeValue) {
-            $computedValue = $this->formatRawValueForCellType($cellType, $node, $vNodeValue);
+            // A formula without cached result (not calculated by the application that wrote the file)
+            // has no computed value. An empty "v" is only a result for formulas returning a string.
+            $hasCachedResult = self::CELL_TYPE_INLINE_STRING === $cellType
+                || '' !== $vNodeValue
+                || (null !== $vNode && self::CELL_TYPE_STR === $cellType);
+            $computedValue = $hasCachedResult
+                ? $this->formatRawValueForCellType($cellType, $node, $vNodeValue)
+                : null;
 
             return new Cell\FormulaCell(
                 '='.$fNodeValue,
@@ -117,20 +127,6 @@ final readonly class CellValueFormatter
         }
 
         return Cell::fromValue($rawValue);
-    }
-
-    /**
-     * Returns the cell's string value from a node's nested value node.
-     *
-     * @return string The value associated with the cell
-     */
-    private function getVNodeValue(DOMElement $node): string
-    {
-        // for cell types having a "v" tag containing the value.
-        // if not, the returned value should be empty string.
-        $vNode = $node->getElementsByTagName(self::XML_NODE_VALUE)->item(0);
-
-        return (string) $vNode?->nodeValue;
     }
 
     /**
