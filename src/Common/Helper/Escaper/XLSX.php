@@ -53,6 +53,8 @@ final readonly class XLSX implements EscaperInterface
         '_x001D_' => "\x1D",
         '_x001E_' => "\x1E",
         '_x001F_' => "\x1F",
+        '_xFFFE_' => "\u{FFFE}",
+        '_xFFFF_' => "\u{FFFF}",
     ];
 
     /**
@@ -88,6 +90,15 @@ final readonly class XLSX implements EscaperInterface
         "\x1D" => '_x001D_',
         "\x1E" => '_x001E_',
         "\x1F" => '_x001F_',
+    ];
+
+    /**
+     * Noncharacters U+FFFE and U+FFFF are not allowed in XML, so they get the same
+     * _xHHHH_ escaping as control characters. Otherwise the file cannot be parsed.
+     */
+    private const array nonCharactersEscapingReverseMap = [
+        "\u{FFFE}" => '_xFFFE_',
+        "\u{FFFF}" => '_xFFFF_',
     ];
 
     /**
@@ -175,7 +186,7 @@ final readonly class XLSX implements EscaperInterface
      */
     private function escapeControlCharacters(string $string): string
     {
-        $escapedString = $this->escapeEscapeCharacter($string);
+        $escapedString = strtr($this->escapeEscapeCharacter($string), self::nonCharactersEscapingReverseMap);
 
         // if no control characters
         if (1 !== preg_match('/'.self::escapableControlCharactersPattern.'/', $escapedString)) {

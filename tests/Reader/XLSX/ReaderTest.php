@@ -164,6 +164,20 @@ final class ReaderTest extends TestCase
         self::assertSame($expectedRows, $allRows);
     }
 
+    public function testReadShouldSupportSheetWithSharedStringsUnderstatedUniqueCountAttribute(): void
+    {
+        $allRows = $this->getAllRowsForFile('one_sheet_with_shared_strings_understated_unique_count.xlsx');
+
+        $expectedRows = [
+            ['s1--A1', 's1--B1', 's1--C1', 's1--D1', 's1--E1'],
+            ['s1--A2', 's1--B2', 's1--C2', 's1--D2', 's1--E2'],
+            ['s1--A3', 's1--B3', 's1--C3', 's1--D3', 's1--E3'],
+            ['s1--A4', 's1--B4', 's1--C4', 's1--D4', 's1--E4'],
+            ['s1--A5', 's1--B5', 's1--C5', 's1--D5', 's1--E5'],
+        ];
+        self::assertSame($expectedRows, $allRows);
+    }
+
     public function testReadShouldSupportFilesWithoutSharedStringsFile(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_with_no_shared_strings_file.xlsx');
@@ -359,6 +373,51 @@ final class ReaderTest extends TestCase
             ],
         ];
         self::assertEquals($expectedRows, $allRows);
+    }
+
+    public function testReadScientificNotationFormatsAsNumericValues(): void
+    {
+        $resourcePath = TestUsingResource::getResourcePath('sheet_with_scientific_notation_number_formats.xlsx');
+
+        $reader = new Reader();
+        $reader->open($resourcePath);
+
+        $cells = [];
+
+        foreach ($reader->getSheetIterator() as $sheet) {
+            foreach ($sheet->getRowIterator() as $row) {
+                $cells = $row->cells;
+            }
+        }
+
+        $reader->close();
+
+        self::assertCount(6, $cells);
+
+        // scientific notation formats must not be treated as date formats, whatever
+        // the exponent code variant (dot/comma decimal separator, positive/negative
+        // exponent, grouping separators, lowercase e)
+        self::assertInstanceOf(NumericCell::class, $cells[0]);
+        self::assertSame(44227, $cells[0]->getValue());
+
+        self::assertInstanceOf(NumericCell::class, $cells[1]);
+        self::assertSame(44227, $cells[1]->getValue());
+
+        self::assertInstanceOf(NumericCell::class, $cells[2]);
+        self::assertSame(44227, $cells[2]->getValue());
+
+        self::assertInstanceOf(NumericCell::class, $cells[3]);
+        self::assertSame(44227, $cells[3]->getValue());
+
+        // a genuinely date-formatted cell with an out-of-range value is still an error cell
+        self::assertInstanceOf(ErrorCell::class, $cells[4]);
+        self::assertNull($cells[4]->getValue());
+        self::assertSame('4720000000000', $cells[4]->getRawValue());
+
+        // the Japanese era year format is still detected as a date ("e" is a date
+        // format code per ECMA-376 Part 1 §18.8.30, "International Considerations")
+        self::assertInstanceOf(DateTimeCell::class, $cells[5]);
+        self::assertSame('2021-01-31', $cells[5]->getValue()->format('Y-m-d'));
     }
 
     public function testReadShouldReturnErrorCellsForOutOfRangeNumericTimestamps(): void
@@ -616,7 +675,12 @@ final class ReaderTest extends TestCase
 
         $startTime = microtime(true);
 
-        $this->getAllRowsForFile('attack_quadratic_blowup.xlsx');
+        try {
+            $this->getAllRowsForFile('attack_quadratic_blowup.xlsx');
+        } catch (IOException $ioException) {
+            // libxml2 >= 2.15 rejects the file outright, which is also a valid protection
+            self::assertStringContainsString('amplification', $ioException->getMessage());
+        }
 
         $duration = microtime(true) - $startTime;
         self::assertLessThan(10, $duration, 'Entities should not be expanded and therefore take more than 10 seconds to be parsed.');

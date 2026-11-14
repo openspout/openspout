@@ -159,6 +159,37 @@ final class StyleManagerTest extends TestCase
         self::assertFalse($shouldFormatAsDate);
     }
 
+    #[DataProvider('provideShouldFormatScientificNotationVariantsAsDateCases')]
+    public function testShouldFormatScientificNotationVariantsAsDate(string $numberFormat): void
+    {
+        $styleManager = $this->getStyleManagerMock(
+            [
+                1 => [
+                    'numFmtId' => 165,
+                    'applyNumberFormat' => null,
+                ],
+            ],
+            [
+                165 => $numberFormat,
+            ],
+        );
+        $shouldFormatAsDate = $styleManager->shouldFormatNumericValueAsDate(1);
+        self::assertFalse($shouldFormatAsDate);
+    }
+
+    public static function provideShouldFormatScientificNotationVariantsAsDateCases(): iterable
+    {
+        return [
+            'comma decimal separator' => ['0,00E+00'],
+            'negative exponent' => ['0.00E-00'],
+            'fewer decimals' => ['0.0E+00'],
+            'grouping separator' => ['#,##0.0E+0'],
+            'no decimal' => ['0E+00'],
+            'lowercase e' => ['0.00e+00'],
+            'text section suffix' => ['0.00E+00;@'],
+        ];
+    }
+
     private function getStyleManagerMock(array $styleAttributes = [], array $customNumberFormats = []): Stub&StyleManager
     {
         $styleManager = self::getStubBuilder(StyleManager::class)

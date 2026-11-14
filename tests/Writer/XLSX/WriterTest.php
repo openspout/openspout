@@ -269,6 +269,53 @@ final class WriterTest extends TestCase
         self::assertStringContainsString('<Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/custom-properties" Target="docProps/custom.xml"/>', $relsXmlContents);
     }
 
+    public function testSetPropertiesEscapesXmlSpecialCharacters(): void
+    {
+        $fileName = 'test_set_properties_escapes_xml_special_characters.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $options = new Options(
+            tempFolder: (new TestUsingResource())->getTempFolderPath(),
+            properties: new Properties(
+                'Title & <1>',
+                'Subject & <2>',
+                'Application & <3>',
+                'Creator & <4>',
+                'Last Modified By & <5>',
+                'Keywords & <6>',
+                'Description & <7>',
+                'Category & <8>',
+                'Language & <9>',
+                ['Name "&" <10>' => 'Value & <11>'],
+            ),
+        );
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $writer->close();
+
+        $appXmlContents = file_get_contents('zip://'.$resourcePath.'#docProps/app.xml');
+        self::assertNotFalse($appXmlContents);
+        self::assertNotFalse(simplexml_load_string($appXmlContents));
+        self::assertStringContainsString('<Application>Application &amp; &lt;3&gt;</Application>', $appXmlContents);
+
+        $coreXmlContents = file_get_contents('zip://'.$resourcePath.'#docProps/core.xml');
+        self::assertNotFalse($coreXmlContents);
+        self::assertNotFalse(simplexml_load_string($coreXmlContents));
+        self::assertStringContainsString('<dc:title>Title &amp; &lt;1&gt;</dc:title>', $coreXmlContents);
+        self::assertStringContainsString('<dc:subject>Subject &amp; &lt;2&gt;</dc:subject>', $coreXmlContents);
+        self::assertStringContainsString('<dc:creator>Creator &amp; &lt;4&gt;</dc:creator>', $coreXmlContents);
+        self::assertStringContainsString('<cp:lastModifiedBy>Last Modified By &amp; &lt;5&gt;</cp:lastModifiedBy>', $coreXmlContents);
+        self::assertStringContainsString('<cp:keywords>Keywords &amp; &lt;6&gt;</cp:keywords>', $coreXmlContents);
+        self::assertStringContainsString('<dc:description>Description &amp; &lt;7&gt;</dc:description>', $coreXmlContents);
+        self::assertStringContainsString('<cp:category>Category &amp; &lt;8&gt;</cp:category>', $coreXmlContents);
+        self::assertStringContainsString('<dc:language>Language &amp; &lt;9&gt;</dc:language>', $coreXmlContents);
+
+        $customXmlContents = file_get_contents('zip://'.$resourcePath.'#docProps/custom.xml');
+        self::assertNotFalse($customXmlContents);
+        self::assertNotFalse(simplexml_load_string($customXmlContents));
+        self::assertStringContainsString('name="Name &quot;&amp;&quot; &lt;10&gt;"><vt:lpwstr>Value &amp; &lt;11&gt;</vt:lpwstr>', $customXmlContents);
+    }
+
     public function testAddRowShouldWriteGivenDataToSheetUsingInlineStrings(): void
     {
         $fileName = 'test_add_row_should_write_given_data_to_sheet_using_inline_strings.xlsx';
@@ -525,6 +572,18 @@ final class WriterTest extends TestCase
         $this->assertInlineDataWasWrittenToSheet($fileName, 1, 'control _x0015_ character');
     }
 
+    public function testAddRowShouldEscapeXmlNonCharacters(): void
+    {
+        $fileName = 'test_add_row_should_escape_xml_non_characters.xlsx';
+        $dataRows = [
+            Row::fromValues(["non \u{FFFE} character"]),
+        ];
+
+        $this->writeToXLSXFile($dataRows, $fileName);
+
+        $this->assertInlineDataWasWrittenToSheet($fileName, 1, 'non _xFFFE_ character');
+    }
+
     public function testAddRowShouldApplyHeight(): void
     {
         $fileName = 'test_add_row_should_apply_height.xlsx';
@@ -566,6 +625,67 @@ final class WriterTest extends TestCase
         self::assertInstanceOf(DOMElement::class, $fixedRow);
         self::assertSame('15', $fixedRow->getAttribute('ht'), 'Explicit row height does not equal given value.');
         self::assertSame('1', $fixedRow->getAttribute('customHeight'), 'Explicitly sized row must be flagged as custom height.');
+    }
+
+    public function testAddRowShouldApplyOutlineLevel(): void
+    {
+        $fileName = 'test_add_row_should_apply_outline_level.xlsx';
+
+        $this->writeToXLSXFile([
+            Row::fromValues(['xlsx--11']),
+            Row::fromValues(['xlsx--21'], outlineLevel: 1),
+            Row::fromValues(['xlsx--31'], outlineLevel: 2),
+        ], $fileName);
+
+        $xmlReader = $this->getXmlReaderForSheetFromXmlFile($fileName, '1');
+
+        $xmlReader->readUntilNodeFound('row');
+        $notOutlinedRow = $xmlReader->expand();
+        self::assertInstanceOf(DOMElement::class, $notOutlinedRow);
+        self::assertFalse($notOutlinedRow->hasAttribute('outlineLevel'), 'Row with default outline level must not declare it.');
+
+        $xmlReader->next('row');
+        $firstLevelRow = $xmlReader->expand();
+        self::assertInstanceOf(DOMElement::class, $firstLevelRow);
+        self::assertSame('1', $firstLevelRow->getAttribute('outlineLevel'), 'Row outline level does not equal given value.');
+
+        $xmlReader->next('row');
+        $secondLevelRow = $xmlReader->expand();
+        self::assertInstanceOf(DOMElement::class, $secondLevelRow);
+        self::assertSame('2', $secondLevelRow->getAttribute('outlineLevel'), 'Row outline level does not equal given value.');
+    }
+
+    public function testAddRowShouldApplyHiddenAndCollapsed(): void
+    {
+        $fileName = 'test_add_row_should_apply_hidden_and_collapsed.xlsx';
+
+        $this->writeToXLSXFile([
+            Row::fromValues(['xlsx--11']),
+            Row::fromValues(['xlsx--21'], outlineLevel: 1, hidden: true),
+            Row::fromValues(['xlsx--31'], collapsed: true),
+        ], $fileName);
+
+        $this->assertInlineDataWasWrittenToSheet($fileName, 1, '<row r="1" spans="1:1">', 'Row must be neither hidden nor collapsed by default.');
+        $this->assertInlineDataWasWrittenToSheet($fileName, 1, '<row r="2" spans="1:1" hidden="1" outlineLevel="1">', 'Hidden row not found in sheet.');
+        $this->assertInlineDataWasWrittenToSheet($fileName, 1, '<row r="3" spans="1:1" collapsed="1">', 'Collapsed row not found in sheet.');
+    }
+
+    public function testAddRowShouldWriteEmptyRowWithAttributes(): void
+    {
+        $fileName = 'test_add_row_should_write_empty_row_with_attributes.xlsx';
+
+        $this->writeToXLSXFile([
+            Row::fromValues(['xlsx--11'], outlineLevel: 1),
+            new Row([], outlineLevel: 1),
+            new Row([], hidden: true),
+            new Row([], collapsed: true),
+            new Row([]),
+        ], $fileName);
+
+        $this->assertInlineDataWasWrittenToSheet($fileName, 1, '<row r="2" outlineLevel="1"></row>', 'Empty outlined row must be written so that it does not split its group.');
+        $this->assertInlineDataWasWrittenToSheet($fileName, 1, '<row r="3" hidden="1"></row>', 'Empty hidden row must be written so that it stays hidden.');
+        $this->assertInlineDataWasWrittenToSheet($fileName, 1, '<row r="4" collapsed="1"></row>', 'Empty collapsed row must be written so that its group stays collapsed.');
+        $this->assertInlineDataWasNotWrittenToSheet($fileName, 1, '<row r="5"', 'Empty row without attributes must not be written.');
     }
 
     public function testCloseShouldAddMergeCellTags(): void
@@ -1436,7 +1556,35 @@ final class WriterTest extends TestCase
         $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
 
         self::assertNotFalse($xmlContents);
-        self::assertStringContainsString('<workbookProtection workbookPassword="83AF" lockStructure="true" lockWindows="true" lockRevisions="true"/>', $xmlContents);
+        self::assertStringContainsString('<workbookProtection workbookPassword="83AF" lockStructure="true" lockWindows="true" lockRevision="true"/>', $xmlContents);
+    }
+
+    public function testWorkbookProtectionUsesSchemaAttributeName(): void
+    {
+        $fileName = 'test_set_workbook_protection_schema.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $options = new Options(
+            tempFolder: (new TestUsingResource())->getTempFolderPath(),
+            workbookProtection: new WorkbookProtection(
+                password: 'password',
+                lockStructure: true,
+                lockWindows: true,
+                lockRevisions: true,
+            ),
+        );
+
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $writer->close();
+
+        // ISO/IEC 29500-1 §18.2.29 (CT_WorkbookProtection): attributes are
+        // workbookPassword, lockStructure, lockWindows and lockRevision (singular).
+        $pathToSheetFile = $resourcePath.'#xl/workbook.xml';
+        $xmlContents = file_get_contents('zip://'.$pathToSheetFile);
+
+        self::assertNotFalse($xmlContents);
+        self::assertStringContainsString('<workbookProtection workbookPassword="83AF" lockStructure="true" lockWindows="true" lockRevision="true"/>', $xmlContents);
     }
 
     public function testWriteValidationTagsToXml(): void

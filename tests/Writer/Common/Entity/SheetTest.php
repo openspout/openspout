@@ -90,19 +90,24 @@ final class SheetTest extends TestCase
         $sheet->setName($customSheetName);
     }
 
+    /**
+     * Each workbook owns its own SheetManager: names must be scoped to that
+     * instance, not tracked in shared (static) state that outlives the workbook.
+     */
     public function testSetSheetNameShouldNotThrowWhenSameNameUsedInDifferentWorkbooks(): void
     {
+        $this->expectNotToPerformAssertions();
+
         $customSheetName = 'Sheet name';
 
-        $sheet = $this->createSheet(0, 'workbookId1');
+        $sheet = new Sheet(0, 'workbookId1', new SheetManager(StringHelper::factory()));
         $sheet->setName($customSheetName);
 
-        $sheet = $this->createSheet(0, 'workbookId2');
+        $sheet = new Sheet(0, 'workbookId2', new SheetManager(StringHelper::factory()));
         $sheet->setName($customSheetName);
 
-        $sheet = $this->createSheet(1, 'workbookId3');
+        $sheet = new Sheet(1, 'workbookId3', new SheetManager(StringHelper::factory()));
         $sheet->setName($customSheetName);
-        $this->expectNotToPerformAssertions();
     }
 
     public function testSetColumnHiddenGathersConsecutiveColumnsIntoRanges(): void

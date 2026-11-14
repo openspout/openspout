@@ -23,6 +23,9 @@ final class Worksheet
     /** @var int Maximum number of columns among all the written rows */
     private int $maxNumColumns = 0;
 
+    /** @var int<0, 7> Maximum outline level among all the written rows */
+    private int $maxRowOutlineLevel = 0;
+
     /** @var int Index of the last written row */
     private int $lastWrittenRowIndex = 0;
 
@@ -72,6 +75,22 @@ final class Worksheet
     public function setMaxNumColumns(int $maxNumColumns): void
     {
         $this->maxNumColumns = $maxNumColumns;
+    }
+
+    /**
+     * @return int<0, 7>
+     */
+    public function getMaxRowOutlineLevel(): int
+    {
+        return $this->maxRowOutlineLevel;
+    }
+
+    /**
+     * @param int<0, 7> $maxRowOutlineLevel
+     */
+    public function setMaxRowOutlineLevel(int $maxRowOutlineLevel): void
+    {
+        $this->maxRowOutlineLevel = $maxRowOutlineLevel;
     }
 
     public function getLastWrittenRowIndex(): int

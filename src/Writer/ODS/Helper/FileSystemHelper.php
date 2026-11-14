@@ -6,6 +6,7 @@ namespace OpenSpout\Writer\ODS\Helper;
 
 use DateTimeImmutable;
 use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Common\Helper\Escaper\ODS;
 use OpenSpout\Common\Helper\FileSystemHelper as CommonFileSystemHelper;
 use OpenSpout\Writer\Common\Entity\Worksheet;
 use OpenSpout\Writer\Common\Helper\FileSystemWithRootFolderHelperInterface;
@@ -47,17 +48,22 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     /** @var ZipHelper Helper to perform tasks with Zip archive */
     private readonly ZipHelper $zipHelper;
 
+    /** @var ODS Used to escape XML data */
+    private readonly ODS $escaper;
+
     /**
      * @param string    $baseFolderPath The path of the base folder where all the I/O can occur
      * @param ZipHelper $zipHelper      Helper to perform tasks with Zip archive
      * @param string    $creator        document creator
+     * @param ODS       $escaper        Used to escape XML data
      */
-    public function __construct(string $baseFolderPath, ZipHelper $zipHelper, string $creator)
+    public function __construct(string $baseFolderPath, ZipHelper $zipHelper, string $creator, ODS $escaper)
     {
         $this->baseFileSystemHelper = new CommonFileSystemHelper($baseFolderPath);
         $this->baseFolderRealPath = $this->baseFileSystemHelper->getBaseFolderRealPath();
         $this->zipHelper = $zipHelper;
         $this->creator = $creator;
+        $this->escaper = $escaper;
     }
 
     public function createFolder(string $parentFolderPath, string $folderName): string
@@ -331,7 +337,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
             <office:document-meta office:version="1.2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:meta="urn:oasis:names:tc:opendocument:xmlns:meta:1.0" xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <office:meta>
-                    <dc:creator>{$this->creator}</dc:creator>
+                    <dc:creator>{$this->escaper->escape($this->creator)}</dc:creator>
                     <meta:creation-date>{$createdDate}</meta:creation-date>
                     <dc:date>{$createdDate}</dc:date>
                 </office:meta>

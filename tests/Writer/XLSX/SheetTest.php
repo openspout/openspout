@@ -155,6 +155,30 @@ final class SheetTest extends TestCase
         self::assertStringContainsString(' defaultRowHeight="0', $xmlContents, 'No default row height found in sheet');
     }
 
+    public function testWritesMaxRowOutlineLevelOfEachSheet(): void
+    {
+        $fileName = 'test_writes_max_row_outline_level_of_each_sheet.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $writer->addRow(Row::fromValues(['xlsx--11'], outlineLevel: 1));
+        $writer->addRow(Row::fromValues(['xlsx--21'], outlineLevel: 3));
+        $writer->addRow(Row::fromValues(['xlsx--31'], outlineLevel: 2));
+        $writer->addNewSheetAndMakeItCurrent();
+        $writer->addRow(Row::fromValues(['xlsx--11']));
+        $writer->close();
+
+        $outlinedSheetXmlContents = file_get_contents('zip://'.$resourcePath.'#xl/worksheets/sheet1.xml');
+        self::assertNotFalse($outlinedSheetXmlContents);
+        self::assertStringContainsString('<sheetFormatPr defaultRowHeight="0" outlineLevelRow="3"/>', $outlinedSheetXmlContents, 'Max row outline level not found in sheet');
+
+        $notOutlinedSheetXmlContents = file_get_contents('zip://'.$resourcePath.'#xl/worksheets/sheet2.xml');
+        self::assertNotFalse($notOutlinedSheetXmlContents);
+        self::assertStringNotContainsString('<sheetFormatPr', $notOutlinedSheetXmlContents, 'Sheet without outlined rows must not declare sheet format properties');
+    }
+
     public function testWritesColumnWidths(): void
     {
         $fileName = 'test_column_widths.xlsx';

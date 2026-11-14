@@ -7,7 +7,6 @@ namespace OpenSpout\Writer\Common\Manager;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\InvalidArgumentException;
 use OpenSpout\Common\Exception\IOException;
-use OpenSpout\Common\Helper\StringHelper;
 use OpenSpout\Writer\Common\AbstractOptions;
 use OpenSpout\Writer\Common\Entity\Sheet;
 use OpenSpout\Writer\Common\Entity\Workbook;
@@ -34,6 +33,8 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
     /** @var Workbook The workbook to manage */
     private readonly Workbook $workbook;
 
+    private readonly SheetManager $sheetManager;
+
     /** @var Worksheet The worksheet where data will be written to */
     private Worksheet $currentWorksheet;
 
@@ -42,13 +43,15 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
         AbstractOptions $options,
         WorksheetManagerInterface $worksheetManager,
         StyleManagerInterface $styleManager,
-        FileSystemWithRootFolderHelperInterface $fileSystemHelper
+        FileSystemWithRootFolderHelperInterface $fileSystemHelper,
+        SheetManager $sheetManager
     ) {
         $this->workbook = $workbook;
         $this->options = $options;
         $this->worksheetManager = $worksheetManager;
         $this->styleManager = $styleManager;
         $this->fileSystemHelper = $fileSystemHelper;
+        $this->sheetManager = $sheetManager;
     }
 
     /**
@@ -192,8 +195,7 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
         $worksheets = $this->getWorksheets();
 
         $newSheetIndex = \count($worksheets);
-        $sheetManager = new SheetManager(StringHelper::factory());
-        $sheet = new Sheet($newSheetIndex, $this->workbook->getInternalId(), $sheetManager);
+        $sheet = new Sheet($newSheetIndex, $this->workbook->getInternalId(), $this->sheetManager);
 
         $worksheetFilePath = $this->getWorksheetFilePath($sheet);
         $worksheet = new Worksheet($worksheetFilePath, $sheet);
@@ -262,6 +264,9 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
         $currentMaxNumColumns = $worksheet->getMaxNumColumns();
         $cellsCount = $row->getNumCells();
         $worksheet->setMaxNumColumns(max($currentMaxNumColumns, $cellsCount));
+
+        // update max row outline level for the worksheet
+        $worksheet->setMaxRowOutlineLevel(max($worksheet->getMaxRowOutlineLevel(), $row->outlineLevel));
     }
 
     /**

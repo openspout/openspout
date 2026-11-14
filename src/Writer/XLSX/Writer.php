@@ -9,6 +9,7 @@ use OpenSpout\Common\Helper\StringHelper;
 use OpenSpout\Writer\AbstractWriterMultiSheets;
 use OpenSpout\Writer\Common\Entity\Workbook;
 use OpenSpout\Writer\Common\Helper\ZipHelper;
+use OpenSpout\Writer\Common\Manager\SheetManager;
 use OpenSpout\Writer\XLSX\Helper\FileSystemHelper;
 use OpenSpout\Writer\XLSX\Manager\CommentsManager;
 use OpenSpout\Writer\XLSX\Manager\HyperlinkManager;
@@ -65,7 +66,7 @@ final class Writer extends AbstractWriterMultiSheets
         );
 
         $commentsManager = new CommentsManager($xlFolder, new XLSX());
-        $hyperlinkManager = new HyperlinkManager();
+        $hyperlinkManager = new HyperlinkManager($fileSystemHelper->getSheetsContentTempFolder(), $escaper);
         $imageManager = new ImageManager();
 
         $worksheetManager = new WorksheetManager(
@@ -84,6 +85,7 @@ final class Writer extends AbstractWriterMultiSheets
             $worksheetManager,
             $styleManager,
             $fileSystemHelper,
+            new SheetManager(StringHelper::factory()),
             $hyperlinkManager,
             $imageManager,
         );

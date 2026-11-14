@@ -6,6 +6,7 @@ namespace OpenSpout\Writer\XLSX\Helper;
 
 use DateTimeImmutable;
 use OpenSpout\Common\Entity\Cell\ImageCell;
+use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Helper\Escaper\XLSX;
 use OpenSpout\Common\Helper\FileSystemHelper as CommonFileSystemHelper;
@@ -317,23 +318,23 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             $worksheetRelsContent .= '  <Relationship Id="rId_comments_vml1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing" Target="../drawings/vmlDrawing'.$worksheetId.'.vml"/>'.PHP_EOL;
             $worksheetRelsContent .= '  <Relationship Id="rId_comments1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments" Target="../comments'.$worksheetId.'.xml"/>'.PHP_EOL;
 
-            $hyperlinks = $hyperlinkManager->getHyperlinks($worksheet);
-            $hyperlinkId = 1;
-            foreach ($hyperlinks as $url) {
-                $worksheetRelsContent .= '  <Relationship Id="rId_hyperlink'.$hyperlinkId.'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="'.$this->escaper->escape($url).'" TargetMode="External"/>'.PHP_EOL;
-                ++$hyperlinkId;
-            }
-
             if ([] !== $worksheet->getImages()) {
                 $worksheetRelsContent .= '  <Relationship Id="rIdDrawing1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" Target="../drawings/drawing'.$worksheetId.'.xml"/>'.PHP_EOL;
             }
 
-            $worksheetRelsContent .= '</Relationships>';
-
             $folder = $this->getXlWorksheetsFolder().\DIRECTORY_SEPARATOR.'_rels';
             $filename = 'sheet'.$worksheetId.'.xml.rels';
 
-            $this->createFileWithContents($folder, $filename, $worksheetRelsContent);
+            $worksheetRelsFilePath = $this->createFileWithContents($folder, $filename, $worksheetRelsContent);
+            $worksheetRelsFilePointer = fopen($worksheetRelsFilePath, 'a');
+            \assert(false !== $worksheetRelsFilePointer);
+
+            if ($hyperlinkManager->hasHyperlinks($worksheet)) {
+                $this->copyFileContentsToTarget($hyperlinkManager->getRelationshipsFilePath($worksheet), $worksheetRelsFilePointer);
+            }
+
+            fwrite($worksheetRelsFilePointer, '</Relationships>');
+            fclose($worksheetRelsFilePointer);
         }
 
         return $this;
@@ -389,7 +390,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             if (null !== ($sheetView = $sheet->getSheetView())) {
                 fwrite($worksheetFilePointer, '<sheetViews>'.$sheetView->getXml().'</sheetViews>');
             }
-            fwrite($worksheetFilePointer, $this->getXMLFragmentForDefaultCellSizing($options));
+            fwrite($worksheetFilePointer, $this->getXMLFragmentForSheetFormatProperties($options, $worksheet));
             fwrite($worksheetFilePointer, $this->getXMLFragmentForColumnWidths($options, $sheet));
             fwrite($worksheetFilePointer, '<sheetData>');
 
@@ -480,14 +481,9 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 
             $this->getXMLFragmentForHeaderFooter($worksheetFilePointer, $options);
 
-            $hyperlinks = $hyperlinkManager->getHyperlinks($worksheet);
-            if ([] !== $hyperlinks) {
+            if ($hyperlinkManager->hasHyperlinks($worksheet)) {
                 fwrite($worksheetFilePointer, '<hyperlinks>');
-                $hyperlinkId = 1;
-                foreach ($hyperlinks as $cellRef => $url) {
-                    fwrite($worksheetFilePointer, '<hyperlink ref="'.$cellRef.'" r:id="rId_hyperlink'.$hyperlinkId.'"/>');
-                    ++$hyperlinkId;
-                }
+                $this->copyFileContentsToTarget($hyperlinkManager->getHyperlinksFilePath($worksheet), $worksheetFilePointer);
                 fwrite($worksheetFilePointer, '</hyperlinks>');
             }
 
@@ -693,19 +689,21 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
     }
 
     /**
-     * Constructs default row height and width xml to inject into worksheet xml file.
+     * Constructs default row height and width, as well as rows outline level, xml to inject into worksheet xml file.
      */
-    private function getXMLFragmentForDefaultCellSizing(Options $options): string
+    private function getXMLFragmentForSheetFormatProperties(Options $options, Worksheet $worksheet): string
     {
         $rowHeightXml = null === $options->DEFAULT_ROW_HEIGHT ? '' : " defaultRowHeight=\"{$options->DEFAULT_ROW_HEIGHT}\"";
         $colWidthXml = null === $options->DEFAULT_COLUMN_WIDTH ? '' : " defaultColWidth=\"{$options->DEFAULT_COLUMN_WIDTH}\"";
-        if ('' === $colWidthXml && '' === $rowHeightXml) {
+        $maxRowOutlineLevel = $worksheet->getMaxRowOutlineLevel();
+        $rowOutlineLevelXml = Row::DEFAULT_OUTLINE_LEVEL === $maxRowOutlineLevel ? '' : " outlineLevelRow=\"{$maxRowOutlineLevel}\"";
+        if ('' === $colWidthXml && '' === $rowHeightXml && '' === $rowOutlineLevelXml) {
             return '';
         }
         // Ensure that the required defaultRowHeight is set
         $rowHeightXml = '' === $rowHeightXml ? ' defaultRowHeight="0"' : $rowHeightXml;
 
-        return "<sheetFormatPr{$colWidthXml}{$rowHeightXml}/>";
+        return "<sheetFormatPr{$colWidthXml}{$rowHeightXml}{$rowOutlineLevelXml}/>";
     }
 
     /**
@@ -792,7 +790,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
         $appXmlFileContents = <<<EOD
             <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
             <Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties">
-                <Application>{$this->properties->application}</Application>
+                <Application>{$this->escapeProperty($this->properties->application)}</Application>
                 <TotalTime>0</TotalTime>
             </Properties>
             EOD;
@@ -813,14 +811,14 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
         $coreXmlFileContents = <<<EOD
             <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
             <cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-                <dc:title>{$this->properties->title}</dc:title>
-                <dc:subject>{$this->properties->subject}</dc:subject>
-                <dc:creator>{$this->properties->creator}</dc:creator>
-                <cp:lastModifiedBy>{$this->properties->lastModifiedBy}</cp:lastModifiedBy>
-                <cp:keywords>{$this->properties->keywords}</cp:keywords>
-                <dc:description>{$this->properties->description}</dc:description>
-                <cp:category>{$this->properties->category}</cp:category>
-                <dc:language>{$this->properties->language}</dc:language>
+                <dc:title>{$this->escapeProperty($this->properties->title)}</dc:title>
+                <dc:subject>{$this->escapeProperty($this->properties->subject)}</dc:subject>
+                <dc:creator>{$this->escapeProperty($this->properties->creator)}</dc:creator>
+                <cp:lastModifiedBy>{$this->escapeProperty($this->properties->lastModifiedBy)}</cp:lastModifiedBy>
+                <cp:keywords>{$this->escapeProperty($this->properties->keywords)}</cp:keywords>
+                <dc:description>{$this->escapeProperty($this->properties->description)}</dc:description>
+                <cp:category>{$this->escapeProperty($this->properties->category)}</cp:category>
+                <dc:language>{$this->escapeProperty($this->properties->language)}</dc:language>
                 <dcterms:created xsi:type="dcterms:W3CDTF">{$createdDate}</dcterms:created>
                 <dcterms:modified xsi:type="dcterms:W3CDTF">{$createdDate}</dcterms:modified>
                 <cp:revision>0</cp:revision>
@@ -845,7 +843,7 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 
         foreach ($this->properties->customProperties as $name => $value) {
             $propertiesXmlContents .= <<<EOD
-                <property fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}" pid="{$pid}" name="{$name}"><vt:lpwstr>{$value}</vt:lpwstr></property>
+                <property fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}" pid="{$pid}" name="{$this->escapeProperty($name)}"><vt:lpwstr>{$this->escapeProperty($value)}</vt:lpwstr></property>
                 EOD;
 
             ++$pid;
@@ -859,6 +857,11 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
         $this->createFileWithContents($this->docPropsFolder, self::CUSTOM_XML_FILE_NAME, $customXmlFileContents);
 
         return $this;
+    }
+
+    private function escapeProperty(?string $value): string
+    {
+        return $this->escaper->escape($value ?? '');
     }
 
     /**

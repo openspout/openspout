@@ -40,4 +40,16 @@ final class RowManagerTest extends TestCase
             [[1 => $cell1, 3 => $cell3], [Cell::fromValue(''), $cell1, Cell::fromValue(''), $cell3]],
         ];
     }
+
+    public function testFillMissingIndexesWithEmptyCellsPreservesRowAttributes(): void
+    {
+        $rowManager = new RowManager();
+
+        $rowFilled = $rowManager->fillMissingIndexesWithEmptyCells(new Row([1 => Cell::fromValue(1)], 15.5, 2, hidden: true, collapsed: true));
+
+        self::assertSame(15.5, $rowFilled->height);
+        self::assertSame(2, $rowFilled->outlineLevel);
+        self::assertTrue($rowFilled->hidden);
+        self::assertTrue($rowFilled->collapsed);
+    }
 }
