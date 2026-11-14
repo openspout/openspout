@@ -273,6 +273,47 @@ final class WriterWithStyleTest extends TestCase
         $this->assertFirstChildHasAttributeEquals('1', $xfElement, 'alignment', 'wrapText');
     }
 
+    public function testAddRowShouldRegisterOneWrapTextStylePerStyleForNewlineCells(): void
+    {
+        $fileName = 'test_add_row_should_register_one_wrap_text_style_per_style.xlsx';
+
+        $style = new Style(fontBold: true);
+        $dataRows = [
+            Row::fromValues(["xlsx--11\nxlsx--11", "xlsx--12\nxlsx--12"]),
+            Row::fromValues(["xlsx--21\nxlsx--21", 'xlsx--22']),
+            Row::fromValuesWithStyles(["xlsx--31\nxlsx--31", "xlsx--32\nxlsx--32"], [$style, $style]),
+        ];
+
+        $this->writeToXLSXFile($dataRows, $fileName);
+
+        $cellXfsDomElement = $this->getXmlSectionFromStylesXmlFile($fileName, 'cellXfs');
+        self::assertSame('4', $cellXfsDomElement->getAttribute('count'), 'default, default + wrap, custom, custom + wrap');
+        $this->assertFirstChildHasAttributeEquals('1', $cellXfsDomElement->getElementsByTagName('xf')->item(1), 'alignment', 'wrapText');
+        $this->assertFirstChildHasAttributeEquals('1', $cellXfsDomElement->getElementsByTagName('xf')->item(3), 'alignment', 'wrapText');
+
+        $cellStyleIds = array_map(
+            static fn (DOMElement $cellElement): string => $cellElement->getAttribute('s'),
+            $this->getCellElementsFromSheetXmlFile($fileName)
+        );
+        self::assertSame(['1', '1', '1', '0', '3', '3'], $cellStyleIds);
+    }
+
+    public function testAddRowShouldNotWrapNewlineCellWithExplicitNoWrapStyle(): void
+    {
+        $fileName = 'test_add_row_should_not_wrap_new_lines_with_explicit_no_wrap.xlsx';
+
+        $style = new Style(shouldWrapText: false);
+        $dataRows = [
+            Row::fromValuesWithStyles(["xlsx--11\nxlsx--11"], [$style]),
+        ];
+
+        $this->writeToXLSXFile($dataRows, $fileName);
+
+        $cellXfsDomElement = $this->getXmlSectionFromStylesXmlFile($fileName, 'cellXfs');
+        self::assertSame('2', $cellXfsDomElement->getAttribute('count'));
+        $this->assertFirstChildHasAttributeEquals('0', $cellXfsDomElement->getElementsByTagName('xf')->item(1), 'alignment', 'wrapText');
+    }
+
     public function testAddRowShouldApplyCellAlignment(): void
     {
         $fileName = 'test_add_row_should_apply_cell_alignment.xlsx';
@@ -506,6 +547,43 @@ final class WriterWithStyleTest extends TestCase
 
         $defaultFontElement = $fontElements->item(0);
         $this->assertFirstChildHasAttributeEquals((string) $defaultFontSize, $defaultFontElement, 'sz', 'val');
+    }
+
+    public function testSetDefaultRowStyleShouldApplyToNewlineCells(): void
+    {
+        $fileName = 'test_set_default_row_style_for_new_lines.xlsx';
+        $dataRows = [
+            Row::fromValues(["xlsx--11\nxlsx--11"]),
+        ];
+
+        $defaultFontSize = 50;
+        $defaultStyle = new Style(fontSize: $defaultFontSize);
+
+        $this->writeToXLSXFileWithDefaultStyle($dataRows, $fileName, $defaultStyle);
+
+        $cellXfsDomElement = $this->getXmlSectionFromStylesXmlFile($fileName, 'cellXfs');
+        self::assertSame('2', $cellXfsDomElement->getAttribute('count'), 'default, default + wrap');
+        $wrapTextXfElement = $cellXfsDomElement->getElementsByTagName('xf')->item(1);
+        $this->assertFirstChildHasAttributeEquals('1', $wrapTextXfElement, 'alignment', 'wrapText');
+        self::assertSame('1', $this->getCellElementsFromSheetXmlFile($fileName)[0]->getAttribute('s'));
+
+        $fontsDomElement = $this->getXmlSectionFromStylesXmlFile($fileName, 'fonts');
+        $wrapTextFontElement = $fontsDomElement->getElementsByTagName('font')->item((int) $wrapTextXfElement->getAttribute('fontId'));
+        $this->assertFirstChildHasAttributeEquals((string) $defaultFontSize, $wrapTextFontElement, 'sz', 'val');
+    }
+
+    public function testSetDefaultRowStyleWithExplicitNoWrapShouldApplyToNewlineCells(): void
+    {
+        $fileName = 'test_set_default_row_style_with_explicit_no_wrap_for_new_lines.xlsx';
+        $dataRows = [
+            Row::fromValues(["xlsx--11\nxlsx--11"]),
+        ];
+
+        $this->writeToXLSXFileWithDefaultStyle($dataRows, $fileName, new Style(shouldWrapText: false));
+
+        $cellXfsDomElement = $this->getXmlSectionFromStylesXmlFile($fileName, 'cellXfs');
+        self::assertSame('1', $cellXfsDomElement->getAttribute('count'), 'Only the default style');
+        self::assertSame('0', $this->getCellElementsFromSheetXmlFile($fileName)[0]->getAttribute('s'));
     }
 
     public function testReuseBorders(): void
