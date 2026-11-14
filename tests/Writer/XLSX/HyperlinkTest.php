@@ -108,7 +108,7 @@ final class HyperlinkTest extends TestCase
             .'<hyperlink ref="A1" location="\'Orders\'!A42" tooltip="Show &quot;order&quot; &amp; items"/>'
             .'<hyperlink ref="B1" r:id="rId_hyperlink1" tooltip="Open website"/>'
             .'</hyperlinks>',
-            (string) file_get_contents('zip://'.$this->outputFilePath.'#xl/worksheets/sheet1.xml')
+            (string) file_get_contents("zip://{$this->outputFilePath}#xl/worksheets/sheet1.xml")
         );
     }
 
