@@ -6,6 +6,7 @@ namespace OpenSpout\Writer\XLSX\Manager;
 
 use OpenSpout\Writer\Common\Entity\Workbook;
 use OpenSpout\Writer\Common\Manager\AbstractWorkbookManager;
+use OpenSpout\Writer\Common\Manager\SheetManager;
 use OpenSpout\Writer\XLSX\Helper\FileSystemHelper;
 use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
 use OpenSpout\Writer\XLSX\Options;
@@ -33,6 +34,7 @@ final class WorkbookManager extends AbstractWorkbookManager
         WorksheetManager $worksheetManager,
         StyleManager $styleManager,
         FileSystemHelper $fileSystemHelper,
+        SheetManager $sheetManager,
         private readonly HyperlinkManager $hyperlinkManager,
         private readonly ImageManager $imageManager,
     ) {
@@ -41,7 +43,8 @@ final class WorkbookManager extends AbstractWorkbookManager
             $options,
             $worksheetManager,
             $styleManager,
-            $fileSystemHelper
+            $fileSystemHelper,
+            $sheetManager
         );
     }
 
