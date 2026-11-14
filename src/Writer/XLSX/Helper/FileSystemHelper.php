@@ -369,16 +369,8 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             $sheet = $worksheet->getExternalSheet();
             fwrite($worksheetFilePointer, self::SHEET_XML_FILE_HEADER);
 
-            // AutoFilter tags
-            if (null !== $autofilter = $sheet->getAutoFilter()) {
-                if ($options->pageSetup?->fitToPage) {
-                    fwrite($worksheetFilePointer, '<sheetPr filterMode="false"><pageSetUpPr fitToPage="true"/></sheetPr>');
-                } else {
-                    fwrite($worksheetFilePointer, '<sheetPr filterMode="false"><pageSetUpPr fitToPage="false"/></sheetPr>');
-                }
-            } elseif ($options->pageSetup?->fitToPage) {
-                fwrite($worksheetFilePointer, '<sheetPr><pageSetUpPr fitToPage="true"/></sheetPr>');
-            }
+            $autofilter = $sheet->getAutoFilter();
+            fwrite($worksheetFilePointer, $this->getXMLFragmentForSheetProperties($options, $sheet, null !== $autofilter));
             $sheetRange = \sprintf(
                 '%s%s:%s%s',
                 CellHelper::getColumnLettersFromColumnIndex(0),
@@ -622,6 +614,34 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
         $xml .= '/>';
 
         fwrite($targetResource, $xml);
+    }
+
+    /**
+     * Constructs sheet properties xml to inject into worksheet xml file.
+     */
+    private function getXMLFragmentForSheetProperties(Options $options, Sheet $sheet, bool $hasAutoFilter): string
+    {
+        $outlineAttributes = '';
+        if (null !== ($summaryRowsBelowDetail = $sheet->getSummaryRowsBelowDetail())) {
+            $outlineAttributes .= ' summaryBelow="'.($summaryRowsBelowDetail ? '1' : '0').'"';
+        }
+        if (null !== ($summaryColumnsRightOfDetail = $sheet->getSummaryColumnsRightOfDetail())) {
+            $outlineAttributes .= ' summaryRight="'.($summaryColumnsRightOfDetail ? '1' : '0').'"';
+        }
+
+        // the schema requires outlinePr to come before pageSetUpPr
+        $children = '' !== $outlineAttributes ? '<outlinePr'.$outlineAttributes.'/>' : '';
+        $fitToPage = true === $options->pageSetup?->fitToPage;
+        // fitToPage is always written along with an autofilter, even when false
+        if ($hasAutoFilter || $fitToPage) {
+            $children .= '<pageSetUpPr fitToPage="'.($fitToPage ? 'true' : 'false').'"/>';
+        }
+
+        if ('' === $children) {
+            return '';
+        }
+
+        return '<sheetPr'.($hasAutoFilter ? ' filterMode="false"' : '').'>'.$children.'</sheetPr>';
     }
 
     /**

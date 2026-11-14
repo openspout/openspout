@@ -389,6 +389,25 @@ $writer->close();
 Empty rows are normally not written to XLSX files, but those having any of these
 attributes are, so that they are not lost (and do not split the group they belong to).
 
+Spreadsheet applications expect the summary row of a group right below it, and
+draw the expand/collapse button next to that row. When the summary row comes
+first, as for a heading followed by its details, tell the sheet so; the button
+then sits next to the row above the group. The same goes for column groups,
+whose summary column is expected to their right:
+
+```php
+$sheet = $writer->getCurrentSheet();
+$sheet->setSummaryRowsBelowDetail(false);
+$sheet->setSummaryColumnsRightOfDetail(false);
+
+$writer->addRow(Row::fromValues(['Total A', 60]));
+$writer->addRow(Row::fromValues(['Item A1', 30], outlineLevel: 1));
+$writer->addRow(Row::fromValues(['Item A2', 30], outlineLevel: 1));
+```
+
+These settings apply to the whole sheet and can be changed until the writer is
+closed. They are ignored for ODS output.
+
 For ODS, hidden rows are written with `table:visibility="collapse"`. Note that ODS
 **outline-level grouping is not yet supported**: outline levels are ignored for ODS
 output, and so is the collapsed flag, as it only describes the state of a group.

@@ -169,6 +169,24 @@ final class SheetTest extends TestCase
         self::assertSame(3, $levels[0]->level);
     }
 
+    public function testSummaryPositionsAreNotSetByDefault(): void
+    {
+        $sheet = $this->createSheet(0, 'workbookId1');
+
+        self::assertNull($sheet->getSummaryRowsBelowDetail());
+        self::assertNull($sheet->getSummaryColumnsRightOfDetail());
+    }
+
+    public function testSetSummaryPositions(): void
+    {
+        $sheet = $this->createSheet(0, 'workbookId1');
+
+        self::assertSame($sheet, $sheet->setSummaryRowsBelowDetail(false));
+        self::assertSame($sheet, $sheet->setSummaryColumnsRightOfDetail(true));
+        self::assertFalse($sheet->getSummaryRowsBelowDetail());
+        self::assertTrue($sheet->getSummaryColumnsRightOfDetail());
+    }
+
     /**
      * @param 0|positive-int $sheetIndex
      */
