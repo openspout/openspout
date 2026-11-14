@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace OpenSpout\Writer\XLSX;
 
 use OpenSpout\Common\Entity\Cell;
+use OpenSpout\Common\Entity\Hyperlink;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\TestUsingResource;
 use PHPUnit\Framework\TestCase;
@@ -43,6 +44,72 @@ final class HyperlinkTest extends TestCase
         $writer->close();
 
         $this->assertZipFileContainsHyperlink($this->outputFilePath, 'A1', 'https://example.com');
+    }
+
+    public function testLinksWithinTheWorkbookHaveNoRelationship(): void
+    {
+        $writer = new Writer(new Options(tempFolder: (new TestUsingResource())->getTempFolderPath()));
+        $writer->openToFile($this->outputFilePath);
+
+        $writer->addRow(new Row([
+            Cell::fromValue('totals', null, null, Hyperlink::toCell('A100')),
+            Cell::fromValue('website', null, null, 'https://example.com/a'),
+            Cell::fromValue('details', null, null, Hyperlink::toCell('B2:D10', 'Orders & "Returns"')),
+            Cell::fromValue('website', null, null, Hyperlink::toUrl('https://example.com/b')),
+        ]));
+
+        $writer->addNewSheetAndMakeItCurrent();
+        $writer->addRow(new Row([Cell::fromValue('back', null, null, Hyperlink::toSheet('Sheet1'))]));
+
+        $writer->close();
+
+        $zip = new ZipArchive();
+        self::assertTrue($zip->open($this->outputFilePath));
+
+        self::assertStringContainsString(
+            '<hyperlinks>'
+            .'<hyperlink ref="A1" location="A100"/>'
+            .'<hyperlink ref="B1" r:id="rId_hyperlink1"/>'
+            .'<hyperlink ref="C1" location="\'Orders &amp; &quot;Returns&quot;\'!B2:D10"/>'
+            .'<hyperlink ref="D1" r:id="rId_hyperlink2"/>'
+            .'</hyperlinks>',
+            (string) $zip->getFromName('xl/worksheets/sheet1.xml')
+        );
+        self::assertStringContainsString(
+            '<hyperlinks><hyperlink ref="A1" location="\'Sheet1\'!A1"/></hyperlinks>',
+            (string) $zip->getFromName('xl/worksheets/sheet2.xml')
+        );
+
+        $firstSheetRels = (string) $zip->getFromName('xl/worksheets/_rels/sheet1.xml.rels');
+        self::assertSame(2, substr_count($firstSheetRels, 'relationships/hyperlink'));
+        self::assertStringNotContainsString('#', $firstSheetRels);
+
+        $secondSheetRels = simplexml_load_string((string) $zip->getFromName('xl/worksheets/_rels/sheet2.xml.rels'));
+        self::assertNotFalse($secondSheetRels);
+        self::assertStringNotContainsString('relationships/hyperlink', (string) $secondSheetRels->asXML());
+
+        $zip->close();
+    }
+
+    public function testHyperlinkTooltips(): void
+    {
+        $writer = new Writer(new Options(tempFolder: (new TestUsingResource())->getTempFolderPath()));
+        $writer->openToFile($this->outputFilePath);
+
+        $writer->addRow(new Row([
+            Cell::fromValue('details', null, null, Hyperlink::toCell('A42', 'Orders')->withTooltip('Show "order" & items')),
+            Cell::fromValue('website', null, null, Hyperlink::toUrl('https://example.com')->withTooltip('Open website')),
+        ]));
+
+        $writer->close();
+
+        self::assertStringContainsString(
+            '<hyperlinks>'
+            .'<hyperlink ref="A1" location="\'Orders\'!A42" tooltip="Show &quot;order&quot; &amp; items"/>'
+            .'<hyperlink ref="B1" r:id="rId_hyperlink1" tooltip="Open website"/>'
+            .'</hyperlinks>',
+            (string) file_get_contents("zip://{$this->outputFilePath}#xl/worksheets/sheet1.xml")
+        );
     }
 
     public function testHyperlinksAreKeptPerSheetWhenSwitchingSheets(): void
