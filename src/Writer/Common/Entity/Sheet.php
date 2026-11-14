@@ -70,7 +70,6 @@ final class Sheet
         $this->associatedWorkbookId = $associatedWorkbookId;
 
         $this->sheetManager = $sheetManager;
-        $this->sheetManager->markWorkbookIdAsUsed($associatedWorkbookId);
 
         $this->setName(self::DEFAULT_SHEET_NAME_PREFIX.($sheetIndex + 1));
         $this->setIsVisible(true);

@@ -7,7 +7,6 @@ namespace OpenSpout\Writer\Common\Manager;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\InvalidArgumentException;
 use OpenSpout\Common\Exception\IOException;
-use OpenSpout\Common\Helper\StringHelper;
 use OpenSpout\Writer\Common\AbstractOptions;
 use OpenSpout\Writer\Common\Entity\Sheet;
 use OpenSpout\Writer\Common\Entity\Workbook;
@@ -44,14 +43,15 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
         AbstractOptions $options,
         WorksheetManagerInterface $worksheetManager,
         StyleManagerInterface $styleManager,
-        FileSystemWithRootFolderHelperInterface $fileSystemHelper
+        FileSystemWithRootFolderHelperInterface $fileSystemHelper,
+        SheetManager $sheetManager
     ) {
         $this->workbook = $workbook;
         $this->options = $options;
         $this->worksheetManager = $worksheetManager;
         $this->styleManager = $styleManager;
         $this->fileSystemHelper = $fileSystemHelper;
-        $this->sheetManager = new SheetManager(StringHelper::factory());
+        $this->sheetManager = $sheetManager;
     }
 
     /**
