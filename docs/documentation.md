@@ -586,6 +586,29 @@ $cellWithHyperlink = $cell->withHyperlink('https://example.com');
 $cellWithoutHyperlink = $cellWithHyperlink->withoutHyperlink();
 ```
 
+### Links within the workbook
+
+Use `Hyperlink` to link to another cell or sheet of the same workbook. It takes care of quoting the sheet name:
+
+```php
+use OpenSpout\Common\Entity\Cell;
+use OpenSpout\Common\Entity\Hyperlink;
+
+// a cell on the same sheet
+$cell = Cell::fromValue('Jump to totals', null, null, Hyperlink::toCell('A100'));
+
+// a cell or range on another sheet
+$cell = Cell::fromValue('Order 4711', null, null, Hyperlink::toCell('A42', 'Order Details'));
+
+// another sheet (links to its cell A1)
+$cell = Cell::fromValue('Show details', null, null, Hyperlink::toSheet('Order Details'));
+
+// an external URL, same as passing the string directly
+$cell = Cell::fromValue('Click me', null, null, Hyperlink::toUrl('https://example.com'));
+```
+
+`Hyperlink` can be used everywhere a hyperlink string is accepted, including `withHyperlink()`.
+
 ## Playing with sheets
 
 When creating a XLSX or ODS file, it is possible to control which sheet the data will be written into. At any time, you

@@ -6,20 +6,24 @@ namespace OpenSpout\Common\Entity\Cell;
 
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Comment\Comment;
+use OpenSpout\Common\Entity\Hyperlink;
 use OpenSpout\Common\Entity\Style\Style;
 
 final readonly class StringCell extends Cell
 {
+    public ?string $hyperlinkUrl;
+
     private string $value;
 
     public function __construct(
         string $value,
         ?Style $style = null,
         ?Comment $comment = null,
-        public ?string $hyperlinkUrl = null,
+        Hyperlink|string|null $hyperlinkUrl = null,
     ) {
         parent::__construct($style, $comment);
         $this->value = $value;
+        $this->hyperlinkUrl = null === $hyperlinkUrl ? null : (string) $hyperlinkUrl;
     }
 
     public function getValue(): string
@@ -52,7 +56,7 @@ final readonly class StringCell extends Cell
         return new self($this->value, $this->style, null, $this->hyperlinkUrl);
     }
 
-    public function withHyperlink(string $hyperlinkUrl): static
+    public function withHyperlink(Hyperlink|string $hyperlinkUrl): static
     {
         return new self($this->value, $this->style, $this->comment, $hyperlinkUrl);
     }

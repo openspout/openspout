@@ -150,6 +150,19 @@ final class CellTest extends TestCase
         self::assertNotNull($cell->comment);
     }
 
+    public function testStringCellAcceptsHyperlinkObjects(): void
+    {
+        $hyperlink = Hyperlink::toCell('A42', 'Order Details');
+
+        $cell = Cell::fromValue('test', null, null, $hyperlink);
+        self::assertInstanceOf(StringCell::class, $cell);
+        self::assertSame("#'Order Details'!A42", $cell->hyperlinkUrl);
+        self::assertSame("#'Order Details'!A42", (new StringCell('test', null, null, $hyperlink))->hyperlinkUrl);
+        self::assertSame("#'Order Details'!A42", (new StringCell('test', null))->withHyperlink($hyperlink)->hyperlinkUrl);
+        self::assertSame('https://example.com', (new StringCell('test', null))->withHyperlink('https://example.com')->hyperlinkUrl);
+        self::assertNull((new StringCell('test', null))->hyperlinkUrl);
+    }
+
     public function testNumericCellWithValue(): void
     {
         $cell = new NumericCell(42, null, null);
