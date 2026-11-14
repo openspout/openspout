@@ -318,23 +318,23 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
             $worksheetRelsContent .= '  <Relationship Id="rId_comments_vml1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing" Target="../drawings/vmlDrawing'.$worksheetId.'.vml"/>'.PHP_EOL;
             $worksheetRelsContent .= '  <Relationship Id="rId_comments1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments" Target="../comments'.$worksheetId.'.xml"/>'.PHP_EOL;
 
-            $hyperlinks = $hyperlinkManager->getHyperlinks($worksheet);
-            $hyperlinkId = 1;
-            foreach ($hyperlinks as $url) {
-                $worksheetRelsContent .= '  <Relationship Id="rId_hyperlink'.$hyperlinkId.'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="'.$this->escaper->escape($url).'" TargetMode="External"/>'.PHP_EOL;
-                ++$hyperlinkId;
-            }
-
             if ([] !== $worksheet->getImages()) {
                 $worksheetRelsContent .= '  <Relationship Id="rIdDrawing1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" Target="../drawings/drawing'.$worksheetId.'.xml"/>'.PHP_EOL;
             }
 
-            $worksheetRelsContent .= '</Relationships>';
-
             $folder = $this->getXlWorksheetsFolder().\DIRECTORY_SEPARATOR.'_rels';
             $filename = 'sheet'.$worksheetId.'.xml.rels';
 
-            $this->createFileWithContents($folder, $filename, $worksheetRelsContent);
+            $worksheetRelsFilePath = $this->createFileWithContents($folder, $filename, $worksheetRelsContent);
+            $worksheetRelsFilePointer = fopen($worksheetRelsFilePath, 'a');
+            \assert(false !== $worksheetRelsFilePointer);
+
+            if ($hyperlinkManager->hasHyperlinks($worksheet)) {
+                $this->copyFileContentsToTarget($hyperlinkManager->getRelationshipsFilePath($worksheet), $worksheetRelsFilePointer);
+            }
+
+            fwrite($worksheetRelsFilePointer, '</Relationships>');
+            fclose($worksheetRelsFilePointer);
         }
 
         return $this;
@@ -481,14 +481,9 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
 
             $this->getXMLFragmentForHeaderFooter($worksheetFilePointer, $options);
 
-            $hyperlinks = $hyperlinkManager->getHyperlinks($worksheet);
-            if ([] !== $hyperlinks) {
+            if ($hyperlinkManager->hasHyperlinks($worksheet)) {
                 fwrite($worksheetFilePointer, '<hyperlinks>');
-                $hyperlinkId = 1;
-                foreach ($hyperlinks as $cellRef => $url) {
-                    fwrite($worksheetFilePointer, '<hyperlink ref="'.$cellRef.'" r:id="rId_hyperlink'.$hyperlinkId.'"/>');
-                    ++$hyperlinkId;
-                }
+                $this->copyFileContentsToTarget($hyperlinkManager->getHyperlinksFilePath($worksheet), $worksheetFilePointer);
                 fwrite($worksheetFilePointer, '</hyperlinks>');
             }
 
