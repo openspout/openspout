@@ -55,9 +55,13 @@ final class HyperlinkManager
 
             $cellRef = CellHelper::getColumnLettersFromColumnIndex($columnIndexZeroBased).$rowIndexOneBased;
 
+            \assert(null !== $cell->hyperlink);
+            $tooltip = $cell->hyperlink->tooltip;
+            $tooltipAttribute = null === $tooltip ? '' : \sprintf(' tooltip="%s"', $this->escaper->escape($tooltip));
+
             if (str_starts_with($cell->hyperlinkUrl, '#')) {
                 $location = $this->escaper->escape(substr($cell->hyperlinkUrl, 1));
-                fwrite($hyperlinksFilePointer, \sprintf('<hyperlink ref="%s" location="%s"/>', $cellRef, $location));
+                fwrite($hyperlinksFilePointer, \sprintf('<hyperlink ref="%s" location="%s"%s/>', $cellRef, $location, $tooltipAttribute));
 
                 continue;
             }
@@ -65,7 +69,7 @@ final class HyperlinkManager
             $hyperlinkId = ($this->hyperlinkCounts[$sheetId] ?? 0) + 1;
             $this->hyperlinkCounts[$sheetId] = $hyperlinkId;
 
-            fwrite($hyperlinksFilePointer, '<hyperlink ref="'.$cellRef.'" r:id="rId_hyperlink'.$hyperlinkId.'"/>');
+            fwrite($hyperlinksFilePointer, \sprintf('<hyperlink ref="%s" r:id="rId_hyperlink%d"%s/>', $cellRef, $hyperlinkId, $tooltipAttribute));
             fwrite($relationshipsFilePointer, '  <Relationship Id="rId_hyperlink'.$hyperlinkId.'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="'.$this->escaper->escape($cell->hyperlinkUrl).'" TargetMode="External"/>'.PHP_EOL);
         }
     }

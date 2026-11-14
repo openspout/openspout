@@ -15,13 +15,22 @@ use Stringable;
  */
 final readonly class Hyperlink implements Stringable
 {
+    /**
+     * @param null|string $tooltip Text shown when hovering the link
+     */
     private function __construct(
         private string $target,
+        public ?string $tooltip = null,
     ) {}
 
     public function __toString(): string
     {
         return $this->target;
+    }
+
+    public function withTooltip(string $tooltip): self
+    {
+        return new self($this->target, $tooltip);
     }
 
     public static function toUrl(string $url): self

@@ -622,6 +622,15 @@ $cell = Cell::fromValue('Click me', null, null, Hyperlink::toUrl('https://exampl
 $cellWithHyperlink = $cell->withHyperlink(Hyperlink::toCell('A42', 'Order Details'));
 ```
 
+### Hyperlink tooltips
+
+Any `Hyperlink` can have a tooltip, which is shown when hovering the link:
+
+```php
+$cell = Cell::fromValue('Order 4711', null, null, Hyperlink::toCell('A42', 'Order Details')->withTooltip('Show order details'));
+$cell = Cell::fromValue('Click me', null, null, Hyperlink::toUrl('https://example.com')->withTooltip('Opens example.com'));
+```
+
 ## Playing with sheets
 
 When creating a XLSX or ODS file, it is possible to control which sheet the data will be written into. At any time, you

@@ -11,6 +11,9 @@ use OpenSpout\Common\Entity\Style\Style;
 
 final readonly class StringCell extends Cell
 {
+    public ?Hyperlink $hyperlink;
+
+    /** Target of the hyperlink, same as (string) $hyperlink */
     public ?string $hyperlinkUrl;
 
     private string $value;
@@ -23,7 +26,8 @@ final readonly class StringCell extends Cell
     ) {
         parent::__construct($style, $comment);
         $this->value = $value;
-        $this->hyperlinkUrl = null === $hyperlinkUrl ? null : (string) $hyperlinkUrl;
+        $this->hyperlink = \is_string($hyperlinkUrl) ? Hyperlink::toUrl($hyperlinkUrl) : $hyperlinkUrl;
+        $this->hyperlinkUrl = null === $this->hyperlink ? null : (string) $this->hyperlink;
     }
 
     public function getValue(): string
@@ -33,27 +37,27 @@ final readonly class StringCell extends Cell
 
     public function withValue(string $value): self
     {
-        return new self($value, $this->style, $this->comment, $this->hyperlinkUrl);
+        return new self($value, $this->style, $this->comment, $this->hyperlink);
     }
 
     public function withStyle(Style $style): static
     {
-        return new self($this->value, $style, $this->comment, $this->hyperlinkUrl);
+        return new self($this->value, $style, $this->comment, $this->hyperlink);
     }
 
     public function withoutStyle(): static
     {
-        return new self($this->value, null, $this->comment, $this->hyperlinkUrl);
+        return new self($this->value, null, $this->comment, $this->hyperlink);
     }
 
     public function withComment(Comment $comment): static
     {
-        return new self($this->value, $this->style, $comment, $this->hyperlinkUrl);
+        return new self($this->value, $this->style, $comment, $this->hyperlink);
     }
 
     public function withoutComment(): static
     {
-        return new self($this->value, $this->style, null, $this->hyperlinkUrl);
+        return new self($this->value, $this->style, null, $this->hyperlink);
     }
 
     public function withHyperlink(Hyperlink|string $hyperlinkUrl): static

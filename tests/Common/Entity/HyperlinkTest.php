@@ -18,6 +18,16 @@ final class HyperlinkTest extends TestCase
         self::assertSame('https://example.com/?a=1&b=2', (string) Hyperlink::toUrl('https://example.com/?a=1&b=2'));
     }
 
+    public function testWithTooltip(): void
+    {
+        $hyperlink = Hyperlink::toCell('A42', 'Orders');
+        $hyperlinkWithTooltip = $hyperlink->withTooltip('Show order');
+
+        self::assertNull($hyperlink->tooltip);
+        self::assertSame('Show order', $hyperlinkWithTooltip->tooltip);
+        self::assertSame("#'Orders'!A42", (string) $hyperlinkWithTooltip);
+    }
+
     #[DataProvider('provideToCellCases')]
     public function testToCell(string $expected, string $cellReference, ?string $sheetName): void
     {
