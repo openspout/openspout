@@ -67,13 +67,14 @@ final class Writer extends AbstractWriterMultiSheets
 
         $commentsManager = new CommentsManager($xlFolder, new XLSX());
         $hyperlinkManager = new HyperlinkManager($fileSystemHelper->getSheetsContentTempFolder(), $escaper);
-        $imageManager = new ImageManager();
+        $imageManager = new ImageManager($fileSystemHelper->getSheetsContentTempFolder());
 
         $worksheetManager = new WorksheetManager(
             $this->options,
             $styleManager,
             $commentsManager,
             $hyperlinkManager,
+            $imageManager,
             $sharedStringsManager,
             $escaper,
             StringHelper::factory()
