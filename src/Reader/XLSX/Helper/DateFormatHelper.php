@@ -70,12 +70,16 @@ final readonly class DateFormatHelper
         // so they are turned into quoted text, handled below. Other characters are never PHP format
         // characters, so the backslash can simply be dropped.
         // For instance, [yyyy-mm-dd\Thh] should result in [Y-m-d\TH] and not [Y-m-dtH]
-        $dateFormat = preg_replace_callback('/"[^"]*"|\\\(.)/', static function (array $matches): string {
-            if (!isset($matches[1])) {
-                return $matches[0];
+        $dateFormat = preg_replace_callback('/"[^"]*"|\\\([a-zA-Z])|\\\(.)/', static function (array $matches): string {
+            if (isset($matches[2])) {
+                return $matches[2];
             }
 
-            return ctype_alpha($matches[1]) ? '"'.$matches[1].'"' : $matches[1];
+            if (isset($matches[1])) {
+                return '"'.$matches[1].'"';
+            }
+
+            return $matches[0];
         }, $dateFormat);
         \assert(null !== $dateFormat);
 
