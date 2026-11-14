@@ -597,17 +597,30 @@ use OpenSpout\Common\Entity\Hyperlink;
 // a cell on the same sheet
 $cell = Cell::fromValue('Jump to totals', null, null, Hyperlink::toCell('A100'));
 
-// a cell or range on another sheet
+// a cell on another sheet
 $cell = Cell::fromValue('Order 4711', null, null, Hyperlink::toCell('A42', 'Order Details'));
+
+// a range on another sheet (the range gets selected)
+$cell = Cell::fromValue('All orders', null, null, Hyperlink::toCell('B2:D10', 'Order Details'));
 
 // another sheet (links to its cell A1)
 $cell = Cell::fromValue('Show details', null, null, Hyperlink::toSheet('Order Details'));
+```
 
-// an external URL, same as passing the string directly
+External URLs can be passed either as a plain string, as shown above, or with `Hyperlink::toUrl()`. Both produce the
+same result:
+
+```php
+$cell = Cell::fromValue('Click me', null, null, 'https://example.com');
 $cell = Cell::fromValue('Click me', null, null, Hyperlink::toUrl('https://example.com'));
 ```
 
-`Hyperlink` can be used everywhere a hyperlink string is accepted, including `withHyperlink()`.
+`Hyperlink` can be used everywhere a hyperlink string is accepted, including the `StringCell` constructor and
+`withHyperlink()`:
+
+```php
+$cellWithHyperlink = $cell->withHyperlink(Hyperlink::toCell('A42', 'Order Details'));
+```
 
 ## Playing with sheets
 
