@@ -105,6 +105,19 @@ final class SheetTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
+    public function testSheetNamesAreNotSharedBetweenSheetManagers(): void
+    {
+        $customSheetName = 'Sheet name';
+
+        $sheet = new Sheet(0, 'workbookId1', new SheetManager(StringHelper::factory()));
+        $sheet->setName($customSheetName);
+
+        $sheet = new Sheet(1, 'workbookId1', new SheetManager(StringHelper::factory()));
+        $sheet->setName($customSheetName);
+
+        self::assertSame($customSheetName, $sheet->getName());
+    }
+
     public function testSetColumnHiddenGathersConsecutiveColumnsIntoRanges(): void
     {
         $sheet = $this->createSheet(0, 'workbookId1');

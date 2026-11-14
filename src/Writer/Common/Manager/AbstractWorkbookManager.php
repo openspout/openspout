@@ -34,6 +34,8 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
     /** @var Workbook The workbook to manage */
     private readonly Workbook $workbook;
 
+    private readonly SheetManager $sheetManager;
+
     /** @var Worksheet The worksheet where data will be written to */
     private Worksheet $currentWorksheet;
 
@@ -49,6 +51,7 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
         $this->worksheetManager = $worksheetManager;
         $this->styleManager = $styleManager;
         $this->fileSystemHelper = $fileSystemHelper;
+        $this->sheetManager = new SheetManager(StringHelper::factory());
     }
 
     /**
@@ -192,8 +195,7 @@ abstract class AbstractWorkbookManager implements WorkbookManagerInterface
         $worksheets = $this->getWorksheets();
 
         $newSheetIndex = \count($worksheets);
-        $sheetManager = new SheetManager(StringHelper::factory());
-        $sheet = new Sheet($newSheetIndex, $this->workbook->getInternalId(), $sheetManager);
+        $sheet = new Sheet($newSheetIndex, $this->workbook->getInternalId(), $this->sheetManager);
 
         $worksheetFilePath = $this->getWorksheetFilePath($sheet);
         $worksheet = new Worksheet($worksheetFilePath, $sheet);
