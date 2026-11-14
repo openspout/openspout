@@ -49,7 +49,7 @@ final class Writer extends AbstractWriterMultiSheets
 
         $fileSystemHelper = new FileSystemHelper(
             $this->options->tempFolder,
-            new ZipHelper(),
+            new ZipHelper($this->options->compressionLevel),
             new XLSX(),
             $this->options->properties,
         );

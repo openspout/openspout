@@ -57,4 +57,98 @@ final class ZipHelperTest extends TestCase
         unlink($tempFolder.'/xl/workbook.xml');
         rmdir($tempFolder.'/xl');
     }
+
+    public function testCompressedFileUsesTheDefaultMethodWhenNoCompressionLevelIsGiven(): void
+    {
+        $zipMock = $this->getMockBuilder(ZipArchive::class)
+            ->onlyMethods(['addFile', 'setCompressionName'])
+            ->getMock()
+        ;
+        $zipMock->expects(self::once())
+            ->method('setCompressionName')
+            ->with('xl/workbook.xml', ZipArchive::CM_DEFAULT, 0)
+        ;
+
+        $this->withWorkbookFile(static function (string $rootFolderPath) use ($zipMock): void {
+            (new ZipHelper())->addFileToArchive($zipMock, $rootFolderPath, 'xl/workbook.xml');
+        });
+    }
+
+    public function testCompressedFileUsesDeflateAtTheGivenCompressionLevel(): void
+    {
+        $zipMock = $this->getMockBuilder(ZipArchive::class)
+            ->onlyMethods(['addFile', 'setCompressionName'])
+            ->getMock()
+        ;
+        $zipMock->expects(self::once())
+            ->method('setCompressionName')
+            ->with('xl/workbook.xml', ZipArchive::CM_DEFLATE, 1)
+        ;
+
+        $this->withWorkbookFile(static function (string $rootFolderPath) use ($zipMock): void {
+            (new ZipHelper(compressionLevel: 1))->addFileToArchive($zipMock, $rootFolderPath, 'xl/workbook.xml');
+        });
+    }
+
+    public function testUncompressedFileIsStoredWhateverTheCompressionLevel(): void
+    {
+        $zipMock = $this->getMockBuilder(ZipArchive::class)
+            ->onlyMethods(['addFile', 'setCompressionName'])
+            ->getMock()
+        ;
+        $zipMock->expects(self::once())
+            ->method('setCompressionName')
+            ->with('xl/workbook.xml', ZipArchive::CM_STORE, 0)
+        ;
+
+        $this->withWorkbookFile(static function (string $rootFolderPath) use ($zipMock): void {
+            (new ZipHelper(compressionLevel: 1))->addUncompressedFileToArchive($zipMock, $rootFolderPath, 'xl/workbook.xml');
+        });
+    }
+
+    public function testFolderFilesUseDeflateAtTheGivenCompressionLevel(): void
+    {
+        $zipMock = $this->getMockBuilder(ZipArchive::class)
+            ->onlyMethods(['addFile', 'setCompressionName'])
+            ->getMock()
+        ;
+        $zipMock->expects(self::once())
+            ->method('setCompressionName')
+            ->with('xl/workbook.xml', ZipArchive::CM_DEFLATE, 1)
+        ;
+
+        $this->withWorkbookFile(static function (string $rootFolderPath) use ($zipMock): void {
+            (new ZipHelper(compressionLevel: 1))->addFolderToArchive($zipMock, $rootFolderPath);
+        });
+    }
+
+    public function testFolderFilesKeepTheArchiveDefaultWhenNoCompressionLevelIsGiven(): void
+    {
+        $zipMock = $this->getMockBuilder(ZipArchive::class)
+            ->onlyMethods(['addFile', 'setCompressionName'])
+            ->getMock()
+        ;
+        $zipMock->expects(self::never())->method('setCompressionName');
+
+        $this->withWorkbookFile(static function (string $rootFolderPath) use ($zipMock): void {
+            (new ZipHelper())->addFolderToArchive($zipMock, $rootFolderPath);
+        });
+    }
+
+    /**
+     * @param callable(string): void $test receives the root folder holding xl/workbook.xml
+     */
+    private function withWorkbookFile(callable $test): void
+    {
+        $tempFolder = (new TestUsingResource())->getTempFolderPath();
+        mkdir($tempFolder.'/xl', 0o700, true);
+        touch($tempFolder.'/xl/workbook.xml');
+
+        try {
+            $test($tempFolder);
+        } finally {
+            unlink($tempFolder.'/xl/workbook.xml');
+            rmdir($tempFolder.'/xl');
+        }
+    }
 }

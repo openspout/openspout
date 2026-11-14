@@ -23,6 +23,9 @@ final readonly class Options extends AbstractOptions
     private MergeCellContainer $MERGE_CELLS;
     private ValidationContainer $VALIDATION_CELLS;
 
+    /**
+     * @param null|int $compressionLevel Deflate level (0-9) for the compressed files of the archive; null keeps libzip's default
+     */
     public function __construct(
         Style $FALLBACK_STYLE = new Style(
             fontSize: self::DEFAULT_FONT_SIZE,
@@ -38,6 +41,7 @@ final readonly class Options extends AbstractOptions
         public ?HeaderFooter $headerFooter = null,
         public ?WorkbookProtection $workbookProtection = null,
         public Properties $properties = new Properties(),
+        ?int $compressionLevel = null,
     ) {
         parent::__construct(
             $FALLBACK_STYLE,
@@ -45,6 +49,7 @@ final readonly class Options extends AbstractOptions
             $DEFAULT_COLUMN_WIDTH,
             $DEFAULT_ROW_HEIGHT,
             $tempFolder,
+            $compressionLevel,
         );
 
         $this->MERGE_CELLS = new MergeCellContainer();
