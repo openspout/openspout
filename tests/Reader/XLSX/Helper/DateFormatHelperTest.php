@@ -38,6 +38,15 @@ final class DateFormatHelperTest extends TestCase
             ['yy "Year" m "Month"', 'y \Y\e\a\r n \M\o\n\t\h'],
             ['mmm-yy;@', 'M-y'],
             ['[$-409]hh:mm AM/PM;"foo"@', 'h:i A'],
+            // Backslash-escaped characters are literals
+            ['yyyy-mm-dd\Thh:mm:ss', 'Y-m-d\TH:i:s'],
+            ['yyyy-mm-dd\THH:MM:SS.s', 'Y-m-d\TH:i:s'],
+            ['d\-m\-yyyy', 'j-n-Y'],
+            ['dd\ \d\a\y\s', 'd \d\a\y\s'],
+            // The 12-hour marker applies to hours outside of the part containing it
+            ['h:mm\h AM/PM', 'g:i\h A'],
+            ['h:mm "h" AM/PM', 'g:i \h A'],
+            ['hh:mm "AM/PM"', 'H:i \A\M\/\P\M'],
         ];
     }
 }
