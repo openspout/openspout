@@ -63,6 +63,14 @@ final class RowIterator implements RowIteratorInterface
     /** @var Row Contains the row currently processed */
     private Row $currentlyProcessedRow;
 
+    /**
+     * Cells of the row currently processed: the Row is built from them only once the row ends,
+     * as rebuilding it for every cell would make reading a row quadratic in its number of cells.
+     *
+     * @var array<int, Cell>
+     */
+    private array $currentlyProcessedCells = [];
+
     /** @var null|Row Buffer used to store the current row, while checking if there are more rows to read */
     private ?Row $rowBuffer = null;
 
@@ -309,8 +317,7 @@ final class RowIterator implements RowIteratorInterface
             $numberOfColumnsForRow = (int) $numberOfColumnsForRow;
         }
 
-        $cells = array_fill(0, $numberOfColumnsForRow, Cell::fromValue(''));
-        $this->currentlyProcessedRow = $this->currentlyProcessedRow->withCells($cells);
+        $this->currentlyProcessedCells = array_fill(0, $numberOfColumnsForRow, Cell::fromValue(''));
 
         return XMLProcessor::PROCESSING_CONTINUE;
     }
@@ -329,9 +336,7 @@ final class RowIterator implements RowIteratorInterface
         \assert($node instanceof DOMElement);
         $cell = $this->cellValueFormatter->extractAndFormatNodeValue($node);
 
-        $cells = $this->currentlyProcessedRow->cells;
-        $cells[$currentColumnIndex] = $cell;
-        $this->currentlyProcessedRow = $this->currentlyProcessedRow->withCells($cells);
+        $this->currentlyProcessedCells[$currentColumnIndex] = $cell;
         $this->lastColumnIndexProcessed = $currentColumnIndex;
 
         return XMLProcessor::PROCESSING_CONTINUE;
@@ -342,6 +347,8 @@ final class RowIterator implements RowIteratorInterface
      */
     private function processRowEndingNode(): int
     {
+        $this->currentlyProcessedRow = $this->currentlyProcessedRow->withCells($this->currentlyProcessedCells);
+
         // if the fetched row is empty and we don't want to preserve it..,
         if (!$this->shouldPreserveEmptyRows && $this->currentlyProcessedRow->isEmpty()) {
             // ... skip it
