@@ -85,7 +85,7 @@ parameters:
 			path: src/Reader/XLSX/Helper/CellHelper.php
 
 		-
-			message: '#^Parameter \#1 \$cells of method OpenSpout\\Common\\Entity\\Row\:\:withCells\(\) expects array\<int\<0, max\>, OpenSpout\\Common\\Entity\\Cell\>, non\-empty\-array\<int, OpenSpout\\Common\\Entity\\Cell\> given\.$#'
+			message: '#^Parameter \#1 \$cells of method OpenSpout\\Common\\Entity\\Row\:\:withCells\(\) expects array\<int\<0, max\>, OpenSpout\\Common\\Entity\\Cell\>, array\<int, OpenSpout\\Common\\Entity\\Cell\> given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Reader/XLSX/RowIterator.php
