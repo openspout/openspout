@@ -29,7 +29,7 @@ final class FileDecryptorTest extends TestCase
      * @param 'agile'|'standard' $encryption
      */
     #[DataProvider('provideDecryptShouldGiveOriginalFileCases')]
-    public function testDecryptShouldGiveOriginalFile(string $encryption, ?string $password, string $encryptionPassword): void
+    public function testDecryptShouldGiveOriginalFile(string $encryption, string $password, string $encryptionPassword): void
     {
         $originalFilePath = TestUsingResource::getResourcePath('one_sheet_with_shared_strings.xlsx');
         $decryptedFilePath = $this->folder.\DIRECTORY_SEPARATOR.'decrypted.xlsx';
@@ -45,7 +45,7 @@ final class FileDecryptorTest extends TestCase
         return [
             'agile' => ['agile', 'pässwörd', 'pässwörd'],
             'standard' => ['standard', 'pässwörd', 'pässwörd'],
-            'default password of Excel' => ['agile', null, 'VelvetSweatshop'],
+            'default password of Excel' => ['agile', 'VelvetSweatshop', 'VelvetSweatshop'],
         ];
     }
 

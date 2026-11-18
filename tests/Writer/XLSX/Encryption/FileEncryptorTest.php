@@ -35,12 +35,12 @@ final class FileEncryptorTest extends TestCase
         $encryptedFilePath = $this->folder.\DIRECTORY_SEPARATOR.'encrypted.xlsx';
         $decryptedFilePath = $this->folder.\DIRECTORY_SEPARATOR.'decrypted.xlsx';
 
-        (new FileEncryptor())->encrypt($originalFilePath, 'pässwörd', $encryptedFilePath);
+        (new FileEncryptor())->encrypt($originalFilePath, 'pässwörd €😀 long', $encryptedFilePath);
 
         self::assertSame([$encryptedFilePath], glob($this->folder.\DIRECTORY_SEPARATOR.'*'), 'Only the encrypted file should be created');
         self::assertSame("\xD0\xCF\x11\xE0\xA1\xB1\x1A\xE1", file_get_contents($encryptedFilePath, length: 8));
 
-        (new FileDecryptor())->decrypt($encryptedFilePath, 'pässwörd', $decryptedFilePath);
+        (new FileDecryptor())->decrypt($encryptedFilePath, 'pässwörd €😀 long', $decryptedFilePath);
         self::assertFileEquals($originalFilePath, $decryptedFilePath);
     }
 
@@ -48,9 +48,9 @@ final class FileEncryptorTest extends TestCase
     {
         $encryptedFilePath = $this->folder.\DIRECTORY_SEPARATOR.'encrypted.xlsx';
 
-        (new FileEncryptor())->encrypt(TestUsingResource::getResourcePath(self::RESOURCE), 'secret', $encryptedFilePath);
+        (new FileEncryptor())->encrypt(TestUsingResource::getResourcePath(self::RESOURCE), 'correct horse battery', $encryptedFilePath);
 
-        $reader = new Reader(new Options(password: 'secret'));
+        $reader = new Reader(new Options(password: 'correct horse battery'));
         $reader->open($encryptedFilePath);
         $numRows = 0;
         foreach ($reader->getSheetIterator() as $sheet) {
@@ -61,7 +61,7 @@ final class FileEncryptorTest extends TestCase
 
         $this->expectException(InvalidPasswordException::class);
 
-        (new FileDecryptor())->decrypt($encryptedFilePath, 'Secret', $this->folder.\DIRECTORY_SEPARATOR.'decrypted.xlsx');
+        (new FileDecryptor())->decrypt($encryptedFilePath, 'Correct horse battery', $this->folder.\DIRECTORY_SEPARATOR.'decrypted.xlsx');
     }
 
     public function testEncryptShouldOverwriteExistingFile(): void
@@ -71,10 +71,10 @@ final class FileEncryptorTest extends TestCase
         copy($originalFilePath, $filePath);
 
         // The file is replaced by its password-protected version
-        (new FileEncryptor())->encrypt($filePath, 'secret', $filePath);
+        (new FileEncryptor())->encrypt($filePath, 'correct horse battery', $filePath);
 
         self::assertSame([$filePath], glob($this->folder.\DIRECTORY_SEPARATOR.'*'));
-        (new FileDecryptor())->decrypt($filePath, 'secret', $filePath);
+        (new FileDecryptor())->decrypt($filePath, 'correct horse battery', $filePath);
         self::assertFileEquals($originalFilePath, $filePath);
     }
 
@@ -82,7 +82,7 @@ final class FileEncryptorTest extends TestCase
     public function testEncryptShouldRejectInvalidPassword(string $password): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('The password must be a UTF-8 string of 1 to 255 characters.');
+        $this->expectExceptionMessage('The password must be a UTF-8 string of 12 to 255 characters.');
 
         (new FileEncryptor())->encrypt(TestUsingResource::getResourcePath(self::RESOURCE), $password, $this->folder.\DIRECTORY_SEPARATOR.'encrypted.xlsx');
     }
@@ -91,18 +91,30 @@ final class FileEncryptorTest extends TestCase
     {
         return [
             'empty' => [''],
-            'not UTF-8' => ["secr\xE9t"],
+            'too short' => ['abcdefghijk'],
+            'too short, with multibyte characters' => [str_repeat('é', 11)],
+            'not UTF-8' => ["secret passw\xE9rd"],
             'too long' => [str_repeat('é', 256)],
         ];
     }
 
-    public function testEncryptShouldAcceptLongestPassword(): void
+    #[DataProvider('provideEncryptShouldAcceptPasswordCases')]
+    public function testEncryptShouldAcceptPassword(string $password): void
     {
         $encryptedFilePath = $this->folder.\DIRECTORY_SEPARATOR.'encrypted.xlsx';
 
-        (new FileEncryptor())->encrypt(TestUsingResource::getResourcePath(self::RESOURCE), str_repeat('é', 255), $encryptedFilePath);
+        (new FileEncryptor())->encrypt(TestUsingResource::getResourcePath(self::RESOURCE), $password, $encryptedFilePath);
 
         self::assertFileExists($encryptedFilePath);
+    }
+
+    public static function provideEncryptShouldAcceptPasswordCases(): iterable
+    {
+        return [
+            'shortest password' => [str_repeat('é', 12)],
+            'longest password' => [str_repeat('é', 255)],
+            'generated password' => [Password::generate()],
+        ];
     }
 
     #[DataProvider('provideEncryptShouldRejectFileThatCannotBeProtectedCases')]
@@ -111,7 +123,7 @@ final class FileEncryptorTest extends TestCase
         $filePath = $this->write($content);
 
         try {
-            (new FileEncryptor())->encrypt($filePath, 'secret', $this->folder.\DIRECTORY_SEPARATOR.'encrypted.xlsx');
+            (new FileEncryptor())->encrypt($filePath, 'correct horse battery', $this->folder.\DIRECTORY_SEPARATOR.'encrypted.xlsx');
             self::fail('The file should not have been encrypted');
         } catch (IOException $exception) {
             self::assertSame("{$filePath} is not an XLSX file that can be password-protected.", $exception->getMessage());
@@ -140,7 +152,7 @@ final class FileEncryptorTest extends TestCase
         fclose($file);
 
         try {
-            (new FileEncryptor())->encrypt($filePath, 'secret', $this->folder.\DIRECTORY_SEPARATOR.'encrypted.xlsx');
+            (new FileEncryptor())->encrypt($filePath, 'correct horse battery', $this->folder.\DIRECTORY_SEPARATOR.'encrypted.xlsx');
             self::fail('The file should not have been encrypted');
         } catch (IOException $exception) {
             self::assertSame('The spreadsheet is too big to be password-protected.', $exception->getMessage());
@@ -157,7 +169,7 @@ final class FileEncryptorTest extends TestCase
         mkdir($encryptedFilePath);
 
         try {
-            (new FileEncryptor())->encrypt(TestUsingResource::getResourcePath(self::RESOURCE), 'secret', $encryptedFilePath);
+            (new FileEncryptor())->encrypt(TestUsingResource::getResourcePath(self::RESOURCE), 'correct horse battery', $encryptedFilePath);
             self::fail('The file should not have been encrypted');
         } catch (IOException $exception) {
             self::assertSame("Could not create {$encryptedFilePath}.", $exception->getMessage());
@@ -170,7 +182,7 @@ final class FileEncryptorTest extends TestCase
         $this->expectException(IOException::class);
         $this->expectExceptionMessage('Could not open /path/to/missing.xlsx for reading.');
 
-        (new FileEncryptor())->encrypt('/path/to/missing.xlsx', 'secret', $this->folder.\DIRECTORY_SEPARATOR.'encrypted.xlsx');
+        (new FileEncryptor())->encrypt('/path/to/missing.xlsx', 'correct horse battery', $this->folder.\DIRECTORY_SEPARATOR.'encrypted.xlsx');
     }
 
     public function testEncryptShouldRejectFolder(): void
@@ -178,7 +190,7 @@ final class FileEncryptorTest extends TestCase
         $this->expectException(IOException::class);
         $this->expectExceptionMessage("Could not open {$this->folder} for reading.");
 
-        (new FileEncryptor())->encrypt($this->folder, 'secret', $this->folder.\DIRECTORY_SEPARATOR.'encrypted.xlsx');
+        (new FileEncryptor())->encrypt($this->folder, 'correct horse battery', $this->folder.\DIRECTORY_SEPARATOR.'encrypted.xlsx');
     }
 
     public function testEncryptShouldRejectUnreadableFile(): void
@@ -192,7 +204,7 @@ final class FileEncryptorTest extends TestCase
             $this->expectException(IOException::class);
             $this->expectExceptionMessage("Could not open {$filePath} for reading.");
 
-            (new FileEncryptor())->encrypt($filePath, 'secret', $this->folder.\DIRECTORY_SEPARATOR.'encrypted.xlsx');
+            (new FileEncryptor())->encrypt($filePath, 'correct horse battery', $this->folder.\DIRECTORY_SEPARATOR.'encrypted.xlsx');
         } finally {
             chmod($filePath, 0o600);
         }
@@ -205,7 +217,7 @@ final class FileEncryptorTest extends TestCase
         $this->expectException(IOException::class);
         $this->expectExceptionMessage("Could not create a file in {$folder}.");
 
-        (new FileEncryptor())->encrypt(TestUsingResource::getResourcePath(self::RESOURCE), 'secret', $folder.\DIRECTORY_SEPARATOR.'encrypted.xlsx');
+        (new FileEncryptor())->encrypt(TestUsingResource::getResourcePath(self::RESOURCE), 'correct horse battery', $folder.\DIRECTORY_SEPARATOR.'encrypted.xlsx');
     }
 
     public function testEncryptShouldRejectDestinationFolderThatIsFile(): void
@@ -215,7 +227,7 @@ final class FileEncryptorTest extends TestCase
         $this->expectException(IOException::class);
         $this->expectExceptionMessage("Could not create a file in {$filePath}.");
 
-        (new FileEncryptor())->encrypt($filePath, 'secret', $filePath.\DIRECTORY_SEPARATOR.'encrypted.xlsx');
+        (new FileEncryptor())->encrypt($filePath, 'correct horse battery', $filePath.\DIRECTORY_SEPARATOR.'encrypted.xlsx');
     }
 
     public function testEncryptShouldRejectUnwritableDestinationFolder(): void
@@ -225,7 +237,7 @@ final class FileEncryptorTest extends TestCase
         $this->expectException(IOException::class);
         $this->expectExceptionMessage('Could not create a file in '.\dirname($encryptedFilePath).'.');
 
-        (new FileEncryptor())->encrypt(TestUsingResource::getResourcePath(self::RESOURCE), 'secret', $encryptedFilePath);
+        (new FileEncryptor())->encrypt(TestUsingResource::getResourcePath(self::RESOURCE), 'correct horse battery', $encryptedFilePath);
     }
 
     private function write(string $content): string

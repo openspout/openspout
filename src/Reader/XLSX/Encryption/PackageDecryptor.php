@@ -23,11 +23,6 @@ use Throwable;
  */
 final readonly class PackageDecryptor
 {
-    /**
-     * Password used by Excel when a file has to be encrypted but the user did not set any password.
-     */
-    public const DEFAULT_PASSWORD = 'VelvetSweatshop';
-
     public const STREAM_ENCRYPTION_INFO = 'EncryptionInfo';
     public const STREAM_ENCRYPTED_PACKAGE = 'EncryptedPackage';
 
@@ -53,12 +48,15 @@ final readonly class PackageDecryptor
         }
 
         $cipher = $this->createCipher($compoundFile->readStream(self::STREAM_ENCRYPTION_INFO, self::MAX_ENCRYPTION_INFO_SIZE));
-        $encodedPassword = Binary::utf8ToUtf16le($password ?? self::DEFAULT_PASSWORD)
+
+        // There is deliberately no fallback to the default password of Excel ("VelvetSweatshop"): it has to be given explicitly
+        if (null === $password) {
+            throw new PasswordRequiredException('The file is encrypted: a password is required to read it.');
+        }
+        $encodedPassword = Binary::utf8ToUtf16le($password)
             ?? throw new InvalidPasswordException('The password must be a valid UTF-8 string.');
         if (!$cipher->unlock($encodedPassword)) {
-            throw null === $password
-                ? new PasswordRequiredException('The file is encrypted: a password is required to read it.')
-                : new InvalidPasswordException('The password is incorrect.');
+            throw new InvalidPasswordException('The password is incorrect.');
         }
 
         $decryptedFilePath = tempnam($tempFolder, 'openspout_xlsx_');

@@ -19,7 +19,7 @@ final readonly class FileDecryptor
 {
     /**
      * Tells whether a file is encrypted, which is what happens to files that are given a password to be opened.
-     * Note that Excel also encrypts some files without asking for a password: these can be read without giving any.
+     * Note that Excel also encrypts some files without asking for a password: these can be read by explicitly giving "VelvetSweatshop".
      *
      * @throws IOException If the file is not readable
      */

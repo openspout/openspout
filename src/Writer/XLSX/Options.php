@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace OpenSpout\Writer\XLSX;
 
 use OpenSpout\Common\Entity\Style\Style;
-use OpenSpout\Common\Exception\InvalidArgumentException;
 use OpenSpout\Writer\Common\AbstractOptions;
-use OpenSpout\Writer\XLSX\Encryption\PackageEncryptor;
+use OpenSpout\Writer\XLSX\Encryption\Password;
 use OpenSpout\Writer\XLSX\Options\HeaderFooter;
 use OpenSpout\Writer\XLSX\Options\PageMargin;
 use OpenSpout\Writer\XLSX\Options\PageSetup;
@@ -28,7 +27,7 @@ final readonly class Options extends AbstractOptions
 
     /**
      * @param null|int    $compressionLevel Deflate level (0-9) for the compressed files of the archive; null keeps libzip's default
-     * @param null|string $password         UTF-8 encoded password, of 255 characters at most, that will be required to open the file: its content gets encrypted
+     * @param null|string $password         UTF-8 encoded password, of 12 to 255 characters (see Password::generate()), that will be required to open the file: its content gets encrypted
      */
     public function __construct(
         Style $FALLBACK_STYLE = new Style(
@@ -49,8 +48,8 @@ final readonly class Options extends AbstractOptions
         #[SensitiveParameter]
         public ?string $password = null,
     ) {
-        if (null !== $password && 1 !== preg_match(PackageEncryptor::PASSWORD_PATTERN, $password)) {
-            throw new InvalidArgumentException('The password must be a UTF-8 string of 1 to 255 characters.');
+        if (null !== $password) {
+            Password::validate($password);
         }
 
         parent::__construct(

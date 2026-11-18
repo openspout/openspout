@@ -16,7 +16,7 @@ final readonly class FileEncryptor
 {
     /**
      * @param string $filePath          Path of the XLSX file to protect
-     * @param string $password          UTF-8 encoded password, of 255 characters at most
+     * @param string $password          UTF-8 encoded password, of 12 to 255 characters (see Password::generate())
      * @param string $encryptedFilePath Path of the file to create, which gets overwritten if it exists: it can be the file to protect
      *
      * @throws InvalidArgumentException If the password is not valid
@@ -24,9 +24,7 @@ final readonly class FileEncryptor
      */
     public function encrypt(string $filePath, #[SensitiveParameter] string $password, string $encryptedFilePath): void
     {
-        if (1 !== preg_match(PackageEncryptor::PASSWORD_PATTERN, $password)) {
-            throw new InvalidArgumentException('The password must be a UTF-8 string of 1 to 255 characters.');
-        }
+        Password::validate($password);
 
         if (!is_file($filePath) || !is_readable($filePath)) {
             throw new IOException("Could not open {$filePath} for reading.");

@@ -71,13 +71,16 @@ final class EncryptedReaderTest extends TestCase
      * @param 'agile'|'standard' $encryption
      */
     #[DataProvider('provideEncryptionCases')]
-    public function testReadEncryptedFileWithoutUserPassword(string $encryption): void
+    public function testReadEncryptedFileWithDefaultPasswordOfExcel(string $encryption): void
     {
         $resourcePath = TestUsingResource::getResourcePath('one_sheet_with_inline_strings.xlsx');
         $expectedRows = $this->readAllRows($resourcePath, null);
         self::assertCount(5, $expectedRows);
+        $filePath = $this->encrypt($resourcePath, $encryption, 'VelvetSweatshop');
 
-        self::assertSame($expectedRows, $this->readAllRows($this->encrypt($resourcePath, $encryption, 'VelvetSweatshop'), null));
+        // There is no fallback to the default password: it has to be given explicitly
+        self::assertInstanceOf(PasswordRequiredException::class, $this->openFailure($filePath, null)->getPrevious());
+        self::assertSame($expectedRows, $this->readAllRows($filePath, 'VelvetSweatshop'));
     }
 
     public static function provideEncryptionCases(): iterable

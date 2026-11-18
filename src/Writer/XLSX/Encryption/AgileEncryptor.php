@@ -10,7 +10,9 @@ use SensitiveParameter;
 
 /**
  * Encrypts a package the way Excel 2010 and later do: "agile" encryption, using AES-256 in CBC mode
- * and SHA-512, where the package is encrypted by segments of 4096 bytes and protected by an HMAC.
+ * and SHA-256, where the package is encrypted by segments of 4096 bytes and protected by an HMAC.
+ *
+ * There is deliberately no crypto agility: these settings are the only ones files can be created with.
  *
  * @see https://learn.microsoft.com/openspecs/office_file_formats/ms-offcrypto (2.3.4.10 to 2.3.4.15)
  *
@@ -22,8 +24,8 @@ final class AgileEncryptor
 
     private const KEY_BITS = 256;
     private const KEY_SIZE = 32;
-    private const HASH_ALGORITHM = 'sha512';
-    private const HASH_SIZE = 64;
+    private const HASH_ALGORITHM = 'sha256';
+    private const HASH_SIZE = 32;
     private const SPIN_COUNT = 100000;
     private const SALT_SIZE = 16;
     private const BLOCK_SIZE = 16;
@@ -159,7 +161,7 @@ final class AgileEncryptor
         string $encryptedHmacValue,
     ): string {
         $algorithms = ' blockSize="'.self::BLOCK_SIZE.'" keyBits="'.self::KEY_BITS.'" hashSize="'.self::HASH_SIZE.'"'
-            .' cipherAlgorithm="AES" cipherChaining="ChainingModeCBC" hashAlgorithm="SHA512"';
+            .' cipherAlgorithm="AES" cipherChaining="ChainingModeCBC" hashAlgorithm="SHA256"';
 
         // Version 4.4, followed by a reserved value
         return pack('vvV', 4, 4, 0x40)

@@ -12,6 +12,7 @@ use OpenSpout\Reader\Exception\PasswordRequiredException;
 use OpenSpout\Reader\XLSX\Options as ReaderOptions;
 use OpenSpout\Reader\XLSX\Reader;
 use OpenSpout\TestUsingResource;
+use OpenSpout\Writer\XLSX\Encryption\Password;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -47,12 +48,14 @@ final class EncryptedWriterTest extends TestCase
     public static function provideWritePasswordProtectedFileCases(): iterable
     {
         return [
-            'inline strings' => ['secret', true],
-            'shared strings' => ['secret', false],
-            'non ASCII password' => ['pässwörd €😀', true],
+            'inline strings' => ['correct horse battery', true],
+            'shared strings' => ['correct horse battery', false],
+            'non ASCII password' => ['pässwörd € 😀', true],
+            'shortest password' => [str_repeat('é', 12), true],
             'longest password' => [str_repeat('é', 255), true],
-            'password with line feeds' => ["\n\n", true],
-            'password with spaces' => [' ', true],
+            'password with line feeds' => [str_repeat("\n", 12), true],
+            'password with spaces' => [str_repeat(' ', 12), true],
+            'generated password' => [Password::generate(), true],
         ];
     }
 
@@ -66,9 +69,9 @@ final class EncryptedWriterTest extends TestCase
 
     public function testPasswordProtectedFileShouldRequireRightPassword(): void
     {
-        $filePath = $this->writeFile('secret');
+        $filePath = $this->writeFile('correct horse battery');
 
-        foreach ([[null, PasswordRequiredException::class], ['Secret', InvalidPasswordException::class]] as [$password, $expectedException]) {
+        foreach ([[null, PasswordRequiredException::class], ['Correct horse battery', InvalidPasswordException::class]] as [$password, $expectedException]) {
             try {
                 $this->readFile($filePath, $password);
                 self::fail('The file should not have been read');
@@ -82,7 +85,7 @@ final class EncryptedWriterTest extends TestCase
     public function testInvalidPassword(string $password): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('The password must be a UTF-8 string of 1 to 255 characters.');
+        $this->expectExceptionMessage('The password must be a UTF-8 string of 12 to 255 characters.');
 
         new Options(password: $password);
     }
@@ -91,7 +94,10 @@ final class EncryptedWriterTest extends TestCase
     {
         return [
             'empty' => [''],
-            'not UTF-8' => ["secr\xE9t"],
+            'too short' => ['abcdefghijk'],
+            'too short, with multibyte characters' => [str_repeat('é', 11)],
+            'too short, with a valid end' => ["\n".str_repeat('a', 10)],
+            'not UTF-8' => ["secret passw\xE9rd"],
             'too long' => [str_repeat('é', 256)],
             'too long, with a valid beginning' => ["\n".str_repeat('a', 255)],
             'too long, with a valid end' => [str_repeat('a', 255)."\n"],
@@ -101,7 +107,7 @@ final class EncryptedWriterTest extends TestCase
     public function testPasswordOption(): void
     {
         self::assertNull((new Options())->password);
-        self::assertSame('secret', (new Options(password: 'secret'))->password);
+        self::assertSame('correct horse battery', (new Options(password: 'correct horse battery'))->password);
     }
 
     private function writeFile(?string $password, bool $shouldUseInlineStrings = true): string

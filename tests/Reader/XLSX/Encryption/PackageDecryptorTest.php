@@ -175,14 +175,32 @@ final class PackageDecryptorTest extends TestCase
         ];
     }
 
-    public function testDecryptAgileShouldUseDefaultPasswordOfExcel(): void
+    /**
+     * @param array{string, string} $streams
+     */
+    #[DataProvider('provideDefaultPasswordOfExcelCases')]
+    public function testDecryptShouldAcceptExplicitDefaultPasswordOfExcel(array $streams): void
     {
-        self::assertSame('package', $this->decrypt(TestEncryptor::agile('package', 'VelvetSweatshop'), null));
+        self::assertSame('package', $this->decrypt($streams, 'VelvetSweatshop'));
     }
 
-    public function testDecryptStandardShouldUseDefaultPasswordOfExcel(): void
+    /**
+     * @param array{string, string} $streams
+     */
+    #[DataProvider('provideDefaultPasswordOfExcelCases')]
+    public function testDecryptShouldNotFallBackToDefaultPasswordOfExcel(array $streams): void
     {
-        self::assertSame('package', $this->decrypt(TestEncryptor::standard('package', 'VelvetSweatshop'), null));
+        $this->expectFailure(PasswordRequiredException::class, 'The file is encrypted: a password is required to read it.');
+
+        $this->decrypt($streams, null);
+    }
+
+    public static function provideDefaultPasswordOfExcelCases(): iterable
+    {
+        return [
+            'agile' => [TestEncryptor::agile('package', 'VelvetSweatshop')],
+            'standard' => [TestEncryptor::standard('package', 'VelvetSweatshop')],
+        ];
     }
 
     public function testDecryptShouldRejectInvalidUtf8Password(): void

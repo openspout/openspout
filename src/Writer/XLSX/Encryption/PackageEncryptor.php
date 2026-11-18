@@ -19,11 +19,6 @@ use SensitiveParameter;
 final readonly class PackageEncryptor
 {
     /**
-     * What a password has to match: Office does not support passwords of more than 255 characters.
-     */
-    public const PASSWORD_PATTERN = '/\A.{1,255}\z/su';
-
-    /**
      * @param string   $password UTF-8 encoded password
      * @param resource $stream   Where the password-protected document gets written
      *
