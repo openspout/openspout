@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace OpenSpout\Reader\XLSX;
 
 use OpenSpout\Common\TempFolderCheck;
+use SensitiveParameter;
 
 final readonly class Options
 {
@@ -13,6 +14,7 @@ final readonly class Options
 
     /**
      * @param null|non-empty-string $tempFolder
+     * @param null|string           $password   UTF-8 encoded password, for files that are password-protected
      */
     public function __construct(
         public bool $SHOULD_FORMAT_DATES = false,
@@ -20,6 +22,8 @@ final readonly class Options
         public bool $SHOULD_USE_1904_DATES = false,
         public bool $SHOULD_LOAD_MERGE_CELLS = false,
         ?string $tempFolder = null,
+        #[SensitiveParameter]
+        public ?string $password = null,
     ) {
         $tempFolder ??= sys_get_temp_dir();
         \assert('' !== $tempFolder);

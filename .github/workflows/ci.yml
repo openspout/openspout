@@ -9,7 +9,7 @@ on:
 
 env:
   INI_VALUES: zend.assertions=1,error_reporting=-1
-  EXTENSIONS: dom,fileinfo,xmlreader,zip
+  EXTENSIONS: dom,fileinfo,mbstring,openssl,xmlreader,zip
 
 jobs:
   composer-json-lint:

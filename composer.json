@@ -37,9 +37,11 @@
     },
     "require-dev": {
         "ext-fileinfo": "*",
+        "ext-mbstring": "*",
+        "ext-openssl": "*",
         "ext-zlib": "*",
         "friendsofphp/php-cs-fixer": "^3.95.32",
-        "infection/infection": "^0.35",
+        "infection/infection": "^0.35.12",
         "phpbench/phpbench": "^1.7.0",
         "phpstan/phpstan": "^2.3.6",
         "phpstan/phpstan-phpunit": "^2.1.2",
@@ -48,7 +50,8 @@
     },
     "suggest": {
         "ext-iconv": "To handle non UTF-8 CSV files (if \"php-mbstring\" is not already installed or is too limited)",
-        "ext-mbstring": "To handle non UTF-8 CSV files (if \"iconv\" is not already installed)"
+        "ext-mbstring": "To handle non UTF-8 CSV files (if \"iconv\" is not already installed)",
+        "ext-openssl": "To read and write password-protected XLSX files"
     },
     "autoload": {
         "psr-4": {
