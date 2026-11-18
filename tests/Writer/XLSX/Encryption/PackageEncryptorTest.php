@@ -66,6 +66,9 @@ final class PackageEncryptorTest extends TestCase
         (new PackageDecryptor())->decrypt($encryptedFilePath, 'Secret', $this->tempFolder);
     }
 
+    /**
+     * The algorithms must be the ones Excel uses, SHA-512 included: LibreOffice refuses to open files using SHA-256.
+     */
     public function testEncryptShouldUseSameEncryptionAsExcel(): void
     {
         $encryptedFilePath = $this->encrypt(self::data(5000), 'secret');
@@ -77,11 +80,11 @@ final class PackageEncryptorTest extends TestCase
         self::assertMatchesRegularExpression(
             '#^<\?xml version="1.0" encoding="UTF-8" standalone="yes"\?>'
             .'<encryption xmlns="http://schemas.microsoft.com/office/2006/encryption" xmlns:p="http://schemas.microsoft.com/office/2006/keyEncryptor/password">'
-            .'<keyData saltSize="16" blockSize="16" keyBits="256" hashSize="32" cipherAlgorithm="AES" cipherChaining="ChainingModeCBC" hashAlgorithm="SHA256" saltValue="'.$base64(16).'"/>'
-            .'<dataIntegrity encryptedHmacKey="'.$base64(32).'" encryptedHmacValue="'.$base64(32).'"/>'
+            .'<keyData saltSize="16" blockSize="16" keyBits="256" hashSize="64" cipherAlgorithm="AES" cipherChaining="ChainingModeCBC" hashAlgorithm="SHA512" saltValue="'.$base64(16).'"/>'
+            .'<dataIntegrity encryptedHmacKey="'.$base64(64).'" encryptedHmacValue="'.$base64(64).'"/>'
             .'<keyEncryptors><keyEncryptor uri="http://schemas.microsoft.com/office/2006/keyEncryptor/password">'
-            .'<p:encryptedKey spinCount="100000" saltSize="16" blockSize="16" keyBits="256" hashSize="32" cipherAlgorithm="AES" cipherChaining="ChainingModeCBC" hashAlgorithm="SHA256"'
-            .' saltValue="'.$base64(16).'" encryptedVerifierHashInput="'.$base64(16).'" encryptedVerifierHashValue="'.$base64(32).'" encryptedKeyValue="'.$base64(32).'"/>'
+            .'<p:encryptedKey spinCount="100000" saltSize="16" blockSize="16" keyBits="256" hashSize="64" cipherAlgorithm="AES" cipherChaining="ChainingModeCBC" hashAlgorithm="SHA512"'
+            .' saltValue="'.$base64(16).'" encryptedVerifierHashInput="'.$base64(16).'" encryptedVerifierHashValue="'.$base64(64).'" encryptedKeyValue="'.$base64(32).'"/>'
             .'</keyEncryptor></keyEncryptors></encryption>$#',
             $xml
         );
