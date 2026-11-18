@@ -331,10 +331,15 @@ final class RowIterator implements RowIteratorInterface
     {
         $currentColumnIndex = $this->getColumnIndex($xmlReader);
 
-        // NOTE: expand() will automatically decode all XML entities of the child nodes
-        $node = $xmlReader->expand();
-        \assert($node instanceof DOMElement);
-        $cell = $this->cellValueFormatter->extractAndFormatNodeValue($node);
+        // A self-closing cell has no value: skip expanding it, which is costly
+        if ($xmlReader->isEmptyElement) {
+            $cell = Cell::fromValue('');
+        } else {
+            // NOTE: expand() will automatically decode all XML entities of the child nodes
+            $node = $xmlReader->expand();
+            \assert($node instanceof DOMElement);
+            $cell = $this->cellValueFormatter->extractAndFormatNodeValue($node);
+        }
 
         $this->currentlyProcessedCells[$currentColumnIndex] = $cell;
         $this->lastColumnIndexProcessed = $currentColumnIndex;
