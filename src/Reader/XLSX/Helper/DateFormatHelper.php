@@ -66,11 +66,35 @@ final readonly class DateFormatHelper
         $dateFormat = preg_replace('/^(?:\[\$[^\]]+?\])?([^;]*).*/', '$1', $excelDateFormat);
         \assert(null !== $dateFormat);
 
+        // A backslash makes the next character a literal. Letters must stay literal in the PHP format too,
+        // so they are turned into quoted text, handled below. Other characters are never PHP format
+        // characters, so the backslash can simply be dropped.
+        // For instance, [yyyy-mm-dd\Thh] should result in [Y-m-d\TH] and not [Y-m-dtH]
+        $dateFormat = preg_replace_callback('/"[^"]*"|\\\([a-zA-Z])|\\\(.)/', static function (array $matches): string {
+            if (isset($matches[2])) {
+                return $matches[2];
+            }
+
+            if (isset($matches[1])) {
+                return '"'.$matches[1].'"';
+            }
+
+            return $matches[0];
+        }, $dateFormat);
+        \assert(null !== $dateFormat);
+
         // Double quotes are used to escape characters that must not be interpreted.
         // For instance, ["Day " dd] should result in "Day 13" and we should not try to interpret "D", "a", "y"
         // By exploding the format string using double quote as a delimiter, we can get all parts
         // that must be transformed (even indexes) and all parts that must not be (odd indexes).
         $dateFormatParts = explode('"', $dateFormat);
+
+        // The 12-hour marker applies to the whole format, not only to the part it is in
+        $has12HourFormatMarker = self::has12HourFormatMarker(implode('', array_filter(
+            $dateFormatParts,
+            static fn (int $partIndex): bool => 0 === $partIndex % 2,
+            ARRAY_FILTER_USE_KEY
+        )));
 
         foreach ($dateFormatParts as $partIndex => $dateFormatPart) {
             // do not look at odd indexes
@@ -81,14 +105,11 @@ final readonly class DateFormatHelper
             // Make sure all characters are lowercase, as the mapping table is using lowercase characters
             $transformedPart = strtolower($dateFormatPart);
 
-            // Remove escapes related to non-format characters
-            $transformedPart = str_replace('\\', '', $transformedPart);
-
             // Apply general transformation first...
             $transformedPart = strtr($transformedPart, self::excelDateFormatToPHPDateFormatMapping[self::KEY_GENERAL]);
 
             // ... then apply hour transformation, for 12-hour or 24-hour format
-            if (self::has12HourFormatMarker($dateFormatPart)) {
+            if ($has12HourFormatMarker) {
                 $transformedPart = strtr($transformedPart, self::excelDateFormatToPHPDateFormatMapping[self::KEY_HOUR_12]);
             } else {
                 $transformedPart = strtr($transformedPart, self::excelDateFormatToPHPDateFormatMapping[self::KEY_HOUR_24]);

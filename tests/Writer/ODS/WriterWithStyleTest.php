@@ -195,6 +195,44 @@ final class WriterWithStyleTest extends TestCase
         $this->assertFirstChildHasAttributeEquals('wrap', $customStyleElement, 'table-cell-properties', 'fo:wrap-option');
     }
 
+    public function testAddRowShouldRegisterOneWrapTextStyleForAllNewlineCells(): void
+    {
+        $fileName = 'test_add_row_should_register_one_wrap_text_style_for_new_lines.ods';
+        $dataRows = [
+            Row::fromValues(["ods--11\nods--11", "ods--12\nods--12"]),
+            Row::fromValues(["ods--21\nods--21"]),
+        ];
+
+        $this->writeToODSFile($dataRows, $fileName);
+
+        $styleElements = $this->getCellStyleElementsFromContentXmlFile($fileName);
+        self::assertCount(2, $styleElements, 'There should be 2 styles (default and default + wrap)');
+        $this->assertFirstChildHasAttributeEquals('wrap', $styleElements[1], 'table-cell-properties', 'fo:wrap-option');
+
+        $cellElements = $this->getCellElementsFromContentXmlFile($fileName);
+        self::assertCount(3, $cellElements);
+        foreach ($cellElements as $cellElement) {
+            self::assertSame('ce2', $cellElement->getAttribute('table:style-name'));
+            self::assertSame(2, $cellElement->getElementsByTagName('p')->length, 'Each line should be its own paragraph');
+        }
+    }
+
+    public function testAddRowShouldNotWrapNewlineCellWithExplicitNoWrapStyle(): void
+    {
+        $fileName = 'test_add_row_should_not_wrap_new_lines_with_explicit_no_wrap.ods';
+
+        $style = new Style(shouldWrapText: false);
+        $dataRows = [
+            Row::fromValuesWithStyles(["ods--11\nods--11"], [$style]),
+        ];
+
+        $this->writeToODSFile($dataRows, $fileName);
+
+        $styleElements = $this->getCellStyleElementsFromContentXmlFile($fileName);
+        self::assertCount(2, $styleElements, 'There should be 2 styles (default and custom)');
+        $this->assertFirstChildHasAttributeEquals('no-wrap', $styleElements[1], 'table-cell-properties', 'fo:wrap-option');
+    }
+
     public function testAddRowShouldApplyCellAlignment(): void
     {
         $fileName = 'test_add_row_should_apply_cell_alignment.xlsx';

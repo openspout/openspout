@@ -23,8 +23,13 @@ final class SheetManager
      */
     private const array INVALID_CHARACTERS_IN_SHEET_NAME = ['\\', '/', '?', '*', ':', '[', ']'];
 
-    /** @var array<string, array<int, string>> Associative array [WORKBOOK_ID] => [[SHEET_INDEX] => [SHEET_NAME]] keeping track of sheets' name to enforce uniqueness per workbook */
-    private static array $SHEETS_NAME_USED = [];
+    /**
+     * Names of the sheets of a single workbook, used to enforce name uniqueness within it.
+     * A workbook manager owns exactly one SheetManager, shared by all its sheets.
+     *
+     * @var array<int, string> [SHEET_INDEX] => [SHEET_NAME]
+     */
+    private array $sheetsNameUsed = [];
 
     private readonly StringHelper $stringHelper;
 
@@ -80,19 +85,9 @@ final class SheetManager
         }
     }
 
-    /**
-     * @param string $workbookId Workbook ID associated to a Sheet
-     */
-    public function markWorkbookIdAsUsed(string $workbookId): void
-    {
-        if (!isset(self::$SHEETS_NAME_USED[$workbookId])) {
-            self::$SHEETS_NAME_USED[$workbookId] = [];
-        }
-    }
-
     public function markSheetNameAsUsed(Sheet $sheet): void
     {
-        self::$SHEETS_NAME_USED[$sheet->getAssociatedWorkbookId()][$sheet->getIndex()] = $sheet->getName();
+        $this->sheetsNameUsed[$sheet->getIndex()] = $sheet->getName();
     }
 
     /**
@@ -138,7 +133,7 @@ final class SheetManager
      */
     private function isNameUnique(string $name, Sheet $sheet): bool
     {
-        foreach (self::$SHEETS_NAME_USED[$sheet->getAssociatedWorkbookId()] as $sheetIndex => $sheetName) {
+        foreach ($this->sheetsNameUsed as $sheetIndex => $sheetName) {
             if ($sheetIndex !== $sheet->getIndex() && $sheetName === $name) {
                 return false;
             }

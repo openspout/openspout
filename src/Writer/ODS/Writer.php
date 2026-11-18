@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace OpenSpout\Writer\ODS;
 
 use OpenSpout\Common\Helper\Escaper\ODS;
+use OpenSpout\Common\Helper\StringHelper;
 use OpenSpout\Writer\AbstractWriterMultiSheets;
 use OpenSpout\Writer\Common\Entity\Workbook;
 use OpenSpout\Writer\Common\Helper\ZipHelper;
+use OpenSpout\Writer\Common\Manager\SheetManager;
 use OpenSpout\Writer\ODS\Helper\FileSystemHelper;
 use OpenSpout\Writer\ODS\Manager\Style\StyleManager;
 use OpenSpout\Writer\ODS\Manager\Style\StyleRegistry;
@@ -41,7 +43,7 @@ final class Writer extends AbstractWriterMultiSheets
         $workbook = new Workbook();
 
         $escaper = new ODS();
-        $fileSystemHelper = new FileSystemHelper($this->options->tempFolder, new ZipHelper(), $this->creator, $escaper);
+        $fileSystemHelper = new FileSystemHelper($this->options->tempFolder, new ZipHelper($this->options->compressionLevel), $this->creator, $escaper);
         $fileSystemHelper->createBaseFilesAndFolders();
 
         $styleManager = new StyleManager(new StyleRegistry($this->options->FALLBACK_STYLE), $this->options);
@@ -52,7 +54,8 @@ final class Writer extends AbstractWriterMultiSheets
             $this->options,
             $worksheetManager,
             $styleManager,
-            $fileSystemHelper
+            $fileSystemHelper,
+            new SheetManager(StringHelper::factory())
         );
     }
 }

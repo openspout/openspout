@@ -36,4 +36,29 @@ final readonly class XlsxReaderInlineBench
 
         \assert(300000 === $numReadRows);
     }
+
+    #[Bench\OutputTimeUnit('seconds')]
+    #[Bench\Assert('mode(variant.mem.peak) < 8388608')]
+    #[Bench\Assert('mode(variant.time.avg) < 5000000')]
+    public function benchReading10WideRowsXLSXWithInlineStrings(): void
+    {
+        // Each row holds 5000 cells: building the row must stay linear in its number of cells
+        $fileName = 'xlsx_with_wide_rows.xlsx';
+        $resourcePath = TestUsingResource::getResourcePath($fileName);
+
+        $reader = new Reader();
+        $reader->open($resourcePath);
+
+        $numReadCells = 0;
+
+        foreach ($reader->getSheetIterator() as $sheet) {
+            foreach ($sheet->getRowIterator() as $row) {
+                $numReadCells += \count($row->cells);
+            }
+        }
+
+        $reader->close();
+
+        \assert(10 * 5000 === $numReadCells);
+    }
 }

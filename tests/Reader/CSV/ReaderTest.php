@@ -197,8 +197,7 @@ final class ReaderTest extends TestCase
     {
         $allRows = $this->getAllRowsForFile('csv_with_line_breaks.csv');
 
-        $newLine = PHP_EOL; // to support both Unix and Windows
-        self::assertSame("This is,{$newLine}a comma", $allRows[0][0]);
+        self::assertSame("This is,\na comma", $allRows[0][0]);
     }
 
     #[DataProvider('provideReadShouldSkipBomCases')]
@@ -344,11 +343,10 @@ final class ReaderTest extends TestCase
     {
         $allRows = $this->getAllRowsForFile('sheet_with_untrimmed_strings.csv');
 
-        $newLine = PHP_EOL; // to support both Unix and Windows
         $expectedRows = [
             ['A'],
             [' A '],
-            ["{$newLine}\tA{$newLine}\t"],
+            ["\n\tA\n\t"],
         ];
 
         self::assertSame($expectedRows, $allRows, 'Cell values should not be trimmed');

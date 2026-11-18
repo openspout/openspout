@@ -74,27 +74,29 @@ final class CellTest extends TestCase
         self::assertSame('#DIV/0', $cell->getRawValue());
     }
 
-    public function testApplyExtraStylesIfNeededShouldApplyWrapTextIfCellContainsNewLine(): void
+    public function testNewlineCellShouldNotGetAStyleOfItsOwn(): void
     {
         $cell = Cell::fromValue("multi\nlines");
 
-        self::assertTrue($cell->style->shouldWrapText);
+        self::assertNull($cell->style);
     }
 
-    public function testApplyExtraStylesIfNeededShouldReturnNullIfWrapTextNotNeeded(): void
+    public function testNewlineCellShouldKeepItsStyle(): void
     {
-        $cell = Cell::fromValue('oneline');
-
-        self::assertNull($cell->style?->shouldWrapText);
-    }
-
-    public function testApplyExtraStylesIfNeededShouldReturnNullIfWrapTextAlreadyApplied(): void
-    {
-        $style = new Style(shouldWrapText: true);
+        $style = new Style(fontBold: true);
 
         $cell = Cell::fromValue("multi\nlines", $style);
 
-        self::assertTrue($cell->style->shouldWrapText);
+        self::assertSame($style, $cell->style);
+    }
+
+    public function testNewlineCellShouldKeepExplicitNoWrapStyle(): void
+    {
+        $style = new Style(shouldWrapText: false);
+
+        $cell = Cell::fromValue("multi\nlines", $style);
+
+        self::assertSame($style, $cell->style);
     }
 
     public function testStringCellWithValue(): void
@@ -146,6 +148,38 @@ final class CellTest extends TestCase
 
         self::assertNull($newCell->comment);
         self::assertNotNull($cell->comment);
+    }
+
+    public function testStringCellAcceptsHyperlinkObjects(): void
+    {
+        $hyperlink = Hyperlink::toCell('A42', 'Order Details');
+
+        $cell = Cell::fromValue('test', null, null, $hyperlink);
+        self::assertInstanceOf(StringCell::class, $cell);
+        self::assertSame("#'Order Details'!A42", $cell->hyperlinkUrl);
+        self::assertSame("#'Order Details'!A42", (new StringCell('test', null, null, $hyperlink))->hyperlinkUrl);
+        self::assertSame("#'Order Details'!A42", (new StringCell('test', null))->withHyperlink($hyperlink)->hyperlinkUrl);
+        self::assertSame('https://example.com', (new StringCell('test', null))->withHyperlink('https://example.com')->hyperlinkUrl);
+        self::assertNull((new StringCell('test', null))->hyperlinkUrl);
+    }
+
+    public function testStringCellKeepsHyperlinkTooltip(): void
+    {
+        $hyperlink = Hyperlink::toUrl('https://example.com')->withTooltip('Open');
+        $cell = new StringCell('test', null, null, $hyperlink);
+
+        self::assertSame($hyperlink, $cell->hyperlink);
+        self::assertSame($hyperlink, $cell->withValue('other')->hyperlink);
+        self::assertSame($hyperlink, $cell->withStyle(new Style())->hyperlink);
+        self::assertSame($hyperlink, $cell->withoutStyle()->hyperlink);
+        self::assertSame($hyperlink, $cell->withComment(new Comment())->hyperlink);
+        self::assertSame($hyperlink, $cell->withoutComment()->hyperlink);
+        self::assertNull($cell->withoutHyperlink()->hyperlink);
+
+        $cellWithStringHyperlink = new StringCell('test', null, null, 'https://example.com');
+        self::assertNotNull($cellWithStringHyperlink->hyperlink);
+        self::assertSame('https://example.com', (string) $cellWithStringHyperlink->hyperlink);
+        self::assertNull($cellWithStringHyperlink->hyperlink->tooltip);
     }
 
     public function testNumericCellWithValue(): void

@@ -7,6 +7,7 @@ namespace OpenSpout\Writer\ODS\Manager;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Writer\Common\Entity\Workbook;
 use OpenSpout\Writer\Common\Manager\AbstractWorkbookManager;
+use OpenSpout\Writer\Common\Manager\SheetManager;
 use OpenSpout\Writer\ODS\Helper\FileSystemHelper;
 use OpenSpout\Writer\ODS\Manager\Style\StyleManager;
 use OpenSpout\Writer\ODS\Options;
@@ -33,14 +34,16 @@ final class WorkbookManager extends AbstractWorkbookManager
         Options $options,
         WorksheetManager $worksheetManager,
         StyleManager $styleManager,
-        FileSystemHelper $fileSystemHelper
+        FileSystemHelper $fileSystemHelper,
+        SheetManager $sheetManager
     ) {
         parent::__construct(
             $workbook,
             $options,
             $worksheetManager,
             $styleManager,
-            $fileSystemHelper
+            $fileSystemHelper,
+            $sheetManager
         );
     }
 

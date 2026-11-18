@@ -15,10 +15,12 @@ use OpenSpout\Common\Entity\Comment\Comment;
 use OpenSpout\Common\Entity\Comment\TextRun;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\TextRunVerticalStyle;
+use OpenSpout\Common\Exception\InvalidArgumentException;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Reader\Wrapper\XMLReader;
 use OpenSpout\TestUsingResource;
 use OpenSpout\Writer\AutoFilter;
+use OpenSpout\Writer\Common\Entity\Sheet;
 use OpenSpout\Writer\Common\Helper\ImageHelperTrait;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
 use OpenSpout\Writer\XLSX\Manager\WorkbookManager;
@@ -794,6 +796,58 @@ final class WriterTest extends TestCase
         self::assertSame($options->DEFAULT_COLUMN_WIDTH, $writer->getOptions()->DEFAULT_COLUMN_WIDTH);
     }
 
+    public function testCompressionLevelAcceptsZeroToNine(): void
+    {
+        self::assertNull((new Options())->compressionLevel);
+        self::assertSame(0, (new Options(compressionLevel: 0))->compressionLevel);
+        self::assertSame(9, (new Options(compressionLevel: 9))->compressionLevel);
+    }
+
+    public function testCompressionLevelMustBeBetweenZeroAndNine(): void
+    {
+        foreach ([-1, 10] as $compressionLevel) {
+            try {
+                new Options(compressionLevel: $compressionLevel);
+                self::fail(\sprintf('Compression level %d should have been rejected', $compressionLevel));
+            } catch (InvalidArgumentException $exception) {
+                self::assertSame(\sprintf('Compression level must be between 0 and 9, %d given', $compressionLevel), $exception->getMessage());
+            }
+        }
+    }
+
+    public function testCompressionLevelIsAppliedToTheWorksheets(): void
+    {
+        $dataRows = [];
+        for ($i = 0; $i < 2000; ++$i) {
+            $dataRows[] = Row::fromValues(['row '.$i, 'some repeated text', $i * 7, 'more repeated text '.($i % 13)]);
+        }
+
+        $sizes = [];
+        foreach ([1, 9] as $compressionLevel) {
+            $fileName = \sprintf('test_compression_level_%d.xlsx', $compressionLevel);
+            $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+            $writer = new Writer(new Options(
+                tempFolder: (new TestUsingResource())->getTempFolderPath(),
+                compressionLevel: $compressionLevel,
+            ));
+            $writer->openToFile($resourcePath);
+            $writer->addRows($dataRows);
+            $writer->close();
+
+            $zip = new ZipArchive();
+            $zip->open($resourcePath);
+            $stat = $zip->statName('xl/worksheets/sheet1.xml');
+            $zip->close();
+
+            self::assertIsArray($stat);
+            self::assertSame(ZipArchive::CM_DEFLATE, $stat['comp_method']);
+            $sizes[$compressionLevel] = $stat['comp_size'];
+        }
+
+        self::assertGreaterThan($sizes[9], $sizes[1], 'Level 1 should compress the sheet less tightly than level 9');
+    }
+
     public function testSheetFilenameAreStoredWithIndex(): void
     {
         $fileName = 'sheet_indexes.xlsx';
@@ -1218,6 +1272,48 @@ final class WriterTest extends TestCase
 
         self::assertNotFalse($xmlContents);
         self::assertStringContainsString('<sheetPr filterMode="false"><pageSetUpPr fitToPage="true"/></sheetPr>', $xmlContents);
+    }
+
+    public function testSheetPrShouldNotHaveOutlinePrByDefault(): void
+    {
+        $xmlContents = $this->writeSheetAndReadXml('test_sheet_pr_without_outline_pr.xlsx', static function (Sheet $sheet): void {});
+
+        self::assertStringNotContainsString('<sheetPr', $xmlContents);
+        self::assertStringNotContainsString('outlinePr', $xmlContents);
+    }
+
+    public function testSummaryRowsAboveDetailShouldWriteOutlinePr(): void
+    {
+        $xmlContents = $this->writeSheetAndReadXml('test_summary_rows_above_detail.xlsx', static function (Sheet $sheet): void {
+            $sheet->setSummaryRowsBelowDetail(false);
+        });
+
+        self::assertStringContainsString('<sheetPr><outlinePr summaryBelow="0"/></sheetPr>', $xmlContents);
+    }
+
+    public function testSummaryColumnsLeftOfDetailShouldWriteOutlinePr(): void
+    {
+        $xmlContents = $this->writeSheetAndReadXml('test_summary_columns_left_of_detail.xlsx', static function (Sheet $sheet): void {
+            $sheet->setSummaryRowsBelowDetail(true);
+            $sheet->setSummaryColumnsRightOfDetail(false);
+        });
+
+        self::assertStringContainsString('<sheetPr><outlinePr summaryBelow="1" summaryRight="0"/></sheetPr>', $xmlContents);
+    }
+
+    public function testOutlinePrShouldPrecedePageSetUpPrInSheetPr(): void
+    {
+        $options = new Options(
+            tempFolder: (new TestUsingResource())->getTempFolderPath(),
+            pageSetup: new PageSetup(PageOrientation::LANDSCAPE, PaperSize::A4, 1),
+        );
+
+        $xmlContents = $this->writeSheetAndReadXml('test_outline_pr_before_page_set_up_pr.xlsx', static function (Sheet $sheet): void {
+            $sheet->setAutoFilter(new AutoFilter(0, 1, 3, 3));
+            $sheet->setSummaryRowsBelowDetail(false);
+        }, $options);
+
+        self::assertStringContainsString('<sheetPr filterMode="false"><outlinePr summaryBelow="0"/><pageSetUpPr fitToPage="true"/></sheetPr>', $xmlContents);
     }
 
     public function testAddHeaderFooterDifferentOddEven(): void
@@ -1702,6 +1798,87 @@ final class WriterTest extends TestCase
         self::assertSame(1, $mediaCount, 'The same image should be stored only once in the archive');
     }
 
+    public function testImageCellsAreKeptPerSheetWhenSwitchingSheets(): void
+    {
+        $fileName = 'test_image_cells_switching_sheets.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+
+        $firstSheet = $writer->getCurrentSheet();
+        $writer->addRow(new Row([new Cell\ImageCell($this->testImagePath, 1, 1)]));
+
+        $writer->addNewSheetAndMakeItCurrent();
+        $writer->addRow(Row::fromValues(['no images on this sheet']));
+
+        $writer->addNewSheetAndMakeItCurrent();
+        $writer->addRow(new Row([new Cell\ImageCell($this->testImagePath, 1, 1)]));
+
+        $writer->setCurrentSheet($firstSheet);
+        $writer->addRow(new Row([new Cell\ImageCell($this->testImagePath, 1, 1)]));
+
+        $writer->close();
+
+        $zip = new ZipArchive();
+        self::assertTrue($zip->open($resourcePath));
+
+        $firstDrawing = simplexml_load_string((string) $zip->getFromName('xl/drawings/drawing1.xml'));
+        self::assertNotFalse($firstDrawing);
+        $anchors = $firstDrawing->children('xdr', true)->oneCellAnchor;
+        self::assertCount(2, $anchors);
+        self::assertSame('0', (string) $anchors[0]->from->row);
+        self::assertSame('1', (string) $anchors[1]->from->row);
+
+        $thirdDrawing = simplexml_load_string((string) $zip->getFromName('xl/drawings/drawing3.xml'));
+        self::assertNotFalse($thirdDrawing);
+        self::assertCount(1, $thirdDrawing->children('xdr', true)->oneCellAnchor);
+
+        self::assertFalse($zip->getFromName('xl/drawings/drawing2.xml'));
+        self::assertStringNotContainsString('<drawing ', (string) $zip->getFromName('xl/worksheets/sheet2.xml'));
+        self::assertStringNotContainsString('drawing2.xml', (string) $zip->getFromName('[Content_Types].xml'));
+
+        for ($i = 0; $i < $zip->numFiles; ++$i) {
+            self::assertStringNotContainsString('-drawing', (string) $zip->getNameIndex($i));
+        }
+
+        $zip->close();
+    }
+
+    public function testImageFilesAreClosedWhenSwitchingSheetsAndOnClose(): void
+    {
+        if (!is_dir('/proc/self/fd')) {
+            self::markTestSkipped('This test requires Linux with /proc/self/fd');
+        }
+
+        $countFds = static function (): int {
+            $fds = scandir('/proc/self/fd');
+            \assert(false !== $fds);
+
+            return \count($fds);
+        };
+
+        $fdsBeforeOpen = $countFds();
+
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath('test_image_file_handles.xlsx');
+        $writer = new Writer(new Options(tempFolder: (new TestUsingResource())->getTempFolderPath()));
+        $writer->openToFile($resourcePath);
+        $writer->addRow(new Row([new Cell\ImageCell($this->testImagePath, 1, 1)]));
+
+        $fdsWithOneSheet = $countFds();
+
+        for ($i = 0; $i < 5; ++$i) {
+            $writer->addNewSheetAndMakeItCurrent();
+            $writer->addRow(new Row([new Cell\ImageCell($this->testImagePath, 1, 1)]));
+        }
+
+        self::assertSame($fdsWithOneSheet, $countFds());
+
+        $writer->close();
+
+        self::assertSame($fdsBeforeOpen, $countFds());
+    }
+
     public function testAddNewSheetAndMakeItCurrentLeaksFileHandles(): void
     {
         if (!is_dir('/proc/self/fd')) {
@@ -1974,6 +2151,25 @@ final class WriterTest extends TestCase
 
         self::assertNotFalse($xmlContents);
         self::assertStringContainsString($sharedString, $xmlContents, $message);
+    }
+
+    /**
+     * @param callable(Sheet): void $configureSheet
+     */
+    private function writeSheetAndReadXml(string $fileName, callable $configureSheet, ?Options $options = null): string
+    {
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+
+        $writer = new Writer($options ?? new Options(tempFolder: (new TestUsingResource())->getTempFolderPath()));
+        $writer->openToFile($resourcePath);
+        $configureSheet($writer->getCurrentSheet());
+        $writer->addRow(new Row([Cell::fromValue('something'), Cell::fromValue('else')]));
+        $writer->close();
+
+        $xmlContents = file_get_contents('zip://'.$resourcePath.'#xl/worksheets/sheet1.xml');
+        self::assertNotFalse($xmlContents);
+
+        return $xmlContents;
     }
 
     /**

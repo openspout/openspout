@@ -9,6 +9,7 @@ use OpenSpout\Common\Helper\StringHelper;
 use OpenSpout\Writer\AbstractWriterMultiSheets;
 use OpenSpout\Writer\Common\Entity\Workbook;
 use OpenSpout\Writer\Common\Helper\ZipHelper;
+use OpenSpout\Writer\Common\Manager\SheetManager;
 use OpenSpout\Writer\XLSX\Helper\FileSystemHelper;
 use OpenSpout\Writer\XLSX\Manager\CommentsManager;
 use OpenSpout\Writer\XLSX\Manager\HyperlinkManager;
@@ -48,7 +49,7 @@ final class Writer extends AbstractWriterMultiSheets
 
         $fileSystemHelper = new FileSystemHelper(
             $this->options->tempFolder,
-            new ZipHelper(),
+            new ZipHelper($this->options->compressionLevel),
             new XLSX(),
             $this->options->properties,
         );
@@ -65,14 +66,15 @@ final class Writer extends AbstractWriterMultiSheets
         );
 
         $commentsManager = new CommentsManager($xlFolder, new XLSX());
-        $hyperlinkManager = new HyperlinkManager();
-        $imageManager = new ImageManager();
+        $hyperlinkManager = new HyperlinkManager($fileSystemHelper->getSheetsContentTempFolder(), $escaper);
+        $imageManager = new ImageManager($fileSystemHelper->getSheetsContentTempFolder());
 
         $worksheetManager = new WorksheetManager(
             $this->options,
             $styleManager,
             $commentsManager,
             $hyperlinkManager,
+            $imageManager,
             $sharedStringsManager,
             $escaper,
             StringHelper::factory()
@@ -84,6 +86,7 @@ final class Writer extends AbstractWriterMultiSheets
             $worksheetManager,
             $styleManager,
             $fileSystemHelper,
+            new SheetManager(StringHelper::factory()),
             $hyperlinkManager,
             $imageManager,
         );

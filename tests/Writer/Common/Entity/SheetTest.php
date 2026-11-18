@@ -90,19 +90,24 @@ final class SheetTest extends TestCase
         $sheet->setName($customSheetName);
     }
 
+    /**
+     * Each workbook owns its own SheetManager: names must be scoped to that
+     * instance, not tracked in shared (static) state that outlives the workbook.
+     */
     public function testSetSheetNameShouldNotThrowWhenSameNameUsedInDifferentWorkbooks(): void
     {
+        $this->expectNotToPerformAssertions();
+
         $customSheetName = 'Sheet name';
 
-        $sheet = $this->createSheet(0, 'workbookId1');
+        $sheet = new Sheet(0, 'workbookId1', new SheetManager(StringHelper::factory()));
         $sheet->setName($customSheetName);
 
-        $sheet = $this->createSheet(0, 'workbookId2');
+        $sheet = new Sheet(0, 'workbookId2', new SheetManager(StringHelper::factory()));
         $sheet->setName($customSheetName);
 
-        $sheet = $this->createSheet(1, 'workbookId3');
+        $sheet = new Sheet(1, 'workbookId3', new SheetManager(StringHelper::factory()));
         $sheet->setName($customSheetName);
-        $this->expectNotToPerformAssertions();
     }
 
     public function testSetColumnHiddenGathersConsecutiveColumnsIntoRanges(): void
@@ -162,6 +167,24 @@ final class SheetTest extends TestCase
         self::assertSame(2, $levels[0]->start);
         self::assertSame(5, $levels[0]->end);
         self::assertSame(3, $levels[0]->level);
+    }
+
+    public function testSummaryPositionsAreNotSetByDefault(): void
+    {
+        $sheet = $this->createSheet(0, 'workbookId1');
+
+        self::assertNull($sheet->getSummaryRowsBelowDetail());
+        self::assertNull($sheet->getSummaryColumnsRightOfDetail());
+    }
+
+    public function testSetSummaryPositions(): void
+    {
+        $sheet = $this->createSheet(0, 'workbookId1');
+
+        self::assertSame($sheet, $sheet->setSummaryRowsBelowDetail(false));
+        self::assertSame($sheet, $sheet->setSummaryColumnsRightOfDetail(true));
+        self::assertFalse($sheet->getSummaryRowsBelowDetail());
+        self::assertTrue($sheet->getSummaryColumnsRightOfDetail());
     }
 
     /**

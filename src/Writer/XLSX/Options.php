@@ -27,7 +27,8 @@ final readonly class Options extends AbstractOptions
     private ValidationContainer $VALIDATION_CELLS;
 
     /**
-     * @param null|string $password UTF-8 encoded password, of 255 characters at most, that will be required to open the file: its content gets encrypted
+     * @param null|int    $compressionLevel Deflate level (0-9) for the compressed files of the archive; null keeps libzip's default
+     * @param null|string $password         UTF-8 encoded password, of 255 characters at most, that will be required to open the file: its content gets encrypted
      */
     public function __construct(
         Style $FALLBACK_STYLE = new Style(
@@ -44,6 +45,7 @@ final readonly class Options extends AbstractOptions
         public ?HeaderFooter $headerFooter = null,
         public ?WorkbookProtection $workbookProtection = null,
         public Properties $properties = new Properties(),
+        ?int $compressionLevel = null,
         #[SensitiveParameter]
         public ?string $password = null,
     ) {
@@ -57,6 +59,7 @@ final readonly class Options extends AbstractOptions
             $DEFAULT_COLUMN_WIDTH,
             $DEFAULT_ROW_HEIGHT,
             $tempFolder,
+            $compressionLevel,
         );
 
         $this->MERGE_CELLS = new MergeCellContainer();

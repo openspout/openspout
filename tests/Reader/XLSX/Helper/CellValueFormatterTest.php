@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace OpenSpout\Reader\XLSX\Helper;
 
 use DateTimeInterface;
+use DOMDocument;
 use DOMElement;
 use DOMNodeList;
 use OpenSpout\Common\Entity\Cell\DateTimeCell;
@@ -264,6 +265,68 @@ final class CellValueFormatterTest extends TestCase
                 'cellType' => CellValueFormatter::CELL_TYPE_NUMERIC,
             ],
         ];
+    }
+
+    #[DataProvider('provideFormulaComputedValueIsNullWithoutCachedResultCases')]
+    public function testFormulaComputedValueIsNullWithoutCachedResult(string $cellXml, bool|int|string|null $expectedComputedValue): void
+    {
+        $document = new DOMDocument();
+        $document->loadXML('<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'.$cellXml.'</worksheet>');
+        $node = $document->documentElement?->firstChild;
+        self::assertInstanceOf(DOMElement::class, $node);
+
+        $styleManagerStub = self::createStub(StyleManagerInterface::class);
+        $styleManagerStub->method('shouldFormatNumericValueAsDate')->willReturnCallback(static fn (int $styleId): bool => 1 === $styleId);
+
+        $formatter = new CellValueFormatter(
+            new SharedStringsManager(
+                uniqid(),
+                new Options(),
+                new WorkbookRelationshipsManager(uniqid()),
+                new CachingStrategyFactory(new MemoryLimit('1'))
+            ),
+            $styleManagerStub,
+            false,
+            false,
+            new Escaper\XLSX()
+        );
+
+        $result = $formatter->extractAndFormatNodeValue($node);
+
+        self::assertInstanceOf(FormulaCell::class, $result);
+        self::assertSame($expectedComputedValue, $result->getComputedValue());
+    }
+
+    /**
+     * @return iterable<string, array{string, null|bool|int|string}>
+     */
+    public static function provideFormulaComputedValueIsNullWithoutCachedResultCases(): iterable
+    {
+        yield 'number without v' => ['<c r="A1"><f>1+1</f></c>', null];
+
+        yield 'number with empty v' => ['<c r="A1"><f>1+1</f><v></v></c>', null];
+
+        yield 'number with self-closing v' => ['<c r="A1"><f>1+1</f><v/></c>', null];
+
+        yield 'date without v' => ['<c r="A1" s="1"><f>TODAY()</f></c>', null];
+
+        yield 'boolean without v' => ['<c r="A1" t="b"><f>1&gt;0</f></c>', null];
+
+        yield 'string without v' => ['<c r="A1" t="str"><f>B1</f></c>', null];
+
+        yield 'error without v' => ['<c r="A1" t="e"><f>1/0</f></c>', null];
+
+        yield 'empty string result' => ['<c r="A1" t="str"><f>""</f><v></v></c>', ''];
+
+        yield 'empty string result with self-closing v' => ['<c r="A1" t="str"><f>""</f><v/></c>', ''];
+
+        yield 'number' => ['<c r="A1"><f>1+1</f><v>2</v></c>', 2];
+
+        yield 'zero' => ['<c r="A1"><f>1-1</f><v>0</v></c>', 0];
+
+        yield 'boolean' => ['<c r="A1" t="b"><f>1&gt;2</f><v>0</v></c>', false];
+
+        yield 'string' => ['<c r="A1" t="str"><f>B1</f><v>foo</v></c>', 'foo'];
     }
 
     #[DataProvider('provideFormatNumericCellValueWithNumbersCases')]

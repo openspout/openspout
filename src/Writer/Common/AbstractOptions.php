@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace OpenSpout\Writer\Common;
 
 use OpenSpout\Common\Entity\Style\Style;
+use OpenSpout\Common\Exception\InvalidArgumentException;
 use OpenSpout\Common\TempFolderCheck;
 
 abstract readonly class AbstractOptions
@@ -14,13 +15,21 @@ abstract readonly class AbstractOptions
 
     private ColumnWidthContainer $COLUMN_WIDTHS;
 
+    /**
+     * @param null|int $compressionLevel Deflate level (0-9) for the compressed files of the archive; null keeps libzip's default
+     */
     public function __construct(
         public Style $FALLBACK_STYLE = new Style(),
         public bool $SHOULD_CREATE_NEW_SHEETS_AUTOMATICALLY = true,
         public ?float $DEFAULT_COLUMN_WIDTH = null,
         public ?float $DEFAULT_ROW_HEIGHT = null,
         ?string $tempFolder = null,
+        public ?int $compressionLevel = null,
     ) {
+        if (null !== $compressionLevel && ($compressionLevel < 0 || $compressionLevel > 9)) {
+            throw new InvalidArgumentException(\sprintf('Compression level must be between 0 and 9, %d given', $compressionLevel));
+        }
+
         $tempFolder ??= sys_get_temp_dir();
         \assert('' !== $tempFolder);
         $this->tempFolder = $tempFolder;

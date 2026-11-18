@@ -216,6 +216,23 @@ $writer = new Writer(new Options(
 > Apple's products (Numbers and the iOS previewer) don't support inline strings and display empty cells instead.
 > Therefore, if these platforms need to be supported, make sure to use shared strings!
 
+### Compression level (XLSX and ODS writers)
+
+XLSX and ODS files are zip archives. By default OpenSpout compresses its parts with libzip's default deflate level, which
+produces the smallest files but is the slowest to write. For large spreadsheets, a lower level can make writing
+noticeably faster in exchange for a slightly larger file:
+
+```php
+use OpenSpout\Writer\XLSX\Writer;
+use OpenSpout\Writer\XLSX\Options;
+
+$writer = new Writer(new Options(
+    compressionLevel: 6, // 0 (no compression) to 9 (smallest file); default: null, libzip's default
+));
+```
+
+The ODS writer accepts the same option. Its `mimetype` file is always stored uncompressed, as required by the ODF format.
+
 ### Date/Time formatting
 
 When reading a spreadsheet containing dates or times, OpenSpout returns the values by default as `DateTime` objects.
@@ -457,6 +474,25 @@ $writer->close();
 Empty rows are normally not written to XLSX files, but those having any of these
 attributes are, so that they are not lost (and do not split the group they belong to).
 
+Spreadsheet applications expect the summary row of a group right below it, and
+draw the expand/collapse button next to that row. When the summary row comes
+first, as for a heading followed by its details, tell the sheet so; the button
+then sits next to the row above the group. The same goes for column groups,
+whose summary column is expected to their right:
+
+```php
+$sheet = $writer->getCurrentSheet();
+$sheet->setSummaryRowsBelowDetail(false);
+$sheet->setSummaryColumnsRightOfDetail(false);
+
+$writer->addRow(Row::fromValues(['Total A', 60]));
+$writer->addRow(Row::fromValues(['Item A1', 30], outlineLevel: 1));
+$writer->addRow(Row::fromValues(['Item A2', 30], outlineLevel: 1));
+```
+
+These settings apply to the whole sheet and can be changed until the writer is
+closed. They are ignored for ODS output.
+
 For ODS, hidden rows are written with `table:visibility="collapse"`. Note that ODS
 **outline-level grouping is not yet supported**: outline levels are ignored for ODS
 output, and so is the collapsed flag, as it only describes the state of a group.
@@ -669,6 +705,51 @@ Add or remove hyperlinks from an existing `StringCell` using the `withHyperlink`
 ```php
 $cellWithHyperlink = $cell->withHyperlink('https://example.com');
 $cellWithoutHyperlink = $cellWithHyperlink->withoutHyperlink();
+```
+
+### Links within the workbook
+
+Use `Hyperlink` to link to another cell or sheet of the same workbook. It takes care of quoting the sheet name:
+
+```php
+use OpenSpout\Common\Entity\Cell;
+use OpenSpout\Common\Entity\Hyperlink;
+
+// a cell on the same sheet
+$cell = Cell::fromValue('Jump to totals', null, null, Hyperlink::toCell('A100'));
+
+// a cell on another sheet
+$cell = Cell::fromValue('Order 4711', null, null, Hyperlink::toCell('A42', 'Order Details'));
+
+// a range on another sheet (the range gets selected)
+$cell = Cell::fromValue('All orders', null, null, Hyperlink::toCell('B2:D10', 'Order Details'));
+
+// another sheet (links to its cell A1)
+$cell = Cell::fromValue('Show details', null, null, Hyperlink::toSheet('Order Details'));
+```
+
+External URLs can be passed either as a plain string, as shown above, or with `Hyperlink::toUrl()`. Both produce the
+same result:
+
+```php
+$cell = Cell::fromValue('Click me', null, null, 'https://example.com');
+$cell = Cell::fromValue('Click me', null, null, Hyperlink::toUrl('https://example.com'));
+```
+
+`Hyperlink` can be used everywhere a hyperlink string is accepted, including the `StringCell` constructor and
+`withHyperlink()`:
+
+```php
+$cellWithHyperlink = $cell->withHyperlink(Hyperlink::toCell('A42', 'Order Details'));
+```
+
+### Hyperlink tooltips
+
+Any `Hyperlink` can have a tooltip, which is shown when hovering the link:
+
+```php
+$cell = Cell::fromValue('Order 4711', null, null, Hyperlink::toCell('A42', 'Order Details')->withTooltip('Show order details'));
+$cell = Cell::fromValue('Click me', null, null, Hyperlink::toUrl('https://example.com')->withTooltip('Opens example.com'));
 ```
 
 ## Playing with sheets
