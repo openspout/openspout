@@ -278,7 +278,7 @@ $writer->openToFile('/path/to/protected.xlsx'); // or openToBrowser()
 The reader supports both encryption schemes defined for XLSX files: the "Agile" encryption, written by Excel 2010 and
 later, and the "Standard" encryption, written by Excel 2007 and LibreOffice.
 
-The writer has deliberately no crypto agility: it always uses the "Agile" encryption with AES-256 in CBC mode, SHA-256
+The writer has deliberately no crypto agility: it always uses the "Agile" encryption with AES-256 in CBC mode, SHA-512
 hashing, 100,000 iterations of password hashing and 16 bytes salts, and the files it creates are compatible with both
 Excel (2010 and later) and LibreOffice. Passwords must be 12 to 255 characters long: `Password::generate()` gives a
 strong random one (32 random bytes, base64 encoded), that has to be kept, as it cannot be recovered.
