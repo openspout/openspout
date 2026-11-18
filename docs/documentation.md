@@ -283,6 +283,10 @@ hashing, 100,000 iterations of password hashing and 16 bytes salts, and the file
 Excel (2010 and later) and LibreOffice. Passwords must be 12 to 255 characters long: `Password::generate()` gives a
 strong random one (32 random bytes, base64 encoded), that has to be kept, as it cannot be recovered.
 
+> The 12 characters minimum does not make a password strong (`aaaaaaaaaaaa` is accepted), it is a minimum of awareness.
+> It is also an exception to the idempotency of the library: a file protected with a shorter password can be read, but
+> cannot be written back with the same password, and needs a new one.
+
 Excel encrypts some files without asking for a password, with the default password `VelvetSweatshop`: there is no
 fallback to it, so these files can only be read by explicitly giving `password: 'VelvetSweatshop'`.
 
