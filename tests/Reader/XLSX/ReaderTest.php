@@ -568,6 +568,14 @@ final class ReaderTest extends TestCase
         self::assertSame($expectedRows, $allRows);
     }
 
+    public function testReadShouldReturnEmptyStringsForFormattedEmptyCells(): void
+    {
+        // Formatted empty cells are self-closing: <c r="B1" s="1"/>
+        $allRows = $this->getAllRowsForFile('sheet_with_formatted_empty_cells.xlsx');
+
+        self::assertSame([['s1--A1', '', 's1--C1', '']], $allRows);
+    }
+
     public function testReadShouldSkipEmptyRowsIfShouldPreserveEmptyRowsNotSet(): void
     {
         $allRows = $this->getAllRowsForFile('sheet_with_empty_rows_and_missing_row_index.xlsx');
