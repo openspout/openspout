@@ -103,6 +103,7 @@ final class FileBasedStrategy implements CachingStrategyInterface
         if (null !== $this->tempFilePointer) {
             $this->writeMemoryTempFilePath = '';
             fclose($this->tempFilePointer);
+            $this->tempFilePointer = null;
         }
     }
 
@@ -149,6 +150,10 @@ final class FileBasedStrategy implements CachingStrategyInterface
      */
     public function clearCache(): void
     {
+        // The cache may be cleared without having been closed (e.g. after a failed extraction):
+        // the temp file must be closed first, as Windows cannot delete open files
+        $this->closeCache();
+
         $this->fileSystemHelper->deleteFolderRecursively($this->tempFolder);
     }
 

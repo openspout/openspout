@@ -527,6 +527,36 @@ final class ReaderTest extends TestCase
         self::assertSame($expectedRow, $allRows[0], 'Pronunciation data should be removed.');
     }
 
+    #[DataProvider('provideOpenShouldThrowOnMalformedSharedStringsAndLeaveNoTempFilesCases')]
+    public function testOpenShouldThrowOnMalformedSharedStringsAndLeaveNoTempFiles(CachingStrategyFactory $cachingStrategyFactory): void
+    {
+        $tempFolder = (new TestUsingResource())->getTempFolderPath();
+        $options = new Options();
+        $options->setTempFolder($tempFolder);
+        $reader = new Reader($options, $cachingStrategyFactory);
+
+        try {
+            $reader->open(TestUsingResource::getResourcePath('sheet_with_malformed_shared_strings.xlsx'));
+            self::fail('An exception should have been thrown');
+        } catch (IOException $ioException) {
+            self::assertStringContainsString('The sharedStrings.xml file is invalid and cannot be read.', $ioException->getMessage());
+        } finally {
+            $reader->close();
+        }
+
+        self::assertSame([], array_values(array_diff((array) scandir($tempFolder), ['.', '..'])), 'No temp files should be left behind');
+    }
+
+    /**
+     * @return iterable<string, array{CachingStrategyFactory}>
+     */
+    public static function provideOpenShouldThrowOnMalformedSharedStringsAndLeaveNoTempFilesCases(): iterable
+    {
+        yield 'in memory' => [new CachingStrategyFactory(new MemoryLimit('-1'))];
+
+        yield 'file based' => [new CachingStrategyFactory(new MemoryLimit('1b'))];
+    }
+
     /**
      * @NOTE: The LIBXML_NOENT is used to ACTUALLY substitute entities (and should therefore not be used)
      */
@@ -558,7 +588,12 @@ final class ReaderTest extends TestCase
 
         $startTime = microtime(true);
 
-        $this->getAllRowsForFile('attack_quadratic_blowup.xlsx');
+        try {
+            $this->getAllRowsForFile('attack_quadratic_blowup.xlsx');
+        } catch (IOException $ioException) {
+            // libxml2 >= 2.15 rejects the file outright, which is also a valid protection
+            self::assertStringContainsString('amplification', $ioException->getMessage());
+        }
 
         $duration = microtime(true) - $startTime;
         self::assertLessThan(10, $duration, 'Entities should not be expanded and therefore take more than 10 seconds to be parsed.');

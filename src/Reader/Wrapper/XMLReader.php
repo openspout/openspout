@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OpenSpout\Reader\Wrapper;
 
+use DOMElement;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Reader\Exception\XMLProcessingException;
 use ZipArchive;
@@ -116,6 +117,33 @@ final class XMLReader extends \XMLReader
         $this->resetXMLInternalErrorsSettingAndThrowIfXMLErrorOccured();
 
         return $wasNextSuccessful;
+    }
+
+    /**
+     * Returns a copy of the current element as a DOM element.
+     *
+     * NOTE: unlike \XMLReader::expand, which may succeed on a malformed subtree
+     * (e.g. libxml2 < 2.15) or fail without reporting any error (e.g. libxml2 >= 2.15),
+     * this method throws in both cases.
+     *
+     * @see \XMLReader::expand
+     *
+     * @throws XMLProcessingException If an error/warning occurred, or the current node cannot be expanded
+     */
+    public function expandElement(): DOMElement
+    {
+        $this->useXMLInternalErrors();
+
+        // PHP emits a warning on failure, on top of the libxml errors
+        $node = @parent::expand();
+
+        $this->resetXMLInternalErrorsSettingAndThrowIfXMLErrorOccured();
+
+        if (!$node instanceof DOMElement) {
+            throw new XMLProcessingException('Unable to expand the current node');
+        }
+
+        return $node;
     }
 
     /**
