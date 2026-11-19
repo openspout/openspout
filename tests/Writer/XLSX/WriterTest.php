@@ -14,6 +14,8 @@ use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Comment\Comment;
 use OpenSpout\Common\Entity\Comment\TextRun;
 use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Entity\Style\Color;
+use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Common\Entity\Style\TextRunVerticalStyle;
 use OpenSpout\Common\Exception\InvalidArgumentException;
 use OpenSpout\Common\Exception\IOException;
@@ -1757,6 +1759,26 @@ final class WriterTest extends TestCase
         self::assertNotFalse($sheetRels);
         self::assertStringContainsString('rIdDrawing1', $sheetRels);
         self::assertStringContainsString('drawings/drawing1.xml', $sheetRels);
+    }
+
+    public function testImageCellStyleIsAppliedToItsCell(): void
+    {
+        $fileName = 'test_write_image_cell_style.xlsx';
+        $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
+        $options = new Options(tempFolder: (new TestUsingResource())->getTempFolderPath());
+        $writer = new Writer($options);
+        $writer->openToFile($resourcePath);
+        $writer->addRow(new Row([
+            new Cell\ImageCell($this->testImagePath, 1, 1, (new Style())->withBackgroundColor(Color::BLUE)),
+            new Cell\ImageCell($this->testImagePath, 1, 1),
+        ]));
+        $writer->close();
+
+        $sheetXml = file_get_contents('zip://'.$resourcePath.'#xl/worksheets/sheet1.xml');
+        self::assertNotFalse($sheetXml);
+        // The styled image cell is written without a value, the unstyled one is not written at all
+        self::assertMatchesRegularExpression('#<c r="A1" s="[1-9]\d*"/>#', $sheetXml);
+        self::assertStringNotContainsString('<c r="B1"', $sheetXml);
     }
 
     public function testDuplicateImageCellIsEmbeddedOnlyOnce(): void
