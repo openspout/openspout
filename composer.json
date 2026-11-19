@@ -43,10 +43,10 @@
         "friendsofphp/php-cs-fixer": "^3.95.32",
         "infection/infection": "^0.35.12",
         "phpbench/phpbench": "^1.7.0",
-        "phpstan/phpstan": "^2.3.6",
+        "phpstan/phpstan": "^2.3.7",
         "phpstan/phpstan-phpunit": "^2.1.2",
         "phpstan/phpstan-strict-rules": "^2.1.1",
-        "phpunit/phpunit": "^13.4.7"
+        "phpunit/phpunit": "^13.4.8"
     },
     "suggest": {
         "ext-iconv": "To handle non UTF-8 CSV files (if \"php-mbstring\" is not already installed or is too limited)",
