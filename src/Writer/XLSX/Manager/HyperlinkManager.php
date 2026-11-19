@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer\XLSX\Manager;
 
+use OpenSpout\Common\Entity\Cell\ImageCell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Helper\Escaper;
 use OpenSpout\Writer\Common\Entity\Worksheet;
@@ -45,7 +46,8 @@ final class HyperlinkManager
         $rowIndexOneBased = $worksheet->getLastWrittenRowIndex() + 1;
 
         foreach ($row->cells as $columnIndexZeroBased => $cell) {
-            if (null === $cell->hyperlinkUrl) {
+            // the hyperlink of an image is written to its drawing, see ImageManager
+            if ($cell instanceof ImageCell || null === $cell->hyperlinkUrl) {
                 continue;
             }
 

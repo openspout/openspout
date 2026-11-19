@@ -993,6 +993,13 @@ final class FileSystemHelper implements FileSystemWithRootFolderHelperInterface
                 .' Target="../media/'.$mediaName.'"/>';
         }
 
+        foreach ($imageManager->getHyperlinks($worksheet) as $index => $target) {
+            $drawingRelsXml .= '<Relationship Id="rId_hyperlink'.($index + 1).'"'
+                .' Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink"'
+                .' Target="'.$this->escaper->escape($target).'"'
+                .(str_starts_with($target, '#') ? '' : ' TargetMode="External"').'/>';
+        }
+
         $drawingRelsXml .= '</Relationships>';
 
         $drawingXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
