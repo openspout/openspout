@@ -8,6 +8,7 @@ use DateInterval;
 use DateTimeImmutable;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Comment\Comment;
+use OpenSpout\Common\Entity\Hyperlink;
 use OpenSpout\Common\Entity\Style\Style;
 
 final readonly class FormulaCell extends Cell
@@ -17,8 +18,9 @@ final readonly class FormulaCell extends Cell
         private bool|DateInterval|DateTimeImmutable|float|int|string|null $computedValue = null,
         ?Style $style = null,
         ?Comment $comment = null,
+        Hyperlink|string|null $hyperlink = null,
     ) {
-        parent::__construct($style, $comment);
+        parent::__construct($style, $comment, $hyperlink);
     }
 
     public function getValue(): string
@@ -33,31 +35,41 @@ final readonly class FormulaCell extends Cell
 
     public function withValue(string $value): self
     {
-        return new self($value, $this->computedValue, $this->style, $this->comment);
+        return new self($value, $this->computedValue, $this->style, $this->comment, $this->hyperlink);
     }
 
     public function withComputedValue(bool|DateInterval|DateTimeImmutable|float|int|string|null $computedValue): self
     {
-        return new self($this->value, $computedValue, $this->style, $this->comment);
+        return new self($this->value, $computedValue, $this->style, $this->comment, $this->hyperlink);
     }
 
     public function withStyle(Style $style): static
     {
-        return new self($this->value, $this->computedValue, $style, $this->comment);
+        return new self($this->value, $this->computedValue, $style, $this->comment, $this->hyperlink);
     }
 
     public function withoutStyle(): static
     {
-        return new self($this->value, $this->computedValue, null, $this->comment);
+        return new self($this->value, $this->computedValue, null, $this->comment, $this->hyperlink);
     }
 
     public function withComment(Comment $comment): static
     {
-        return new self($this->value, $this->computedValue, $this->style, $comment);
+        return new self($this->value, $this->computedValue, $this->style, $comment, $this->hyperlink);
     }
 
     public function withoutComment(): static
     {
-        return new self($this->value, $this->computedValue, $this->style, null);
+        return new self($this->value, $this->computedValue, $this->style, null, $this->hyperlink);
+    }
+
+    public function withHyperlink(Hyperlink|string $hyperlink): static
+    {
+        return new self($this->value, $this->computedValue, $this->style, $this->comment, $hyperlink);
+    }
+
+    public function withoutHyperlink(): static
+    {
+        return new self($this->value, $this->computedValue, $this->style, $this->comment, null);
     }
 }

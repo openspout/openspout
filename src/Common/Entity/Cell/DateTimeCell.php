@@ -7,6 +7,7 @@ namespace OpenSpout\Common\Entity\Cell;
 use DateTimeInterface;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Comment\Comment;
+use OpenSpout\Common\Entity\Hyperlink;
 use OpenSpout\Common\Entity\Style\Style;
 
 final readonly class DateTimeCell extends Cell
@@ -17,8 +18,9 @@ final readonly class DateTimeCell extends Cell
         DateTimeInterface $value,
         ?Style $style = null,
         ?Comment $comment = null,
+        Hyperlink|string|null $hyperlink = null,
     ) {
-        parent::__construct($style, $comment);
+        parent::__construct($style, $comment, $hyperlink);
         $this->value = $value;
     }
 
@@ -29,26 +31,36 @@ final readonly class DateTimeCell extends Cell
 
     public function withValue(DateTimeInterface $value): self
     {
-        return new self($value, $this->style, $this->comment);
+        return new self($value, $this->style, $this->comment, $this->hyperlink);
     }
 
     public function withStyle(Style $style): static
     {
-        return new self($this->value, $style, $this->comment);
+        return new self($this->value, $style, $this->comment, $this->hyperlink);
     }
 
     public function withoutStyle(): static
     {
-        return new self($this->value, null, $this->comment);
+        return new self($this->value, null, $this->comment, $this->hyperlink);
     }
 
     public function withComment(Comment $comment): static
     {
-        return new self($this->value, $this->style, $comment);
+        return new self($this->value, $this->style, $comment, $this->hyperlink);
     }
 
     public function withoutComment(): static
     {
-        return new self($this->value, $this->style, null);
+        return new self($this->value, $this->style, null, $this->hyperlink);
+    }
+
+    public function withHyperlink(Hyperlink|string $hyperlink): static
+    {
+        return new self($this->value, $this->style, $this->comment, $hyperlink);
+    }
+
+    public function withoutHyperlink(): static
+    {
+        return new self($this->value, $this->style, $this->comment, null);
     }
 }

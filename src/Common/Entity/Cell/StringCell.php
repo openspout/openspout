@@ -11,11 +11,6 @@ use OpenSpout\Common\Entity\Style\Style;
 
 final readonly class StringCell extends Cell
 {
-    public ?Hyperlink $hyperlink;
-
-    /** Target of the hyperlink, same as (string) $hyperlink */
-    public ?string $hyperlinkUrl;
-
     private string $value;
 
     public function __construct(
@@ -24,10 +19,8 @@ final readonly class StringCell extends Cell
         ?Comment $comment = null,
         Hyperlink|string|null $hyperlinkUrl = null,
     ) {
-        parent::__construct($style, $comment);
+        parent::__construct($style, $comment, $hyperlinkUrl);
         $this->value = $value;
-        $this->hyperlink = \is_string($hyperlinkUrl) ? Hyperlink::toUrl($hyperlinkUrl) : $hyperlinkUrl;
-        $this->hyperlinkUrl = null === $this->hyperlink ? null : (string) $this->hyperlink;
     }
 
     public function getValue(): string

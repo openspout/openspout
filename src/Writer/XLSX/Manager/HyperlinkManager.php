@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer\XLSX\Manager;
 
-use OpenSpout\Common\Entity\Cell\StringCell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Helper\Escaper;
 use OpenSpout\Writer\Common\Entity\Worksheet;
@@ -46,7 +45,7 @@ final class HyperlinkManager
         $rowIndexOneBased = $worksheet->getLastWrittenRowIndex() + 1;
 
         foreach ($row->cells as $columnIndexZeroBased => $cell) {
-            if (!$cell instanceof StringCell || null === $cell->hyperlinkUrl) {
+            if (null === $cell->hyperlinkUrl) {
                 continue;
             }
 

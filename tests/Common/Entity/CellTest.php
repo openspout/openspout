@@ -15,7 +15,9 @@ use OpenSpout\Common\Entity\Cell\FormulaCell;
 use OpenSpout\Common\Entity\Cell\NumericCell;
 use OpenSpout\Common\Entity\Cell\StringCell;
 use OpenSpout\Common\Entity\Comment\Comment;
+use OpenSpout\Common\Entity\Comment\TextRun;
 use OpenSpout\Common\Entity\Style\Style;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -180,6 +182,46 @@ final class CellTest extends TestCase
         self::assertNotNull($cellWithStringHyperlink->hyperlink);
         self::assertSame('https://example.com', (string) $cellWithStringHyperlink->hyperlink);
         self::assertNull($cellWithStringHyperlink->hyperlink->tooltip);
+    }
+
+    #[DataProvider('provideHyperlinkIsSupportedByAllCellTypesCases')]
+    public function testHyperlinkIsSupportedByAllCellTypes(Cell $cell): void
+    {
+        $hyperlink = Hyperlink::toUrl('https://example.com')->withTooltip('Open');
+
+        $linked = $cell->withHyperlink($hyperlink);
+        self::assertSame($hyperlink, $linked->hyperlink);
+        self::assertSame('https://example.com', $linked->hyperlinkUrl);
+        self::assertSame($hyperlink, $linked->withStyle(new Style())->hyperlink);
+        self::assertSame($hyperlink, $linked->withoutStyle()->hyperlink);
+        self::assertSame($hyperlink, $linked->withComment(new Comment())->hyperlink);
+        self::assertSame($hyperlink, $linked->withoutComment()->hyperlink);
+        self::assertNull($linked->withoutHyperlink()->hyperlink);
+        self::assertNull($cell->hyperlink);
+    }
+
+    /**
+     * @return iterable<string, array{Cell}>
+     */
+    public static function provideHyperlinkIsSupportedByAllCellTypesCases(): iterable
+    {
+        yield 'boolean' => [new BooleanCell(true)];
+
+        yield 'date interval' => [new DateIntervalCell(new DateInterval('P1D'))];
+
+        yield 'date time' => [new DateTimeCell(new DateTimeImmutable())];
+
+        yield 'empty' => [new EmptyCell(null)];
+
+        yield 'error' => [new ErrorCell('#N/A')];
+
+        yield 'formula' => [new FormulaCell('=1+1')];
+
+        yield 'numeric' => [new NumericCell(1)];
+
+        yield 'string' => [new StringCell('test')];
+
+        yield 'text run' => [Cell::fromValue([new TextRun('test')])];
     }
 
     public function testNumericCellWithValue(): void
