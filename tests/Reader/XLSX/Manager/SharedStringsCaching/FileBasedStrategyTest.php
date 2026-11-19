@@ -47,4 +47,27 @@ final class FileBasedStrategyTest extends TestCase
         self::assertSame('b', $this->strategy->getStringAtIndex(999));
         self::assertSame('c', $this->strategy->getStringAtIndex(999 * 2));
     }
+
+    public function testClearCacheClosesTempFileWhenCacheWasNotClosed(): void
+    {
+        $tempFolder = (new TestUsingResource())->getTempFolderPath();
+        $strategy = new FileBasedStrategy($tempFolder, 999);
+        $strategy->addStringForIndex('a', 0);
+
+        self::assertSame(1, self::countOpenStreamsInFolder($tempFolder));
+
+        // Windows cannot delete open files, so the temp file must be closed first
+        $strategy->clearCache();
+
+        self::assertSame(0, self::countOpenStreamsInFolder($tempFolder));
+        self::assertSame([], array_values(array_diff((array) scandir($tempFolder), ['.', '..'])));
+    }
+
+    private static function countOpenStreamsInFolder(string $folder): int
+    {
+        return \count(array_filter(
+            get_resources('stream'),
+            static fn ($stream): bool => str_starts_with(stream_get_meta_data($stream)['uri'] ?? '', $folder)
+        ));
+    }
 }
