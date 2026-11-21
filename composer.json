@@ -42,7 +42,7 @@
         "ext-zlib": "*",
         "friendsofphp/php-cs-fixer": "^3.95.32",
         "infection/infection": "^0.35.12",
-        "phpbench/phpbench": "^1.7.0",
+        "phpbench/phpbench": "^1.7.1",
         "phpstan/phpstan": "^2.3.7",
         "phpstan/phpstan-phpunit": "^2.1.2",
         "phpstan/phpstan-strict-rules": "^2.1.1",
