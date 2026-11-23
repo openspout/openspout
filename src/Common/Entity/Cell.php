@@ -38,14 +38,19 @@ abstract readonly class Cell
 
     abstract public function withoutComment(): static;
 
+    /** Characters that trigger formula execution in spreadsheet applications. */
+    private const array FORMULA_TRIGGERS = ['=', '+', '-', '@', "\t", "\r"];
+
     /**
      * @param null|bool|DateInterval|DateTimeInterface|float|int|string|TextRun[] $value
+     * @param bool $escapeFormulas Write strings starting with "=" as StringCell instead of FormulaCell
      */
     final public static function fromValue(
         array|bool|DateInterval|DateTimeInterface|float|int|string|null $value,
         ?Style $style = null,
         ?Comment $comment = null,
         Hyperlink|string|null $hyperlinkUrl = null,
+        bool $escapeFormulas = false,
     ): self {
         if (\is_array($value)) {
             return new TextRunCell($value, $style, $comment);
@@ -65,10 +70,16 @@ abstract readonly class Cell
         if ($value instanceof DateInterval) {
             return new DateIntervalCell($value, $style, $comment);
         }
-        if (isset($value[0]) && '=' === $value[0]) {
+        if (!$escapeFormulas && isset($value[0]) && '=' === $value[0]) {
             return new FormulaCell($value, null, $style, $comment);
         }
 
         return new StringCell($value, $style, $comment, $hyperlinkUrl);
+    }
+
+    /** Whether the string starts with a formula trigger character. */
+    final public static function isFormulaTrigger(string $value): bool
+    {
+        return '' !== $value && \in_array($value[0], self::FORMULA_TRIGGERS, true);
     }
 }

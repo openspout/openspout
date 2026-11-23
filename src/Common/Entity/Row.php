@@ -134,11 +134,12 @@ final readonly class Row
     /**
      * @param array<array-key, null|bool|DateInterval|DateTimeInterface|float|int|string|TextRun[]> $cellValues
      * @param int<0, 7>                                                                             $outlineLevel
+     * @param bool                                                                                  $escapeFormulas Write strings starting with "=" as StringCell instead of FormulaCell
      */
-    public static function fromValues(array $cellValues, float $height = self::DEFAULT_HEIGHT, int $outlineLevel = self::DEFAULT_OUTLINE_LEVEL, bool $hidden = false, bool $collapsed = false): self
+    public static function fromValues(array $cellValues, float $height = self::DEFAULT_HEIGHT, int $outlineLevel = self::DEFAULT_OUTLINE_LEVEL, bool $hidden = false, bool $collapsed = false, bool $escapeFormulas = false): self
     {
-        $cells = array_map(static function (array|bool|DateInterval|DateTimeInterface|float|int|string|null $cellValue): Cell {
-            return Cell::fromValue($cellValue);
+        $cells = array_map(static function (array|bool|DateInterval|DateTimeInterface|float|int|string|null $cellValue) use ($escapeFormulas): Cell {
+            return Cell::fromValue($cellValue, escapeFormulas: $escapeFormulas);
         }, $cellValues);
 
         return new self(array_values($cells), $height, $outlineLevel, $hidden, $collapsed);
@@ -148,11 +149,12 @@ final readonly class Row
      * @param array<array-key, null|bool|DateInterval|DateTimeInterface|float|int|string|TextRun[]> $cellValues
      * @param array<array-key, Style>                                                               $columnStyles
      * @param int<0, 7>                                                                             $outlineLevel
+     * @param bool                                                                                  $escapeFormulas Write strings starting with "=" as StringCell instead of FormulaCell
      */
-    public static function fromValuesWithStyles(array $cellValues, array $columnStyles, float $height = self::DEFAULT_HEIGHT, int $outlineLevel = self::DEFAULT_OUTLINE_LEVEL, bool $hidden = false, bool $collapsed = false): self
+    public static function fromValuesWithStyles(array $cellValues, array $columnStyles, float $height = self::DEFAULT_HEIGHT, int $outlineLevel = self::DEFAULT_OUTLINE_LEVEL, bool $hidden = false, bool $collapsed = false, bool $escapeFormulas = false): self
     {
-        $cells = array_map(static function (array|bool|DateInterval|DateTimeInterface|float|int|string|null $cellValue, int|string $key) use ($columnStyles): Cell {
-            return Cell::fromValue($cellValue, $columnStyles[$key] ?? null);
+        $cells = array_map(static function (array|bool|DateInterval|DateTimeInterface|float|int|string|null $cellValue, int|string $key) use ($columnStyles, $escapeFormulas): Cell {
+            return Cell::fromValue($cellValue, $columnStyles[$key] ?? null, escapeFormulas: $escapeFormulas);
         }, $cellValues, array_keys($cellValues));
 
         return new self($cells, $height, $outlineLevel, $hidden, $collapsed);
@@ -161,11 +163,12 @@ final readonly class Row
     /**
      * @param array<array-key, null|bool|DateInterval|DateTimeInterface|float|int|string|TextRun[]> $cellValues
      * @param int<0, 7>                                                                             $outlineLevel
+     * @param bool                                                                                  $escapeFormulas Write strings starting with "=" as StringCell instead of FormulaCell
      */
-    public static function fromValuesWithStyle(array $cellValues, Style $cellStyle, float $height = self::DEFAULT_HEIGHT, int $outlineLevel = self::DEFAULT_OUTLINE_LEVEL, bool $hidden = false, bool $collapsed = false): self
+    public static function fromValuesWithStyle(array $cellValues, Style $cellStyle, float $height = self::DEFAULT_HEIGHT, int $outlineLevel = self::DEFAULT_OUTLINE_LEVEL, bool $hidden = false, bool $collapsed = false, bool $escapeFormulas = false): self
     {
-        $cells = array_map(static function (array|bool|DateInterval|DateTimeInterface|float|int|string|null $cellValue) use ($cellStyle): Cell {
-            return Cell::fromValue($cellValue, $cellStyle);
+        $cells = array_map(static function (array|bool|DateInterval|DateTimeInterface|float|int|string|null $cellValue) use ($cellStyle, $escapeFormulas): Cell {
+            return Cell::fromValue($cellValue, $cellStyle, escapeFormulas: $escapeFormulas);
         }, $cellValues);
 
         return new self(array_values($cells), $height, $outlineLevel, $hidden, $collapsed);
