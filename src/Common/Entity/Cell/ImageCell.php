@@ -6,6 +6,7 @@ namespace OpenSpout\Common\Entity\Cell;
 
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Comment\Comment;
+use OpenSpout\Common\Entity\Hyperlink;
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Common\Exception\InvalidArgumentException;
 use OpenSpout\Common\Exception\UnsupportedImageTypeException;
@@ -21,6 +22,7 @@ final readonly class ImageCell extends Cell
         ?Style $style = null,
         ?Comment $comment = null,
         public bool $fitToCell = false,
+        Hyperlink|string|null $hyperlink = null,
     ) {
         if (!file_exists($path)) {
             throw new InvalidArgumentException("Image file not found: {$path}");
@@ -36,7 +38,7 @@ final readonly class ImageCell extends Cell
             default => throw new UnsupportedImageTypeException("Unsupported image type: .{$ext}"),
         };
 
-        parent::__construct($style, $comment);
+        parent::__construct($style, $comment, $hyperlink);
     }
 
     public function getValue(): string
@@ -57,26 +59,36 @@ final readonly class ImageCell extends Cell
 
     public function withFitToCell(bool $fitToCell): self
     {
-        return new self($this->path, $this->width, $this->height, $this->style, $this->comment, $fitToCell);
+        return new self($this->path, $this->width, $this->height, $this->style, $this->comment, $fitToCell, $this->hyperlink);
     }
 
     public function withStyle(Style $style): static
     {
-        return new self($this->path, $this->width, $this->height, $style, $this->comment, $this->fitToCell);
+        return new self($this->path, $this->width, $this->height, $style, $this->comment, $this->fitToCell, $this->hyperlink);
     }
 
     public function withoutStyle(): static
     {
-        return new self($this->path, $this->width, $this->height, null, $this->comment, $this->fitToCell);
+        return new self($this->path, $this->width, $this->height, null, $this->comment, $this->fitToCell, $this->hyperlink);
     }
 
     public function withComment(Comment $comment): static
     {
-        return new self($this->path, $this->width, $this->height, $this->style, $comment, $this->fitToCell);
+        return new self($this->path, $this->width, $this->height, $this->style, $comment, $this->fitToCell, $this->hyperlink);
     }
 
     public function withoutComment(): static
     {
-        return new self($this->path, $this->width, $this->height, $this->style, null, $this->fitToCell);
+        return new self($this->path, $this->width, $this->height, $this->style, null, $this->fitToCell, $this->hyperlink);
+    }
+
+    public function withHyperlink(Hyperlink|string $hyperlink): static
+    {
+        return new self($this->getValue(), $this->width, $this->height, $this->style, $this->comment, $this->fitToCell, $hyperlink);
+    }
+
+    public function withoutHyperlink(): static
+    {
+        return new self($this->getValue(), $this->width, $this->height, $this->style, $this->comment, $this->fitToCell);
     }
 }

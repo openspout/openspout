@@ -20,10 +20,19 @@ use OpenSpout\Common\Entity\Style\Style;
 
 abstract readonly class Cell
 {
+    public ?Hyperlink $hyperlink;
+
+    /** Target of the hyperlink, same as (string) $hyperlink */
+    public ?string $hyperlinkUrl;
+
     public function __construct(
         public ?Style $style = null,
         public ?Comment $comment = null,
-    ) {}
+        Hyperlink|string|null $hyperlink = null,
+    ) {
+        $this->hyperlink = \is_string($hyperlink) ? Hyperlink::toUrl($hyperlink) : $hyperlink;
+        $this->hyperlinkUrl = null === $this->hyperlink ? null : (string) $this->hyperlink;
+    }
 
     /**
      * @return null|bool|DateInterval|DateTimeInterface|float|int|string|TextRun[]
@@ -38,6 +47,10 @@ abstract readonly class Cell
 
     abstract public function withoutComment(): static;
 
+    abstract public function withHyperlink(Hyperlink|string $hyperlink): static;
+
+    abstract public function withoutHyperlink(): static;
+
     /**
      * @param null|bool|DateInterval|DateTimeInterface|float|int|string|TextRun[] $value
      */
@@ -48,25 +61,25 @@ abstract readonly class Cell
         Hyperlink|string|null $hyperlinkUrl = null,
     ): self {
         if (\is_array($value)) {
-            return new TextRunCell($value, $style, $comment);
+            return new TextRunCell($value, $style, $comment, $hyperlinkUrl);
         }
         if (\is_bool($value)) {
-            return new BooleanCell($value, $style, $comment);
+            return new BooleanCell($value, $style, $comment, $hyperlinkUrl);
         }
         if (null === $value || '' === $value) {
-            return new EmptyCell($value, $style, $comment);
+            return new EmptyCell($value, $style, $comment, $hyperlinkUrl);
         }
         if (\is_int($value) || \is_float($value)) {
-            return new NumericCell($value, $style, $comment);
+            return new NumericCell($value, $style, $comment, $hyperlinkUrl);
         }
         if ($value instanceof DateTimeInterface) {
-            return new DateTimeCell($value, $style, $comment);
+            return new DateTimeCell($value, $style, $comment, $hyperlinkUrl);
         }
         if ($value instanceof DateInterval) {
-            return new DateIntervalCell($value, $style, $comment);
+            return new DateIntervalCell($value, $style, $comment, $hyperlinkUrl);
         }
         if (isset($value[0]) && '=' === $value[0]) {
-            return new FormulaCell($value, null, $style, $comment);
+            return new FormulaCell($value, null, $style, $comment, $hyperlinkUrl);
         }
 
         return new StringCell($value, $style, $comment, $hyperlinkUrl);

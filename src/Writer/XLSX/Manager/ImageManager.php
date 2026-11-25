@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace OpenSpout\Writer\XLSX\Manager;
 
 use OpenSpout\Common\Entity\Cell\ImageCell;
+use OpenSpout\Common\Helper\Escaper;
 use OpenSpout\Writer\Common\Entity\Worksheet;
 
 /**
@@ -34,11 +35,15 @@ final class ImageManager
     /** @var array<string, string> [extension => mime type] of all images in the workbook */
     private array $mimeTypes = [];
 
+    /** @var array<int, list<string>> [sheetId => hyperlink targets, the index + 1 is used for the relationship id] */
+    private array $sheetHyperlinks = [];
+
     /** @var array<int, resource> [sheetId => drawing anchors file pointer] */
     private array $filePointers = [];
 
     public function __construct(
         private readonly string $tempFolder,
+        private readonly Escaper\XLSX $escaper = new Escaper\XLSX(),
     ) {}
 
     /**
@@ -87,6 +92,15 @@ final class ImageManager
         $this->imageCounts[$sheetId] = $imageCount;
         $picId = $imageCount + 1;
 
+        $hyperlinkXml = '';
+        if (null !== $cell->hyperlink) {
+            $this->sheetHyperlinks[$sheetId][] = (string) $cell->hyperlink;
+            $hyperlinkId = \count($this->sheetHyperlinks[$sheetId]);
+            $tooltip = $cell->hyperlink->tooltip;
+            $tooltipAttribute = null === $tooltip ? '' : \sprintf(' tooltip="%s"', $this->escaper->escape($tooltip));
+            $hyperlinkXml = '<a:hlinkClick r:id="rId_hyperlink'.$hyperlinkId.'"'.$tooltipAttribute.'/>';
+        }
+
         if ($cell->fitToCell) {
             $anchorXml = '<xdr:twoCellAnchor editAs="twoCell">'
                 .'<xdr:from>'
@@ -97,7 +111,7 @@ final class ImageManager
                 .'<xdr:col>'.($columnIndexZeroBased + 1).'</xdr:col><xdr:colOff>0</xdr:colOff>'
                 .'<xdr:row>'.($rowIndexZeroBased + 1).'</xdr:row><xdr:rowOff>0</xdr:rowOff>'
                 .'</xdr:to>'
-                .$this->buildPicXml($relId, $picId)
+                .$this->buildPicXml($relId, $picId, 0, 0, $hyperlinkXml)
                 .'<xdr:clientData/>'
                 .'</xdr:twoCellAnchor>';
         } else {
@@ -109,7 +123,7 @@ final class ImageManager
                 .'<xdr:row>'.$rowIndexZeroBased.'</xdr:row><xdr:rowOff>0</xdr:rowOff>'
                 .'</xdr:from>'
                 .'<xdr:ext cx="'.$widthEmu.'" cy="'.$heightEmu.'"/>'
-                .$this->buildPicXml($relId, $picId, $widthEmu, $heightEmu)
+                .$this->buildPicXml($relId, $picId, $widthEmu, $heightEmu, $hyperlinkXml)
                 .'<xdr:clientData/>'
                 .'</xdr:oneCellAnchor>';
         }
@@ -139,6 +153,14 @@ final class ImageManager
     }
 
     /**
+     * @return list<string> hyperlink targets of the images of this worksheet, in order of their relationship ids
+     */
+    public function getHyperlinks(Worksheet $worksheet): array
+    {
+        return $this->sheetHyperlinks[$worksheet->getId()] ?? [];
+    }
+
+    /**
      * Closes the temporary file of the given worksheet. It is reopened in append mode
      * if more images are added later on.
      */
@@ -165,11 +187,11 @@ final class ImageManager
      * so they default to 0. For oneCellAnchor they should mirror the <xdr:ext> values so
      * that applications relying on spPr (e.g. LibreOffice) render the image at the correct size.
      */
-    private function buildPicXml(int $imageIndex, int $picId, int $widthEmu = 0, int $heightEmu = 0): string
+    private function buildPicXml(int $imageIndex, int $picId, int $widthEmu, int $heightEmu, string $hyperlinkXml): string
     {
         return '<xdr:pic>'
             .'<xdr:nvPicPr>'
-            .'<xdr:cNvPr id="'.$picId.'" name="Image'.$imageIndex.'"/>'
+            .'<xdr:cNvPr id="'.$picId.'" name="Image'.$imageIndex.'"'.('' === $hyperlinkXml ? '/>' : '>'.$hyperlinkXml.'</xdr:cNvPr>')
             .'<xdr:cNvPicPr><a:picLocks noChangeAspect="1"/></xdr:cNvPicPr>'
             .'</xdr:nvPicPr>'
             .'<xdr:blipFill>'

@@ -7,6 +7,7 @@ namespace OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Comment\Comment;
 use OpenSpout\Common\Entity\Comment\TextRun;
+use OpenSpout\Common\Entity\Hyperlink;
 use OpenSpout\Common\Entity\Style\Style;
 
 final readonly class TextRunCell extends Cell
@@ -21,8 +22,9 @@ final readonly class TextRunCell extends Cell
         array $textRuns,
         ?Style $style,
         ?Comment $comment,
+        Hyperlink|string|null $hyperlink = null,
     ) {
-        parent::__construct($style, $comment);
+        parent::__construct($style, $comment, $hyperlink);
         $this->textRuns = $textRuns;
     }
 
@@ -49,26 +51,36 @@ final readonly class TextRunCell extends Cell
      */
     public function withTextRuns(...$textRuns): self
     {
-        return new self($textRuns, $this->style, $this->comment);
+        return new self($textRuns, $this->style, $this->comment, $this->hyperlink);
     }
 
     public function withStyle(Style $style): static
     {
-        return new self($this->textRuns, $style, $this->comment);
+        return new self($this->textRuns, $style, $this->comment, $this->hyperlink);
     }
 
     public function withoutStyle(): static
     {
-        return new self($this->textRuns, null, $this->comment);
+        return new self($this->textRuns, null, $this->comment, $this->hyperlink);
     }
 
     public function withComment(Comment $comment): static
     {
-        return new self($this->textRuns, $this->style, $comment);
+        return new self($this->textRuns, $this->style, $comment, $this->hyperlink);
     }
 
     public function withoutComment(): static
     {
-        return new self($this->textRuns, $this->style, null);
+        return new self($this->textRuns, $this->style, null, $this->hyperlink);
+    }
+
+    public function withHyperlink(Hyperlink|string $hyperlink): static
+    {
+        return new self($this->textRuns, $this->style, $this->comment, $hyperlink);
+    }
+
+    public function withoutHyperlink(): static
+    {
+        return new self($this->textRuns, $this->style, $this->comment, null);
     }
 }
