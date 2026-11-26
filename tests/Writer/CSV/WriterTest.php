@@ -4,9 +4,15 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer\CSV;
 
+use Closure;
 use DateInterval;
 use DateTime;
+use DateTimeZone;
+use OpenSpout\Common\Entity\Cell;
+use OpenSpout\Common\Entity\Cell\ErrorCell;
 use OpenSpout\Common\Entity\Cell\ImageCell;
+use OpenSpout\Common\Entity\Cell\TextRunCell;
+use OpenSpout\Common\Entity\Comment\TextRun;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Exception\IOException;
 use OpenSpout\Common\Exception\UnsupportedTypeException;
@@ -14,6 +20,7 @@ use OpenSpout\Common\Helper\EncodingHelper;
 use OpenSpout\TestUsingResource;
 use OpenSpout\Writer\Common\Helper\ImageHelperTrait;
 use OpenSpout\Writer\Exception\WriterNotOpenedException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -278,15 +285,51 @@ final class WriterTest extends TestCase
         self::assertSame(5, $writer->getWrittenRowCount());
     }
 
-    public function testWriteImageCellShouldThrowException(): void
+    /**
+     * @param Closure(string): Cell $cellFactory
+     */
+    #[DataProvider('provideWriteUnsupportedCellShouldThrowExceptionCases')]
+    public function testWriteUnsupportedCellShouldThrowException(Closure $cellFactory): void
     {
-        $fileName = 'test_image_cell_throws.csv';
+        $cell = $cellFactory($this->testImagePath);
+        $fileName = 'test_unsupported_cell_throws.csv';
         $resourcePath = (new TestUsingResource())->getGeneratedResourcePath($fileName);
         $writer = new Writer();
         $writer->openToFile($resourcePath);
 
-        $this->expectException(UnsupportedTypeException::class);
-        $writer->addRow(new Row([new ImageCell($this->testImagePath, 1, 1)]));
+        try {
+            $writer->addRow(new Row([Cell::fromValue('written before'), $cell]));
+            self::fail('Expected an UnsupportedTypeException');
+        } catch (UnsupportedTypeException $exception) {
+            self::assertSame($cell::class.' is not supported in CSV format.', $exception->getMessage());
+        }
+
+        $writer->close();
+        self::assertSame(0, $writer->getWrittenRowCount());
+        self::assertSame(EncodingHelper::BOM_UTF8, file_get_contents($resourcePath));
+    }
+
+    /**
+     * @return iterable<string, array{Closure(string): Cell}>
+     */
+    public static function provideWriteUnsupportedCellShouldThrowExceptionCases(): iterable
+    {
+        yield 'image' => [static fn (string $imagePath): Cell => new ImageCell($imagePath, 1, 1)];
+
+        yield 'text run' => [static fn (): Cell => new TextRunCell([new TextRun('rich text')], null, null)];
+
+        yield 'error' => [static fn (): Cell => new ErrorCell('#DIV/0!')];
+    }
+
+    public function testWriteShouldSupportEveryScalarCellTypeInOneRow(): void
+    {
+        $allRows = [
+            Row::fromValues(['csv--11', '', null, 12, 1.5, true, false, '=SUM(A1:A2)', new DateTime('2026-01-02 03:04:05', new DateTimeZone('UTC')), new DateInterval('P1D')]),
+        ];
+        $options = new Options(SHOULD_ADD_BOM: false);
+        $writtenContent = $this->writeToCsvFileAndReturnWrittenContent($allRows, 'csv_with_every_cell_type.csv', $options);
+
+        self::assertSame("csv--11,,,12,1.5,1,0,=SUM(A1:A2),2026-01-02T03:04:05+00:00,P0Y0M1DT0H0M0S0F\n", $writtenContent);
     }
 
     /**

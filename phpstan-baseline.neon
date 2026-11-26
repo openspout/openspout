@@ -91,12 +91,6 @@ parameters:
 			path: src/Reader/XLSX/RowIterator.php
 
 		-
-			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(OpenSpout\\Common\\Entity\\Cell\)\: mixed\)\|null, Closure\(OpenSpout\\Common\\Entity\\Cell\\BooleanCell\|OpenSpout\\Common\\Entity\\Cell\\DateIntervalCell\|OpenSpout\\Common\\Entity\\Cell\\DateTimeCell\|OpenSpout\\Common\\Entity\\Cell\\EmptyCell\|OpenSpout\\Common\\Entity\\Cell\\FormulaCell\|OpenSpout\\Common\\Entity\\Cell\\NumericCell\|OpenSpout\\Common\\Entity\\Cell\\StringCell\)\: string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Writer/CSV/Writer.php
-
-		-
 			message: '#^Short ternary operator is not allowed\. Use null coalesce operator if applicable or consider using long ternary\.$#'
 			identifier: ternary.shortNotAllowed
 			count: 1
