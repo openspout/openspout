@@ -197,7 +197,8 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
         } elseif ($cell instanceof Cell\TextRunCell) {
             $sharedStringId = $this->sharedStringsManager->writeTextRuns($cell->getValue());
             $cellXML .= ' t="s"><v>'.$sharedStringId.'</v></c>';
-        } elseif ($cell instanceof Cell\EmptyCell) {
+        } elseif ($cell instanceof Cell\EmptyCell || $cell instanceof Cell\ImageCell) {
+            // An image is embedded as a drawing, so its cell has no value and is written like an empty cell
             if ($this->styleManager->shouldApplyStyleOnEmptyCell($styleId)) {
                 $cellXML .= '/>';
             } else {
@@ -205,9 +206,6 @@ final readonly class WorksheetManager implements WorksheetManagerInterface
                 // NOTE: not appending to $cellXML is the right behavior!!
                 $cellXML = '';
             }
-        } elseif ($cell instanceof Cell\ImageCell) {
-            // Image is embedded as a drawing; no <c> tag is written here.
-            $cellXML = '';
         }
 
         return $cellXML;
