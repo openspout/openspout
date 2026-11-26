@@ -56,25 +56,20 @@ final class Writer extends AbstractWriter
      */
     protected function addRowToWriter(Row $row): void
     {
+        $cells = [];
         foreach ($row->cells as $cell) {
-            if ($cell instanceof Cell\ImageCell) {
-                throw new UnsupportedTypeException('ImageCell is not supported in CSV format.');
+            if ($cell instanceof Cell\StringCell || $cell instanceof Cell\EmptyCell || $cell instanceof Cell\NumericCell || $cell instanceof Cell\FormulaCell) {
+                $cells[] = $cell->getValue();
+            } elseif ($cell instanceof Cell\BooleanCell) {
+                $cells[] = $cell->getValue() ? '1' : '0';
+            } elseif ($cell instanceof Cell\DateTimeCell) {
+                $cells[] = $cell->getValue()->format(DATE_ATOM);
+            } elseif ($cell instanceof Cell\DateIntervalCell) {
+                $cells[] = $cell->getValue()->format('P%yY%mM%dDT%hH%iM%sS%fF');
+            } else {
+                throw new UnsupportedTypeException(\sprintf('%s is not supported in CSV format.', $cell::class));
             }
         }
-
-        $cells = array_map(static function (Cell\BooleanCell|Cell\DateIntervalCell|Cell\DateTimeCell|Cell\EmptyCell|Cell\FormulaCell|Cell\NumericCell|Cell\StringCell $value): string {
-            if ($value instanceof Cell\BooleanCell) {
-                return (string) (int) $value->getValue();
-            }
-            if ($value instanceof Cell\DateTimeCell) {
-                return $value->getValue()->format(DATE_ATOM);
-            }
-            if ($value instanceof Cell\DateIntervalCell) {
-                return $value->getValue()->format('P%yY%mM%dDT%hH%iM%sS%fF');
-            }
-
-            return (string) $value->getValue();
-        }, $row->cells);
 
         $wasWriteSuccessful = fputcsv(
             $this->filePointer,
