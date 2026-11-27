@@ -859,6 +859,53 @@ There are a number of ways to protect the editing of a spreadsheet.
 > These protections are trivial to remove/bypass. They are only enforced if the application reading the spreadsheet
 > chooses to respect them. They should not be relied upon.
 
+## Formula Injection Protection
+
+When exporting user-controlled data to spreadsheet files, there is a risk of formula injection attacks (also known as
+CSV Injection, [CWE-1236](https://cwe.mitre.org/data/definitions/1236.html)). This occurs when cell values starting
+with certain characters (`=`, `+`, `-`, `@`, tab, or carriage return) are interpreted as formulas by spreadsheet
+applications, potentially allowing attackers to execute arbitrary commands or exfiltrate data.
+
+By default, OpenSpout treats strings starting with `=` as formulas (creating `FormulaCell`). To prevent this behavior
+when writing untrusted data, use the `escapeFormulas` parameter:
+
+```php
+use OpenSpout\Common\Entity\Cell;
+use OpenSpout\Common\Entity\Row;
+
+// Without escapeFormulas (default): "=SUM(A1:A2)" becomes a FormulaCell
+$cell = Cell::fromValue('=SUM(A1:A2)'); // FormulaCell - formula is executed
+
+// With escapeFormulas: "=SUM(A1:A2)" becomes a StringCell (literal text)
+$cell = Cell::fromValue('=SUM(A1:A2)', escapeFormulas: true); // StringCell - displayed as text
+
+// Row factory methods also support escapeFormulas
+$row = Row::fromValues(['=HYPERLINK("http://evil.com","Click")', 'Safe text'], escapeFormulas: true);
+$row = Row::fromValuesWithStyle($values, $style, escapeFormulas: true);
+$row = Row::fromValuesWithStyles($values, $styles, escapeFormulas: true);
+```
+
+> #### When to use `escapeFormulas`
+>
+> Enable this option whenever you export data that may contain user input, database values, or any content not
+> explicitly intended to be formulas. Common scenarios include:
+>
+> - Admin export features (user lists, order exports, reports)
+> - Data migration tools
+> - Any export where cell values come from external sources
+
+You can also check if a string would trigger formula execution using the `Cell::isFormulaTrigger()` method:
+
+```php
+use OpenSpout\Common\Entity\Cell;
+
+Cell::isFormulaTrigger('=SUM(A1)');  // true
+Cell::isFormulaTrigger('+100');       // true
+Cell::isFormulaTrigger('-50');        // true
+Cell::isFormulaTrigger('@username');  // true
+Cell::isFormulaTrigger('Hello');      // false
+```
+
 ### Workbook Protection
 
 > #### Note on LibreOffice support

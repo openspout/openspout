@@ -176,4 +176,87 @@ final class RowTest extends TestCase
         self::expectException(InvalidArgumentException::class);
         new Row([1 => Cell::fromValue('foo'), 0 => Cell::fromValue('bar')]);
     }
+
+    public function testFromValuesWithEscapeFormulas(): void
+    {
+        // Without escapeFormulas, formula strings become FormulaCell
+        $row = Row::fromValues(['=SUM(A1:A2)', 'Normal text', 42]);
+        self::assertInstanceOf(Cell\FormulaCell::class, $row->cells[0]);
+        self::assertInstanceOf(Cell\StringCell::class, $row->cells[1]);
+        self::assertInstanceOf(Cell\NumericCell::class, $row->cells[2]);
+
+        // With escapeFormulas=true, formula strings become StringCell
+        $row = Row::fromValues(['=SUM(A1:A2)', 'Normal text', 42], escapeFormulas: true);
+        self::assertInstanceOf(Cell\StringCell::class, $row->cells[0]);
+        self::assertSame('=SUM(A1:A2)', $row->cells[0]->getValue());
+        self::assertInstanceOf(Cell\StringCell::class, $row->cells[1]);
+        self::assertInstanceOf(Cell\NumericCell::class, $row->cells[2]);
+    }
+
+    public function testFromValuesWithStylesWithEscapeFormulas(): void
+    {
+        $style = new Style(fontBold: true);
+
+        // Without escapeFormulas
+        $row = Row::fromValuesWithStyles(['=SUM(A1:A2)'], [$style]);
+        self::assertInstanceOf(Cell\FormulaCell::class, $row->cells[0]);
+
+        // With escapeFormulas=true
+        $row = Row::fromValuesWithStyles(['=SUM(A1:A2)'], [$style], escapeFormulas: true);
+        self::assertInstanceOf(Cell\StringCell::class, $row->cells[0]);
+        self::assertSame('=SUM(A1:A2)', $row->cells[0]->getValue());
+        self::assertSame($style, $row->cells[0]->style);
+    }
+
+    public function testFromValuesWithStyleWithEscapeFormulas(): void
+    {
+        $style = new Style(fontItalic: true);
+
+        // Without escapeFormulas
+        $row = Row::fromValuesWithStyle(['=SUM(A1:A2)'], $style);
+        self::assertInstanceOf(Cell\FormulaCell::class, $row->cells[0]);
+
+        // With escapeFormulas=true
+        $row = Row::fromValuesWithStyle(['=SUM(A1:A2)'], $style, escapeFormulas: true);
+        self::assertInstanceOf(Cell\StringCell::class, $row->cells[0]);
+        self::assertSame('=SUM(A1:A2)', $row->cells[0]->getValue());
+        self::assertSame($style, $row->cells[0]->style);
+    }
+
+    /**
+     * Tests that Row factory methods properly neutralize formula injection attacks.
+     *
+     * @see https://owasp.org/www-community/attacks/CSV_Injection
+     */
+    public function testRowFactoryMethodsNeutralizeFormulaInjection(): void
+    {
+        $attackPatterns = [
+            '=HYPERLINK("http://evil.com","Click")',
+            '=cmd|"/C calc"!A0',
+            '+cmd|"/C calc"!A0',
+            '-100+cmd|"/C calc"!A0',
+            '@SUM(A1)',
+        ];
+
+        // Test fromValues
+        $row = Row::fromValues($attackPatterns, escapeFormulas: true);
+        foreach ($row->cells as $index => $cell) {
+            self::assertInstanceOf(Cell\StringCell::class, $cell, "Cell {$index} should be StringCell");
+            self::assertSame($attackPatterns[$index], $cell->getValue(), "Cell {$index} value should be preserved");
+        }
+
+        // Test fromValuesWithStyle
+        $style = new Style();
+        $row = Row::fromValuesWithStyle($attackPatterns, $style, escapeFormulas: true);
+        foreach ($row->cells as $index => $cell) {
+            self::assertInstanceOf(Cell\StringCell::class, $cell, "Cell {$index} should be StringCell with style");
+        }
+
+        // Test fromValuesWithStyles
+        $styles = array_fill(0, \count($attackPatterns), $style);
+        $row = Row::fromValuesWithStyles($attackPatterns, $styles, escapeFormulas: true);
+        foreach ($row->cells as $index => $cell) {
+            self::assertInstanceOf(Cell\StringCell::class, $cell, "Cell {$index} should be StringCell with column styles");
+        }
+    }
 }
